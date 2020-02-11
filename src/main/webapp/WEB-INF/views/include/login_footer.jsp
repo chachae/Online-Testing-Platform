@@ -13,6 +13,6 @@
     </div>
     <div>YZN 版权所有</div>
 </div>
-<div class="jianyi" style="float:right;margin-right:25px">*推荐使用ie8或以上版本ie浏览器或Chrome内核浏览器访问本站</div>
+<div class="jianyi">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
 </body>
 </html>

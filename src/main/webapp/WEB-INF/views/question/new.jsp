@@ -87,9 +87,9 @@
                             <label>难易程度</label>
                             <select class="form-control" name="difficulty" id="difficulty">
                                 <option value="">请选择</option>
-                                <option value="★">★</option>
-                                <option value="★★">★★</option>
-                                <option value="★★★">★★★</option>
+                                <option value="1">★</option>
+                                <option value="2">★★</option>
+                                <option value="3">★★★</option>
                             </select>
                         </div>
                         <div class="form-group">

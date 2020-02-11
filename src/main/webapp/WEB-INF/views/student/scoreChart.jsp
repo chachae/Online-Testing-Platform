@@ -5,7 +5,7 @@
     <title>OES | 学生成绩分析</title>
     <%@ include file="../include/css.jsp" %>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
     <%@include file="../student/include/header.jsp" %>
@@ -21,12 +21,12 @@
                     <h3 class="box-title">我的成绩分析</h3>
                 </div>
                 <div class="box-body">
-                    <div id="main" style="height: 560px;width: 100%"/>
+                    <div id="main" style="height: 560px;width: 100%"></div>
                 </div>
             </div>
             <div class="box" style="background-color: inherit">
                 <div class="box-body">
-                    <div id="chart" style="height: 400px;width: 100%"/>
+                    <div id="chart" style="height: 400px;width: 100%"></div>
                 </div>
             </div>
             <!-- 为ECharts准备一个具备大小（宽高）的Dom -->

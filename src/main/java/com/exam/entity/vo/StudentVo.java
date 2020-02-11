@@ -43,6 +43,9 @@ public class StudentVo extends BaseEntity {
   /** 专业信息 */
   private Major major;
 
+  /** 年级 */
+  private Integer level;
+
   /** 角色信息 */
   private Role role;
 

@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- SpringBoot 父工程 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -10,6 +11,7 @@
         <relativePath/>
     </parent>
 
+    <!-- 项目 pom 信息 -->
     <groupId>com.exam</groupId>
     <artifactId>online-exam-system</artifactId>
     <version>1.0</version>
@@ -44,6 +46,8 @@
         <p6spy.version>3.8.7</p6spy.version>
         <commons-text.version>1.8</commons-text.version>
         <jquery.version>3.4.1</jquery.version>
+        <webjars-admin-lte.version>2.3.11</webjars-admin-lte.version>
+        <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
     </properties>
 
     <!-- 依赖管理 -->
@@ -156,29 +160,34 @@
             <version>${p6spy.version}</version>
         </dependency>
 
+        <!-- commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>${commons-text.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.webjars.bower/adminlte -->
+        <!-- AdminLTE -->
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>adminlte</artifactId>
-            <version>2.3.11</version>
+            <version>${webjars-admin-lte.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
+        <!-- font-awesome -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>4.7.0</version>
+            <version>${webjars-font-awesome.version}</version>
         </dependency>
 
-
+        <!-- poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.1</version>
+        </dependency>
     </dependencies>
-
 
     <!-- Maven 打包设置 -->
     <build>
@@ -190,7 +199,7 @@
                 <version>1.4.2.RELEASE</version>
             </plugin>
 
-            <!-- jdk编译插件 -->
+            <!-- jdk 编译插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -200,7 +209,7 @@
                 </configuration>
             </plugin>
 
-            <!-- 打包时跳过测试 -->
+            <!-- package 跳过测试 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -210,6 +219,7 @@
             </plugin>
         </plugins>
 
+        <!-- 指定文件编译目录 -->
         <resources>
             <resource>
                 <directory>src/main/webapp</directory>

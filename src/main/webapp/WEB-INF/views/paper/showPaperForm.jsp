@@ -111,7 +111,7 @@
                         layer.msg("删除成功!");
                         window.location.href = "/teacher/paper/showPaperForm";
                     } else {
-                        layer.msg(data.messge);
+                        layer.msg(data.message);
                     }
                 }).error(function () {
                     layer.msg("服务器异常");

@@ -2,7 +2,6 @@ package com.exam.util;
 
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * RequestHolder 上下的文封装
+ *
  * @author yzn
  * @since 2019/12/21 11:02
  */
@@ -34,7 +35,7 @@ public class HttpContextUtil {
   /**
    * 获取Session 对象
    *
-   * @return
+   * @return HttpSession
    */
   public static HttpSession getSession() {
     return getHttpServletRequest().getSession();

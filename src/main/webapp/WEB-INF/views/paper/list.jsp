@@ -40,7 +40,8 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">试卷管理</h3>
                     <div class="box-tools pull-right">
-                        <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增试卷</a>
+                        <a href="<c:url value="/teacher/paper/importNewPaper"/>" class="btn btn-primary btn-sm"><i class="fa fa-plus-circle"></i> （导入试题） 新增考试</a>
+                        <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i>（随机抽题） 新增试卷</a>
                         <a href="<c:url value="/teacher/paper/showPaperForm"/>" class="btn btn-warning btn-sm"><i class="fa fa-search"></i> 查看模版</a>
                     </div>
                 </div>

@@ -37,4 +37,7 @@ public class Student extends Model<Student> {
 
   /** 专业id */
   private Integer majorId;
+
+  /** 年级 */
+  private Integer level;
 }

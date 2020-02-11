@@ -36,14 +36,14 @@
                 <div class="box-body">
                     <form method="post" id="addForm">
                         <div class="form-group">
-                            <label>试卷名称</label>
-                            <input type="hidden" class="form-control" name="teacherId"
+                            <label for="teacherId">试卷名称</label>
+                            <input type="hidden" class="form-control" id="teacherId" name="teacherId"
                                    value="${sessionScope.get('teacherId')}">
                             <input type="hidden" class="form-control" name="paperState" value="未开始">
                             <input type="text" class="form-control" name="paperName">
                         </div>
                         <div class="form-group">
-                            <label>所属课程</label>
+                            <label for="courseId">所属课程</label>
                             <select class="form-control" id="courseId" name="courseId">
                                 <option value="">请选择</option>
                                 <c:forEach items="${courseList}" var="course">
@@ -52,7 +52,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>试卷类型 </label>
+                            <label for="paperType">试卷类型 </label>
                             <select class="form-control" name="paperType" id="paperType">
                                 <option value="">请选择</option>
                                 <option value="正式">正式</option>
@@ -60,7 +60,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>考试专业班级</label>
+                            <label for="academy">学院</label>
+                            <select id="academy" onchange="getAcademy(this.value)" name="academy" class="form-control">
+                                <option value="">请选择</option>
+                                <c:forEach items="${academyList}" var="academy">
+                                    <option value="${academy.id}">${academy.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="majorId">考试专业</label>
                             <select id="majorId" name="majorId" class="form-control">
                                 <option value="">请选择</option>
                                 <c:forEach items="${majorList}" var="major">
@@ -69,24 +78,25 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>试卷总分 (默认模版为100分)</label>
-                            <input type="text" name="score" value="100" class="form-control">
+                            <label for="score">试卷总分 (默认模版为100分)</label>
+                            <input type="text" id="score" name="score" value="100" class="form-control">
                         </div>
                         <hr/>
                         <div class="form-group">
                             <label style="color: #af0000">注意: 正式试卷必选，模拟试卷无需选择时间</label>
                         </div>
                         <div class="form-group form_datetime">
-                            <label>开始时间</label>
+                            <label for="datepicker">开始时间</label>
                             <input type="text" name="beginTime" class="form-control" id="datepicker">
                         </div>
                         <div class="form-group form_datetime">
-                            <label>结束时间</label>
+                            <label for="datepicker2">结束时间</label>
                             <input type="text" name="endTime" class="form-control" id="datepicker2">
                         </div>
                         <div class="form-group form_datetime">
-                            <label>考试时长 (示例:120分钟)</label>
-                            <input type="text" name="allowTime" value="120分钟" required class="form-control">
+                            <label for="allowTime">考试时长 (示例:120分钟)</label>
+                            <input type="text" id="allowTime" name="allowTime" value="120分钟" required
+                                   class="form-control">
                         </div>
                         <hr/>
 
@@ -115,11 +125,32 @@
 <script src="<c:url value="/webjars/adminlte/2.3.11/plugins/datepicker/bootstrap-datepicker.js"/>"></script>
 <script src="<c:url value="/webjars/adminlte/2.3.11/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"/>"></script>
 <script src="<c:url value="/static/plugins/jquery-validation/jquery.validate.js"/>"></script>
+<script src="<c:url value="/static/plugins/jquery-form/jquery.form.min.js"/>"></script>
+<script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script>
-    $(function () {
 
+    // select2
+    $('#academy').select2({width: "100%"});
+
+    //回填的二级类别值
+    function getAcademy(id) {
+        let options = "";
+        //回填的二级类别值
+        $('#majorId').empty();
+        options += "<option value=''>请选择</option>";
+        <c:forEach items="${majorList}" var="major">
+        var academyId = "${major.academyId}";
+        if (academyId === id) {
+            const value = "${major.id}";
+            const name = "${major.major}";
+            options += "<option selected='true' value=" + value + ">" + name + "</option>";
+        }
+        </c:forEach>
+        $("#majorId").append(options).select2();
+    };
+
+    $(function () {
         // select2
-        $('#majorId').select2({width: "100%"});
         $('#courseId').select2({width: "100%"});
         $('#paperType').select2({width: "100%"});
 
@@ -144,8 +175,21 @@
             todayHighlight: true
         });
 
-        $("#addBtn").click(function () {
-            $("#addForm").submit();
+        // 提交组卷
+        $('#addBtn').click(function () {
+            $.ajax({
+                type: "POST",
+                data: $('#addForm').serialize(),
+                success: function (res) {
+                    if (res.state === "success") {
+                        layer.alert("添加成功");
+                        window.location.href = "/teacher/paper/show/" + res.data;
+                    } else {
+                        layer.alert(res.message);
+                    }
+                }
+            });
+            return false;
         });
 
         $("#addForm").validate({

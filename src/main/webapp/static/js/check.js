@@ -10,7 +10,6 @@ function encrypt(pass) {
     // 加密
     pass = enc.encrypt(pass);
     $('.realPass').val(pass);
-    console.log(pass);
 }
 
 //登录界面学号验证

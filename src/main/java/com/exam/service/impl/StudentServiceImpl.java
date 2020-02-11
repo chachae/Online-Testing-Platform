@@ -4,11 +4,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
+import com.exam.entity.Major;
 import com.exam.entity.Student;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.entity.dto.StudentQueryDto;
 import com.exam.entity.vo.StudentVo;
 import com.exam.exception.ServiceException;
+import com.exam.mapper.MajorMapper;
 import com.exam.mapper.StudentMapper;
 import com.exam.service.StudentService;
 import com.exam.util.RsaCipherUtil;
@@ -33,6 +35,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     implements StudentService {
 
   @Resource private StudentMapper studentMapper;
+  @Resource private MajorMapper majorMapper;
 
   @Override
   public Student login(String stuNumber, String password) throws ServiceException {

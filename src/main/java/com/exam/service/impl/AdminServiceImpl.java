@@ -9,13 +9,13 @@ import com.exam.exception.ServiceException;
 import com.exam.mapper.AdminMapper;
 import com.exam.mapper.AnnounceMapper;
 import com.exam.service.AdminService;
+import com.exam.util.DateUtil;
 import com.exam.util.RsaCipherUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
 
   @Resource private AnnounceMapper announceMapper;
+  @Resource private AdminMapper adminMapper;
 
   /**
    * 管理员登录
@@ -43,7 +44,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     // 使用构造器拼接条件查询 sql
     QueryWrapper<Admin> qw = new QueryWrapper<>();
     qw.lambda().eq(Admin::getNumber, number);
-    Admin admin = this.getOne(qw);
+    Admin admin = this.adminMapper.selectOne(qw);
     // 判断管理员对象是否为空对象
     if (ObjectUtil.isEmpty(admin)) {
       throw new ServiceException("管理员帐号不存在");
@@ -53,6 +54,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     if (!RsaCipherUtil.verify(password, admin.getPassword())) {
       throw new ServiceException("密码错误");
     }
+    // 更新登陆时间
+    this.adminMapper.updateById(
+        Admin.builder().id(admin.getId()).lastLoginTime(DateUtil.getDate()).build());
     return admin;
   }
 
@@ -96,7 +100,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void newAnnounce(Announce announce) {
-    announce.setCreateTime(new Date());
+    announce.setCreateTime(DateUtil.getDate());
     announceMapper.insert(announce);
   }
 }

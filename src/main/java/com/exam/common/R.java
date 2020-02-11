@@ -23,6 +23,7 @@ public class R {
 
   public static R error(String message) {
     R r = new R();
+    r.setMessage(message);
     r.setData(STATE_ERROR);
     return r;
   }

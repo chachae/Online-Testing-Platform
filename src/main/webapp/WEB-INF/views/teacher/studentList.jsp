@@ -20,11 +20,13 @@
         th {
             font-size: 15px;
             vertical-align: center;
+            align-content: center;
         }
 
         td {
             font-size: 16px;
             vertical-align: center;
+            align-content: center;
         }
     </style>
 </head>
@@ -45,7 +47,8 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">学生查询</h3>
                     <div class="box-tools pull-right">
-                        <a href="<c:url value="/teacher/student"/>" class="btn btn-success btn-sm"><i class="fa  fa-refresh"></i>  刷新</a>
+                        <a href="<c:url value="/teacher/student"/>" class="btn btn-success btn-sm"><i
+                                class="fa  fa-refresh"></i> 刷新</a>
                     </div>
                 </div>
                 <div class="box-body no-padding">
@@ -84,9 +87,6 @@
                 </div>
                 <!-- /.box-body -->
             </div>
-
-            <!--------------------------------------------->
-
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
@@ -99,14 +99,15 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width:10px"></th>
+                            <th width="10"></th>
                             <th>学生ID</th>
                             <th>姓名</th>
                             <th>学号</th>
+                            <th>学院</th>
                             <th>专业</th>
+                            <th>年级</th>
                             <th>性别</th>
-                            <th>操作
-                            <th>
+                            <th>操作</th>
                         </tr>
                         <c:if test="${empty page.list}">
                             <tr>
@@ -115,11 +116,13 @@
                         </c:if>
                         <c:forEach items="${page.list}" var="student">
                             <tr class="rowDetail" rel="${student.stuNumber}">
-                                <td rel="${student.academy.id}"></td>
+                                <td></td>
                                 <td>${student.id}</td>
                                 <td>${student.name}</td>
                                 <td>${student.stuNumber}</td>
+                                <td rel="${student.academy.id}">${student.academy.name}</td>
                                 <td rel="${student.majorId}">${student.major.major}</td>
+                                <td>${student.level}</td>
                                 <td>${student.sex}</td>
                                 <td><a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
                                 </td>
@@ -136,7 +139,6 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
     <!-- 增加学生信息模态框 -->
     <!------------------------------------------------------------------------------------------->
     <div class="modal fade" id="saveModal">
@@ -176,6 +178,18 @@
                             <c:forEach items="${majorList}" var="major">
                                 <option value="${major.id}">${major.major}</option>
                             </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-group form_datetime">
+                        <label for="slevel">年级</label>
+                        <select id="slevel" name="slevel" class="form-control level" style="width: 100%">
+                            <option value="">请选择</option>
+                            <option value="16">16级</option>
+                            <option value="17">17级</option>
+                            <option value="18">18级</option>
+                            <option value="19">19级</option>
+                            <option value="20">20级</option>
+                            <option value="21">21级</option>
                         </select>
                     </div>
                     <div class="form-group form_datetime">
@@ -243,6 +257,18 @@
                         </select>
                     </div>
                     <div class="form-group form_datetime">
+                        <label for="level">年级</label>
+                        <select id="level" name="level" class="form-control level" style="width: 100%">
+                            <option value="">请选择</option>
+                            <option value="16">16级</option>
+                            <option value="17">17级</option>
+                            <option value="18">18级</option>
+                            <option value="19">19级</option>
+                            <option value="20">20级</option>
+                            <option value="21">21级</option>
+                        </select>
+                    </div>
+                    <div class="form-group form_datetime">
                         <label for="sex">性别</label>
                         <select id="sex" class="form-control" style="width: 100%">
                             <option value="男">男</option>
@@ -266,6 +292,7 @@
 <script src="<c:url value="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"/>"></script>
 <script>
 
+    $('#slevel').select2();
     $('#findAcademy').select2();
     //分页
     $('#pagination-demo').twbsPagination({
@@ -307,13 +334,15 @@
         const stuId = $(this).parents('tr').find('td').eq(1).text();
         const name = $(this).parents('tr').find('td').eq(2).text();
         const stuNumber = $(this).parents('tr').find('td').eq(3).text();
-        const academyId = $(this).parents('tr').find('td').eq(0).attr("rel");
-        const majorId = $(this).parents('tr').find('td').eq(4).attr("rel");
-        const major = $(this).parents('tr').find('td').eq(4).text();
-        const sex = $(this).parents('tr').find('td').eq(5).text();
+        const academyId = $(this).parents('tr').find('td').eq(4).attr("rel");
+        const majorId = $(this).parents('tr').find('td').eq(5).attr("rel");
+        const major = $(this).parents('tr').find('td').eq(5).text();
+        const level = $(this).parents('tr').find('td').eq(6).text();
+        const sex = $(this).parents('tr').find('td').eq(7).text();
         $('#id').val(stuId);
         $('#name').val(name);
         $('#stuNumber').val(stuNumber);
+        $('.level').val(level).select2();
         $('#sex').val(sex).select2();
         $('#academy').val(academyId).select2();
 
@@ -326,6 +355,7 @@
             let c = $("#stuNumber").val();
             let d = $("#major").val();
             let e = $("#sex").val();
+            let f = $('#level').val();
             layer.confirm("确定修改信息吗?", function () {
                 $.post("/teacher/student/update/", {
                     "id": a,
@@ -333,6 +363,7 @@
                     "stuNumber": c,
                     "majorId": d,
                     "sex": e,
+                    "level": f
                 }).done(function (data) {
                     if (data.state === "success") {
                         layer.msg("修改成功!");
@@ -344,8 +375,6 @@
             });
         });
     });
-
-    // ------------------------------------------------
 
     // select2
     $("#ssex").select2({width: "100%"});
@@ -382,6 +411,7 @@
             let d = $("#smajor").val();
             let e = $("#ssex").val();
             let f = $("#spass").val();
+            let g = $("#slevel").val();
             layer.confirm("确定增加学生吗?", function () {
                 $.post("/teacher/student/save/", {
                     "name": b,
@@ -389,6 +419,7 @@
                     "majorId": d,
                     "sex": e,
                     "password": f,
+                    "level": g
                 }).done(function (data) {
                     if (data.state === "success") {
                         layer.msg("修改成功!");

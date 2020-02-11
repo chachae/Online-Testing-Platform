@@ -10,6 +10,7 @@
         <result column="role_id" property="roleId"/>
         <result column="sex" property="sex"/>
         <result column="major_id" property="majorId"/>
+        <result column="level" property="level"/>
         <association javaType="Major" property="major" columnPrefix="m_">
             <id property="id" column="id"/>
             <result property="major" column="major"/>
@@ -26,7 +27,7 @@
     </resultMap>
 
     <sql id="baseSql">
-        select s.id, s.name, s.password, s.stu_number, s.role_id, s.sex, s.major_id,
+        select s.id, s.name, s.password, s.stu_number, s.role_id, s.sex, s.major_id,s.level,
         r.id as r_id,r.role_name as r_role_name,m.id as m_id,m.academy_id as m_academy_id
         ,m.major as m_major,a.id as a_id,a.name as a_name from student s LEFT JOIN role r
         on r.id = s.role_id LEFT JOIN major m on s.major_id = m.id LEFT JOIN academy a ON
@@ -60,6 +61,5 @@
             </if>
         </where>
     </select>
-
 
 </mapper>

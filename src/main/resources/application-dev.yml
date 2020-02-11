@@ -23,6 +23,7 @@ spring:
       minimum-idle: 10
       maximum-pool-size: 10
       read-only: off
+
   # devtools
   devtools:
     livereload:
@@ -56,3 +57,7 @@ server:
     session:
       # session 过期时间 30 分钟
       timeout: PT30M
+
+  # tomcat 编码
+  tomcat:
+    uri-encoding: utf-8

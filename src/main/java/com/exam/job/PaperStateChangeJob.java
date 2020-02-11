@@ -34,10 +34,11 @@ public class PaperStateChangeJob {
   public void run() {
     List<Paper> paperList = paperMapper.selectList(null);
     for (Paper paper : paperList) {
-      if (paper.isEnd()) {
+      // 改变所有考试时间已过期且状态仍为未开始的试卷状态（更改为"已结束"）
+      if (paper.isEnd() && paper.getPaperState().equals(SysConsts.PAPER.PAPER_STATE_START)) {
         paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
         paperMapper.updateById(paper);
-        log.info("试卷:{} 状态被修改:{}", paper.getPaperName(), paper.getPaperState());
+        log.info("试卷:[{}] 状态被修改:[{}]", paper.getPaperName(), paper.getPaperState());
       }
     }
   }

@@ -23,7 +23,6 @@
             </li>
             <li class="header">系统功能</li>
             <!-- 消息公告 -->
-            <%--<li class="treeview ${param.menu.startsWith('customer_')?'active':''}">--%>
             <li class="treeview ${fn:startsWith(param.menu,'announce')?'active':''}">
                 <a href="<c:url value="/student/announce/system"/>">
                     <i class="fa fa-address-book-o"></i> <span>消息公告</span>
@@ -38,10 +37,6 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
-                <%--<ul class="treeview-menu">--%>
-                <%--<li class="${param.menu == 'exam_my'?'active':''}"><a href="/student/exam"><i class="fa fa-circle-o"></i> 我的考试</a></li>--%>
-                <%--&lt;%&ndash;<li><a href="/recode/public"><i class="fa fa-circle-o"></i> 公共记录</a></li>&ndash;%&gt;--%>
-                <%--</ul>--%>
             </li>
             <!-- 我的成绩 -->
             <li class="treeview ${fn:startsWith(param.menu,'score')?'active':''}">

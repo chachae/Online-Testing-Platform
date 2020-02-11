@@ -224,7 +224,7 @@ public class StudentController {
     // 获取 request 对象
     HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
     // 批改试卷
-    paperService.markPaper(stuId, paperId, request);
+    this.paperService.markPaper(stuId, paperId, request);
     return "redirect:/student/home/" + stuId;
   }
 

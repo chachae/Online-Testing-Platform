@@ -1,26 +1,33 @@
 package com.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.exam.entity.Course;
-import com.exam.entity.Question;
-import com.exam.entity.StuAnswerRecord;
-import com.exam.entity.Type;
+import com.exam.constant.SysConsts;
+import com.exam.entity.*;
+import com.exam.entity.dto.ImportPaperDto;
+import com.exam.entity.dto.QuestionDto;
 import com.exam.entity.dto.StudentAnswerDto;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.CourseMapper;
-import com.exam.mapper.QuestionMapper;
-import com.exam.mapper.TypeMapper;
+import com.exam.mapper.*;
 import com.exam.service.QuestionService;
+import com.exam.util.BeanUtil;
+import com.exam.util.FileUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 试题业务实现
@@ -35,6 +42,8 @@ public class QuestionServiceImpl implements QuestionService {
   @Resource private QuestionMapper questionMapper;
   @Resource private CourseMapper courseMapper;
   @Resource private TypeMapper typeMapper;
+  @Resource private PaperMapper paperMapper;
+  @Resource private PaperFormMapper paperFormMapper;
 
   @Override
   public PageInfo<Question> pageForQuestionList(Integer pageNo) {
@@ -149,5 +158,90 @@ public class QuestionServiceImpl implements QuestionService {
       }
     }
     return res;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public ImportPaperDto importQuestion(MultipartFile multipartFile) {
+    try {
+      // 准备一个 Map 用来存储题目的类型和数量
+      Map<Integer, Integer> typeNumMap = Maps.newHashMap();
+      initMap(typeNumMap);
+
+      // 准备一个 Map 用来存储题目的类型和分值
+      Map<Integer, Integer> typeScoreMap = Maps.newHashMap();
+      initMap(typeScoreMap);
+      // 考试名称
+      String paperName = FileUtil.getFileNameNoEx(multipartFile.getOriginalFilename());
+      File file = FileUtil.toFile(multipartFile);
+      ExcelReader reader = ExcelUtil.getReader(file);
+      // 读取问题的信息
+      List<QuestionDto> questions = reader.readAll(QuestionDto.class);
+      // 插入问题表并组装ID
+      List<Integer> idList = Lists.newArrayList();
+      for (QuestionDto question : questions) {
+        Question res = BeanUtil.copyObject(question, Question.class);
+        System.out.println(res);
+        this.questionMapper.insert(res);
+        idList.add(res.getId());
+        Integer typeId = question.getTypeId();
+        Integer num = typeNumMap.get(typeId);
+        num++;
+        // 存储数量
+        typeNumMap.put(typeId, num);
+        // 存储分值
+        typeScoreMap.put(typeId, question.getScore());
+      }
+
+      // 插入试卷模板信息
+      PaperForm form = new PaperForm();
+      // 设置数量分布
+      form.setQChoiceNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
+      form.setQMulChoiceNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
+      form.setQTofNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.TOF_TYPE)));
+      form.setQFillNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.FILL_TYPE)));
+      form.setQSaqNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.SAQ_TYPE)));
+      form.setQProgramNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+      // 设置单题分值
+      form.setQChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
+      form.setQMulChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
+      form.setQTofScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.TOF_TYPE)));
+      form.setQFillScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.FILL_TYPE)));
+      form.setQSaqScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.SAQ_TYPE)));
+      form.setQProgramScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+      this.paperFormMapper.insert(form);
+      // 模板ID
+      Integer formId = form.getId();
+      ImportPaperDto dto = new ImportPaperDto();
+      StringBuilder sb = new StringBuilder();
+      for (Integer id : idList) {
+        String idStr = String.valueOf(id);
+        sb.append(idStr);
+        sb.append(StrUtil.COMMA);
+      }
+      String ids = sb.toString();
+      // 去除最后一个逗号并封装题序参数
+      dto.setQuestionIdList(ids.substring(0, ids.length() - 1));
+      // 封装问题信息参数
+      dto.setPaperName(paperName);
+      dto.setPaperFormId(formId);
+      return dto;
+    } catch (Exception e) {
+      throw new ServiceException("试题解析失败");
+    }
+  }
+
+  /**
+   * 初始化Map
+   *
+   * @param map Map 对象
+   */
+  private void initMap(Map<Integer, Integer> map) {
+    map.put(1, 0);
+    map.put(2, 0);
+    map.put(3, 0);
+    map.put(4, 0);
+    map.put(5, 0);
+    map.put(6, 0);
   }
 }

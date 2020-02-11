@@ -19,13 +19,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="<c:url value="/static/dist/img/tea1.jpg"/>" class="user-image" alt="User Image">
+                        <img src="<c:url value="/webjars/adminlte/2.3.11/dist/img/avatar5.png"/>" class="user-image" alt="User Image">
                         <span class="hidden-xs">老师：${sessionScope.get("teacher").name}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="<c:url value="/static/dist/img/tea1.jpg"/>" class="img-circle" alt="User Image">
+                            <img src="<c:url value="/webjars/adminlte/2.3.11/dist/img/avatar5.png"/>" class="img-circle" alt="User Image">
                             <p>
                                 <span>${sessionScope.get("teacher").name} 老师你好！</span> <br/>
                                 欢迎使用OES考试系统教师端！

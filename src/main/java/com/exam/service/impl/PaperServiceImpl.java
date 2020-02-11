@@ -131,7 +131,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void delPaperFormById(Integer id) throws ServiceException {
+  public void delPaperFormById(Integer id) {
     PaperForm form = paperFormMapper.selectById(id);
     if (form == null) {
       throw new ServiceException("试卷模版不存在!");

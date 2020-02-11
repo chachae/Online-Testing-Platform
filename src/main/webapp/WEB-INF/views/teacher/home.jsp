@@ -29,7 +29,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1 style="font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;text-align:center; font-size: 30px">
-                欢迎使用OES在线考试系统！
+                欢迎使用 On-line Examination System 在线考试系统！
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -75,7 +75,6 @@
                 <!-- /.box-footer-->
             </div>
             <!-- /.box -->
-
         </section>
         <!-- /.content -->
     </div>

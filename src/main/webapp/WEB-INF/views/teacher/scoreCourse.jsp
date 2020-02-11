@@ -10,14 +10,11 @@
 <!-- Site wrapper -->
 <div class="wrapper">
     <%@include file="../teacher/include/header.jsp" %>
-    <!-- =============================================== -->
-
     <jsp:include page="../teacher/include/sider.jsp">
         <jsp:param name="menu" value="score_course"/>
     </jsp:include>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-
         <!-- Main content -->
         <section class="content">
 
@@ -44,9 +41,6 @@
 <script>
     $(function () {
         var myChart = echarts.init(document.getElementById('bar'));
-
-        // var cusChart = echarts.init($("#customer")[0]);
-
         myChart.setOption({
             title: {
                 text: '${course.courseName}' + '成绩统计',

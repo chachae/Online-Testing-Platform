@@ -4,8 +4,10 @@ import com.exam.entity.Course;
 import com.exam.entity.Question;
 import com.exam.entity.StuAnswerRecord;
 import com.exam.entity.Type;
+import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.StudentAnswerDto;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -105,4 +107,12 @@ public interface QuestionService {
    */
   List<StudentAnswerDto> findMapByStuAnswerRecordAndQuestionList(
       List<StuAnswerRecord> answerRecordList, List<Question> questionList);
+
+  /**
+   * 导入试卷问题
+   *
+   * @param multipartFile multipartFile 对象
+   * @return 考试id
+   */
+  ImportPaperDto importQuestion(MultipartFile multipartFile);
 }
