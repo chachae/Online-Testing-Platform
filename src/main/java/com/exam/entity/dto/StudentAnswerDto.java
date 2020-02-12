@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * 学生答题记录bean
+ *
  * @author chachae
  * @since 2020/2/7 21:20
  */

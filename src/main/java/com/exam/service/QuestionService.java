@@ -114,5 +114,12 @@ public interface QuestionService {
    * @param multipartFile multipartFile 对象
    * @return 考试id
    */
-  ImportPaperDto importQuestion(MultipartFile multipartFile);
+  ImportPaperDto importPaper(MultipartFile multipartFile);
+
+  /**
+   * 导入题目
+   *
+   * @param multipartFile multipartFile 对象
+   */
+  void importQuestion(MultipartFile multipartFile);
 }

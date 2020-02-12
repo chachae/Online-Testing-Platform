@@ -163,17 +163,20 @@
             contentType: false,
             dataType: 'json',
             success: function (res) {
-                console.log(res);
-                $('#paperName').val(res.data.paperName);
-                $('#questionId').val(res.data.questionIdList);
-                $('#paperFormId').val(res.data.paperFormId);
-                layer.msg('上传成功');
+                if (res.state === 'success') {
+                    $('#paperName').val(res.data.paperName);
+                    $('#questionId').val(res.data.questionIdList);
+                    $('#paperFormId').val(res.data.paperFormId);
+                    layer.msg('上传成功');
+                } else {
+                    layer.msg(res.message);
+                }
             }
             , error: function (res) {
                 layer.msg(res.message);
             }
         });
-    })
+    });
 
 
     //回填的二级类别值

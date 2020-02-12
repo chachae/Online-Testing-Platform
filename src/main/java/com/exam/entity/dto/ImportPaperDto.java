@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
+ * 导入试卷bean
+ *
  * @author chachae
  * @since 2020/2/11 21:32
  */

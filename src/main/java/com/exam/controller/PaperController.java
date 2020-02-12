@@ -118,7 +118,7 @@ public class PaperController {
       HttpSession session = HttpContextUtil.getSession();
       // 获取教师 session ID
       Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-      ImportPaperDto dto = this.questionService.importQuestion(multipartFile);
+      ImportPaperDto dto = this.questionService.importPaper(multipartFile);
       return R.successWithData(dto);
     } catch (Exception e) {
       return R.error(e.getMessage());

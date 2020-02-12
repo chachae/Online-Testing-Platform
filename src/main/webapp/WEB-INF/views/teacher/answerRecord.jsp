@@ -48,12 +48,14 @@
                         <tr>
                             <th>学生信息</th>
                             <th>考试情况</th>
+                            <th>试卷信息</th>
                         </tr>
                         <tr>
                             <td>姓名：${student.name}</td>
                             <td>
                                 考试名称：${paper.paperName}
                             </td>
+                            <td>试卷分值：${paper.score}</td>
                         </tr>
                         <tr>
                             <td>学号：${student.stuNumber}</td>

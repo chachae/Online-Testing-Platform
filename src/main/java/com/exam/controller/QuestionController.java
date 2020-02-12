@@ -1,6 +1,7 @@
 package com.exam.controller;
 
 import com.exam.common.Page;
+import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.entity.Course;
 import com.exam.entity.Question;
@@ -11,10 +12,8 @@ import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
@@ -141,5 +140,23 @@ public class QuestionController {
   public String delete(@PathVariable Integer id) {
     questionService.deleteQuestion(id);
     return "redirect:/teacher/question";
+  }
+
+  /**
+   * 导入试题
+   *
+   * @param multipartFile MultipartFile 对象
+   * @return 导入题目结果
+   */
+  @ResponseBody
+  @PostMapping("/import")
+  public R importQuestion(@RequestParam("file") MultipartFile multipartFile) {
+    try {
+      // 调用试题导入接口
+      this.questionService.importQuestion(multipartFile);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 }

@@ -63,7 +63,7 @@ public class ProgramInitialization implements ApplicationRunner {
         url += contextPath;
       }
       // 信息提示
-      log.info("完成 [{}] 级别项目配置加载", active);
+      log.info("成功加载 [{}] 级别的项目配置文件", active);
       log.info("[毕业设计 | 基于 JSP 的网上考试系统] 启动完毕");
       log.info("教师 | 学生访问地址：{}", url);
       log.info("管理员访问地址：{}", url + "/admin/login");

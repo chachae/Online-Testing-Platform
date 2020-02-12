@@ -11,7 +11,10 @@ import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.QuestionDto;
 import com.exam.entity.dto.StudentAnswerDto;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.*;
+import com.exam.mapper.CourseMapper;
+import com.exam.mapper.PaperFormMapper;
+import com.exam.mapper.QuestionMapper;
+import com.exam.mapper.TypeMapper;
 import com.exam.service.QuestionService;
 import com.exam.util.BeanUtil;
 import com.exam.util.FileUtil;
@@ -42,7 +45,6 @@ public class QuestionServiceImpl implements QuestionService {
   @Resource private QuestionMapper questionMapper;
   @Resource private CourseMapper courseMapper;
   @Resource private TypeMapper typeMapper;
-  @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
 
   @Override
@@ -162,7 +164,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public ImportPaperDto importQuestion(MultipartFile multipartFile) {
+  public ImportPaperDto importPaper(MultipartFile multipartFile) {
     try {
       // 准备一个 Map 用来存储题目的类型和数量
       Map<Integer, Integer> typeNumMap = Maps.newHashMap();
@@ -228,6 +230,24 @@ public class QuestionServiceImpl implements QuestionService {
       return dto;
     } catch (Exception e) {
       throw new ServiceException("试题解析失败");
+    }
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void importQuestion(MultipartFile multipartFile) {
+    try {
+      // 将 multipartFile 转 File
+      File file = FileUtil.toFile(multipartFile);
+      // 使用 ExcelUtil 读取 Excel 中的数据
+      ExcelReader reader = ExcelUtil.getReader(file);
+      // 输出到 Question 的 List 集合中
+      List<Question> questions = reader.readAll(Question.class);
+      // 通过 lambda 循环的方式将题目数据一次插入 Question 表中
+      questions.forEach(q -> this.questionMapper.insert(q));
+    } catch (Exception e) {
+      // 捕捉所有可能发生的异常，抛出给控制层处理
+      throw new ServiceException("题目解析失败");
     }
   }
 

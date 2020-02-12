@@ -1,6 +1,11 @@
 package com.exam.exception;
 
-/** Created by wil on 2018/5/5. */
+/**
+ * 统一业务异常
+ *
+ * @author yzn
+ * @date 2019/12/29
+ */
 public class ServiceException extends RuntimeException {
 
   public ServiceException() {}
