@@ -7,6 +7,8 @@ import com.exam.entity.Academy;
 import com.exam.entity.Admin;
 import com.exam.entity.Announce;
 import com.exam.entity.Teacher;
+import com.exam.entity.dto.ChangePassDto;
+import com.exam.exception.ServiceException;
 import com.exam.service.AcademyService;
 import com.exam.service.AdminService;
 import com.exam.service.AnnounceService;
@@ -246,5 +248,50 @@ public class AdminController {
   public R saveAcademy(Academy academy) {
     this.academyService.save(academy);
     return R.success();
+  }
+
+  /**
+   * 删除学院
+   *
+   * @param id 学院ID
+   * @return 响应信息
+   */
+  @ResponseBody
+  @PostMapping("/academy/delete/{id}")
+  public R delete(@PathVariable Integer id) {
+    try {
+      // 调用删除接口，捕捉无法删除的异常
+      this.academyService.removeById(id);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
+  }
+
+  /**
+   * 修改密码
+   *
+   * @return 修改密码界面
+   */
+  @GetMapping("{id}/changePass")
+  public String toChangPass() {
+    return "/admin/changePass";
+  }
+
+  @PostMapping("/{id}/changePass")
+  public String updatePass(@PathVariable Integer id, ChangePassDto dto, RedirectAttributes r) {
+    // 调用密码修改接口
+    try {
+      this.adminService.updatePassword(id, dto);
+    } catch (ServiceException e) {
+      r.addFlashAttribute("message", e.getMessage());
+      return "redirect:/admin/" + id + "/changePass";
+    }
+    // 移除 session 信息
+    HttpSession session = HttpContextUtil.getSession();
+    session.removeAttribute(SysConsts.SESSION.TEACHER_ID);
+    session.removeAttribute(SysConsts.SESSION.TEACHER);
+    // 重定向登录页面
+    return "redirect:/admin/login";
   }
 }

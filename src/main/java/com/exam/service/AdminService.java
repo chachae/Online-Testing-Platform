@@ -2,6 +2,7 @@ package com.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.exam.entity.Admin;
+import com.exam.entity.dto.ChangePassDto;
 
 /**
  * 管理员业务接口
@@ -26,4 +27,12 @@ public interface AdminService extends IService<Admin> {
    * @return 管理员信息
    */
   Admin selectByNumber(String number);
+
+  /**
+   * 修改股管理员密码
+   *
+   * @param id 管理员ID
+   * @param dto 密码信息
+   */
+  void updatePassword(Integer id, ChangePassDto dto);
 }

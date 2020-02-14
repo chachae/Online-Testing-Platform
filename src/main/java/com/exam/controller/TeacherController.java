@@ -271,9 +271,9 @@ public class TeacherController {
     List<StuAnswerRecord> answerRecords;
     List<Question> questionList;
     try {
-      answerRecords = stuAnswerRecordService.selectByStuAndPaper(stuNumber, paperId);
+      answerRecords = this.stuAnswerRecordService.selectByStuAndPaper(stuNumber, paperId);
       // 根据答案记录集合查找正确答案集合
-      questionList = questionService.listByAnswerRecordList(answerRecords);
+      questionList = this.questionService.listByAnswerRecordList(answerRecords);
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/teacher/reviewPaper";
@@ -282,9 +282,9 @@ public class TeacherController {
     List<StudentAnswerDto> res =
         questionService.listMapByStuAnswerRecordAndQuestionList(answerRecords, questionList);
     // 通过学号查询该学生的信息
-    StudentVo student = studentService.selectVoByStuNumber(stuNumber);
+    StudentVo student = this.studentService.selectVoByStuNumber(stuNumber);
     // 查询这张试卷的信息
-    Paper paper = paperService.getById(paperId);
+    Paper paper = this.paperService.getById(paperId);
     // 查询分数情况
     Score score = this.scoreService.selectByStuIdAndPaperId(student.getId(), paperId);
     // 设置 Model 对象信息
@@ -347,7 +347,7 @@ public class TeacherController {
   @GetMapping("/student")
   public String listStudent(Page page, Model model, StudentQueryDto dto) {
     // 获取学生分页数据
-    PageInfo<StudentVo> pageInfo = studentService.pageForStudentList(page.getPageNo(), dto);
+    PageInfo<StudentVo> pageInfo = this.studentService.pageForStudentList(page.getPageNo(), dto);
     // 获取专业数据
     List<Major> majorList = this.majorService.list();
     // 获取学院数据
@@ -393,7 +393,7 @@ public class TeacherController {
   @GetMapping("/major")
   public String listMajor(Page page, Model model) {
     // 获取分页专业数据
-    PageInfo<MajorVo> pageInfo = majorService.pageForMajorList(page.getPageNo());
+    PageInfo<MajorVo> pageInfo = this.majorService.pageForMajorList(page.getPageNo());
     List<Academy> academies = this.academyService.list();
     // 设置数据 model 对象
     model.addAttribute("page", pageInfo);

@@ -70,8 +70,9 @@
 <%@ include file="../include/js.jsp" %>
 <script src="<c:url value="/static/plugins/jquery-validation/jquery.validate.js"/>"></script>
 <script>
-    $(function () {
 
+    // 提交表单信息
+    $(function () {
         $("#addBtn").click(function () {
             $("#addForm").submit();
         });

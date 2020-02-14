@@ -37,7 +37,8 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="/admin/${sessionScope.get("admin").id}/changePass"
+                                   class="btn btn-default btn-flat">个人设置</a>
                             </div>
                             <div class="pull-right">
                                 <a href="<c:url value="/admin/logout"/>" class="btn btn-default btn-flat">完全退出</a>

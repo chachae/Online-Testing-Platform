@@ -1,9 +1,9 @@
 package com.exam.job;
 
-import cn.hutool.log.Log;
 import com.exam.constant.SysConsts;
 import com.exam.entity.Paper;
 import com.exam.mapper.PaperMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,9 @@ import java.util.List;
  * @author yzn
  * @date 2020/2/3
  */
+@Slf4j
 @Component
 public class PaperStateChangeJob {
-
-  private Log log = Log.get();
 
   @Resource private PaperMapper paperMapper;
 
@@ -32,6 +31,7 @@ public class PaperStateChangeJob {
   /** 定时任务，给结束考试的试卷进行状态改变，每 30 分钟执行一次 */
   @Scheduled(cron = "0 0,30 * * * ? ")
   public void run() {
+    log.info("执行考试状态检查任务......");
     List<Paper> paperList = paperMapper.selectList(null);
     for (Paper paper : paperList) {
       // 改变所有考试时间已过期且状态仍为未开始的试卷状态（更改为"已结束"）

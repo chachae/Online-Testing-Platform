@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.entity.Admin;
+import com.exam.entity.dto.ChangePassDto;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.AdminMapper;
 import com.exam.service.AdminService;
@@ -59,5 +60,20 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     QueryWrapper<Admin> qw = new QueryWrapper<>();
     qw.lambda().eq(Admin::getNumber, number);
     return this.adminMapper.selectOne(qw);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updatePassword(Integer id, ChangePassDto dto) {
+    // 获取该管理员的信息
+    Admin admin = this.adminMapper.selectById(id);
+    // 比较旧密码是否输入正确
+    if (!RsaCipherUtil.verify(dto.getOldPassword(), admin.getPassword())) {
+      throw new ServiceException("旧密码输入错误");
+    } else {
+      // 旧密码输入正确，进行更新
+      Admin build = Admin.builder().id(id).password(RsaCipherUtil.hash(dto.getPassword())).build();
+      this.adminMapper.updateById(build);
+    }
   }
 }

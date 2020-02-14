@@ -2,7 +2,6 @@ package com.exam.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
@@ -18,6 +17,7 @@ import com.exam.util.PaperMarkUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +34,10 @@ import java.util.Set;
  * @author yzn
  * @date 2020/2/2
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements PaperService {
-
-  private Log logger = Log.get();
 
   @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
@@ -74,20 +73,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     String qSaqNum = paperForm.getQSaqNum();
     String qProgramNum = paperForm.getQProgramNum();
     // 预先准备试卷问题集合
-    List<Integer> paperQuestionIdList = Lists.newArrayList();
+    List<Integer> paperQuestions = Lists.newArrayList();
     // 为每种题型进行随机组题
-    getPaperQuestionIdList(
-        qChoiceNum, paperQuestionIdList, SysConsts.QUESTION.CHOICE_TYPE, courseId);
-    getPaperQuestionIdList(
-        qMulChoiceNum, paperQuestionIdList, SysConsts.QUESTION.MUL_CHOICE_TYPE, courseId);
-    getPaperQuestionIdList(qTofNum, paperQuestionIdList, SysConsts.QUESTION.TOF_TYPE, courseId);
-    getPaperQuestionIdList(qFillNum, paperQuestionIdList, SysConsts.QUESTION.FILL_TYPE, courseId);
-    getPaperQuestionIdList(qSaqNum, paperQuestionIdList, SysConsts.QUESTION.SAQ_TYPE, courseId);
-    getPaperQuestionIdList(
-        qProgramNum, paperQuestionIdList, SysConsts.QUESTION.PROGRAM_TYPE, courseId);
+    randomQuestions(qChoiceNum, paperQuestions, SysConsts.QUESTION.CHOICE_TYPE, courseId);
+    randomQuestions(qMulChoiceNum, paperQuestions, SysConsts.QUESTION.MUL_CHOICE_TYPE, courseId);
+    randomQuestions(qTofNum, paperQuestions, SysConsts.QUESTION.TOF_TYPE, courseId);
+    randomQuestions(qFillNum, paperQuestions, SysConsts.QUESTION.FILL_TYPE, courseId);
+    randomQuestions(qSaqNum, paperQuestions, SysConsts.QUESTION.SAQ_TYPE, courseId);
+    randomQuestions(qProgramNum, paperQuestions, SysConsts.QUESTION.PROGRAM_TYPE, courseId);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
     StringBuilder builder = new StringBuilder();
-    for (Integer id : paperQuestionIdList) {
+    for (Integer id : paperQuestions) {
       String idStr = String.valueOf(id);
       builder.append(idStr);
       builder.append(StrUtil.COMMA);
@@ -110,8 +106,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void markPaper(Integer stuId, Integer paperId, HttpServletRequest request)
-      throws ServiceException {
+  public void markPaper(Integer stuId, Integer paperId, HttpServletRequest request) {
     // 通过 ID 获取试卷信息
     Paper paper = paperMapper.selectById(paperId);
     // 通过 ID 获取试卷模板信息
@@ -237,7 +232,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       ans.forEach(an -> stuAnswerRecordMapper.deleteById(an.getId()));
       // 删除试卷
       paperMapper.deleteById(id);
-      logger.info("教师：{} 删除了试卷：{}", teacher.getName(), paper.getPaperName());
+      log.info("教师：{} 删除了试卷：{}", teacher.getName(), paper.getPaperName());
     }
   }
 
@@ -258,7 +253,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
    * @param questionType 问题类型
    * @param courseId 课程 ID
    */
-  private void getPaperQuestionIdList(
+  private void randomQuestions(
       String varQuestionTypeNum,
       List<Integer> paperQuestionIdList,
       Integer questionType,

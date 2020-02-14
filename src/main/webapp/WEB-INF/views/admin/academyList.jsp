@@ -70,6 +70,8 @@
                                 <td>${academy.id}</td>
                                 <td>${academy.name}</td>
                                 <td><a class="btn btn-success btn-sm editAcademy"><i class="fa"></i>编辑</a>
+                                    <a href="javascript:;" class="del btn btn-sm btn-danger" rel="${academy.id}"><i
+                                            class="fa"></i>删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -144,8 +146,25 @@
     <!-- ./wrapper -->
     <%@include file="../include/js.jsp" %>
     <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
-    <script src="<c:url value="/static/bootstrap/js/jquery.twbsPagination.min.js"/>"></script>
     <script>
+        //删除学院
+        $(".del").click(function () {
+            var id = $(this).attr("rel");
+            layer.confirm("确定要删除么？", function () {
+                $.post("/admin/academy/delete/"+id).done(function (json) {
+                    if (json.state === "success") {
+                        layer.alert("删除成功", function () {
+                            history.go(0);
+                        });
+                    } else {
+                        layer.msg(json.message);
+                    }
+                }).error(function () {
+                    layer.msg("系统异常...");
+                });
+            });
+        });
+
         // 模态框
         // 启动修改模态框
         $(".editAcademy").click(function () {

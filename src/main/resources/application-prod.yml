@@ -1,11 +1,19 @@
 # 生产环境配置
+# 服务器端口
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: PT60M
+
+# SpringMvc 配置
 spring:
   mvc:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
 
-  # 数据源
+  # 数据源配置
   datasource:
     url: jdbc:mysql:///exam-system-test?characterEncoding=utf8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
@@ -17,11 +25,11 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-test-query: SELECT 1
+      maximum-pool-size: 25
       minimum-idle: 10
-      maximum-pool-size: 10
       read-only: off
 
-# mybatis-plus
+# MyBatisPlus 配置
 mybatis-plus:
   global-config:
     banner: off
@@ -29,17 +37,10 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
 
-# PageHelper 分页插件
+# PageHelper 分页插件配置
 pagehelper:
   reasonable: false
   support-methods-arguments: true
   params: count=countSql
   row-bounds-with-count: true
   helper-dialect: mysql
-
-# 服务器端口
-server:
-  port: 8080
-  servlet:
-    session:
-      timeout: PT60M
