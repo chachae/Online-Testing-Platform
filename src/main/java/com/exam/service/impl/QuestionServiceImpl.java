@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.ImportPaperDto;
@@ -13,8 +14,8 @@ import com.exam.entity.dto.StudentAnswerDto;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.CourseMapper;
 import com.exam.mapper.PaperFormMapper;
+import com.exam.mapper.PaperMapper;
 import com.exam.mapper.QuestionMapper;
-import com.exam.mapper.TypeMapper;
 import com.exam.service.QuestionService;
 import com.exam.util.BeanUtil;
 import com.exam.util.FileUtil;
@@ -22,6 +23,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 试题业务实现
@@ -40,11 +43,12 @@ import java.util.Map;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class QuestionServiceImpl implements QuestionService {
+public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
+    implements QuestionService {
 
   @Resource private QuestionMapper questionMapper;
   @Resource private CourseMapper courseMapper;
-  @Resource private TypeMapper typeMapper;
+  @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
 
   @Override
@@ -57,75 +61,42 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public Question findById(Integer id) {
-    // 通过 ID 查询试题信息
-    return questionMapper.selectById(id);
+  public Set<Question> selectByPaperIdAndType(Integer paperId, Integer qChoiceType) {
+    // 通过 ID 查询试卷信息
+    Paper paper = this.paperMapper.selectById(paperId);
+    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
+    String qIds = paper.getQuestionId();
+    // 分割题目序号
+    String[] qIdArray = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
+    Set<Question> questionSet = Sets.newHashSet();
+    for (String id : qIdArray) {
+      // 通过题目 ID 获取问题的信息
+      Question question = questionMapper.selectById(id);
+      if (qChoiceType.equals(question.getTypeId())) {
+        questionSet.add(question);
+      }
+    }
+    return questionSet;
   }
 
   @Override
-  public Course findByCourseId(Integer courseId) {
-    // 通过 ID 查询课程查询接口
-    return courseMapper.selectById(courseId);
-  }
-
-  @Override
-  public List<Type> findAllType() {
-    // 调用查询全部类型集合的接口
-    return typeMapper.selectList(null);
-  }
-
-  @Override
-  public List<Course> findTeacherCourse(Integer teacherId) {
+  public List<Course> selectCourseByTeacherId(Integer teacherId) {
     QueryWrapper<Course> qw = new QueryWrapper<>();
     qw.lambda().eq(Course::getTeacherId, teacherId);
     return this.courseMapper.selectList(qw);
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void saveNewQuestion(Question question) {
-    questionMapper.insert(question);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void editQuestion(Integer id, String questionName, String answer, String remark)
-      throws ServiceException {
-    Question question = questionMapper.selectById(id);
-    if (question != null) {
-      // 封装数据
-      question.setQuestionName(questionName);
-      question.setAnswer(answer);
-      question.setRemark(remark);
-      questionMapper.updateById(question);
-    } else {
-      throw new ServiceException("试题不存在");
-    }
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void deleteQuestion(Integer id) {
-    questionMapper.deleteById(id);
-  }
-
-  @Override
-  public List<Integer> getIdList(Integer typeId, Integer courseId) {
+  public List<Question> listByTypeIdAndCourseId(Integer typeId, Integer courseId) {
     // 使用 QueryWrapper 条件构造器构造 Sql 条件
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getTypeId, typeId).eq(Question::getCourseId, courseId);
     // 获取所有对饮条件的问题集合
-    List<Question> questions = questionMapper.selectList(qw);
-    // 准备用于存储 ID 的集合
-    List<Integer> idList = Lists.newArrayList();
-    // 循环问题集合获取问题 ID，将 ID 加入idList 中
-    questions.forEach(question -> idList.add(question.getId()));
-    return idList;
+    return questionMapper.selectList(qw);
   }
 
   @Override
-  public List<Question> findByAnswerRecordList(List<StuAnswerRecord> answerRecordList)
-      throws ServiceException {
+  public List<Question> listByAnswerRecordList(List<StuAnswerRecord> answerRecordList) {
     if (CollUtil.isEmpty(answerRecordList)) {
       throw new ServiceException("未找到主观题答案记录！");
     }
@@ -140,7 +111,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public List<StudentAnswerDto> findMapByStuAnswerRecordAndQuestionList(
+  public List<StudentAnswerDto> listMapByStuAnswerRecordAndQuestionList(
       List<StuAnswerRecord> answerRecordList, List<Question> questionList) {
     List<StudentAnswerDto> res = Lists.newArrayList();
     // 循环问题集合
@@ -169,7 +140,6 @@ public class QuestionServiceImpl implements QuestionService {
       // 准备一个 Map 用来存储题目的类型和数量
       Map<Integer, Integer> typeNumMap = Maps.newHashMap();
       initMap(typeNumMap);
-
       // 准备一个 Map 用来存储题目的类型和分值
       Map<Integer, Integer> typeScoreMap = Maps.newHashMap();
       initMap(typeScoreMap);
@@ -182,11 +152,15 @@ public class QuestionServiceImpl implements QuestionService {
       // 插入问题表并组装ID
       List<Integer> idList = Lists.newArrayList();
       for (QuestionDto question : questions) {
+        // 复制 QuestionDto 的数据到 Question 中
         Question res = BeanUtil.copyObject(question, Question.class);
-        System.out.println(res);
+        // 向数据库插入数据
         this.questionMapper.insert(res);
+        // 获取数据的id并组装到 idList 中
         idList.add(res.getId());
+        // 获取问题的类型
         Integer typeId = question.getTypeId();
+        // 计算该类型问题的数量和每道题的分值
         Integer num = typeNumMap.get(typeId);
         num++;
         // 存储数量
@@ -214,8 +188,11 @@ public class QuestionServiceImpl implements QuestionService {
       this.paperFormMapper.insert(form);
       // 模板ID
       Integer formId = form.getId();
+      // 建立 ImportPaperDto 对象
       ImportPaperDto dto = new ImportPaperDto();
+      // 建立 StringBuilder 对象，用户组装试题集合
       StringBuilder sb = new StringBuilder();
+      // 拼接试题 ID 和 逗号
       for (Integer id : idList) {
         String idStr = String.valueOf(id);
         sb.append(idStr);

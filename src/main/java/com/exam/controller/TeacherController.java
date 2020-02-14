@@ -33,14 +33,16 @@ import java.util.List;
 @RequestMapping("/teacher")
 public class TeacherController {
 
-  @Resource private TeacherService teacherService;
   @Resource private PaperService paperService;
-  @Resource private QuestionService questionService;
-  @Resource private StudentService studentService;
-  @Resource private StuAnswerRecordService stuAnswerRecordService;
   @Resource private ScoreService scoreService;
   @Resource private MajorService majorService;
+  @Resource private CourseService courseService;
+  @Resource private TeacherService teacherService;
   @Resource private AcademyService academyService;
+  @Resource private StudentService studentService;
+  @Resource private QuestionService questionService;
+  @Resource private AnnounceService announceService;
+  @Resource private StuAnswerRecordService stuAnswerRecordService;
   /**
    * 教师登录
    *
@@ -92,7 +94,7 @@ public class TeacherController {
     HttpSession session = HttpContextUtil.getSession();
     // 调用密码修改接口
     try {
-      teacherService.changePassword(id, dto);
+      teacherService.updatePassword(id, dto);
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/teacher/" + id + "/changePass";
@@ -146,7 +148,7 @@ public class TeacherController {
     // 从 session 中获取教师ID
     Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 获取当前教师的所有课程信息
-    List<Course> courseList = teacherService.findAllCourseByTeacherId(teacherId);
+    List<Course> courseList = courseService.listByTeacherId(teacherId);
     // 设置 model 信息
     model.addAttribute("courseList", courseList);
     return "teacher/courseList";
@@ -163,7 +165,12 @@ public class TeacherController {
   @ResponseBody
   public R newCourse(String courseName, Integer teacherId) {
     // 调用保存接口
-    teacherService.saveCourse(courseName, teacherId);
+    Teacher teacher = this.teacherService.getById(teacherId);
+    String name = teacher.getName();
+    // 封装参数
+    Course build =
+        Course.builder().courseName(courseName).teacherId(teacherId).teacherName(name).build();
+    this.courseService.save(build);
     return R.success();
   }
 
@@ -178,7 +185,7 @@ public class TeacherController {
   public R delCourse(@PathVariable Integer id) {
     try {
       // 调用课程删除接口
-      teacherService.delCourseById(id);
+      this.courseService.removeById(id);
       return R.success();
     } catch (Exception e) {
       return R.error(e.getMessage());
@@ -194,7 +201,7 @@ public class TeacherController {
   @GetMapping("/announce/system")
   public String announceSystem(Model model) {
     // 调用公告查询接口
-    List<Announce> announceList = teacherService.findAllSystemAnnounce();
+    List<Announce> announceList = this.announceService.list();
     // 设置 model 对象信息
     model.addAttribute("announceList", announceList);
     return "teacher/sysAnnounceList";
@@ -212,7 +219,7 @@ public class TeacherController {
     HttpSession session = HttpContextUtil.getSession();
     Integer id = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 查询符合条件的时间 List 集合
-    List<Paper> paperList = paperService.findUnDoPaperListByTeacherId(id);
+    List<Paper> paperList = paperService.listUnDoByTeacherId(id);
     // 设置 model 对象信息
     model.addAttribute("paperList", paperList);
     return "teacher/examList";
@@ -228,7 +235,7 @@ public class TeacherController {
   @PostMapping("/editPaper/{id}")
   @ResponseBody
   public R editExam(@PathVariable Integer id, Paper paper) {
-    paperService.editPaperById(id, paper);
+    this.paperService.updateById(id, paper);
     return R.success();
   }
 
@@ -242,9 +249,9 @@ public class TeacherController {
   public String reviewPaper(Model model) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
-    // 获取盖老师所属的已完成的试卷信息
+    // 获取该老师所属的已完成的试卷信息
     Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Paper> paperList = paperService.findDonePaperListByTeacherId(teacherId);
+    List<Paper> paperList = paperService.listDoneByTeacherId(teacherId);
     // 返回 Model 对象
     model.addAttribute("paperList", paperList);
     return "teacher/review";
@@ -264,22 +271,22 @@ public class TeacherController {
     List<StuAnswerRecord> answerRecords;
     List<Question> questionList;
     try {
-      answerRecords = paperService.findAnswerRecordByStuAndPaper(stuNumber, paperId);
+      answerRecords = stuAnswerRecordService.selectByStuAndPaper(stuNumber, paperId);
       // 根据答案记录集合查找正确答案集合
-      questionList = questionService.findByAnswerRecordList(answerRecords);
+      questionList = questionService.listByAnswerRecordList(answerRecords);
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/teacher/reviewPaper";
     }
     // 将学生的题目和答案组装成 Map
     List<StudentAnswerDto> res =
-        questionService.findMapByStuAnswerRecordAndQuestionList(answerRecords, questionList);
+        questionService.listMapByStuAnswerRecordAndQuestionList(answerRecords, questionList);
     // 通过学号查询该学生的信息
-    StudentVo student = studentService.findVoByStuNumber(stuNumber);
+    StudentVo student = studentService.selectVoByStuNumber(stuNumber);
     // 查询这张试卷的信息
     Paper paper = paperService.getById(paperId);
     // 查询分数情况
-    Score score = this.scoreService.findByStuIdAndPaperId(student.getId(), paperId);
+    Score score = this.scoreService.selectByStuIdAndPaperId(student.getId(), paperId);
     // 设置 Model 对象信息
     model.addAttribute("answerRecords", answerRecords);
     model.addAttribute("questionList", questionList);
@@ -326,7 +333,7 @@ public class TeacherController {
   @GetMapping("/changePaperState/{id}")
   @ResponseBody
   public R changPaperState(@PathVariable Integer id) {
-    paperService.changeStateById(id);
+    this.paperService.updateStateById(id);
     return R.success();
   }
 

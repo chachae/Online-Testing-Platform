@@ -4,13 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
-import com.exam.entity.Announce;
-import com.exam.entity.Course;
 import com.exam.entity.Teacher;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.AnnounceMapper;
-import com.exam.mapper.CourseMapper;
 import com.exam.mapper.TeacherMapper;
 import com.exam.service.TeacherService;
 import com.exam.util.RsaCipherUtil;
@@ -34,11 +30,6 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     implements TeacherService {
 
   @Resource private TeacherMapper teacherMapper;
-  @Resource private CourseMapper courseMapper;
-  @Resource private AnnounceMapper announceMapper;
-
-  /** 管理员角色 ID */
-  private static final Integer ROLE_ADMIN_ID = 1;
 
   @Override
   public Teacher login(String teaNumber, String password) {
@@ -59,53 +50,8 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
   }
 
   @Override
-  public List<Course> findAllCourseByTeacherId(Integer teacherId) {
-    // 使用构造器拼接条件查询语句
-    QueryWrapper<Course> qw = new QueryWrapper<>();
-    qw.lambda().eq(Course::getTeacherId, teacherId);
-    return this.courseMapper.selectList(qw);
-  }
-
-  @Override
   @Transactional(rollbackFor = Exception.class)
-  public void delCourseById(Integer id) throws ServiceException {
-    // 获取该课程的课程信息
-    Course course = courseMapper.selectById(id);
-    if (ObjectUtil.isEmpty(course)) {
-      throw new ServiceException("该课程不存在！");
-    }
-    courseMapper.deleteById(id);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void saveCourse(String courseName, Integer teacherId) {
-    // 封装课程实体参数
-    Teacher teacher = this.getById(teacherId);
-    Course course = new Course();
-    course.setCourseName(courseName);
-    course.setTeacherId(teacherId);
-    course.setTeacherName(teacher.getName());
-    courseMapper.insert(course);
-  }
-
-  @Override
-  public List<Announce> findAllSystemAnnounce() {
-    // 使用构造器拼接条件查询语句
-    QueryWrapper<Announce> qw = new QueryWrapper<>();
-    qw.lambda().eq(Announce::getRoleId, ROLE_ADMIN_ID);
-    return this.announceMapper.selectList(qw);
-  }
-
-  @Override
-  public Course findCourseById(Integer courseId) {
-    // 调用通过ID查询接口
-    return courseMapper.selectById(courseId);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void changePassword(Integer id, ChangePassDto dto) {
+  public void updatePassword(Integer id, ChangePassDto dto) {
     // 查询该 ID 的教师信息
     Teacher teacher = this.getById(id);
     if (ObjectUtil.isEmpty(teacher)) {

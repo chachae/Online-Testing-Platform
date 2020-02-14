@@ -100,12 +100,12 @@
                     <button type="button" class="close" data-dismiss="modal"><span
                             aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">增加教师</h4>
+                    <h4 class="modal-title">增加教师信息</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group form_datetime">
                         <label for="sname">姓名</label>
-                        <input type="text" name="name" class="form-control"
+                        <input type="text" name="sname" class="form-control"
                                id="sname">
                     </div>
                     <div class="form-group form_datetime">
@@ -114,17 +114,24 @@
                                id="sworkNumber">
                     </div>
                     <div class="form-group form_datetime">
-                        <label for="sjob">职位</label>
-                        <input type="text" id="sjob">
+                        <label for="spass">密码</label>
+                        <input type="text" name="spass" class="form-control"
+                               id="spass">
                     </div>
                     <div class="form-group form_datetime">
-                        <label for="spass">密码</label>
-                        <input type="password" name="spass" class="form-control"
-                               id="spass">
+                        <label for="sjob">职位</label>
+                        <select id="sjob" name="sjob" style="width: 100%">
+                            <option value="">请选择</option>
+                            <option value="教授">教授</option>
+                            <option value="副教授">副教授</option>
+                            <option value="讲师">讲师</option>
+                            <option value="高级讲师">高级讲师</option>
+                        </select>
                     </div>
                     <div class="form-group form_datetime">
                         <label for="ssex">性别</label>
                         <select id="ssex" class="form-control" style="width: 100%">
+                            <option value="">请选择</option>
                             <option value="男">男</option>
                             <option value="女">女</option>
                         </select>
@@ -217,6 +224,7 @@
             show: true,
             backdrop: 'static'
         });
+
         // 模态框赋值
         const id = $(this).parents('tr').find('td').eq(1).text();
         const name = $(this).parents('tr').find('td').eq(2).text();
@@ -236,7 +244,6 @@
         });
 
         // select2
-        $("#smajor").select2();
         $("#ssex").select2();
 
         $("#saveBtn").click(function () {
@@ -271,6 +278,9 @@
             backdrop: 'static'
         });
 
+        $("#sjob").select2();
+
+        // 增加教师
         $("#ssaveBtn").click(function () {
             let b = $("#sname").val();
             let c = $("#sworkNumber").val();
@@ -278,15 +288,15 @@
             let e = $("#ssex").val();
             let f = $("#spass").val();
             layer.confirm("确定增加学教师吗?", function () {
-                $.post("/teacher/student/save/", {
+                $.post("/admin/teacher/save/", {
                     "name": b,
-                    "stuNumber": c,
+                    "workNumber": c,
                     "job": d,
                     "sex": e,
                     "password": f,
                 }).done(function (data) {
                     if (data.state === "success") {
-                        layer.msg("修改成功!");
+                        layer.msg("增加成功!");
                         window.location.reload();
                     }
                 }).error(function () {

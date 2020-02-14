@@ -3,8 +3,8 @@ package com.exam.controller;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.entity.Course;
+import com.exam.service.CourseService;
 import com.exam.service.ScoreService;
-import com.exam.service.TeacherService;
 import com.exam.util.HttpContextUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +25,8 @@ import java.util.Map;
 @RequestMapping("/score")
 public class ScoreController {
 
-  @Resource private TeacherService teacherService;
   @Resource private ScoreService scoreService;
+  @Resource private CourseService courseService;
 
   /**
    * 课程列表
@@ -40,8 +40,7 @@ public class ScoreController {
     HttpSession session = HttpContextUtil.getSession();
     // 获取课程 List 几何
     List<Course> courseList =
-        teacherService.findAllCourseByTeacherId(
-            (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID));
+        courseService.listByTeacherId((Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID));
     model.addAttribute("courseList", courseList);
     return "teacher/chart";
   }
@@ -56,7 +55,7 @@ public class ScoreController {
   @GetMapping("/courseChart")
   public String courseChart(Integer courseId, Model model) {
     // 通过课程 ID 获取课程信息
-    Course course = teacherService.findCourseById(courseId);
+    Course course = courseService.getById(courseId);
     model.addAttribute("course", course);
     return "teacher/scoreCourse";
   }
@@ -70,7 +69,7 @@ public class ScoreController {
   @PostMapping("/courseChart/{id}")
   @ResponseBody
   public R courseChart(@PathVariable Integer id) {
-    List<Map<String, Object>> scoreCount = scoreService.countByCourse(id);
+    List<Map<String, Object>> scoreCount = scoreService.countByCourseId(id);
     return R.successWithData(scoreCount);
   }
 

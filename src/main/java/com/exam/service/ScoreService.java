@@ -21,7 +21,7 @@ public interface ScoreService extends IService<Score> {
    * @param id 学生 ID
    * @return 分数 List 集合
    */
-  List<Score> findByStuId(Integer id);
+  List<Score> selectByStuId(Integer id);
 
   /**
    * 根据课程统计成绩信息
@@ -29,7 +29,7 @@ public interface ScoreService extends IService<Score> {
    * @param courseId 课程ID
    * @return 课程统计成绩 List 集合
    */
-  List<Map<String, Object>> countByCourse(Integer courseId);
+  List<Map<String, Object>> countByCourseId(Integer courseId);
 
   /**
    * 统计该学生本学期所有课程的平均成绩
@@ -56,9 +56,10 @@ public interface ScoreService extends IService<Score> {
 
   /**
    * 通过学生ID和试卷ID查询成绩详情
+   *
    * @param stuId 学生ID
    * @param paperId 试卷ID
    * @return 成绩详情
    */
-  Score findByStuIdAndPaperId(Integer stuId, Integer paperId);
+  Score selectByStuIdAndPaperId(Integer stuId, Integer paperId);
 }

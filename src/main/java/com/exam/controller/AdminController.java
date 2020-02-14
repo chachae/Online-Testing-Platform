@@ -9,6 +9,7 @@ import com.exam.entity.Announce;
 import com.exam.entity.Teacher;
 import com.exam.service.AcademyService;
 import com.exam.service.AdminService;
+import com.exam.service.AnnounceService;
 import com.exam.service.TeacherService;
 import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
@@ -34,6 +35,7 @@ public class AdminController {
   @Resource private AdminService adminService;
   @Resource private TeacherService teacherService;
   @Resource private AcademyService academyService;
+  @Resource private AnnounceService announceService;
 
   /**
    * 管理员登录页面
@@ -109,7 +111,7 @@ public class AdminController {
   @GetMapping("/announce")
   public String announceList(Model model) {
     // 调用公告列表查询接口
-    List<Announce> announceList = this.adminService.findAllAnnounce();
+    List<Announce> announceList = this.announceService.list();
     model.addAttribute("announceList", announceList);
     return "admin/announceList";
   }
@@ -133,7 +135,7 @@ public class AdminController {
   @PostMapping("/announce/new")
   public String announceNew(Announce announce) {
     // 调用新增公告接口
-    this.adminService.newAnnounce(announce);
+    this.announceService.save(announce);
     return "redirect:/admin/announce";
   }
 
@@ -147,7 +149,7 @@ public class AdminController {
   @ResponseBody
   public R delAnnounce(Integer id) {
     // 调用公告删除接口
-    this.adminService.delAnnounceById(id);
+    this.announceService.removeById(id);
     return R.success();
   }
 
@@ -161,7 +163,7 @@ public class AdminController {
   @ResponseBody
   public R delAnnounces(Integer[] ids) {
     // 调用公告批量删除接口
-    this.adminService.delAnnounces(ids);
+    this.announceService.delete(ids);
     return R.success();
   }
 

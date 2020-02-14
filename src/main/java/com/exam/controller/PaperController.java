@@ -1,16 +1,12 @@
 package com.exam.controller;
 
-import cn.hutool.log.Log;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.ImportPaperDto;
 import com.exam.exception.ServiceException;
-import com.exam.service.AcademyService;
-import com.exam.service.MajorService;
-import com.exam.service.PaperService;
-import com.exam.service.QuestionService;
+import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
@@ -32,15 +28,12 @@ import java.util.List;
 @RequestMapping("/teacher/paper")
 public class PaperController {
 
-  /** 获取当前系统日志 */
-  private Log log = Log.get();
-
-  /** 注入业务Bean */
   @Resource private PaperService paperService;
-
   @Resource private MajorService majorService;
+  @Resource private CourseService courseService;
   @Resource private AcademyService academyService;
   @Resource private QuestionService questionService;
+  @Resource private PaperFormService paperFormService;
 
   /**
    * 试卷分页查询
@@ -73,9 +66,9 @@ public class PaperController {
     // 根据 ID 获取试卷的详细信息
     Paper paper = paperService.getById(id);
     // 根据课程 ID 获取课程信息
-    Course course = paperService.findCourseById(paper.getCourseId());
+    Course course = courseService.getById(paper.getCourseId());
     // 根据专业 ID 获取专业信息
-    Major major = paperService.findMajorById(paper.getMajorId());
+    Major major = majorService.getById(paper.getMajorId());
     // 设置 model 信息
     model.addAttribute("paper", paper);
     model.addAttribute("course", course);
@@ -99,7 +92,7 @@ public class PaperController {
     HttpSession session = HttpContextUtil.getSession();
     // 获取教师 session ID
     Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Course> courseList = paperService.findCourseListByTeacherId(teacherId);
+    List<Course> courseList = this.courseService.listByTeacherId(teacherId);
     // 专业列表
     List<Major> majors = this.majorService.list();
     // 学院列表
@@ -149,7 +142,7 @@ public class PaperController {
    */
   @PostMapping({"/newPaperForm"})
   public String addPaperForm(PaperForm paperForm) {
-    this.paperService.newPaperForm(paperForm);
+    this.paperFormService.save(paperForm);
     return "redirect:/teacher/paper/newPaper/" + paperForm.getId();
   }
 
@@ -166,7 +159,7 @@ public class PaperController {
     HttpSession session = HttpContextUtil.getSession();
     // 获取教师 session ID
     Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Course> courseList = paperService.findCourseListByTeacherId(teacherId);
+    List<Course> courseList = this.courseService.listByTeacherId(teacherId);
     // 专业列表
     List<Major> majors = this.majorService.list();
     // 学院列表
@@ -196,7 +189,7 @@ public class PaperController {
     try {
       // 调用组卷接口
       paper.setTeacherId(teacherId);
-      paperService.newPaper(paper);
+      paperService.randomNewPaper(paper);
       return R.successWithData(paper.getId());
     } catch (ServiceException e) {
       return R.error(e.getMessage());
@@ -211,7 +204,7 @@ public class PaperController {
    */
   @GetMapping("/showPaperForm")
   public String showPaperForm(Model model) {
-    List<PaperForm> formList = paperService.findAllPaperForm();
+    List<PaperForm> formList = this.paperFormService.list();
     model.addAttribute("formList", formList);
     return "paper/showPaperForm";
   }
@@ -226,7 +219,7 @@ public class PaperController {
   @ResponseBody
   public R delPaperForm(@PathVariable Integer id) {
     try {
-      paperService.delPaperFormById(id);
+      this.paperFormService.removeById(id);
       return R.success();
     } catch (ServiceException e) {
       return R.error(e.getMessage());

@@ -42,12 +42,12 @@
                             <i class="fa fa-times"></i></button>
                     </div>
                 </div>
-                <div class="box-body">
-                    Start creating your amazing application!
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    Footer
+                <div class="box-body" style="font-size: 20px">
+                    <p>On-line Examination System 在线考试系统是一款构建在 SpringBoot 和 MyBatis 上基于 JSP 开发的线考试系统。</p>
+                    <p>管理员端包含如下功能：</p>
+                    <p>一、发布系统公告</p>
+                    <p>二、教师管理</p>
+                    <p>三、学员管理</p>
                 </div>
                 <!-- /.box-footer-->
             </div>

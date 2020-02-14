@@ -16,14 +16,6 @@ import java.util.List;
 public interface StudentMapper extends BaseMapper<Student> {
 
   /**
-   * 通过学生ID查询学生信息
-   *
-   * @param id ID
-   * @return 学生信息
-   */
-  StudentVo selectVoById(Integer id);
-
-  /**
    * 通过学号查询学生信息
    *
    * @param stuNumber 学号

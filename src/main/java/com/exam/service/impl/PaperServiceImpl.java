@@ -1,7 +1,5 @@
 package com.exam.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
@@ -20,7 +18,6 @@ import com.exam.util.PaperMarkUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,14 +41,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   private Log logger = Log.get();
 
   @Resource private PaperMapper paperMapper;
-  @Resource private CourseMapper courseMapper;
   @Resource private PaperFormMapper paperFormMapper;
-  @Resource private MajorMapper majorMapper;
   @Resource private QuestionService questionService;
-  @Resource private QuestionMapper questionMapper;
   @Resource private StuAnswerRecordMapper stuAnswerRecordMapper;
   @Resource private ScoreMapper scoreMapper;
-  @Resource private StudentMapper studentMapper;
   @Resource private TeacherMapper teacherMapper;
 
   @Override
@@ -66,26 +59,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public Course findCourseById(Integer courseId) {
-    return courseMapper.selectById(courseId);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void newPaperForm(PaperForm paperForm) {
-    paperFormMapper.insert(paperForm);
-  }
-
-  @Override
-  public List<Course> findCourseListByTeacherId(Integer teacherId) {
-    // 使用条件构造器构造查询条件
-    QueryWrapper<Course> qw = new QueryWrapper<>();
-    qw.lambda().eq(Course::getTeacherId, teacherId);
-    return this.courseMapper.selectList(qw);
-  }
-
-  @Override
-  public void newPaper(Paper paper) {
+  public void randomNewPaper(Paper paper) {
     // 获取试卷ID
     Integer paperFormId = paper.getPaperFormId();
     // 获取试卷题型信息
@@ -125,29 +99,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public List<PaperForm> findAllPaperForm() {
-    return paperFormMapper.selectList(null);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void delPaperFormById(Integer id) {
-    PaperForm form = paperFormMapper.selectById(id);
-    if (form == null) {
-      throw new ServiceException("试卷模版不存在!");
-    }
-    // 查找是否有正在使用该模版的试卷，如果有，则不允许删除模版
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getPaperFormId, id);
-    List<Paper> papers = paperMapper.selectList(qw);
-    if (CollUtil.isNotEmpty(papers)) {
-      throw new ServiceException("试卷模版正在使用，不能删除该模版！");
-    }
-    paperFormMapper.deleteById(id);
-  }
-
-  @Override
-  public List<Paper> findPracticePapersByMajorId(Integer majorId) {
+  public List<Paper> selectPracticePapersByMajorId(Integer majorId) {
     // 构造条件询条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getMajorId, majorId);
@@ -157,27 +109,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public Set<Question> findQuestionsByPaperIdAndType(Integer paperId, Integer qChoiceType) {
-    // 通过 ID 查询试卷信息
-    Paper paper = paperMapper.selectById(paperId);
-    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
-    String qIds = paper.getQuestionId();
-    // 分割题目序号
-    String[] qIdArray = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
-    Set<Question> questionSet = Sets.newHashSet();
-    for (String id : qIdArray) {
-      // 通过题目 ID 获取问题的信息
-      Question question = questionMapper.selectById(id);
-      if (qChoiceType.equals(question.getTypeId())) {
-        questionSet.add(question);
-      }
-    }
-    return questionSet;
-  }
-
-  @Override
   @Transactional(rollbackFor = Exception.class)
-  public String markPaper(Integer stuId, Integer paperId, HttpServletRequest request)
+  public void markPaper(Integer stuId, Integer paperId, HttpServletRequest request)
       throws ServiceException {
     // 通过 ID 获取试卷信息
     Paper paper = paperMapper.selectById(paperId);
@@ -185,14 +118,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     PaperForm paperForm = paperFormMapper.selectById(paper.getPaperFormId());
     // 获取试卷中各个部分题型的问题信息
     Set<Question> qChoiceList =
-        findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
     Set<Question> qMulChoiceList =
-        findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
-    Set<Question> qTofList = findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
-    Set<Question> qFillList = findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
-    Set<Question> qSaqList = findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+    Set<Question> qTofList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
+    Set<Question> qFillList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
+    Set<Question> qSaqList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
     Set<Question> qProgramList =
-        findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
     // 获取模板各个题型的题目分值
     int qChoiceScore = NumberUtil.strToInteger(paperForm.getQChoiceNum());
     int qMulChoiceScore = NumberUtil.strToInteger(paperForm.getQMulChoiceScore());
@@ -244,12 +180,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     String wrongResIds = wrong.substring(0, wrong.length() - 1);
     Score scoreObj =
         new Score(stuId, paperId, paper.getPaperName(), String.valueOf(score), wrongResIds);
-    scoreMapper.insert(scoreObj);
-    return String.valueOf(score);
+    this.scoreMapper.insert(scoreObj);
   }
 
   @Override
-  public List<Paper> findUnDoPaperListByTeacherId(Integer id) {
+  public List<Paper> listUnDoByTeacherId(Integer id) {
     // 获取当前时间
     String now = DateUtil.getFormatLocalDateTimeStr();
     // 构造条件查询语句
@@ -262,45 +197,21 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public void editPaperById(Integer id, Paper paper) {
-    System.out.println(paper.toString());
+  public void updateById(Integer id, Paper paper) {
     paper.setId(id);
-    paperMapper.updateById(paper);
+    this.updateById(paper);
   }
 
   @Override
-  public List<Paper> findDonePaperListByTeacherId(Integer teacherId) {
+  public List<Paper> listDoneByTeacherId(Integer teacherId) {
     QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda()
-        .eq(Paper::getPaperState, SysConsts.PAPER.PAPER_STATE_END)
-        .eq(Paper::getTeacherId, teacherId);
+    qw.lambda().eq(Paper::getPaperState, SysConsts.PAPER.PAPER_STATE_END);
+    qw.lambda().eq(Paper::getTeacherId, teacherId);
     return paperMapper.selectList(qw);
   }
 
   @Override
-  public List<StuAnswerRecord> findAnswerRecordByStuAndPaper(String stuNumber, Integer paperId)
-      throws ServiceException {
-    // 通过学号查询学生是否存在
-    QueryWrapper<Student> qw = new QueryWrapper<>();
-    qw.lambda().eq(Student::getStuNumber, stuNumber);
-    Student student = studentMapper.selectOne(qw);
-    if (ObjectUtil.isEmpty(student)) {
-      throw new ServiceException("该学号不存在！");
-    }
-    // 构造根据学号和试卷ID条件查询语句
-    QueryWrapper<StuAnswerRecord> ansQw = new QueryWrapper<>();
-    ansQw.lambda().eq(StuAnswerRecord::getStuId, student.getId());
-    ansQw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
-    return stuAnswerRecordMapper.selectList(ansQw);
-  }
-
-  @Override
-  public Major findMajorById(Integer id) {
-    return majorMapper.selectById(id);
-  }
-
-  @Override
-  public void changeStateById(Integer id) {
+  public void updateStateById(Integer id) {
     Paper paper = paperMapper.selectById(id);
     paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
     paperMapper.updateById(paper);
@@ -331,7 +242,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public List<Paper> findPaperByMajorId(Integer majorId) {
+  public List<Paper> selectByMajorId(Integer majorId) {
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getMajorId, majorId);
     // 只查询正式考试
@@ -340,7 +251,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   /**
-   * 组卷方法
+   * 计算所属课程+所属试题类型的试题数量
    *
    * @param varQuestionTypeNum 该类型问题的数量
    * @param paperQuestionIdList 试卷问题集合
@@ -358,7 +269,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       // 转整型
       num = Integer.parseInt(varQuestionTypeNum);
       // 获取类型题的 ID 集合
-      List<Integer> idList = questionService.getIdList(questionType, courseId);
+      List<Question> questions = questionService.listByTypeIdAndCourseId(questionType, courseId);
+      List<Integer> idList = Lists.newArrayList();
+      // 循环问题集合获取问题 ID，将 ID 加入idList 中
+      questions.forEach(question -> idList.add(question.getId()));
       // 随机抽题
       List<Integer> qChoiceIdList = getRandomIdList(idList, num);
       paperQuestionIdList.addAll(qChoiceIdList);

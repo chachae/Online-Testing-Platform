@@ -7,7 +7,9 @@ import com.exam.entity.Course;
 import com.exam.entity.Question;
 import com.exam.entity.Type;
 import com.exam.exception.ServiceException;
+import com.exam.service.CourseService;
 import com.exam.service.QuestionService;
+import com.exam.service.TypeService;
 import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,8 @@ import java.util.List;
 @RequestMapping("/teacher/question")
 public class QuestionController {
 
+  @Resource private TypeService typeService;
+  @Resource private CourseService courseService;
   @Resource private QuestionService questionService;
 
   /**
@@ -56,9 +60,9 @@ public class QuestionController {
   @GetMapping("/show/{id}")
   public String show(@PathVariable Integer id, Model model) {
     // 调用问题查询接口
-    Question question = questionService.findById(id);
+    Question question = this.questionService.getById(id);
     // 通过课程 ID 查询课程信息
-    Course course = questionService.findByCourseId(question.getCourseId());
+    Course course = this.courseService.getById(question.getCourseId());
     model.addAttribute("question", question);
     model.addAttribute("course", course);
     return "question/show";
@@ -73,9 +77,9 @@ public class QuestionController {
   @GetMapping("/new")
   public String add(Model model) {
     HttpSession session = HttpContextUtil.getSession();
-    List<Type> typeList = questionService.findAllType();
+    List<Type> typeList = this.typeService.list();
     Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Course> courseList = questionService.findTeacherCourse(teacherId);
+    List<Course> courseList = questionService.selectCourseByTeacherId(teacherId);
     model.addAttribute("typeList", typeList);
     model.addAttribute("courseList", courseList);
     return "question/new";
@@ -90,7 +94,7 @@ public class QuestionController {
    */
   @PostMapping("/new")
   public String add(Question question, RedirectAttributes r) {
-    questionService.saveNewQuestion(question);
+    questionService.save(question);
     r.addFlashAttribute("message", "试题添加成功！");
     return "redirect:/teacher/question/show/" + question.getId();
   }
@@ -104,7 +108,7 @@ public class QuestionController {
    */
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable Integer id, Model model) {
-    Question question = questionService.findById(id);
+    Question question = this.questionService.getById(id);
     model.addAttribute("question", question);
     return "question/edit";
   }
@@ -114,20 +118,13 @@ public class QuestionController {
    *
    * @param id 试题ID
    * @param question 问题信息
-   * @param r r 对象
    * @return 试题页面
    */
   @PostMapping("/edit/{id}")
-  public String edit(Question question, @PathVariable Integer id, RedirectAttributes r) {
-    try {
-      questionService.editQuestion(
-          id, question.getQuestionName(), question.getAnswer(), question.getRemark());
-      r.addFlashAttribute("message", "修改成功");
-      return "redirect:/teacher/question/show/" + id;
-    } catch (ServiceException e) {
-      r.addFlashAttribute("message", e.getMessage());
-      return "redirect:/teacher/question";
-    }
+  public String edit(@PathVariable Integer id, Question question) {
+    question.setId(id);
+    questionService.updateById(question);
+    return "/question/show/" + id;
   }
 
   /**
@@ -138,7 +135,7 @@ public class QuestionController {
    */
   @GetMapping("/delete/{id}")
   public String delete(@PathVariable Integer id) {
-    questionService.deleteQuestion(id);
+    questionService.removeById(id);
     return "redirect:/teacher/question";
   }
 

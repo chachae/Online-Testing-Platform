@@ -30,12 +30,12 @@ import java.util.Set;
 @Controller
 public class StudentController {
 
-  @Resource private StudentService studentService;
-  @Resource private TeacherService teacherService;
   @Resource private PaperService paperService;
   @Resource private ScoreService scoreService;
+  @Resource private CourseService courseService;
+  @Resource private StudentService studentService;
+  @Resource private AnnounceService announceService;
   @Resource private QuestionService questionService;
-  @Resource private MajorService majorService;
 
   /**
    * 转发到登录界面
@@ -84,7 +84,7 @@ public class StudentController {
   @GetMapping("/student/home/{id}")
   public String home(@PathVariable Integer id, Model model) {
     // 调用通过ID查询接口
-    Student student = studentService.findById(id);
+    Student student = studentService.getById(id);
     model.addAttribute("student", student);
     return "student/home";
   }
@@ -113,7 +113,7 @@ public class StudentController {
     HttpSession session = HttpContextUtil.getSession();
     try {
       // 调用密码修改接口
-      studentService.changePassword(id, dto);
+      studentService.updatePassword(id, dto);
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/student/" + id + "/changePass";
@@ -148,7 +148,7 @@ public class StudentController {
   @GetMapping("/student/announce/system")
   public String announceSystem(Model model) {
     // 嗲用查询全部公告的借口
-    List<Announce> announceList = teacherService.findAllSystemAnnounce();
+    List<Announce> announceList = this.announceService.list();
     // 设置 model 对象信息
     model.addAttribute("announceList", announceList);
     return "student/sysAnnounceList";
@@ -166,12 +166,13 @@ public class StudentController {
     HttpSession session = HttpContextUtil.getSession();
     // 获取学生的ID
     Integer id = (Integer) session.getAttribute(SysConsts.SESSION.STUDENT_ID);
-    Student student = studentService.findById(id);
+    Student student = studentService.getById(id);
     // 查询所有正式试卷
-    List<Paper> paperList = paperService.findPaperByMajorId(student.getMajorId());
+    List<Paper> paperList = paperService.selectByMajorId(student.getMajorId());
     model.addAttribute("paperList", paperList);
     // 模拟试卷
-    List<Paper> practicePaperList = paperService.findPracticePapersByMajorId(student.getMajorId());
+    List<Paper> practicePaperList =
+        paperService.selectPracticePapersByMajorId(student.getMajorId());
     model.addAttribute("practicePaperList", practicePaperList);
     return "student/examList";
   }
@@ -189,17 +190,17 @@ public class StudentController {
     // 通过 ID 查询试卷信息并将各种题型的题目放进 Set 集合中返回给前端，显示成试卷
     Paper paper = paperService.getById(paperId);
     Set<Question> qChoiceList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
     Set<Question> qMulChoiceList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
     Set<Question> qTofList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
     Set<Question> qFillList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
     Set<Question> qSaqList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
     Set<Question> qProgramList =
-        paperService.findQuestionsByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
     // 设置 model 对象信息
     model.addAttribute("paper", paper);
     model.addAttribute("qChoiceList", qChoiceList);
@@ -238,7 +239,7 @@ public class StudentController {
   @GetMapping("/student/score/{id}")
   public String scoreList(@PathVariable Integer id, Model model) {
     // 通过学生 ID 查询成绩集合
-    List<Score> scoreList = scoreService.findByStuId(id);
+    List<Score> scoreList = this.scoreService.selectByStuId(id);
     // 设置 model 对象
     model.addAttribute("scoreList", scoreList);
     return "student/scoreList";
@@ -270,10 +271,10 @@ public class StudentController {
       return "student/home";
     } else {
       // 通过ID查询问题信息
-      Question question = questionService.findById(Integer.parseInt(questionId));
+      Question question = questionService.getById(Integer.parseInt(questionId));
       if (ObjectUtil.isNotEmpty(question)) {
         // 通过课程 ID 查询课程信息
-        Course course = questionService.findByCourseId(question.getCourseId());
+        Course course = this.courseService.getById(question.getCourseId());
         model.addAttribute("question", question);
         model.addAttribute("course", course);
         return "student/question";

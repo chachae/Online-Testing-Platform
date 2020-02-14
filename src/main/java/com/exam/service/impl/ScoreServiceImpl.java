@@ -11,7 +11,6 @@ import com.exam.entity.Paper;
 import com.exam.entity.Score;
 import com.exam.entity.dto.AnswerEditDto;
 import com.exam.mapper.CourseMapper;
-import com.exam.mapper.MajorMapper;
 import com.exam.mapper.PaperMapper;
 import com.exam.mapper.ScoreMapper;
 import com.exam.service.ScoreService;
@@ -37,11 +36,10 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
 
   @Resource private ScoreMapper scoreMapper;
   @Resource private PaperMapper paperMapper;
-  @Resource private MajorMapper majorMapper;
   @Resource private CourseMapper courseMapper;
 
   @Override
-  public List<Score> findByStuId(Integer id) {
+  public List<Score> selectByStuId(Integer id) {
     // QueryWrapper 条件构造器构造查询 Sql
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, id);
@@ -50,12 +48,11 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
   }
 
   @Override
-  public List<Map<String, Object>> countByCourse(Integer courseId) {
+  public List<Map<String, Object>> countByCourseId(Integer courseId) {
     // 构造条件询条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda()
-        .eq(Paper::getCourseId, courseId)
-        .eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
+    qw.lambda().eq(Paper::getCourseId, courseId);
+    qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
     // 准备一个 Map 用来存储课程成绩信息
     Map<String, Object> countMap = Maps.newHashMap();
     List<Map<String, Object>> countList = Lists.newArrayList();
@@ -67,7 +64,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
   @Override
   public List<Map<String, Object>> averageScore(Integer id) {
     // 通过学生ID查询该学生的成绩 List 集合
-    List<Score> scoreList = this.findByStuId(id);
+    List<Score> scoreList = this.selectByStuId(id);
     // 准备存储平均分 Map 集合
     Map<String, Object> avgMap = Maps.newHashMap();
     // 准备存储学生各科成绩 Map 集合
@@ -105,7 +102,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
   @Override
   public List<Map<String, Object>> countByLevel(Integer studentId) {
     // 获取该学生的分数 List 集合
-    List<Score> scoreList = this.findByStuId(studentId);
+    List<Score> scoreList = this.selectByStuId(studentId);
 
     // 预备用于计算各科成绩等级分布数量 E,D,C,B,A
     long eNum = 0L;
@@ -187,7 +184,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
   }
 
   @Override
-  public Score findByStuIdAndPaperId(Integer stuId, Integer paperId) {
+  public Score selectByStuIdAndPaperId(Integer stuId, Integer paperId) {
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, stuId).eq(Score::getPaperId, paperId);
     return this.scoreMapper.selectOne(qw);

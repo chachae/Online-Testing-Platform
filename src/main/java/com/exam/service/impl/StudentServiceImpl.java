@@ -4,13 +4,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
-import com.exam.entity.Major;
 import com.exam.entity.Student;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.entity.dto.StudentQueryDto;
 import com.exam.entity.vo.StudentVo;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.MajorMapper;
 import com.exam.mapper.StudentMapper;
 import com.exam.service.StudentService;
 import com.exam.util.RsaCipherUtil;
@@ -35,12 +33,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     implements StudentService {
 
   @Resource private StudentMapper studentMapper;
-  @Resource private MajorMapper majorMapper;
 
   @Override
   public Student login(String stuNumber, String password) throws ServiceException {
     // 调用通过学号查询学生查询接口
-    Student student = this.findByStuNumber(stuNumber);
+    Student student = this.selectByStuNumber(stuNumber);
     // 如果学生对象为空说明不存在该用户，抛出异常信息
     if (ObjectUtil.isEmpty(student)) {
       throw new ServiceException("该学号不存在，请重新输入");
@@ -54,14 +51,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   }
 
   @Override
-  public Student findById(Integer id) {
-    // 的用通过 ID 查询学生信息接口
-    return studentMapper.selectById(id);
-  }
-
-  @Override
   @Transactional(rollbackFor = Exception.class)
-  public void changePassword(Integer id, ChangePassDto dto) {
+  public void updatePassword(Integer id, ChangePassDto dto) {
     // 通过 ID 查询学生信息
     Student student = studentMapper.selectById(id);
     if (ObjectUtil.isEmpty(student)) {
@@ -77,7 +68,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   }
 
   @Override
-  public Student findByStuNumber(String stuNumber) {
+  public Student selectByStuNumber(String stuNumber) {
     // 使用 QueryWrapper 构造通过学号查询条件
     QueryWrapper<Student> qw = new QueryWrapper<>();
     qw.lambda().eq(Student::getStuNumber, stuNumber);
@@ -94,18 +85,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   }
 
   @Override
-  public StudentVo findVoById(Integer id) {
-    return this.studentMapper.selectVoById(id);
-  }
-
-  @Override
-  public StudentVo findVoByStuNumber(String stuNumber) {
+  public StudentVo selectVoByStuNumber(String stuNumber) {
     return this.studentMapper.selectVoByStuNumber(stuNumber);
-  }
-
-  @Override
-  public List<StudentVo> listVo(StudentQueryDto dto) {
-    return this.studentMapper.listVo(dto);
   }
 
   @Override

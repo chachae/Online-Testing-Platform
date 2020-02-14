@@ -8,7 +8,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -55,19 +54,5 @@ public class HttpContextUtil {
   public static UserAgent getUserAgent() {
     String userAgent = getHeader(HttpHeaders.USER_AGENT);
     return UserAgentUtil.parse(userAgent);
-  }
-
-  /** 获取请求接口 */
-  public static String getRequestUri() {
-    return getHttpServletRequest().getRequestURI();
-  }
-
-  /**
-   * 获取请求参数
-   *
-   * @return /
-   */
-  public static Map<String, String[]> getParams() {
-    return getHttpServletRequest().getParameterMap();
   }
 }

@@ -23,15 +23,19 @@ import javax.servlet.http.HttpSession;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
+  /** 登录接口 */
   @Value("${anon.uri}")
   public String anonUri;
 
+  /** 静态资源匹配接口 */
   @Value("${match.uri}")
   public String matchUri;
 
+  /** 公共访问接口 */
   @Value("${common.uri}")
   public String commonUri;
 
+  // 不同身份的接口访问前缀
   private static final String ADMIN_PREFIX = "/admin";
   private static final String STUDENT_PREFIX = "/student";
   private static final String TEACHER_PREFIX = "/teacher";
@@ -40,6 +44,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
 
+    // 获取当前访问的路径
     String uri = request.getRequestURI();
     String[] whiteList = StrUtil.splitToArray(anonUri, StrUtil.C_COMMA);
     String[] matchList = StrUtil.splitToArray(matchUri, StrUtil.C_COMMA);
@@ -61,8 +66,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     // 处理 session 访问
     HttpSession session = request.getSession();
+    // 获取管理员的session
     Admin admin = (Admin) session.getAttribute(SysConsts.SESSION.ADMIN);
+    // 获取教师的 session
     Teacher teacher = (Teacher) session.getAttribute(SysConsts.SESSION.TEACHER);
+    // 获取学生的session
     Student student = (Student) session.getAttribute(SysConsts.SESSION.STUDENT);
 
     // 判断 session 情况
@@ -81,6 +89,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
       }
     }
 
+    // 如果以上判断全部匹配不到，说明是非法访问，直接使用 response 对象重定向到登录页面
     response.sendRedirect("/");
     return false;
   }

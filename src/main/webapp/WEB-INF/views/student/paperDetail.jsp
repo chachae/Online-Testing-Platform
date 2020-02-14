@@ -235,7 +235,9 @@
 
 <!-- BSA AdPacks code. Please ignore and remove.-->
 <script>
+    // 计时答题核心代码（通过JQuery实现）
     $(function () {
+        // countdown 用于减少时间，一旦检测到时间为00:00：:00则自动提交试卷
         $("#clock").countdown("${paper.endTime}", function (event) {
             $(this).html(event.strftime('%H小时 %M分钟 %S秒'));
         }).on("finish.countdown", function () {
