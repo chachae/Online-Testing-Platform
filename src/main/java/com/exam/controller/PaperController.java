@@ -139,6 +139,7 @@ public class PaperController {
    */
   @PostMapping({"/newPaperForm"})
   public String addPaperForm(PaperForm paperForm) {
+    // 调用试卷模板新增接口
     this.paperFormService.save(paperForm);
     return "redirect:/teacher/paper/newPaper/" + paperForm.getId();
   }
@@ -201,6 +202,7 @@ public class PaperController {
    */
   @GetMapping("/showPaperForm")
   public String showPaperForm(Model model) {
+    // 调用获取试卷模板集合接口
     List<PaperForm> formList = this.paperFormService.list();
     model.addAttribute("formList", formList);
     return "paper/showPaperForm";
@@ -216,6 +218,7 @@ public class PaperController {
   @ResponseBody
   public R delPaperForm(@PathVariable Integer id) {
     try {
+      // 调用试卷模板已出接口（通过ID删除）
       this.paperFormService.removeById(id);
       return R.success();
     } catch (ServiceException e) {
@@ -231,6 +234,7 @@ public class PaperController {
    */
   @GetMapping("/delete/{id}")
   public String delPaper(@PathVariable Integer id) {
+    // 级联删除试卷（详见接口实现类）
     paperService.delPaperById(id);
     return "redirect:/teacher/paper";
   }

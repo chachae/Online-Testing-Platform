@@ -83,6 +83,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     randomQuestions(qProgramNum, paperQuestions, SysConsts.QUESTION.PROGRAM_TYPE, courseId);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
     StringBuilder builder = new StringBuilder();
+    // 通过循环的方式组件试卷题目序号集合
     for (Integer id : paperQuestions) {
       String idStr = String.valueOf(id);
       builder.append(idStr);
@@ -91,6 +92,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     String ids = builder.toString();
     // 去除最后一个逗号并封装题序参数
     paper.setQuestionId(ids.substring(0, ids.length() - 1));
+    // 将试卷信息插入 paper 表中
     paperMapper.insert(paper);
   }
 
@@ -156,7 +158,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     MarkInfoDto essayMark = PaperMarkUtil.essayMark(qSaqList, qSaqScore, request);
     score += essayMark.getScore();
     wrongIds.addAll(essayMark.getWrongIds());
+    // 通过循环的方式依次将主观题的错题信息插入学生答题记录表中
     for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
+      // 封装学生、试卷、分数信息
       record.setPaperId(paperId);
       record.setStuId(stuId);
       record.setScore(essayMark.getScore());
@@ -166,15 +170,20 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     MarkInfoDto programMark = PaperMarkUtil.essayMark(qProgramList, qProgramScore, request);
     score += programMark.getScore();
     /* -------------------------- 结束评分 -------------------------- */
+
+    // 组装错题集合信息
     StringBuilder builder = new StringBuilder();
     for (String id : wrongIds) {
       builder.append(id);
       builder.append(StrUtil.COMMA);
     }
+    // 和上面一样将最后一个逗号去除
     String wrong = builder.toString();
     String wrongResIds = wrong.substring(0, wrong.length() - 1);
+    // 封装分数参数，并将分数信息插入到分数表中
     Score scoreObj =
         new Score(stuId, paperId, paper.getPaperName(), String.valueOf(score), wrongResIds);
+    // 此处调用插入接口
     this.scoreMapper.insert(scoreObj);
   }
 
@@ -199,6 +208,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
   @Override
   public List<Paper> listDoneByTeacherId(Integer teacherId) {
+    // 构造通过教师ID查询已经完成的试卷信息
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getPaperState, SysConsts.PAPER.PAPER_STATE_END);
     qw.lambda().eq(Paper::getTeacherId, teacherId);
@@ -207,6 +217,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
   @Override
   public void updateStateById(Integer id) {
+    // 更新试卷的状态
     Paper paper = paperMapper.selectById(id);
     paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
     paperMapper.updateById(paper);
@@ -215,6 +226,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void delPaperById(Integer id) {
+    // 查询试卷是否存在
     Paper paper = this.paperMapper.selectById(id);
     if (paper != null) {
       Teacher teacher = teacherMapper.selectById(paper.getTeacherId());

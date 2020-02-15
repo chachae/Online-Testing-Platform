@@ -185,8 +185,10 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
 
   @Override
   public Score selectByStuIdAndPaperId(Integer stuId, Integer paperId) {
+    // 构造学生id和试卷id查询的查询条件
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, stuId).eq(Score::getPaperId, paperId);
+    // 返回查询到的数据
     return this.scoreMapper.selectOne(qw);
   }
 
@@ -237,8 +239,9 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
    * @return 数量
    */
   private int countGt(String score) {
-    // 使用 QueryWrapper 构造查询条件，下面的三个方法同理，gt（GreatThan）
+    // 使用 QueryWrapper 构造查询条件，下面的三个方法同理
     QueryWrapper<Score> qw = new QueryWrapper<>();
+    // gt（GreatThan） 大于
     qw.lambda().gt(Score::getScore, score);
     return this.scoreMapper.selectCount(qw);
   }
@@ -251,7 +254,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
    */
   private int countLe(String score) {
     QueryWrapper<Score> qw = new QueryWrapper<>();
-    // le（lessThan）
+    // le（lessThan）小于
     qw.lambda().le(Score::getScore, score);
     return this.scoreMapper.selectCount(qw);
   }
@@ -265,7 +268,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
    */
   private int count(String start, String end) {
     QueryWrapper<Score> qw = new QueryWrapper<>();
-    // between 80 and 90
+    // between 介于两者之间
     qw.lambda().between(Score::getScore, start, end);
     return this.scoreMapper.selectCount(qw);
   }

@@ -178,7 +178,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       form.setQFillNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.FILL_TYPE)));
       form.setQSaqNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.SAQ_TYPE)));
       form.setQProgramNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
-      // 设置单题分值
+      // 从选择一直到编程题6种题型，设置每到分值
       form.setQChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
       form.setQMulChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
       form.setQTofScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.TOF_TYPE)));

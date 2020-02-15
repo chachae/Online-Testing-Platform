@@ -48,9 +48,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
   @Override
   public boolean removeById(Serializable id) {
+    // 构造指定课程的试题数数量查询方法
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getCourseId, id);
     Integer count = this.questionMapper.selectCount(qw);
+    // 如果数量大于0，不能删除该课程，直接抛出异常
     if (count > 0) {
       throw new ServiceException("课程存在试题关联，请删除后再尝试。");
     } else {

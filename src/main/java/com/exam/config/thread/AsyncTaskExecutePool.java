@@ -14,7 +14,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 异步任务线程池装配类
  *
  * @author yzn
- * @see <a href="https://juejin.im/entry/5abb8f6951882555677e9da2"/>
  * @date 2020/1/29 13:22
  */
 @Slf4j

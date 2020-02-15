@@ -28,7 +28,7 @@ public class PaperStateChangeJob {
    * 2020-02-10 04:00:00
    */
 
-  /** 定时任务，给结束考试的试卷进行状态改变，每 30 分钟执行一次 */
+  /** 定时任务，给结束考试的试卷进行状态改变，每 15 分钟执行一次 */
   @Scheduled(cron = "0 0,15 * * * ? ")
   public void run() {
     log.info("执行考试状态检查任务");

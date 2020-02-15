@@ -16,7 +16,7 @@ import java.util.Map;
 public interface ScoreService extends IService<Score> {
 
   /**
-   * 通过协商 ID 查询分数 List 集合
+   * 通过学生 ID 查询分数 List 集合
    *
    * @param id 学生 ID
    * @return 分数 List 集合

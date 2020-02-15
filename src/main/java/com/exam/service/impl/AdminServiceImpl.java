@@ -64,6 +64,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
   @Override
   public Admin selectByNumber(String number) {
+    // 通过学号获取学生信息
     QueryWrapper<Admin> qw = new QueryWrapper<>();
     qw.lambda().eq(Admin::getNumber, number);
     return this.adminMapper.selectOne(qw);
@@ -86,7 +87,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
   @Override
   public PageInfo<Admin> pageForAdminList(Integer pageNo) {
+    // 分页信息设置，默认每页8条数据
     PageHelper.startPage(pageNo, 8);
+    // 调用管理员查询集合接口
     List<Admin> admins = this.adminMapper.selectList(null);
     return new PageInfo<>(admins);
   }
@@ -97,6 +100,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     // 获取当前的管理员ID是否和被删除的相同（一样则不能刪除）
     HttpSession session = HttpContextUtil.getSession();
     Admin current = (Admin) session.getAttribute(SysConsts.SESSION.ADMIN);
+    // 当前 session 的 管理员 ID 和被删除的管理员ID一直，不能被删除
     if (current.getId().equals(id)) {
       throw new ServiceException("不可以刪除自己");
     } else {

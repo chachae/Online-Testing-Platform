@@ -34,7 +34,9 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
+    // 调用通过ID查询试卷模板信息接口
     PaperForm form = this.paperFormMapper.selectById(id);
+    // 如果 from 对象为空，说明模板不存在
     if (form == null) {
       throw new ServiceException("试卷模版不存在!");
     }
@@ -42,9 +44,11 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getPaperFormId, id);
     List<Paper> papers = this.paperMapper.selectList(qw);
+    // 如果试卷集合对象不为空，说明有试卷正在使用，则不能删除
     if (CollUtil.isNotEmpty(papers)) {
       throw new ServiceException("试卷模版正在使用，不能删除该模版！");
     }
+    // 至此可以安全删除，调用父级 removeById 方法删除
     return super.removeById(id);
   }
 }

@@ -21,6 +21,8 @@ import java.util.Set;
  */
 public class PaperMarkUtil {
 
+  private PaperMarkUtil() {}
+
   /**
    * 基本评分方法
    *

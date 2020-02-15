@@ -67,8 +67,10 @@ public class AdminController {
       // 设置session
       session.setAttribute(SysConsts.SESSION.ADMIN, admin);
       session.setAttribute(SysConsts.SESSION.ROLE_ID, admin.getRoleId());
+      // 重定向到管理员主页
       return "redirect:/admin/home/" + admin.getId();
     } catch (Exception e) {
+      // 捕获异常，设置异常消息，重定向到管理员登录页面
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/admin/login";
     }
@@ -85,6 +87,7 @@ public class AdminController {
   public String home(Model model, @PathVariable Integer id) {
     // 调用ID 查询接口
     Admin admin = this.adminService.getById(id);
+    // 设置管理员的 model 对象信息
     model.addAttribute("admin", admin);
     return "admin/home";
   }
@@ -194,6 +197,7 @@ public class AdminController {
   @ResponseBody
   @PostMapping("/teacher/update")
   public R updateTeacher(Teacher teacher) {
+    // 通过ID关系教师信息
     this.teacherService.updateById(teacher);
     return R.success();
   }
@@ -208,9 +212,11 @@ public class AdminController {
   @PostMapping("/teacher/save")
   public R saveTeacher(Teacher teacher) {
     try {
+      // 调用教师信息新增接口
       this.teacherService.save(teacher);
       return R.success();
     } catch (ServiceException e) {
+      // 捕获异常
       return R.error(e.getMessage());
     }
   }
@@ -223,6 +229,7 @@ public class AdminController {
    */
   @GetMapping("/academy")
   public String list(Model model) {
+    // 调用学院集合借口
     List<Academy> academyList = this.academyService.list();
     model.addAttribute("academyList", academyList);
     return "/admin/academyList";
@@ -237,6 +244,7 @@ public class AdminController {
   @ResponseBody
   @PostMapping("/academy/update")
   public R updateAcademy(Academy academy) {
+    // 调用学院更新接口
     this.academyService.updateById(academy);
     return R.success();
   }
@@ -250,6 +258,7 @@ public class AdminController {
   @ResponseBody
   @PostMapping("/academy/save")
   public R saveAcademy(Academy academy) {
+    // 调用学院新增接口
     this.academyService.save(academy);
     return R.success();
   }
@@ -268,6 +277,7 @@ public class AdminController {
       this.academyService.removeById(id);
       return R.success();
     } catch (ServiceException e) {
+      // 捕捉异常，返回失败的回调信息
       return R.error(e.getMessage());
     }
   }
@@ -296,10 +306,11 @@ public class AdminController {
     try {
       this.adminService.updatePassword(id, dto);
     } catch (ServiceException e) {
+      // 将异常信息放入 RedirectAttributes 对象中，保证重定向后可以获得异常消息
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/admin/" + id + "/changePass";
     }
-    // 移除 session 信息
+    // 获取 session 对象后，移除 session 信息
     HttpSession session = HttpContextUtil.getSession();
     session.removeAttribute(SysConsts.SESSION.TEACHER_ID);
     session.removeAttribute(SysConsts.SESSION.TEACHER);
@@ -315,6 +326,7 @@ public class AdminController {
    */
   @GetMapping
   public String listAdmin(Page page, Model model) {
+    // 获取试卷分页信息
     PageInfo<Admin> result = this.adminService.pageForAdminList(page.getPageNo());
     model.addAttribute("page", result);
     return "/admin/adminList";
@@ -348,6 +360,7 @@ public class AdminController {
   @PostMapping("/save")
   public R saveAdmin(Admin admin) {
     try {
+      // 对于管理员增加接口
       this.adminService.save(admin);
       return R.success();
     } catch (ServiceException e) {

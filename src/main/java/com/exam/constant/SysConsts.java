@@ -18,11 +18,17 @@ public class SysConsts {
 
   /** Session 常量 */
   public static class SESSION {
+    // 教師ID
     public static final String TEACHER_ID = "teacherId";
+    // 管理員ID
     public static final String ROLE_ID = "roleId";
+    // 学生ID
     public static final String STUDENT_ID = "studentId";
+    // 教师信息session
     public static final String TEACHER = "teacher";
+    // 学生信息session
     public static final String STUDENT = "student";
+    // 管理员信息session
     public static final String ADMIN = "admin";
   }
 
