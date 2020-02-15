@@ -108,9 +108,6 @@ public class PaperController {
   @PostMapping("/import/excel")
   public R excel(@RequestParam("file") MultipartFile multipartFile) {
     try {
-      HttpSession session = HttpContextUtil.getSession();
-      // 获取教师 session ID
-      Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
       ImportPaperDto dto = this.questionService.importPaper(multipartFile);
       return R.successWithData(dto);
     } catch (Exception e) {
@@ -181,12 +178,12 @@ public class PaperController {
   @ResponseBody
   @PostMapping("/newPaper/{paperFormId}")
   public R add(Paper paper, @PathVariable Integer paperFormId) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     try {
+      // 获取 session 对象，获取家教师ID
+      HttpSession session = HttpContextUtil.getSession();
+      Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
       // 调用组卷接口
       paper.setTeacherId(teacherId);
       paperService.randomNewPaper(paper);

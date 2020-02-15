@@ -29,6 +29,20 @@ spring:
       minimum-idle: 10
       read-only: off
 
+  # 线程池配置
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 30
+        keep-alive: 60s
+        queue-capacity: 50
+      thread-name-prefix: OES-pool-task-
+    scheduling:
+      thread-name-prefix: OES-scheduling-
+      pool:
+        size: 2
+
 # MyBatisPlus 配置
 mybatis-plus:
   global-config:

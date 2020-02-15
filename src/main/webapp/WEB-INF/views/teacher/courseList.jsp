@@ -66,7 +66,7 @@
                                 <td></td>
                                 <td>&nbsp${vs.count}</td>
                                 <td>${course.courseName}</td>
-                                <td><a class="rowDel" rel="${course.id}">删除</a>  </td>
+                                <td><a class="rowDel" rel="${course.id}">删除</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -120,7 +120,7 @@
                         layer.msg("删除成功!");
                         window.location.href = "/teacher/course/list";
                     } else {
-                        layer.msg(data.messge);
+                        layer.msg(data.message);
                     }
                 }).error(function () {
                     layer.msg("服务器异常");

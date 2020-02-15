@@ -168,8 +168,7 @@ public class TeacherController {
     Teacher teacher = this.teacherService.getById(teacherId);
     String name = teacher.getName();
     // 封装参数
-    Course build =
-        Course.builder().courseName(courseName).teacherId(teacherId).teacherName(name).build();
+    Course build = Course.builder().courseName(courseName).teacherId(teacherId).build();
     this.courseService.save(build);
     return R.success();
   }
@@ -187,7 +186,7 @@ public class TeacherController {
       // 调用课程删除接口
       this.courseService.removeById(id);
       return R.success();
-    } catch (Exception e) {
+    } catch (ServiceException e) {
       return R.error(e.getMessage());
     }
   }

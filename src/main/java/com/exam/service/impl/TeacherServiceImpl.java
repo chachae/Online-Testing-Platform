@@ -34,9 +34,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
   @Override
   public Teacher login(String teaNumber, String password) {
     // 查询改用户名的教师信息
-    QueryWrapper<Teacher> qw = new QueryWrapper<>();
-    qw.lambda().eq(Teacher::getWorkNumber, teaNumber);
-    Teacher teacher = this.teacherMapper.selectOne(qw);
+    Teacher teacher = this.selectByWorkNumber(teaNumber);
     // 判断对象的情况
     if (ObjectUtil.isEmpty(teacher)) {
       throw new ServiceException("该职工号不存在，请重新输入");
@@ -57,6 +55,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     if (ObjectUtil.isEmpty(teacher)) {
       throw new ServiceException("用户不存在");
     }
+    // 验证密码
     if (!RsaCipherUtil.verify(dto.getOldPassword(), teacher.getPassword())) {
       throw new ServiceException("原密码错误");
     }
@@ -73,9 +72,24 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
   }
 
   @Override
+  public Teacher selectByWorkNumber(String workNumber) {
+    // 查询改用户名的教师信息
+    QueryWrapper<Teacher> qw = new QueryWrapper<>();
+    qw.lambda().eq(Teacher::getWorkNumber, workNumber);
+    return this.teacherMapper.selectOne(qw);
+  }
+
+  @Override
   public boolean save(Teacher entity) {
-    entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-    entity.setRoleId(SysConsts.ROLE.TEACHER);
-    return super.save(entity);
+    // 查询是否已经存在该工号
+    Teacher teacher = this.selectByWorkNumber(entity.getWorkNumber());
+    if (ObjectUtil.isNotEmpty(teacher)) {
+      throw new ServiceException("工号已存在");
+    } else {
+      // 不存在则设置默认的角色ID和对密码进行加密存储
+      entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
+      entity.setRoleId(SysConsts.ROLE.TEACHER);
+      return super.save(entity);
+    }
   }
 }

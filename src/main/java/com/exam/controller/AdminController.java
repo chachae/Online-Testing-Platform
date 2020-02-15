@@ -46,7 +46,7 @@ public class AdminController {
    */
   @GetMapping("/login")
   public String login() {
-    return "admin/login";
+    return "/admin/login";
   }
 
   /**
@@ -207,8 +207,12 @@ public class AdminController {
   @ResponseBody
   @PostMapping("/teacher/save")
   public R saveTeacher(Teacher teacher) {
-    this.teacherService.save(teacher);
-    return R.success();
+    try {
+      this.teacherService.save(teacher);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 
   /**
@@ -278,6 +282,14 @@ public class AdminController {
     return "/admin/changePass";
   }
 
+  /**
+   * 提交修改密码信息
+   *
+   * @param id 管理员id
+   * @param dto 新旧密码信息
+   * @param r RedirectAttributes 对象
+   * @return 回调信息
+   */
   @PostMapping("/{id}/changePass")
   public String updatePass(@PathVariable Integer id, ChangePassDto dto, RedirectAttributes r) {
     // 调用密码修改接口
@@ -293,5 +305,53 @@ public class AdminController {
     session.removeAttribute(SysConsts.SESSION.TEACHER);
     // 重定向登录页面
     return "redirect:/admin/login";
+  }
+
+  /**
+   * 获取管理员分页信息
+   *
+   * @param model model 对象
+   * @return 分页结果集
+   */
+  @GetMapping
+  public String listAdmin(Page page, Model model) {
+    PageInfo<Admin> result = this.adminService.pageForAdminList(page.getPageNo());
+    model.addAttribute("page", result);
+    return "/admin/adminList";
+  }
+
+  /**
+   * 删除管理员
+   *
+   * @param id 管理员id
+   * @return 删除回调信息
+   */
+  @ResponseBody
+  @PostMapping("/delete/{id}")
+  public R deleteAdmin(@PathVariable Integer id) {
+    try {
+      // 执行删除
+      this.adminService.removeById(id);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
+  }
+
+  /**
+   * 新增管理员
+   *
+   * @param admin 管理员信息
+   * @return 回调信息
+   */
+  @ResponseBody
+  @PostMapping("/save")
+  public R saveAdmin(Admin admin) {
+    try {
+      this.adminService.save(admin);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 }

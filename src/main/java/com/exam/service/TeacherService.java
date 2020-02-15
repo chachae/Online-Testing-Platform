@@ -37,4 +37,12 @@ public interface TeacherService extends IService<Teacher> {
    * @return 教师数据分页结果集
    */
   PageInfo<Teacher> pageForTeacherList(Integer pageNo);
+
+  /**
+   * 通过工号查询教师信息
+   *
+   * @param workNumber 工号
+   * @return 教师信息
+   */
+  Teacher selectByWorkNumber(String workNumber);
 }

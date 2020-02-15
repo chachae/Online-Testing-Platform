@@ -86,9 +86,7 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
     <!-- 增加学生信息模态框 -->
-    <!------------------------------------------------------------------------------------------->
     <div class="modal fade" id="saveModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -151,7 +149,7 @@
         $(".del").click(function () {
             var id = $(this).attr("rel");
             layer.confirm("确定要删除么？", function () {
-                $.post("/admin/academy/delete/"+id).done(function (json) {
+                $.post("/admin/academy/delete/" + id).done(function (json) {
                     if (json.state === "success") {
                         layer.alert("删除成功", function () {
                             history.go(0);
@@ -205,6 +203,7 @@
                 backdrop: 'static'
             });
 
+            // 增加学院
             $("#ssaveBtn").click(function () {
                 let a = $("#sname").val();
                 layer.confirm("确定增加学院吗?", function () {

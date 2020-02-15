@@ -3,6 +3,7 @@ package com.exam.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.exam.entity.Admin;
 import com.exam.entity.dto.ChangePassDto;
+import com.github.pagehelper.PageInfo;
 
 /**
  * 管理员业务接口
@@ -35,4 +36,12 @@ public interface AdminService extends IService<Admin> {
    * @param dto 密码信息
    */
   void updatePassword(Integer id, ChangePassDto dto);
+
+  /**
+   * 获取管理员分页信息
+   *
+   * @param pageNo 当前页
+   * @return 管理员分页结果集
+   */
+  PageInfo<Admin> pageForAdminList(Integer pageNo);
 }

@@ -1,6 +1,9 @@
 package com.exam.entity.dto;
 
+import com.exam.common.BaseEntity;
 import com.exam.entity.StuAnswerRecord;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -10,35 +13,13 @@ import java.util.List;
  * @author yzn
  * @since 2020/2/6 21:46
  */
-public class MarkInfoDto {
+@EqualsAndHashCode(callSuper = false)
+@Data
+public class MarkInfoDto extends BaseEntity {
 
   private Integer score;
 
   private List<String> wrongIds;
 
   private List<StuAnswerRecord> stuAnswerRecord;
-
-  public List<StuAnswerRecord> getStuAnswerRecord() {
-    return stuAnswerRecord;
-  }
-
-  public void setStuAnswerRecord(List<StuAnswerRecord> stuAnswerRecord) {
-    this.stuAnswerRecord = stuAnswerRecord;
-  }
-
-  public Integer getScore() {
-    return score;
-  }
-
-  public void setScore(Integer score) {
-    this.score = score;
-  }
-
-  public List<String> getWrongIds() {
-    return wrongIds;
-  }
-
-  public void setWrongIds(List<String> wrongIds) {
-    this.wrongIds = wrongIds;
-  }
 }

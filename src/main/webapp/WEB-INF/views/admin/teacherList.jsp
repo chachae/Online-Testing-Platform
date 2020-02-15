@@ -54,13 +54,12 @@
                         <tbody>
                         <tr>
                             <th style="width:10px"></th>
-                            <th>教师 ID</th>
-                            <th>姓名</th>
-                            <th>工号</th>
-                            <th>职位</th>
-                            <th>性别</th>
-                            <th>操作
-                            <th>
+                            <th width="300">教师 ID</th>
+                            <th width="300">姓名</th>
+                            <th width="300">工号</th>
+                            <th width="300">职位</th>
+                            <th width="300">性别</th>
+                            <th width="300">操作<th>
                         </tr>
                         <c:if test="${empty page.list}">
                             <tr>
@@ -75,7 +74,8 @@
                                 <td>${teacher.workNumber}</td>
                                 <td>${teacher.job}</td>
                                 <td>${teacher.sex}</td>
-                                <td><a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                <td rel="${teacher.id}">
+                                    <a class="btn btn-success btn-sm editTeacher"><i class="fa"></i>编辑</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -145,7 +145,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     <!------------------------------------------------------------------------------------------->
-    <!-- 修改学生信息模态框 -->
+    <!-- 修改教师信息模态框 -->
     <!------------------------------------------------------------------------------------------->
     <div class="modal fade" id="modifyModal">
         <div class="modal-dialog">
@@ -219,7 +219,7 @@
 
     // 模态框
     // 启动修改模态框
-    $(".editStudent").click(function () {
+    $(".editTeacher").click(function () {
         $("#modifyModal").modal({
             show: true,
             backdrop: 'static'
@@ -279,6 +279,7 @@
         });
 
         $("#sjob").select2();
+        $("#ssex").select2();
 
         // 增加教师
         $("#ssaveBtn").click(function () {
@@ -298,6 +299,8 @@
                     if (data.state === "success") {
                         layer.msg("增加成功!");
                         window.location.reload();
+                    } else {
+                        layer.msg(data.message);
                     }
                 }).error(function () {
                     layer.msg("服务器异常");

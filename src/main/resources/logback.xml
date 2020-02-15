@@ -8,7 +8,7 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${log.pattern}</pattern>
-            <charset>${log.charset}</charset>
+            <charset class="java.nio.charset.Charset">${log.charset}</charset>
         </encoder>
     </appender>
 

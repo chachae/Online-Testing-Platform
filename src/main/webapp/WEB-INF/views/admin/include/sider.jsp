@@ -42,6 +42,14 @@
                     </span>
                 </a>
             </li>
+            <li class="treeview ${param.menu == 'admin'?'active':''}">
+                <a href="<c:url value="/admin"/>">
+                    <i class="fa fa-dashboard"></i> <span>管理员管理</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+            </li>
         </ul>
     </section>
     <!-- /.sidebar -->

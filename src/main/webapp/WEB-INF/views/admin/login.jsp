@@ -29,7 +29,7 @@
                 <ul class="reg_form">
                     <label for="adminId">账号：</label>
                     <li>
-                        <input type="text" name="adminId" style="width: 100%" value="456" placeholder="请输入账号"
+                        <input type="text" name="adminId" style="width: 100%" value="admin" placeholder="请输入账号"
                                id="adminId" size="35" class="inputstyle2"/>
                     </li>
                     <label for="adminPassword">密码：</label>

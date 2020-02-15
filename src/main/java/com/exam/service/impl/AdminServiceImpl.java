@@ -3,19 +3,26 @@ package com.exam.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.exam.constant.SysConsts;
 import com.exam.entity.Admin;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.AdminMapper;
 import com.exam.service.AdminService;
 import com.exam.util.DateUtil;
+import com.exam.util.HttpContextUtil;
 import com.exam.util.RsaCipherUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 管理员业务实现
@@ -75,5 +82,41 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
       Admin build = Admin.builder().id(id).password(RsaCipherUtil.hash(dto.getPassword())).build();
       this.adminMapper.updateById(build);
     }
+  }
+
+  @Override
+  public PageInfo<Admin> pageForAdminList(Integer pageNo) {
+    PageHelper.startPage(pageNo, 8);
+    List<Admin> admins = this.adminMapper.selectList(null);
+    return new PageInfo<>(admins);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean removeById(Serializable id) {
+    // 获取当前的管理员ID是否和被删除的相同（一样则不能刪除）
+    HttpSession session = HttpContextUtil.getSession();
+    Admin current = (Admin) session.getAttribute(SysConsts.SESSION.ADMIN);
+    if (current.getId().equals(id)) {
+      throw new ServiceException("不可以刪除自己");
+    } else {
+      // ID 不相同，允许删除
+      return super.removeById(id);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean save(Admin entity) {
+    // 检测是否存在相同的用户名，存在在不允许增加，抛出异常，给控制层捕捉
+    Admin admin = this.selectByNumber(entity.getNumber());
+    if (ObjectUtil.isNotEmpty(admin)) {
+      throw new ServiceException("用户名已存在");
+    }
+    // 封装管理员默认角色ID，同时加密密码
+    entity.setRoleId(SysConsts.ROLE.ADMIN);
+    entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
+    entity.setLastLoginTime(DateUtil.getDate());
+    return super.save(entity);
   }
 }

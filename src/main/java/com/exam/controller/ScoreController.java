@@ -38,7 +38,7 @@ public class ScoreController {
   public String chart(Model model) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
-    // 获取课程 List 几何
+    // 获取课程 List 集合
     List<Course> courseList =
         courseService.listByTeacherId((Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID));
     model.addAttribute("courseList", courseList);

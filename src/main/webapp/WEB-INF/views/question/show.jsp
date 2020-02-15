@@ -79,7 +79,7 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td class="td_title">出题老师: ${course.teacherName}</td>
+                            <td class="td_title">出题老师: ${course.teacher.name}</td>
                         </tr>
                         <c:if test="${not empty question.remark}">
                             <tr>

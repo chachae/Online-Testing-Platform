@@ -167,7 +167,7 @@ public class StudentController {
     // 获取学生的ID
     Integer id = (Integer) session.getAttribute(SysConsts.SESSION.STUDENT_ID);
     Student student = studentService.getById(id);
-    // 查询所有正式试卷
+    // 查询所有该专业的正式试卷
     List<Paper> paperList = paperService.selectByMajorId(student.getMajorId());
     model.addAttribute("paperList", paperList);
     // 模拟试卷

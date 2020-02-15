@@ -132,14 +132,12 @@
     <%@include file="../include/footer.jsp" %>
 </div>
 <!-- ./wrapper -->
-
 <%@include file="../include/js.jsp" %>
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script src="<c:url value="/static/plugins/moment/moment.js"/>"></script>
 <script src="<c:url value="/static/plugins/jquery-countdown/jquery.countdown.min.js"/>"></script>
 <script>
     $(function () {
-
 
     });
 </script>
