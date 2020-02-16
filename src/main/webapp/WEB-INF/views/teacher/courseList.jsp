@@ -61,10 +61,10 @@
                                 <td colspan="6">老师您还未添加课程</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${courseList}" var="course" varStatus="vs">
+                        <c:forEach items="${courseList}" var="course">
                             <tr class="rowDetail" rel="${course.id}">
                                 <td></td>
-                                <td>&nbsp${vs.count}</td>
+                                <td>&nbsp${course.id}</td>
                                 <td>${course.courseName}</td>
                                 <td><a class="rowDel" rel="${course.id}">删除</a></td>
                             </tr>

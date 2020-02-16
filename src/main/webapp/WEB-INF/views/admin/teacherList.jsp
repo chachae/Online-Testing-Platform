@@ -115,7 +115,7 @@
                     </div>
                     <div class="form-group form_datetime">
                         <label for="spass">密码</label>
-                        <input type="text" name="spass" class="form-control"
+                        <input type="passowrd" name="spass" class="form-control"
                                id="spass">
                     </div>
                     <div class="form-group form_datetime">

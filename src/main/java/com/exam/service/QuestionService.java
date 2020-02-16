@@ -86,4 +86,11 @@ public interface QuestionService extends IService<Question> {
    * @param multipartFile multipartFile 对象
    */
   void importQuestion(MultipartFile multipartFile);
+
+  /**
+   * 通过 ID 删除试题
+   *
+   * @param id 试题ID
+   */
+  void deleteById(Integer id);
 }

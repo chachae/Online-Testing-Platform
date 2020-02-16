@@ -21,7 +21,7 @@
                 <div class="form-group col-sm-12">
                     <label class="control-label col-sm-2"><h4 style="font-weight: 800">请输入学生学号</h4></label>
                     <div class="col-sm-8">
-                        <input type="text" name="stuNumber" id="stuNumber" value="311409030311" class="form-control">
+                        <input type="text" name="stuNumber" id="stuNumber" class="form-control">
                     </div>
                     <div class="col-sm-8">
                         <c:if test="${!empty message}">

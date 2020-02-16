@@ -30,7 +30,7 @@ spring:
     # 数据库连接至配置
     hikari:
       # 自动提交
-      auto-commit: true
+      auto-commit: on
       # 连接超时时间
       connection-timeout: 30000
       # idle 超时
@@ -76,8 +76,8 @@ mybatis-plus:
   # 实体类别名
   type-aliases-package: com.exam.entity
   configuration:
-    # 打开驼峰命名
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: on
+  # 打开驼峰命名
 
 # PageHelper 分页插件配置
 pagehelper:

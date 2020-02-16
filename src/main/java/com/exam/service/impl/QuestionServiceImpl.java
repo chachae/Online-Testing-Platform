@@ -135,6 +135,27 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
   @Override
   @Transactional(rollbackFor = Exception.class)
+  public void deleteById(Integer id) {
+    List<Paper> papers = this.paperMapper.selectList(null);
+    // 查询是否有试卷与试题关联
+    for (Paper paper : papers) {
+      // 获取试卷的题目 ID，并且转数组
+      String questionId = paper.getQuestionId();
+      String[] ids = StrUtil.splitToArray(questionId, StrUtil.C_COMMA);
+      // 循环题目 ID
+      for (String s : ids) {
+        // 比较 ID 值
+        if (Integer.parseInt(s) == id) {
+          throw new ServiceException("试题被试卷[ " + paper.getPaperName() + " ]关联，不允许删除");
+        }
+      }
+    }
+    // 至此，不存在，执行删除
+    this.removeById(id);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
   public ImportPaperDto importPaper(MultipartFile multipartFile) {
     try {
       // 准备一个 Map 用来存储题目的类型和数量

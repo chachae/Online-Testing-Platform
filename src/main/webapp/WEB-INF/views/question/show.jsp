@@ -102,12 +102,24 @@
 <%@ include file="../include/js.jsp" %>
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script>
+
+    // 删除试题
     $(function () {
         var questionId = ${question.id};
         //删除题目
         $("#delBtn").click(function () {
             layer.confirm("确定要删除么？", function () {
-                window.location.href = "/teacher/question/delete/" + questionId;
+                // 删除试题
+                $.post("/teacher/question/delete/" + questionId).done(function (data) {
+                    if (data.state === "success") {
+                        layer.msg("删除成功!");
+                        window.location.href = "/teacher/question";
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }).error(function () {
+                    layer.msg("服务器异常");
+                });
             })
         });
     });

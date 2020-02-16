@@ -41,6 +41,7 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
     }
     // 构造根据学号和试卷ID条件查询语句
     QueryWrapper<StuAnswerRecord> ansQw = new QueryWrapper<>();
+    // 构造学生 ID 和试卷 ID 查询条件
     ansQw.lambda().eq(StuAnswerRecord::getStuId, student.getId());
     ansQw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
     return stuAnswerRecordMapper.selectList(ansQw);

@@ -64,20 +64,28 @@ public class PaperMarkUtil {
    */
   public static MarkInfoDto mulMark(Set<Question> set, int score, HttpServletRequest request) {
     int sum = 0;
+    // 构建错题集集合
     List<String> wrongIds = Lists.newArrayList();
+    // 判断问题集合不为空
     if (CollUtil.isNotEmpty(set)) {
+      // 循环正确答案
       for (Question q : set) {
+        // 从 request 对象中获取参数
         String[] res = request.getParameterValues(String.valueOf(q.getId()));
         // 没有选答案就给零分
         if (res != null) {
-          String result = "";
+          String result = StrUtil.EMPTY;
+          // 拼接错题的题目ID
           for (String s : res) {
             result = s + StrUtil.COMMA;
           }
+          // 去除最后一位的逗号
           result = result.substring(0, result.length() - 1);
+          // 计算得分
           if (result.equals(q.getAnswer())) {
             sum += score;
           } else {
+            // 错误则加入错题集
             wrongIds.add(String.valueOf(q.getId()));
           }
         } else {
@@ -114,19 +122,28 @@ public class PaperMarkUtil {
     if (CollUtil.isNotEmpty(set)) {
       double f = 0;
       for (Question q : set) {
+        // 不管主观题答题的质量如何，都放入错题集中
         wrongIds.add(String.valueOf(q.getId()));
+        // 从 request 对象中获取参数值
         String res = request.getParameter(String.valueOf(q.getId()));
+        // 获取正确答案
         String answer = q.getAnswer();
         // 计算 jaccard 相似系数
         double jcdSimilarity = jaccardSimilarity.apply(res, answer);
+        // 计算基于相似系数计算的基础分数（1. 相当于计算关键词的得分）
         double s = jcdSimilarity * score;
         f += s;
+        // 字数不足且分数大于1，扣1分（2. 相当于计算字数）
+        if (res.length() < answer.length() && f > 1) {
+          f -= 1;
+        }
         // 封装主观题答题记录参数
         StuAnswerRecord stuAnswerRecord = new StuAnswerRecord();
         stuAnswerRecord.setQuestionId(q.getId());
         stuAnswerRecord.setAnswer(res);
         stuAnswerRecords.add(stuAnswerRecord);
       }
+      // 格式化分数的类型为 int 类型
       String q = df.format(f);
       sum = Integer.parseInt(q);
     }

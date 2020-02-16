@@ -92,11 +92,17 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean save(Student entity) {
-    // 默认角色值2
-    entity.setRoleId(SysConsts.ROLE.STUDENT);
-    // 密码加密之后再存入数据库
-    entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-    // 调用父级 save 接口
-    return super.save(entity);
+    // 检测学号是否存在
+    Student student = this.selectByStuNumber(entity.getStuNumber());
+    if (ObjectUtil.isNotEmpty(student)) {
+      throw new ServiceException("学号已存在");
+    } else {
+      // 默认角色值2
+      entity.setRoleId(SysConsts.ROLE.STUDENT);
+      // 密码加密之后再存入数据库
+      entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
+      // 调用父级 save 接口
+      return super.save(entity);
+    }
   }
 }

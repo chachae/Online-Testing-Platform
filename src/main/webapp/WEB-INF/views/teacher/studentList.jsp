@@ -422,8 +422,10 @@
                     "level": g
                 }).done(function (data) {
                     if (data.state === "success") {
-                        layer.msg("修改成功!");
+                        layer.msg("增加成功!");
                         window.location.reload();
+                    } else {
+                        layer.msg(data.message);
                     }
                 }).error(function () {
                     layer.msg("服务器异常");

@@ -60,7 +60,7 @@
                     </c:if>
                     <li>
                         <div class="">
-                            <input type="text" id="studentId" name="studentId" value="311409030311" style="width: 100%"
+                            <input type="text" id="studentId" name="studentId" value="201601" style="width: 100%"
                                    maxlength="16" placeholder="请输入账号"
                                    class="inputstyle2"/>
                         </div>

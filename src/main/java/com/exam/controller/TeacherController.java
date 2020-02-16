@@ -380,8 +380,13 @@ public class TeacherController {
   @ResponseBody
   @PostMapping("/student/save")
   public R saveStudent(Student student) {
-    this.studentService.save(student);
-    return R.success();
+    try {
+      // 调用增加接口，并捕捉学号存在的异常
+      this.studentService.save(student);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 
   /**

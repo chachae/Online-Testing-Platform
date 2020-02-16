@@ -143,11 +143,16 @@ public class QuestionController {
    * @param id 试题ID
    * @return 试题页面
    */
-  @GetMapping("/delete/{id}")
-  public String delete(@PathVariable Integer id) {
-    // 通过 ID 移除试题
-    questionService.removeById(id);
-    return "redirect:/teacher/question";
+  @ResponseBody
+  @PostMapping("/delete/{id}")
+  public R delete(@PathVariable Integer id) {
+    try {
+      // 通过 ID 移除试题
+      questionService.deleteById(id);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 
   /**
