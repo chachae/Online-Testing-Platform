@@ -112,11 +112,11 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     long aNum = 0L;
 
     // 预备用于拼接各科成绩等级分布信息的 StringBuilder 对象
-    StringBuilder sbe = new StringBuilder();
-    StringBuilder sbd = new StringBuilder();
-    StringBuilder sbc = new StringBuilder();
-    StringBuilder sbb = new StringBuilder();
-    StringBuilder sba = new StringBuilder();
+    StringBuilder sbe = StrUtil.builder();
+    StringBuilder sbd = StrUtil.builder();
+    StringBuilder sbc = StrUtil.builder();
+    StringBuilder sbb = StrUtil.builder();
+    StringBuilder sba = StrUtil.builder();
 
     // 预备用于存储分数、等级、结果的集合
     Map<String, Object> scoreMap = Maps.newHashMap();
@@ -178,6 +178,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
     // 新的总成绩
     int score = Integer.parseInt(res.getScore()) - dto.getOldScore() + dto.getNewScore();
+    // 构造条件（学生ID+试卷ID）更新 SQL
     uw.lambda().set(Score::getScore, score);
     uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
     this.scoreMapper.update(null, uw);

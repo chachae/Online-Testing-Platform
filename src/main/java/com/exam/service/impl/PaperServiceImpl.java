@@ -82,14 +82,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     randomQuestions(qSaqNum, paperQuestions, SysConsts.QUESTION.SAQ_TYPE, courseId);
     randomQuestions(qProgramNum, paperQuestions, SysConsts.QUESTION.PROGRAM_TYPE, courseId);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
-    StringBuilder builder = new StringBuilder();
+    StringBuilder sb = new StringBuilder();
     // 通过循环的方式组件试卷题目序号集合
-    for (Integer id : paperQuestions) {
-      String idStr = String.valueOf(id);
-      builder.append(idStr);
-      builder.append(StrUtil.COMMA);
-    }
-    String ids = builder.toString();
+    paperQuestions.forEach(id -> sb.append(id).append(StrUtil.COMMA));
+    String ids = sb.toString();
     // 去除最后一个逗号并封装题序参数
     paper.setQuestionId(ids.substring(0, ids.length() - 1));
     // 将试卷信息插入 paper 表中
@@ -173,10 +169,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
     // 组装错题集合信息
     StringBuilder builder = new StringBuilder();
-    for (String id : wrongIds) {
-      builder.append(id);
-      builder.append(StrUtil.COMMA);
-    }
+    wrongIds.forEach(id -> builder.append(id).append(StrUtil.COMMA));
     // 和上面一样将最后一个逗号去除
     String wrong = builder.toString();
     String wrongResIds = wrong.substring(0, wrong.length() - 1);

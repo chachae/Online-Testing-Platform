@@ -216,8 +216,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 拼接试题 ID 和 逗号
       for (Integer id : idList) {
         String idStr = String.valueOf(id);
-        sb.append(idStr);
-        sb.append(StrUtil.COMMA);
+        sb.append(idStr).append(StrUtil.COMMA);
       }
       String ids = sb.toString();
       // 去除最后一个逗号并封装题序参数

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * 评分工具
@@ -66,19 +67,19 @@ public class PaperMarkUtil {
     int sum = 0;
     // 构建错题集集合
     List<String> wrongIds = Lists.newArrayList();
-    // 判断问题集合不为空
+    // 判断问题集合不为空，空的话说明直接加入错题集
     if (CollUtil.isNotEmpty(set)) {
       // 循环正确答案
       for (Question q : set) {
-        // 从 request 对象中获取参数
+        // 从 request 对象中获取多选题参数
         String[] res = request.getParameterValues(String.valueOf(q.getId()));
         // 没有选答案就给零分
         if (res != null) {
-          String result = StrUtil.EMPTY;
-          // 拼接错题的题目ID
-          for (String s : res) {
-            result = s + StrUtil.COMMA;
-          }
+          StringBuilder sb = StrUtil.builder();
+          // 拼接学生的多选题答案
+          Stream.of(res).forEach(s -> sb.append(s).append(StrUtil.COMMA));
+          // 转 String 类型
+          String result = sb.toString();
           // 去除最后一位的逗号
           result = result.substring(0, result.length() - 1);
           // 计算得分
