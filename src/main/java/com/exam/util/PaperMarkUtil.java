@@ -133,15 +133,16 @@ public class PaperMarkUtil {
         double jcdSimilarity = jaccardSimilarity.apply(res, answer);
         // 计算基于相似系数计算的基础分数（1. 相当于计算关键词的得分）
         double s = jcdSimilarity * score;
-        f += s;
         // 字数不足且分数大于1，扣1分（2. 相当于计算字数）
-        if (res.length() < answer.length() && f > 1) {
-          f -= 1;
+        if (res.length() < answer.length() && s > 1) {
+          s -= 1;
         }
+        f += s;
         // 封装主观题答题记录参数
         StuAnswerRecord stuAnswerRecord = new StuAnswerRecord();
         stuAnswerRecord.setQuestionId(q.getId());
         stuAnswerRecord.setAnswer(res);
+        stuAnswerRecord.setScore((int) s);
         stuAnswerRecords.add(stuAnswerRecord);
       }
       // 格式化分数的类型为 int 类型

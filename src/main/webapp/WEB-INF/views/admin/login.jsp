@@ -8,7 +8,6 @@
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="<c:url value="/webjars/adminlte/2.3.11/bootstrap/css/bootstrap.min.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/static/css/login.css"/>"/>
-    <link href="<c:url value="/static/css/login.css"/>" rel="stylesheet" type="text/css"/>
     <script type="text/javascript"
             src="<c:url value="/webjars/adminlte/2.3.11/plugins/jQuery/jquery-2.2.3.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/static/plugins/jsencrypt/jsencrypt.min.js"/>"></script>

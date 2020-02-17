@@ -157,8 +157,6 @@
             </div>
         </section>
     </div>
-    <!-- 底部 -->
-    <%@ include file="../include/footer.jsp" %>
 </div>
 <!-- 公共 js -->
 <%@ include file="../include/js.jsp" %>

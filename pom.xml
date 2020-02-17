@@ -97,6 +97,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- MySql 驱动 -->
         <dependency>
             <groupId>mysql</groupId>

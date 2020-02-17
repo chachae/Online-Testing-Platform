@@ -123,7 +123,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     Set<Question> qProgramList =
         questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
     // 获取模板各个题型的题目分值
-    int qChoiceScore = NumberUtil.strToInteger(paperForm.getQChoiceNum());
+    int qChoiceScore = NumberUtil.strToInteger(paperForm.getQChoiceScore());
     int qMulChoiceScore = NumberUtil.strToInteger(paperForm.getQMulChoiceScore());
     int qTofScore = NumberUtil.strToInteger(paperForm.getQTofScore());
     int qFillScore = NumberUtil.strToInteger(paperForm.getQFillScore());
@@ -159,7 +159,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       // 封装学生、试卷、分数信息
       record.setPaperId(paperId);
       record.setStuId(stuId);
-      record.setScore(essayMark.getScore());
       stuAnswerRecordMapper.insert(record);
     }
     // 编程题批改
