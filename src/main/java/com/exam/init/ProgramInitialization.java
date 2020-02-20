@@ -46,7 +46,11 @@ public class ProgramInitialization implements ApplicationRunner {
     log.info("开始检测所有考试是否正常结束");
     List<Paper> papers = this.paperService.list();
     for (Paper paper : papers) {
-      if (paper.isEnd() && paper.getPaperState().equals(SysConsts.PAPER.PAPER_STATE_START)) {
+      // 只对正式考试做检测
+      boolean type = paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL);
+      // 只保留未开始状态的检测
+      boolean state = paper.getPaperState().equals(SysConsts.PAPER.PAPER_STATE_START);
+      if (type && state && paper.isEnd()) {
         paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
         paperService.updateById(paper);
         log.info("试卷:{} 状态被修改:{}", paper.getPaperName(), paper.getPaperState());

@@ -3,6 +3,7 @@ package com.exam.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.exam.constant.SysConsts;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -67,9 +68,13 @@ public class Paper extends Model<Paper> {
    * @return true 是的 试卷已经开始 false 否 试卷未开始
    */
   public boolean isStart() {
-    final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-    DateTime beginTime = fmt.parseDateTime(getBeginTime());
-    return beginTime.isBeforeNow();
+    if (getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+      final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+      DateTime beginTime = fmt.parseDateTime(getBeginTime());
+      return beginTime.isBeforeNow();
+    } else {
+      return true;
+    }
   }
 
   /**
@@ -78,8 +83,12 @@ public class Paper extends Model<Paper> {
    * @return true 是的 试卷已经结束 false 否 试卷未结束
    */
   public boolean isEnd() {
-    final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-    DateTime endTime = fmt.parseDateTime(getEndTime());
-    return endTime.isBeforeNow();
+    if (getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+      DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+      DateTime endTime = formatter.parseDateTime(getEndTime());
+      return endTime.isBeforeNow();
+    } else {
+      return true;
+    }
   }
 }
