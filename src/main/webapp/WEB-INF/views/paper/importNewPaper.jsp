@@ -109,11 +109,6 @@
                                 <label for="datepicker2">结束时间</label>
                                 <input type="text" name="endTime" class="form-control" id="datepicker2">
                             </div>
-                            <div class="form-group form_datetime">
-                                <label for="allowTime">考试时长 (示例:120分钟)</label>
-                                <input type="text" id="allowTime" name="allowTime" value="120分钟" required
-                                       class="form-control">
-                            </div>
                             <hr/>
                         </form>
                     </div>

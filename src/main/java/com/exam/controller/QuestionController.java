@@ -45,10 +45,11 @@ public class QuestionController {
    * @return 试题集合页面
    */
   @GetMapping
-  public String list(Page page, Model model, String courseId) {
+  public String list(Page page, Model model, String courseId, String typeId) {
     Integer cid = StrUtil.isBlank(courseId) ? null : Integer.parseInt(courseId);
+    Integer tid = StrUtil.isBlank(typeId) ? null : Integer.parseInt(typeId);
     // 分页查询试题接口
-    PageInfo<Question> pageInfo = questionService.pageForQuestionList(page.getPageNo(), cid);
+    PageInfo<Question> pageInfo = questionService.pageForQuestionList(page.getPageNo(), cid, tid);
     // 设置 model 对象信息
     model.addAttribute("page", pageInfo);
     // 课程集合
@@ -56,9 +57,19 @@ public class QuestionController {
     List<Course> courses = this.courseService.listByTeacherId(id);
     model.addAttribute("courseList", courses);
     // 当前选中课程
-    if (courseId != null) {
+    if (StrUtil.isNotBlank(courseId)) {
       model.addAttribute("curCourseId", courseId);
+    } else {
+      model.addAttribute("curCourseId", "");
     }
+    if (StrUtil.isNotBlank(typeId)) {
+      model.addAttribute("curTypeId", typeId);
+    } else {
+      model.addAttribute("curTypeId", "");
+    }
+    // 调用试题类型集合借口
+    List<Type> typeList = this.typeService.list();
+    model.addAttribute("typeList", typeList);
     return "question/list";
   }
 

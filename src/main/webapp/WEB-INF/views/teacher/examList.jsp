@@ -111,11 +111,6 @@
                         <label>结束时间</label>
                         <input type="text" name="endTime" class="form-control" id="datepicker2">
                     </div>
-                    <div class="form-group form_datetime">
-                        <label>考试时长 (示例:120分钟)</label>
-                        <input type="text" name="allowTime" id="allowTime" class="form-control">
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -166,11 +161,9 @@
         $(".rowDel").click(function () {
             const beginTime = $(this).parents('tr').find('td').eq(2).text();
             const endTime = $(this).parents('tr').find('td').eq(3).text();
-            const allowTime = $(this).parents('tr').find('td').eq(4).text();
             // 模态框赋值
             $('#datepicker').val(beginTime);
             $('#datepicker2').val(endTime);
-            $('#allowTime').val(allowTime);
             $("#modifyModal").modal({
                 show: true,
                 backdrop: 'static'
@@ -183,11 +176,9 @@
                 layer.confirm("确定修改考试时间么?", function () {
                     let begin = $("#datepicker").val();
                     let end = $("#datepicker2").val();
-                    let allow = $("#allowTime").val();
                     $.post("/teacher/editPaper/" + id, {
                         "beginTime": begin,
                         "endTime": end,
-                        "allowTime": allow
                     }).done(function (data) {
                         if (data.state === "success") {
                             layer.msg("修改成功!");

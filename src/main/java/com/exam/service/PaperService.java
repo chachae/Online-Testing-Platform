@@ -2,6 +2,7 @@ package com.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.exam.entity.Paper;
+import com.exam.entity.dto.PaperQuestionUpdateDto;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,14 @@ public interface PaperService extends IService<Paper> {
    * @param paper 试卷信息
    */
   void randomNewPaper(Paper paper);
+
+  /**
+   * 随机组卷
+   *
+   * @param difficulty 指定难度
+   * @param paper 试卷信息
+   */
+  void randomNewPaper(Paper paper, String difficulty);
 
   /**
    * 根据专业班级查找模拟试卷
@@ -93,4 +102,11 @@ public interface PaperService extends IService<Paper> {
    * @return 试卷 List 集合
    */
   List<Paper> selectByMajorId(Integer majorId);
+
+  /**
+   * 更新试卷题目ID
+   *
+   * @param dto 修改的信息
+   */
+  void updateQuestionId(PaperQuestionUpdateDto dto);
 }

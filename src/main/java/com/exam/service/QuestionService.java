@@ -24,9 +24,11 @@ public interface QuestionService extends IService<Question> {
    * 显示试题库并分页
    *
    * @param pageNo 当前页
+   * @param courseId 课程ID
+   * @param typeId 类型ID
    * @return 分页信息结果集
    */
-  PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId);
+  PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId, Integer typeId);
 
   /**
    * 根据paperId和试题类型查找该类型题目集合
@@ -109,4 +111,12 @@ public interface QuestionService extends IService<Question> {
    * @return 题目列表
    */
   List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId);
+
+  /**
+   * 通过课程id查询题目列表
+   *
+   * @param courseId 课程id
+   * @return 题目列表
+   */
+  List<Question> listByCourseId(Integer courseId);
 }

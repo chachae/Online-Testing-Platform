@@ -59,6 +59,15 @@
                                 <option value="模拟">模拟</option>
                             </select>
                         </div>
+                        <div class="form-group form_datetime">
+                            <label for="difficulty">难度</label>
+                            <select class="form-control" name="difficulty" id="difficulty">
+                                <option value="">难度均摊</option>
+                                <option value="1">容易</option>
+                                <option value="2">中等</option>
+                                <option value="3">困难</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="academy">学院</label>
                             <select id="academy" onchange="getAcademy(this.value)" name="academy" class="form-control">
@@ -92,11 +101,6 @@
                         <div class="form-group form_datetime">
                             <label for="datepicker2">结束时间</label>
                             <input type="text" name="endTime" class="form-control" id="datepicker2">
-                        </div>
-                        <div class="form-group form_datetime">
-                            <label for="allowTime">考试时长 (示例:120分钟)</label>
-                            <input type="text" id="allowTime" name="allowTime" value="120分钟" required
-                                   class="form-control">
                         </div>
                         <hr/>
 

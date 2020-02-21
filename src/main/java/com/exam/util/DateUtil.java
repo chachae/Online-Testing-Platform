@@ -1,5 +1,6 @@
 package com.exam.util;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -64,5 +65,15 @@ public class DateUtil {
   public static String getFormatLocalDateTimeStr(String pattern) {
     DateTimeFormatter fmt = DateTimeFormat.forPattern(pattern);
     return fmt.print(LocalDateTime.now());
+  }
+
+  public static DateTime getDateTime(String time) {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    return formatter.parseDateTime(time);
+  }
+
+  public static DateTime getDateTime(String time, String pattern) {
+    DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
+    return formatter.parseDateTime(time);
   }
 }

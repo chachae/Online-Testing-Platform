@@ -93,25 +93,44 @@
                 </div>
                 <div class="box-tools">
                     <div class="box-tools pull-right">
+                        <label for="typeId">类型：</label>
+                        <select class="form-control" name="typeId" id="typeId">
+                            <option value="" selected>全部</option>
+                            <c:forEach items="${typeList}" var="type">
+                                <c:if test="${curTypeId == null}">
+                                    <option value="${type.id}">${type.typeName}</option>
+                                </c:if>
+                                <c:if test="${curTypeId != null}">
+                                    <c:choose>
+                                        <c:when test="${curTypeId == type.id}">
+                                            <option value="${type.id}" selected>${type.typeName}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${type.id}">${type.typeName}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </c:forEach>
+                        </select>
                         <label for="courseId">科目：</label>
                         <select class="form-control" name="courseId" id="courseId">
-                        <option value="" selected>全部</option>
-                        <c:forEach items="${courseList}" var="course">
-                            <c:if test="${curCourseId == null}">
-                                <option value="${course.id}">${course.courseName}</option>
-                            </c:if>
-                            <c:if test="${curCourseId != null}">
-                                <c:choose>
-                                    <c:when test="${curCourseId == course.id}">
-                                        <option value="${course.id}" selected>${course.courseName}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option value="${course.id}">${course.courseName}</option>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:if>
-                        </c:forEach>
-                    </select>
+                            <option value="" selected>全部</option>
+                            <c:forEach items="${courseList}" var="course">
+                                <c:if test="${curCourseId == null}">
+                                    <option value="${course.id}">${course.courseName}</option>
+                                </c:if>
+                                <c:if test="${curCourseId != null}">
+                                    <c:choose>
+                                        <c:when test="${curCourseId == course.id}">
+                                            <option value="${course.id}" selected>${course.courseName}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${course.id}">${course.courseName}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
                 <div class="box-body no-padding">
@@ -136,8 +155,8 @@
                                 <td>${question.questionName}</td>
                                 <td>${question.typeId == '1' ? '单选题' : ''}
                                         ${question.typeId == '2' ? '多选题' : ''}
-                                        ${question.typeId == '3' ? '填空题' : ''}
-                                        ${question.typeId == '4' ? '判断题' : ''}
+                                        ${question.typeId == '3' ? '判断题' : ''}
+                                        ${question.typeId == '4' ? '填空题' : ''}
                                         ${question.typeId == '5' ? '简答题' : ''}
                                         ${question.typeId == '6' ? '编程题' : ''}
                                 </td>
@@ -209,13 +228,21 @@
             window.location.href = "/teacher/question/show/" + id;
         });
 
+        var typeId = "";
         var courseId = "";
+
+
+        $("#typeId").select2({width: "300px"}).change(function () {
+            typeId = $(this).val();
+            console.log(typeId);
+            window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + typeId;
+        })
 
         // 课程筛选
         $("#courseId").select2({width: "300px"}).change(function () {
             courseId = $(this).val();
             console.log(courseId);
-            window.location.href = "/teacher/question?p=1&courseId=" + courseId;
+            window.location.href = "/teacher/question?p=1&courseId=" + courseId + "&typeId=" + "${curTypeId}";
         });
 
         //分页
@@ -226,7 +253,7 @@
             last: '末页',
             prev: '上一页',
             next: '下一页',
-            href: "?p={{number}}&courseId=" + "${curCourseId}",
+            href: "?p={{number}}&courseId=" + "${curCourseId}" + "&typeId=" + "${curTypeId}",
         });
     });
 </script>

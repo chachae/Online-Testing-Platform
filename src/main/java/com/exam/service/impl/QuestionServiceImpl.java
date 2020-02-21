@@ -55,13 +55,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   @Resource private CourseService courseService;
 
   @Override
-  public PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId) {
+  public PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId, Integer typeId) {
     // 获取本人的课程id
     List<Integer> ids = this.selectIdsFilterByTeacherId();
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().in(Question::getCourseId, ids);
+    // 条件情况判断
     if (courseId != null) {
       qw.lambda().eq(Question::getCourseId, courseId);
+    }
+    if (typeId != null) {
+      qw.lambda().eq(Question::getTypeId, typeId);
     }
     // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
@@ -180,6 +184,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   public List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId) {
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getQuestionName, questionName);
+    qw.lambda().eq(Question::getCourseId, courseId);
+    return this.questionMapper.selectList(qw);
+  }
+
+  @Override
+  public List<Question> listByCourseId(Integer courseId) {
+    QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getCourseId, courseId);
     return this.questionMapper.selectList(qw);
   }

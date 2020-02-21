@@ -1,10 +1,12 @@
 package com.exam.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.ImportPaperDto;
+import com.exam.entity.dto.PaperQuestionUpdateDto;
 import com.exam.exception.ServiceException;
 import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 试卷控制层
@@ -73,6 +76,31 @@ public class PaperController {
     model.addAttribute("paper", paper);
     model.addAttribute("course", course);
     model.addAttribute("major", major);
+
+    // 显示试卷信息
+    Set<Question> qChoiceList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
+    Set<Question> qMulChoiceList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+    Set<Question> qTofList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
+    Set<Question> qFillList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
+    Set<Question> qSaqList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
+    Set<Question> qProgramList =
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
+    // 设置 model 对象信息
+    model.addAttribute("qChoiceList", qChoiceList);
+    model.addAttribute("qMulChoiceList", qMulChoiceList);
+    model.addAttribute("qTofList", qTofList);
+    model.addAttribute("qFillList", qFillList);
+    model.addAttribute("qSaqList", qSaqList);
+    model.addAttribute("qProgramList", qProgramList);
+
+    // 题目库
+    List<Question> questions = this.questionService.listByCourseId(paper.getCourseId());
+    model.addAttribute("questionList", questions);
     return "paper/show";
   }
 
@@ -178,7 +206,7 @@ public class PaperController {
    */
   @ResponseBody
   @PostMapping("/newPaper/{paperFormId}")
-  public R add(Paper paper, @PathVariable Integer paperFormId) {
+  public R add(Paper paper, @PathVariable Integer paperFormId, String difficulty) {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     try {
@@ -187,7 +215,13 @@ public class PaperController {
       Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
       // 调用组卷接口
       paper.setTeacherId(teacherId);
-      paperService.randomNewPaper(paper);
+      // 判断是否指定难度
+      if (StrUtil.isBlank(difficulty)) {
+        paperService.randomNewPaper(paper);
+      } else {
+        // 带指定难度的接口
+        paperService.randomNewPaper(paper, difficulty);
+      }
       return R.successWithData(paper.getId());
     } catch (ServiceException e) {
       return R.error(e.getMessage());
@@ -237,5 +271,35 @@ public class PaperController {
     // 级联删除试卷（详见接口实现类）
     paperService.delPaperById(id);
     return "redirect:/teacher/paper";
+  }
+
+  /**
+   * 修改試卷题目答案
+   *
+   * @param question 问题信息
+   * @return 回调信息
+   */
+  @ResponseBody
+  @PostMapping("/updateAnswer")
+  public R updateAnswer(Question question) {
+    this.questionService.updateById(question);
+    return R.success();
+  }
+
+  /**
+   * 修改試卷题目
+   *
+   * @param dto 修改的信息
+   * @return 回调信息
+   */
+  @ResponseBody
+  @PostMapping("/updateQuestion")
+  public R updateQuestionId(PaperQuestionUpdateDto dto) {
+    try {
+      this.paperService.updateQuestionId(dto);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 }

@@ -1,5 +1,6 @@
 package com.exam.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -7,8 +8,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.MarkInfoDto;
+import com.exam.entity.dto.PaperQuestionUpdateDto;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.*;
+import com.exam.mapper.PaperFormMapper;
+import com.exam.mapper.PaperMapper;
+import com.exam.mapper.ScoreMapper;
+import com.exam.mapper.StuAnswerRecordMapper;
 import com.exam.service.PaperService;
 import com.exam.service.QuestionService;
 import com.exam.util.DateUtil;
@@ -18,6 +23,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 试卷批改业务实现
@@ -44,7 +51,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   @Resource private QuestionService questionService;
   @Resource private StuAnswerRecordMapper stuAnswerRecordMapper;
   @Resource private ScoreMapper scoreMapper;
-  @Resource private TeacherMapper teacherMapper;
 
   @Override
   public PageInfo<Paper> pageForPaperList(Integer teacherId, Integer pageNo) {
@@ -82,14 +88,52 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     randomQuestions(qSaqNum, paperQuestions, SysConsts.QUESTION.SAQ_TYPE, courseId);
     randomQuestions(qProgramNum, paperQuestions, SysConsts.QUESTION.PROGRAM_TYPE, courseId);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
+    savePaper(paper, paperQuestions);
+  }
+
+  @Override
+  public void randomNewPaper(Paper paper, String difficulty) {
+    // 获取试卷ID
+    Integer paperFormId = paper.getPaperFormId();
+    // 获取试卷题型信息
+    PaperForm paperForm = paperFormMapper.selectById(paperFormId);
+    // 获取试卷归属的课程 ID
+    Integer courseId = paper.getCourseId();
+    // 根据模板信息获取各类型题目的数量
+    String qChoiceNum = paperForm.getQChoiceNum();
+    String qMulChoiceNum = paperForm.getQMulChoiceNum();
+    String qTofNum = paperForm.getQTofNum();
+    String qFillNum = paperForm.getQFillNum();
+    String qSaqNum = paperForm.getQSaqNum();
+    String qProgramNum = paperForm.getQProgramNum();
+    // 预先准备试卷问题集合
+    List<Integer> qs = Lists.newArrayList();
+    // 为每种题型进行随机组题
+    randomQsWithDif(qChoiceNum, qs, SysConsts.QUESTION.CHOICE_TYPE, courseId, difficulty);
+    randomQsWithDif(qMulChoiceNum, qs, SysConsts.QUESTION.MUL_CHOICE_TYPE, courseId, difficulty);
+    randomQsWithDif(qTofNum, qs, SysConsts.QUESTION.TOF_TYPE, courseId, difficulty);
+    randomQsWithDif(qFillNum, qs, SysConsts.QUESTION.FILL_TYPE, courseId, difficulty);
+    randomQsWithDif(qSaqNum, qs, SysConsts.QUESTION.SAQ_TYPE, courseId, difficulty);
+    randomQsWithDif(qProgramNum, qs, SysConsts.QUESTION.PROGRAM_TYPE, courseId, difficulty);
+    // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
+    savePaper(paper, qs);
+  }
+
+  /**
+   * 试卷保存行为
+   *
+   * @param paper 试卷
+   * @param qs 问题ID集合
+   */
+  private void savePaper(Paper paper, List<Integer> qs) {
     StringBuilder sb = new StringBuilder();
     // 通过循环的方式组件试卷题目序号集合
-    paperQuestions.forEach(id -> sb.append(id).append(StrUtil.COMMA));
+    qs.forEach(id -> sb.append(id).append(StrUtil.COMMA));
     String ids = sb.toString();
     // 去除最后一个逗号并封装题序参数
     paper.setQuestionId(ids.substring(0, ids.length() - 1));
     // 将试卷信息插入 paper 表中
-    paperMapper.insert(paper);
+    this.save(paper);
   }
 
   @Override
@@ -195,6 +239,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   @Override
   public void updateById(Integer id, Paper paper) {
     paper.setId(id);
+    paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
     this.updateById(paper);
   }
 
@@ -221,7 +266,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 查询试卷是否存在
     Paper paper = this.paperMapper.selectById(id);
     if (paper != null) {
-      Teacher teacher = teacherMapper.selectById(paper.getTeacherId());
       // 删除score表中paperId为传入参数的对象
       QueryWrapper<Score> scoreQw = new QueryWrapper<>();
       scoreQw.lambda().eq(Score::getPaperId, id);
@@ -236,7 +280,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       ans.forEach(an -> stuAnswerRecordMapper.deleteById(an.getId()));
       // 删除试卷
       paperMapper.deleteById(id);
-      log.info("教师：{} 删除了试卷：{}", teacher.getName(), paper.getPaperName());
     }
   }
 
@@ -247,6 +290,50 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 只查询正式考试
     qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
     return this.paperMapper.selectList(qw);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updateQuestionId(PaperQuestionUpdateDto dto) {
+    // 查询试卷信息
+    Paper paper = this.paperMapper.selectById(dto.getPaperId());
+    if (ObjectUtil.isEmpty(paper)) {
+      throw new ServiceException("试卷不存在");
+    }
+    // 查询新题目信息
+    Question newQuestion = this.questionService.getById(dto.getNewId());
+    if (ObjectUtil.isEmpty(newQuestion)) {
+      throw new ServiceException("新题目不存在");
+    }
+    // 查询就题目信息，匹配信息
+    Question oldQuestion = this.questionService.getById(dto.getOldId());
+    if (!newQuestion.getTypeId().equals(oldQuestion.getTypeId())) {
+      throw new ServiceException("新题目类型与旧题目类型不匹配");
+    }
+    if (!newQuestion.getCourseId().equals(oldQuestion.getCourseId())) {
+      throw new ServiceException("新题目类型与旧题目所属课程不匹配");
+    }
+    // 更新试卷题目ID
+    String ids = paper.getQuestionId();
+    String[] idStr = StrUtil.splitToArray(ids, StrUtil.C_COMMA);
+    // 转 String 数据
+    // 组装错题集合信息
+    StringBuilder builder = new StringBuilder();
+    for (String s : idStr) {
+      if (s.equals(String.valueOf(dto.getOldId()))) {
+        builder.append(dto.getNewId()).append(StrUtil.COMMA);
+      } else {
+        builder.append(s).append(StrUtil.COMMA);
+      }
+    }
+    // 和上面一样将最后一个逗号去除
+    ids = builder.toString();
+    ids = ids.substring(0, ids.length() - 1);
+    // 插入新数据
+    Paper newPaper = new Paper();
+    newPaper.setId(dto.getPaperId());
+    newPaper.setQuestionId(ids);
+    this.paperMapper.updateById(newPaper);
   }
 
   /**
@@ -278,6 +365,30 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     }
   }
 
+  private void randomQsWithDif(
+      String varQuestionTypeNum,
+      List<Integer> paperQuestionIdList,
+      Integer questionType,
+      Integer courseId,
+      String dif) {
+    int num;
+    // 类型题存在才进行随机抽题
+    if (StrUtil.isNotEmpty(varQuestionTypeNum)) {
+      // 转整型
+      num = Integer.parseInt(varQuestionTypeNum);
+      // 获取类型题的 ID 集合
+      List<Question> qs = questionService.listByTypeIdAndCourseId(questionType, courseId);
+      // 过滤难度
+      qs = qs.stream().filter(q -> q.getDifficulty().equals(dif)).collect(Collectors.toList());
+      List<Integer> idList = Lists.newArrayList();
+      // 循环问题集合获取问题 ID，将 ID 加入idList 中
+      qs.forEach(question -> idList.add(question.getId()));
+      // 随机抽题
+      List<Integer> qChoiceIdList = getRandomIdList(idList, num);
+      paperQuestionIdList.addAll(qChoiceIdList);
+    }
+  }
+
   /**
    * 从所需题型中随机抽出固定数量的题（随机组题核心代码）
    *
@@ -285,7 +396,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
    * @param num 题目数量
    * @return 题目集合
    */
-  private List<Integer> getRandomIdList(List<Integer> ids, Integer num) throws ServiceException {
+  private List<Integer> getRandomIdList(List<Integer> ids, Integer num) {
     // 调用随机数生成工具
     Random random = RandomUtil.getRandom();
     List<Integer> result = Lists.newArrayList();
@@ -293,8 +404,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     for (int i = 0; i < num; i++) {
       try {
         // 利用题序集合长度-1（集合索引范围）作为随机因子，随机取索引值
-        index = random.nextInt(ids.size() - 1);
-        // 从题序集合冲获取该索引的题
+        int bound = ids.size();
+        if (bound <= 1) {
+          index = 0;
+        } else {
+          index = random.nextInt(bound - 1);
+        }
+        // 从题序集合中获取该索引的题
         result.add(ids.get(index));
         // 移除该题序防止题目重复同时保证题序集合长度在安全范围内进行随机取值
         ids.remove(index);
@@ -304,5 +420,34 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       }
     }
     return result;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean save(Paper entity) {
+    // 正式考试才要计算起止时间
+    if (entity.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+      // 計算起止时间
+      String allowTime = calAllowTime(entity.getBeginTime(), entity.getEndTime());
+      entity.setAllowTime(allowTime);
+    }
+    return super.save(entity);
+  }
+
+  /**
+   * 计算考试起止时间
+   *
+   * @param beginTime 开始时间
+   * @param endTime 结束时间
+   * @return 时间长度
+   */
+  private String calAllowTime(String beginTime, String endTime) {
+    // 計算试卷起止时间
+    final String pattern = "yyyy-MM-dd HH:mm";
+    DateTime d1 = DateUtil.getDateTime(beginTime, pattern);
+    DateTime d2 = DateUtil.getDateTime(endTime, pattern);
+    StringBuilder build = StrUtil.builder();
+    // 封装时间
+    return build.append(d2.getMinuteOfDay() - d1.getMinuteOfDay()).append("分钟").toString();
   }
 }
