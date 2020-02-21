@@ -46,4 +46,12 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
     ansQw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
     return stuAnswerRecordMapper.selectList(ansQw);
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteByStuId(Integer stuId) {
+    QueryWrapper<StuAnswerRecord> qw = new QueryWrapper<>();
+    qw.lambda().eq(StuAnswerRecord::getStuId, stuId);
+    this.stuAnswerRecordMapper.delete(qw);
+  }
 }

@@ -21,4 +21,11 @@ public interface StuAnswerRecordService extends IService<StuAnswerRecord> {
    * @return 答题信息
    */
   List<StuAnswerRecord> selectByStuAndPaper(String stuNumber, Integer paperId);
+
+  /**
+   * 通过学生 ID 删除答题记录
+   *
+   * @param stuId 学生ID
+   */
+  void deleteByStuId(Integer stuId);
 }

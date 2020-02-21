@@ -193,6 +193,14 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     return this.scoreMapper.selectOne(qw);
   }
 
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteByStuId(Integer stuId) {
+    QueryWrapper<Score> qw = new QueryWrapper<>();
+    qw.lambda().eq(Score::getStuId, stuId);
+    this.scoreMapper.delete(qw);
+  }
+
   /**
    * 统计各个分数段人数
    *

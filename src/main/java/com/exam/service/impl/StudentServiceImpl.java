@@ -10,6 +10,8 @@ import com.exam.entity.dto.StudentQueryDto;
 import com.exam.entity.vo.StudentVo;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.StudentMapper;
+import com.exam.service.ScoreService;
+import com.exam.service.StuAnswerRecordService;
 import com.exam.service.StudentService;
 import com.exam.util.RsaCipherUtil;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,6 +36,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     implements StudentService {
 
   @Resource private StudentMapper studentMapper;
+  @Resource private StuAnswerRecordService stuAnswerRecordService;
+  @Resource private ScoreService scoreService;
 
   @Override
   public Student login(String stuNumber, String password) throws ServiceException {
@@ -90,6 +95,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   }
 
   @Override
+  public Integer selectCountByMajorId(Integer majorId) {
+    QueryWrapper<Student> qw = new QueryWrapper<>();
+    qw.lambda().eq(Student::getMajorId, majorId);
+    return this.studentMapper.selectCount(qw);
+  }
+
+  @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean save(Student entity) {
     // 检测学号是否存在
@@ -104,5 +116,15 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
       // 调用父级 save 接口
       return super.save(entity);
     }
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean removeById(Serializable id) {
+    // 移除分数和答题记录
+    this.scoreService.deleteByStuId((int) id);
+    this.stuAnswerRecordService.deleteByStuId((int) id);
+    // 调用父级 remove 接口
+    return super.removeById(id);
   }
 }

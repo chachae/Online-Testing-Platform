@@ -62,4 +62,11 @@ public interface ScoreService extends IService<Score> {
    * @return 成绩详情
    */
   Score selectByStuIdAndPaperId(Integer stuId, Integer paperId);
+
+  /**
+   * 通过学生 ID 删除分数
+   *
+   * @param stuId 学生ID
+   */
+  void deleteByStuId(Integer stuId);
 }

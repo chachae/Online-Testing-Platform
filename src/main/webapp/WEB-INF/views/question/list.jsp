@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 題目列表</title>
+    <title>OES | 题目列表</title>
     <!-- Tell the browser to be responsive to screen width -->
     <%@include file="../include/css.jsp" %>
     <style>
@@ -91,6 +91,29 @@
                             新增试题</a>
                     </div>
                 </div>
+                <div class="box-tools">
+                    <div class="box-tools pull-right">
+                        <label for="courseId">科目：</label>
+                        <select class="form-control" name="courseId" id="courseId">
+                        <option value="" selected>全部</option>
+                        <c:forEach items="${courseList}" var="course">
+                            <c:if test="${curCourseId == null}">
+                                <option value="${course.id}">${course.courseName}</option>
+                            </c:if>
+                            <c:if test="${curCourseId != null}">
+                                <c:choose>
+                                    <c:when test="${curCourseId == course.id}">
+                                        <option value="${course.id}" selected>${course.courseName}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${course.id}">${course.courseName}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
+                        </c:forEach>
+                    </select>
+                    </div>
+                </div>
                 <div class="box-body no-padding">
                     <table class="table table-hover">
                         <tbody>
@@ -171,6 +194,7 @@
                     window.location.reload();
                 } else {
                     layer.msg(res.message);
+                    window.location.reload();
                 }
             }
             , error: function (res) {
@@ -185,6 +209,15 @@
             window.location.href = "/teacher/question/show/" + id;
         });
 
+        var courseId = "";
+
+        // 课程筛选
+        $("#courseId").select2({width: "300px"}).change(function () {
+            courseId = $(this).val();
+            console.log(courseId);
+            window.location.href = "/teacher/question?p=1&courseId=" + courseId;
+        });
+
         //分页
         $('#pagination-demo').twbsPagination({
             totalPages: "${page.pages}",
@@ -193,7 +226,7 @@
             last: '末页',
             prev: '上一页',
             next: '下一页',
-            href: "?p={{number}}"
+            href: "?p={{number}}&courseId=" + "${curCourseId}",
         });
     });
 </script>

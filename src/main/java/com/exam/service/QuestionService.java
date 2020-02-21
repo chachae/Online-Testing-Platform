@@ -26,7 +26,7 @@ public interface QuestionService extends IService<Question> {
    * @param pageNo 当前页
    * @return 分页信息结果集
    */
-  PageInfo<Question> pageForQuestionList(Integer pageNo);
+  PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId);
 
   /**
    * 根据paperId和试题类型查找该类型题目集合
@@ -44,6 +44,13 @@ public interface QuestionService extends IService<Question> {
    * @return 课程集合
    */
   List<Course> selectCourseByTeacherId(Integer teacherId);
+
+  /**
+   * 根据教师id查找他教的所有课程ID（可以出题的课程）
+   *
+   * @return 课程 ID 集合
+   */
+  List<Integer> selectIdsFilterByTeacherId();
 
   /**
    * 通过题目类型 ID 和课程 ID 获取问题 List 集合
@@ -93,4 +100,13 @@ public interface QuestionService extends IService<Question> {
    * @param id 试题ID
    */
   void deleteById(Integer id);
+
+  /**
+   * 通过题目名称查询题目列表
+   *
+   * @param questionName 题目名称
+   * @param courseId 课程id
+   * @return 题目列表
+   */
+  List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId);
 }

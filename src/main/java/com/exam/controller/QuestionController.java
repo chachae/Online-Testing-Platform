@@ -1,5 +1,6 @@
 package com.exam.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
@@ -37,18 +38,27 @@ public class QuestionController {
   @Resource private QuestionService questionService;
 
   /**
-   * 试卷 List 集合
+   * 试题 List 集合
    *
    * @param page 当前页
    * @param model model 对象
-   * @return 试卷集合页面
+   * @return 试题集合页面
    */
   @GetMapping
-  public String list(Page page, Model model) {
+  public String list(Page page, Model model, String courseId) {
+    Integer cid = StrUtil.isBlank(courseId) ? null : Integer.parseInt(courseId);
     // 分页查询试题接口
-    PageInfo<Question> pageInfo = questionService.pageForQuestionList(page.getPageNo());
+    PageInfo<Question> pageInfo = questionService.pageForQuestionList(page.getPageNo(), cid);
     // 设置 model 对象信息
     model.addAttribute("page", pageInfo);
+    // 课程集合
+    int id = (int) HttpContextUtil.getSession().getAttribute(SysConsts.SESSION.TEACHER_ID);
+    List<Course> courses = this.courseService.listByTeacherId(id);
+    model.addAttribute("courseList", courses);
+    // 当前选中课程
+    if (courseId != null) {
+      model.addAttribute("curCourseId", courseId);
+    }
     return "question/list";
   }
 

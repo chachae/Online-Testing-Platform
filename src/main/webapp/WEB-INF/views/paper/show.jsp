@@ -82,7 +82,6 @@
                         <tr>
                             <td class="td_title">考试班级: ${major.major}</td>
                         </tr>
-
                     </table>
                 </div>
             </div>

@@ -72,7 +72,9 @@
                                 <td>${major.id}</td>
                                 <td rel="${major.academy.id}">${major.academy.name}</td>
                                 <td>${major.major}</td>
-                                <td><a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                <td>
+                                    <a class="btn btn-success btn-sm editMajor"><i class="fa"></i>编辑</a>
+                                    <a class="btn btn-danger btn-sm delMajor"><i class="fa"></i>删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -169,6 +171,24 @@
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script src="<c:url value="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"/>"></script>
 <script>
+    // 删除专业信息
+    $('.delMajor').click(function () {
+        console.log(12);
+        let majorId = $(this).parents('tr').find('td').eq(1).text();
+        layer.confirm("确定删除专业吗?", function () {
+            $.post("/teacher/major/delete/" + majorId
+            ).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("删除成功!");
+                    window.location.reload();
+                } else {
+                    layer.msg(data.message);
+                }
+            }).error(function () {
+                layer.msg("服务器异常");
+            });
+        });
+    });
     //分页
     $('#pagination-demo').twbsPagination({
         totalPages: "${page.pages}",
@@ -182,7 +202,7 @@
 
     // 模态框
     // 启动修改模态框
-    $(".editStudent").click(function () {
+    $(".editMajor").click(function () {
         $("#modifyModal").modal({
             show: true,
             backdrop: 'static'
@@ -228,6 +248,7 @@
         // select2
         $('#sacademy').select2({width: "100%"});
 
+        // 修改专业信息
         $("#ssaveBtn").click(function () {
             let a = $("#sacademy").val();
             let b = $("#smajor").val();
@@ -237,7 +258,7 @@
                     "major": b,
                 }).done(function (data) {
                     if (data.state === "success") {
-                        layer.msg("修改成功!");
+                        layer.msg("增加成功!");
                         window.location.reload();
                     }
                 }).error(function () {

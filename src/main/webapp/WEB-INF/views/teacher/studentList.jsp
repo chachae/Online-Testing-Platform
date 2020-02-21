@@ -124,7 +124,9 @@
                                 <td rel="${student.majorId}">${student.major.major}</td>
                                 <td>${student.level}</td>
                                 <td>${student.sex}</td>
-                                <td><a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                <td>
+                                    <a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                    <a class="btn btn-danger btn-sm delStudent"><i class="fa"></i>删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -291,9 +293,27 @@
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script src="<c:url value="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"/>"></script>
 <script>
+    // 删除学生
+    $(".delStudent").click(function () {
+        const stuId = $(this).parents('tr').find('td').eq(1).text();
+        layer.confirm("确定删除学生吗?", function () {
+            $.post("/teacher/student/delete/" + stuId).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("删除成功!");
+                    window.location.reload();
+                } else {
+                    layer.msg(data.message);
+                }
+            }).error(function () {
+                layer.msg("服务器异常");
+            });
+        });
+    });
 
+    // select2
     $('#slevel').select2();
     $('#findAcademy').select2();
+
     //分页
     $('#pagination-demo').twbsPagination({
         totalPages: "${page.pages}",

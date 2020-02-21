@@ -58,13 +58,13 @@
                             </tr>
                         </c:if>
                         <c:forEach items="${announceList}" var="announce" varStatus="state">
-                            <tr class="rowDetail success" rel="${announce.id} ">
-                                <th class="td_title ">${state.count}. ${announce.title}</th> <td></td>
-
+                            <tr class="rowDetail success" rel="${announce.id}">
+                                <th class="td_title" width="88%">${announce.id}. ${announce.title}</th>
+                                <th class="td_title">发布日期</th>
                             </tr>
                             <tr>
                                 <td>${announce.content}</td>
-                                <th class="td_title pull-right ">发布日期 :</th> <td><fmt:formatDate value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td><fmt:formatDate value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             </tr>
                         </c:forEach>
                         </tbody>

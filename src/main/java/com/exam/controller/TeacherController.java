@@ -372,6 +372,19 @@ public class TeacherController {
   }
 
   /**
+   * 删除学生
+   *
+   * @param id 学生ID
+   * @return 成功信息
+   */
+  @ResponseBody
+  @PostMapping("/student/delete/{id}")
+  public R deleteStudent(@PathVariable Integer id) {
+    this.studentService.removeById(id);
+    return R.success();
+  }
+
+  /**
    * 增加学生
    *
    * @param student 学生信息
@@ -429,5 +442,22 @@ public class TeacherController {
   public R saveMajor(Major major) {
     this.majorService.save(major);
     return R.success();
+  }
+
+  /**
+   * 删除专业信息
+   *
+   * @param id 专业ID
+   * @return 回调信息
+   */
+  @ResponseBody
+  @PostMapping("/major/delete/{id}")
+  public R deleteMajor(@PathVariable Integer id) {
+    try {
+      this.majorService.removeById(id);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 }

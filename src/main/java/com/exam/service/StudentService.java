@@ -56,4 +56,12 @@ public interface StudentService extends IService<Student> {
    * @return 学生信息
    */
   StudentVo selectVoByStuNumber(String number);
+
+  /**
+   * 通过专业 ID 查询学生数量
+   *
+   * @param majorId 专业ID
+   * @return 学生数量
+   */
+  Integer selectCountByMajorId(Integer majorId);
 }

@@ -16,9 +16,11 @@ import com.exam.mapper.CourseMapper;
 import com.exam.mapper.PaperFormMapper;
 import com.exam.mapper.PaperMapper;
 import com.exam.mapper.QuestionMapper;
+import com.exam.service.CourseService;
 import com.exam.service.QuestionService;
 import com.exam.util.BeanUtil;
 import com.exam.util.FileUtil;
+import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -50,13 +52,23 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   @Resource private CourseMapper courseMapper;
   @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
+  @Resource private CourseService courseService;
 
   @Override
-  public PageInfo<Question> pageForQuestionList(Integer pageNo) {
-    // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 10);
+  public PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId) {
+    // 获取本人的课程id
+    List<Integer> ids = this.selectIdsFilterByTeacherId();
+    QueryWrapper<Question> qw = new QueryWrapper<>();
+    qw.lambda().in(Question::getCourseId, ids);
+    if (courseId != null) {
+      qw.lambda().eq(Question::getCourseId, courseId);
+    }
+    // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
+    PageHelper.startPage(pageNo, 12);
     // 查询试题集合信息
-    List<Question> questionList = questionMapper.selectList(null);
+    // 只查询本人的试题
+    // 过滤课程
+    List<Question> questionList = questionMapper.selectList(qw);
     return new PageInfo<>(questionList);
   }
 
@@ -84,6 +96,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     QueryWrapper<Course> qw = new QueryWrapper<>();
     qw.lambda().eq(Course::getTeacherId, teacherId);
     return this.courseMapper.selectList(qw);
+  }
+
+  @Override
+  public List<Integer> selectIdsFilterByTeacherId() {
+    // 获取 session
+    Integer id = (Integer) HttpContextUtil.getSession().getAttribute(SysConsts.SESSION.TEACHER_ID);
+    List<Course> courses = this.courseService.listByTeacherId(id);
+    List<Integer> ids = Lists.newArrayList();
+    courses.forEach(c -> ids.add(c.getId()));
+    return ids;
   }
 
   @Override
@@ -152,6 +174,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
     // 至此，不存在，执行删除
     this.removeById(id);
+  }
+
+  @Override
+  public List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId) {
+    QueryWrapper<Question> qw = new QueryWrapper<>();
+    qw.lambda().eq(Question::getQuestionName, questionName);
+    qw.lambda().eq(Question::getCourseId, courseId);
+    return this.questionMapper.selectList(qw);
   }
 
   @Override
@@ -241,7 +271,31 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 输出到 Question 的 List 集合中
       List<Question> questions = reader.readAll(Question.class);
       // 通过 lambda 循环的方式将题目数据一次插入 Question 表中
-      questions.forEach(q -> this.questionMapper.insert(q));
+      List<Integer> ids = this.selectIdsFilterByTeacherId();
+      for (Question question : questions) {
+        // 正确答案、难度、所属课程 ID 检测
+        boolean isCourseIdNull = question.getCourseId() == null;
+        boolean isAnsIdNull = question.getDifficulty() == null;
+        boolean isDefIdNull = question.getAnswer() == null;
+        if (isCourseIdNull || isAnsIdNull || isDefIdNull) {
+          throw new ServiceException();
+        }
+        // 过滤同名题目
+        // 题目名称
+        String questionName = question.getQuestionName();
+        // 题目课程id
+        Integer courseId = question.getCourseId();
+        List<Question> result = this.listByQuestionNameAndCourseId(questionName, courseId);
+        if (CollUtil.isEmpty(result)) {
+          // 如果教师包含该课程，则允许插入
+          if (ids.contains(courseId)) {
+            // 插入题目数据
+            this.questionMapper.insert(question);
+          }
+        }
+      }
+    } catch (ServiceException e) {
+      throw new ServiceException("请试题目中是否漏填如下信息（如：课程ID、正确答案、难度）");
     } catch (Exception e) {
       // 捕捉所有可能发生的异常，抛出给控制层处理
       throw new ServiceException("题目解析失败");
