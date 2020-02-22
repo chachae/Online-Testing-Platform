@@ -355,6 +355,21 @@ public class TeacherController {
     model.addAttribute("page", pageInfo);
     model.addAttribute("majorList", majorList);
     model.addAttribute("academyList", academyList);
+
+    // 当前查询的学院 ID
+    if (dto.getAcademyId() != null) {
+      model.addAttribute("curAcademyId", dto.getAcademyId());
+    } else {
+      model.addAttribute("curAcademyId", "");
+    }
+
+    // 当前查询的学院 ID
+    if (dto.getName() != null) {
+      model.addAttribute("curName", dto.getName());
+    } else {
+      model.addAttribute("curName", "");
+    }
+
     return "teacher/studentList";
   }
 
@@ -408,13 +423,19 @@ public class TeacherController {
    * @return 专业管理页面
    */
   @GetMapping("/major")
-  public String listMajor(Page page, Model model) {
+  public String listMajor(Page page, Model model, Major major) {
     // 获取分页专业数据
-    PageInfo<MajorVo> pageInfo = this.majorService.pageForMajorList(page.getPageNo());
+    PageInfo<MajorVo> pageInfo = this.majorService.pageForMajorList(page.getPageNo(), major);
     List<Academy> academies = this.academyService.list();
     // 设置数据 model 对象
     model.addAttribute("page", pageInfo);
     model.addAttribute("academyList", academies);
+    // 设置当前选中的学院id
+    if (major.getAcademyId() != null) {
+      model.addAttribute("curAcademyId", major.getAcademyId());
+    } else {
+      model.addAttribute("curAcademyId", "");
+    }
     return "teacher/majorList";
   }
 

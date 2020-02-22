@@ -18,10 +18,12 @@
 
         th {
             font-size: 14px;
+            text-align: center;
         }
 
         td {
             font-size: 15px;
+            text-align: center;
         }
     </style>
 </head>
@@ -77,7 +79,8 @@
                                 </td>
                                 <td><fmt:formatDate value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                 <td>
-                                    <a href="javascript:;" class="del" rel="${announce.id}">删除</a>
+                                    <button class="edit btn btn-sm btn-dropbox" rel="${announce.id}">编辑</button>
+                                    <a href="javascript:;" class="del btn btn-sm btn-danger" rel="${announce.id}">删除</a>
                                 </td>
                             </tr>
                         </c:forEach>

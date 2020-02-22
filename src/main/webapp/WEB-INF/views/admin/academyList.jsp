@@ -19,12 +19,12 @@
 
         th {
             font-size: 15px;
-            vertical-align: center;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
-            vertical-align: center;
+            text-align: center;
         }
 
     </style>
@@ -53,8 +53,7 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width:10px"></th>
-                            <th>学院 ID</th>
+                            <th>编号</th>
                             <th>学院名称</th>
                             <th>操作
                             <th>
@@ -64,10 +63,10 @@
                                 <td colspan="6">没有学院</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${academyList}" var="academy">
+                        <c:forEach items="${academyList}" var="academy" varStatus="vs">
                             <tr class="rowDetail" rel="${academy.id}">
-                                <td></td>
-                                <td>${academy.id}</td>
+                                <td>${vs.count}</td>
+                                <td hidden="hidden">${academy.id}</td>
                                 <td>${academy.name}</td>
                                 <td><a class="btn btn-success btn-sm editAcademy"><i class="fa"></i>编辑</a>
                                     <a href="javascript:;" class="del btn btn-sm btn-danger" rel="${academy.id}"><i

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -84,8 +85,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   @Override
   public PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto) {
     // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 8);
+    PageHelper.startPage(pageNo, 12);
     List<StudentVo> students = this.studentMapper.listVo(dto);
+    // 按照学院 id 从小到大排序
+    students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
     return new PageInfo<>(students);
   }
 

@@ -15,7 +15,8 @@ public interface MajorService extends IService<Major> {
    * 分页查询专业
    *
    * @param pageNo 当前页
+   * @param major 专业数据
    * @return 专业分页结果集
    */
-  PageInfo<MajorVo> pageForMajorList(Integer pageNo);
+  PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major);
 }

@@ -38,7 +38,8 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">题目详情</h3>
                     <div class="box-tools">
-                        <a href="<c:url value="/teacher/question"/>" class="btn btn-primary btn-sm"><i
+                        <!-- 返回使用返回历史的方法 -->
+                        <a href="javascript:history.back(-1)" class="btn btn-primary btn-sm"><i
                                 class="fa fa-arrow-left"></i> 返回列表</a>
                         <a href="/teacher/question/edit/${question.id}" class="btn bg-purple btn-sm"><i
                                 class="fa fa-pencil"></i> 编辑</a>

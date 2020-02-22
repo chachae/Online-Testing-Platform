@@ -8,19 +8,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 系统公告列表</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <%@include file="../include/css.jsp"%>
+    <%@include file="../include/css.jsp" %>
 
     <style>
 
-        .table>tbody>tr:hover {
+        .table > tbody > tr:hover {
             cursor: pointer;
         }
-        .table>tbody>tr>td {
+
+        .table > tbody > tr > td {
             vertical-align: middle;
         }
+
         th {
             font-size: 16px;
         }
+
         td {
             font-size: 16px;
         }
@@ -32,7 +35,7 @@
 <body class="hold-transition skin-green sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
-    <%@include file="../student/include/header.jsp"%>
+    <%@include file="../student/include/header.jsp" %>
     <!-- 左侧菜单栏 -->
     <jsp:include page="../student/include/sider.jsp">
         <jsp:param name="announce" value="announce"/>
@@ -57,14 +60,17 @@
                                 <td colspan="6">暂无公告信息</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${announceList}" var="announce" varStatus="state">
+                        <c:forEach items="${announceList}" var="announce" varStatus="vs">
                             <tr class="rowDetail success" rel="${announce.id}">
-                                <th class="td_title" width="88%">${announce.id}. ${announce.title}</th>
-                                <th class="td_title">发布日期</th>
+                                <th class="td_title">${vs.count}. ${announce.title} <span class="pull-right">
+                                    发布时间：
+                                    <fmt:formatDate
+                                            value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                </span>
+                                </th>
                             </tr>
                             <tr>
                                 <td>${announce.content}</td>
-                                <td><fmt:formatDate value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -78,10 +84,10 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <%@include file="../include/footer.jsp"%>
+    <%@include file="../include/footer.jsp" %>
 </div>
 <!-- ./wrapper -->
-<%@include file="../include/js.jsp"%>
+<%@include file="../include/js.jsp" %>
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script>
     $(function () {

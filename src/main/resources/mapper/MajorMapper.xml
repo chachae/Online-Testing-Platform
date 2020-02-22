@@ -13,15 +13,16 @@
     </resultMap>
 
     <sql id="baseSql">
-        select m.id, m.major, m.academy_id,a.id as a_id,a.name as a_name from major m
-        left join  academy a on m.academy_id = a.id
+        select m.id, m.major, m.academy_id, a.id as a_id, a.name as a_name
+        from major m
+                 left join academy a on m.academy_id = a.id
     </sql>
 
     <select id="listVo" parameterType="Major" resultMap="voResultMap">
         <include refid="baseSql"/>
         <where>
             <if test="academyId != null">
-                m.academy_id = #{id,jdbcType=INTEGER}
+                m.academy_id = #{academyId,jdbcType=INTEGER}
             </if>
             <if test="major != null and major != ''">
                 and m.major like concat('%',#{major,jdbcType=VARCHAR},'%')

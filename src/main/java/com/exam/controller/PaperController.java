@@ -76,20 +76,19 @@ public class PaperController {
     model.addAttribute("paper", paper);
     model.addAttribute("course", course);
     model.addAttribute("major", major);
-
     // 显示试卷信息
     Set<Question> qChoiceList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
     Set<Question> qMulChoiceList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
     Set<Question> qTofList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
     Set<Question> qFillList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
     Set<Question> qSaqList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
     Set<Question> qProgramList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
+            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
     // 设置 model 对象信息
     model.addAttribute("qChoiceList", qChoiceList);
     model.addAttribute("qMulChoiceList", qMulChoiceList);
@@ -97,10 +96,6 @@ public class PaperController {
     model.addAttribute("qFillList", qFillList);
     model.addAttribute("qSaqList", qSaqList);
     model.addAttribute("qProgramList", qProgramList);
-
-    // 题目库
-    List<Question> questions = this.questionService.listByCourseId(paper.getCourseId());
-    model.addAttribute("questionList", questions);
     return "paper/show";
   }
 

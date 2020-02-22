@@ -7,20 +7,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 课程列表</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <%@include file="../include/css.jsp"%>
+    <%@include file="../include/css.jsp" %>
 
     <style>
-        .table>tbody>tr:hover {
+        .table > tbody > tr:hover {
             cursor: pointer;
         }
-        .table>tbody>tr>td {
+
+        .table > tbody > tr > td {
             vertical-align: middle;
         }
+
         th {
             font-size: 15px;
+            text-align: center;
         }
+
         td {
             font-size: 16px;
+            text-align: center;
         }
 
     </style>
@@ -30,7 +35,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
-    <%@include file="../teacher/include/header.jsp"%>
+    <%@include file="../teacher/include/header.jsp" %>
     <!-- 左侧菜单栏 -->
     <jsp:include page="../teacher/include/sider.jsp">
         <jsp:param name="menu" value="course"/>
@@ -44,15 +49,15 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">课程管理</h3>
                     <div class="box-tools pull-right">
-                        <a id="addBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增课程</a>
+                        <a id="addBtn" class="btn btn-vk btn-sm"><i class="fa fa-plus"></i> 新增课程</a>
                     </div>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width: 10px"></th>
-                            <th>课程编号</th>
+                            <th >序号</th>
+                            <th>课程统一编号</th>
                             <th>课程名称</th>
                             <th>操作</th>
                         </tr>
@@ -61,12 +66,12 @@
                                 <td colspan="6">老师您还未添加课程</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${courseList}" var="course">
+                        <c:forEach items="${courseList}" var="course" varStatus="vs">
                             <tr class="rowDetail" rel="${course.id}">
-                                <td></td>
-                                <td>&nbsp${course.id}</td>
+                                <td>${vs.count}</td>
+                                <td>${course.id}</td>
                                 <td>${course.courseName}</td>
-                                <td><a class="rowDel" rel="${course.id}">删除</a></td>
+                                <td><a class="rowDel fa fa-remove btn btn-danger" rel="${course.id}"> 删除</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -80,19 +85,20 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <%@include file="../include/footer.jsp"%>
+    <%@include file="../include/footer.jsp" %>
     <!-- 新增课程模态框 -->
     <div class="modal fade" id="newCourse">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                    </button>
                     <h4 class="modal-title">新增课程</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">课程名称</label>
-                        <div class="col-sm-8">
+                        <div class="table">
+                            <label for="courseName">课程名称</label>
                             <input type="text" class="form-control" name="courseName" id="courseName">
                         </div>
                     </div>
@@ -106,7 +112,7 @@
     </div><!-- /.modal -->
 </div>
 <!-- ./wrapper -->
-<%@include file="../include/js.jsp"%>
+<%@include file="../include/js.jsp" %>
 <script src="<c:url value="/static/plugins/jquery-validation/jquery.validate.js"/>"></script>
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script>
@@ -116,7 +122,7 @@
             var id = $(this).attr("rel");
             layer.confirm("确定删除该课程么?", function () {
                 $.get("/teacher/course/del/" + id).done(function (data) {
-                    if(data.state === "success") {
+                    if (data.state === "success") {
                         layer.msg("删除成功!");
                         window.location.href = "/teacher/course/list";
                     } else {
@@ -131,8 +137,8 @@
         //添加课程
         $("#addBtn").click(function () {
             $("#newCourse").modal({
-                show : true,
-                backdrop : 'static'
+                show: true,
+                backdrop: 'static'
             });
         });
 
@@ -141,7 +147,7 @@
             layer.confirm("确定添加该课程?", function () {
                 var teacherId = ${sessionScope.get('teacherId')};
                 $.get("/teacher/course/new", {"courseName": courseName, "teacherId": teacherId}).done(function (data) {
-                    if(data.state === "success") {
+                    if (data.state === "success") {
                         layer.msg("添加成功!");
                         window.location.href = "/teacher/course/list";
                     }

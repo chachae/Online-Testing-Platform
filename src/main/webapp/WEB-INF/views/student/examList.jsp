@@ -15,15 +15,17 @@
         }
 
         .table > tbody > tr > td {
-            vertical-align: middle;
+            text-align: center;
         }
 
         th {
             font-size: 16px;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
+            text-align: center;
         }
 
     </style>
@@ -52,15 +54,16 @@
                         <tbody>
                         <c:if test="${empty paperList}">
                             <tr>
-                                <td colspan="6">暂无考试</td>
+                                <td colspan="6">暂无正式考试</td>
                             </tr>
                         </c:if>
                         <c:if test="${not empty paperList}">
                             <tr>
-                                <th width="10"></th>
+                                <th>序号</th>
                                 <th>试卷名称</th>
                                 <th>开考时间</th>
                                 <th>结束时间</th>
+                                <th>操作</th>
                             </tr>
                         </c:if>
                         <c:forEach items="${paperList}" var="paper" varStatus="state">
@@ -103,12 +106,12 @@
                         <tbody>
                         <c:if test="${empty practicePaperList}">
                             <tr>
-                                <td colspan="6">暂无考试</td>
+                                <td colspan="6">暂无模拟考试</td>
                             </tr>
                         </c:if>
                         <c:if test="${not empty practicePaperList}">
                             <tr>
-                                <th width="10"></th>
+                                <th>序号</th>
                                 <th>试卷名称</th>
                             </tr>
                         </c:if>
@@ -136,11 +139,6 @@
 <script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
 <script src="<c:url value="/static/plugins/moment/moment.js"/>"></script>
 <script src="<c:url value="/static/plugins/jquery-countdown/jquery.countdown.min.js"/>"></script>
-<script>
-    $(function () {
-
-    });
-</script>
 </body>
 </html>
 

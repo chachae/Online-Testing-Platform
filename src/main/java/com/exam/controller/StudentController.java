@@ -1,6 +1,7 @@
 package com.exam.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.ChangePassDto;
@@ -30,6 +31,7 @@ import java.util.Set;
 @Controller
 public class StudentController {
 
+  @Resource private MajorService majorService;
   @Resource private PaperService paperService;
   @Resource private ScoreService scoreService;
   @Resource private CourseService courseService;
@@ -284,5 +286,57 @@ public class StudentController {
         return "student/home";
       }
     }
+  }
+
+  /**
+   * 试卷详情
+   *
+   * @param id 分数id
+   * @param model model 对象
+   * @return 详情
+   */
+  @GetMapping("/student/score/detail/{id}")
+  public String scoreDetail(@PathVariable Integer id, Model model) {
+    // id = score表对应id，设置 model 对象信息
+    Score score = this.scoreService.getById(id);
+    // 设置试卷信息
+    Integer paperId = score.getPaperId();
+    Paper paper = this.paperService.getById(paperId);
+
+    // 显示试卷信息
+    Set<Question> qChoiceList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
+    Set<Question> qMulChoiceList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+    Set<Question> qTofList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
+    Set<Question> qFillList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
+    Set<Question> qSaqList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
+    Set<Question> qProgramList =
+        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
+    // 设置 model 对象信息
+    model.addAttribute("qChoiceList", qChoiceList);
+    model.addAttribute("qMulChoiceList", qMulChoiceList);
+    model.addAttribute("qTofList", qTofList);
+    model.addAttribute("qFillList", qFillList);
+    model.addAttribute("qSaqList", qSaqList);
+    model.addAttribute("qProgramList", qProgramList);
+
+    // 设置分数和试卷 model 信息
+    model.addAttribute("score", score);
+    model.addAttribute("paper", paper);
+
+    // 设置课程和专业 model
+    model.addAttribute("course", courseService.getById(paper.getCourseId()));
+    model.addAttribute("major", majorService.getById(paper.getMajorId()));
+
+    // 改造后的错题id
+    StringBuilder builder = StrUtil.builder();
+    String wrongIds =
+        builder.append(StrUtil.COMMA).append(score.getWrongIds()).append(StrUtil.COMMA).toString();
+    model.addAttribute("wrongList", wrongIds);
+    return "/student/scoreDetail";
   }
 }

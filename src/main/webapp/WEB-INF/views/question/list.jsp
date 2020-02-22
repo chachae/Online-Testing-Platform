@@ -24,10 +24,12 @@
 
         th {
             font-size: 14px;
+            text-align: center;
         }
 
         td {
-            font-size: 15px;
+            font-size: 14px;
+            text-align: center;
         }
 
     </style>
@@ -137,9 +139,8 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width: 10px"></th>
-                            <th>题目编号</th>
-                            <th>题目名称</th>
+                            <th style="text-align: left">题目编号</th>
+                            <th style="text-align: left">题目名称</th>
                             <th>题目类型</th>
                             <th>难易程度</th>
                         </tr>
@@ -150,9 +151,8 @@
                         </c:if>
                         <c:forEach items="${page.list}" var="question">
                             <tr class="rowDetail" rel="${question.id}">
-                                <td></td>
-                                <td>${question.id}</td>
-                                <td>${question.questionName}</td>
+                                <td style="text-align: left">${question.id}</td>
+                                <td style="text-align: left">${question.questionName}</td>
                                 <td>${question.typeId == '1' ? '单选题' : ''}
                                         ${question.typeId == '2' ? '多选题' : ''}
                                         ${question.typeId == '3' ? '判断题' : ''}
@@ -232,14 +232,14 @@
         var courseId = "";
 
 
-        $("#typeId").select2({width: "300px"}).change(function () {
+        $("#typeId").select2({width: "200px"}).change(function () {
             typeId = $(this).val();
             console.log(typeId);
             window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + typeId;
         })
 
         // 课程筛选
-        $("#courseId").select2({width: "300px"}).change(function () {
+        $("#courseId").select2({width: "200px"}).change(function () {
             courseId = $(this).val();
             console.log(courseId);
             window.location.href = "/teacher/question?p=1&courseId=" + courseId + "&typeId=" + "${curTypeId}";

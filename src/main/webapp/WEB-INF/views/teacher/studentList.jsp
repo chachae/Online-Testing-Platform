@@ -1,5 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,14 +20,12 @@
 
         th {
             font-size: 15px;
-            vertical-align: center;
-            align-content: center;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
-            vertical-align: center;
-            align-content: center;
+            text-align: center;
         }
     </style>
 </head>
@@ -45,67 +44,61 @@
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">学生查询</h3>
-                    <div class="box-tools pull-right">
-                        <a href="<c:url value="/teacher/student"/>" class="btn btn-success btn-sm"><i
-                                class="fa  fa-refresh"></i> 刷新</a>
-                    </div>
-                </div>
-                <div class="box-body no-padding">
-                    <form type="get" action="<c:url value="/teacher/student"/>">
-                        <table class="table table-hover" width="100%" style="table-layout:fixed">
-                            <tr class="rowDetail">
-                                <td width="100">
-                                    <label for="stuName"> 姓名：</label>
-                                    <input width="100px" class="form-control find" id="stuName" name="name" type="text">
-                                </td>
-                                <td width="100">
-                                    <label for="findAcademy">学院</label>
-                                    <select id="findAcademy" name="academyId" class="form-control academy find"
-                                            onchange="getAcademy(this.value)">
-                                        <option value="">请选择</option>
-                                        <c:forEach items="${academyList}" var="academy">
-                                            <option value="${academy.id}">${academy.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </td>
-                                <td width="100">
-                                    <label for="findMajor">专业</label>
-                                    <select id="findMajor" name="majorId" class="form-control major find"
-                                            aria-selected="">
-                                        <option value="">请选择</option>
-                                    </select>
-                                </td>
-                                <td width="100">
-                                    <label for="goBtn"></label>
-                                    <button type="submit" class="btn btn-block btn-primary" id="goBtn" name="goBtn">查询
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
-                    </form>
-                </div>
-                <!-- /.box-body -->
-            </div>
-            <!-- Default box -->
-            <div class="box">
-                <div class="box-header with-border">
                     <h3 class="box-title">学生管理</h3>
                     <div class="box-tools pull-right">
                         <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增学生</a>
+                        <a class="btn btn-vk btn-sm" href="<c:url value="/teacher/student"/>"><i
+                                class="fa fa-refresh"></i> 刷新数据</a>
                     </div>
                 </div>
+                <div class="with-border">
+                    <div class="box-tools pull-right input-group">
+                        <label for="findAcademy">所属学院：</label>
+                        <select class="form-control pull-right" name="findAcademy" id="findAcademy">
+                            <option value="" selected>全部</option>
+                            <c:forEach items="${academyList}" var="academy">
+                                <c:if test="${curAcademyId == null}">
+                                    <option value="${academy.id}">${academy.name}</option>
+                                </c:if>
+                                <c:if test="${curAcademyId != null}">
+                                    <c:choose>
+                                        <c:when test="${curAcademyId == academy.id}">
+                                            <option value="${academy.id}" selected>${academy.name}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${academy.id}">${academy.name}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </c:forEach>
+                        </select>
+                        <button id="findNameBtn" class="pull-right btn btn-primary btn-flat" style="width:80px">搜索
+                        </button>
+                        <label for="findName">姓名：</label>
+                        <c:choose>
+                            <c:when test="${curName == null}">
+                                <input id="findName" class="form-control pull-right form-control-static"
+                                       type="text">
+                            </c:when>
+                            <c:otherwise>
+                                <input id="findName" class="form-control pull-right form-control-static"
+                                       type="text" value="${curName}">
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+
+
                 <div class="box-body no-padding">
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th width="10"></th>
-                            <th>学生ID</th>
+                            <th>序号</th>
                             <th>姓名</th>
                             <th>学号</th>
-                            <th>学院</th>
-                            <th>专业</th>
                             <th>年级</th>
+                            <th>所属学院</th>
+                            <th>所属专业</th>
                             <th>性别</th>
                             <th>操作</th>
                         </tr>
@@ -114,15 +107,15 @@
                                 <td colspan="6">没有学生</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${page.list}" var="student">
+                        <c:forEach items="${page.list}" var="student" varStatus="vs">
                             <tr class="rowDetail" rel="${student.stuNumber}">
-                                <td></td>
-                                <td>${student.id}</td>
+                                <td>${vs.count}</td>
+                                <td hidden="hidden">${student.id}</td>
                                 <td>${student.name}</td>
                                 <td>${student.stuNumber}</td>
+                                <td>${student.level} 级</td>
                                 <td rel="${student.academy.id}">${student.academy.name}</td>
                                 <td rel="${student.majorId}">${student.major.major}</td>
-                                <td>${student.level}</td>
                                 <td>${student.sex}</td>
                                 <td>
                                     <a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
@@ -310,20 +303,24 @@
         });
     });
 
+    // 搜索
+    $('#findName').css("width", "200px");
+
+    $('#findNameBtn').click(function () {
+        const name = $('#findName').val();
+        console.log(name);
+        window.location.href = "/teacher/student?academyId=" + "${curAcademyId}" + "&name=" + name
+    })
+
+    // 搜索
+    $('#findAcademy').select2({width: "200px"}).change(function () {
+        const id = $('#findAcademy').val();
+        console.log(id);
+        window.location.href = "/teacher/student?academyId=" + id + "&name=" + "${curName}"
+    });
+
     // select2
     $('#slevel').select2();
-    $('#findAcademy').select2();
-
-    //分页
-    $('#pagination-demo').twbsPagination({
-        totalPages: "${page.pages}",
-        visiblePages: 3,
-        first: '首页',
-        last: '末页',
-        prev: '上一页',
-        next: '下一页',
-        href: "?p={{number}}"
-    });
 
     //回填的二级类别值
     function getAcademy2(id) {
@@ -354,15 +351,15 @@
         const stuId = $(this).parents('tr').find('td').eq(1).text();
         const name = $(this).parents('tr').find('td').eq(2).text();
         const stuNumber = $(this).parents('tr').find('td').eq(3).text();
-        const academyId = $(this).parents('tr').find('td').eq(4).attr("rel");
-        const majorId = $(this).parents('tr').find('td').eq(5).attr("rel");
-        const major = $(this).parents('tr').find('td').eq(5).text();
-        const level = $(this).parents('tr').find('td').eq(6).text();
+        const academyId = $(this).parents('tr').find('td').eq(5).attr("rel");
+        const majorId = $(this).parents('tr').find('td').eq(6).attr("rel");
+        const major = $(this).parents('tr').find('td').eq(6).text();
+        const level = $(this).parents('tr').find('td').eq(4).text();
         const sex = $(this).parents('tr').find('td').eq(7).text();
         $('#id').val(stuId);
         $('#name').val(name);
         $('#stuNumber').val(stuNumber);
-        $('.level').val(level).select2();
+        $('.level').val(level.substring(0, 2)).select2();
         $('#sex').val(sex).select2();
         $('#academy').val(academyId).select2();
 
@@ -452,6 +449,17 @@
                 });
             });
         });
+    });
+
+    //分页
+    $('#pagination-demo').twbsPagination({
+        totalPages: "${page.pages}",
+        visiblePages: 3,
+        first: '首页',
+        last: '末页',
+        prev: '上一页',
+        next: '下一页',
+        href: "?p={{number}}&academyId=" + "${curAcademyId}" + "&name=" + "${curName}"
     });
 </script>
 </body>

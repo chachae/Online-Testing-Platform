@@ -19,8 +19,11 @@ spring:
 
   # 数据源配置
   datasource:
+
+    driverClassName: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
     # 数据库访问地址
-    url: jdbc:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    # url: jdbc:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
     # 数据库驱动
     # driver-class-name: com.mysql.jdbc.Driver
     #数据库账号

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,10 +36,12 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
   @Resource private StudentService studentService;
 
   @Override
-  public PageInfo<MajorVo> pageForMajorList(Integer pageNo) {
-    // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 8);
-    List<MajorVo> majors = this.majorMapper.listVo(null);
+  public PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major) {
+    // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
+    PageHelper.startPage(pageNo, 12);
+    List<MajorVo> majors = this.majorMapper.listVo(major);
+    // 根据学院 ID 从小到大排序
+    majors.sort(Comparator.comparingInt(MajorVo::getAcademyId));
     return new PageInfo<>(majors);
   }
 

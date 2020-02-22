@@ -61,14 +61,17 @@
                                 <td colspan="6">暂无公告信息</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${announceList}" var="announce" varStatus="state">
+                        <c:forEach items="${announceList}" var="announce" varStatus="vs">
                             <tr class="rowDetail success" rel="${announce.id}">
-                                <th class="td_title" width="88%">${announce.id}. ${announce.title}</th>
-                                <th class="td_title">发布日期</th>
+                                <th class="td_title">${vs.count}. ${announce.title} <span class="pull-right">
+                                    发布时间：
+                                    <fmt:formatDate
+                                            value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                </span>
+                                </th>
                             </tr>
                             <tr>
                                 <td>${announce.content}</td>
-                                <td><fmt:formatDate value="${announce.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             </tr>
                         </c:forEach>
                         </tbody>

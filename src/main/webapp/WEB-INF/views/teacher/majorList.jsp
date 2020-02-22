@@ -14,17 +14,17 @@
         }
 
         .table > tbody > tr > td {
-            vertical-align: middle;
+            text-align: center;
         }
 
         th {
             font-size: 15px;
-            vertical-align: center;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
-            vertical-align: center;
+            text-align: center;
         }
     </style>
 
@@ -47,15 +47,37 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">专业管理</h3>
                     <div class="box-tools pull-right">
-                        <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增专业</a>
+                        <a id="newBtn" class="btn btn-vk btn-sm"><i class="fa fa-plus-circle"></i> 新增专业</a>
+                    </div>
+                </div>
+                <div class="with-border">
+                    <div class="box-tools pull-right">
+                        <label for="findAcademy">所属学院：</label>
+                        <select class="form-control" name="findAcademy" id="findAcademy">
+                            <option value="" selected>全部</option>
+                            <c:forEach items="${academyList}" var="academy">
+                                <c:if test="${curAcademyId == null}">
+                                    <option value="${academy.id}">${academy.name}</option>
+                                </c:if>
+                                <c:if test="${curAcademyId != null}">
+                                    <c:choose>
+                                        <c:when test="${curAcademyId == academy.id}">
+                                            <option value="${academy.id}" selected>${academy.name}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${academy.id}">${academy.name}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width:10px"></th>
-                            <th>专业ID</th>
+                            <th>序号</th>
                             <th>所属学院</th>
                             <th>专业名称</th>
                             <th>操作
@@ -66,10 +88,10 @@
                                 <td colspan="6">没有专业</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${page.list}" var="major">
+                        <c:forEach items="${page.list}" var="major" varStatus="vs">
                             <tr class="rowDetail" rel="${major.id}">
-                                <td></td>
-                                <td>${major.id}</td>
+                                <td>${vs.count}</td>
+                                <td hidden="hidden">${major.id}</td>
                                 <td rel="${major.academy.id}">${major.academy.name}</td>
                                 <td>${major.major}</td>
                                 <td>
@@ -189,16 +211,6 @@
             });
         });
     });
-    //分页
-    $('#pagination-demo').twbsPagination({
-        totalPages: "${page.pages}",
-        visiblePages: 3,
-        first: '首页',
-        last: '末页',
-        prev: '上一页',
-        next: '下一页',
-        href: "?p={{number}}"
-    });
 
     // 模态框
     // 启动修改模态框
@@ -236,8 +248,6 @@
         });
     });
 
-    // ------------------------------------------------
-
     // 启动模态框
     $("#newBtn").click(function () {
         $("#saveModal").modal({
@@ -266,6 +276,28 @@
                 });
             });
         });
+    });
+
+    // 检索部分
+
+    // 分学院搜索
+    $("#findAcademy").select2({
+        width: "200px"
+    }).change(function () {
+        // 调用接口
+        var id = $('#findAcademy').val();
+        window.location.href = "/teacher/major?p=1&academyId=" + id
+    })
+
+    //分页
+    $('#pagination-demo').twbsPagination({
+        totalPages: "${page.pages}",
+        visiblePages: 5,
+        first: '首页',
+        last: '末页',
+        prev: '上一页',
+        next: '下一页',
+        href: "?p={{number}}&academyId=" + "${curAcademyId}"
     });
 </script>
 </body>

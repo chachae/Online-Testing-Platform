@@ -284,11 +284,12 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 通过 lambda 循环的方式将题目数据一次插入 Question 表中
       List<Integer> ids = this.selectIdsFilterByTeacherId();
       for (Question question : questions) {
-        // 正确答案、难度、所属课程 ID 检测
+        // 正确答案、难度、所属课程、类型 ID 检测
+        boolean isTypeIdNull = question.getTypeId() == null;
         boolean isCourseIdNull = question.getCourseId() == null;
         boolean isAnsIdNull = question.getDifficulty() == null;
         boolean isDefIdNull = question.getAnswer() == null;
-        if (isCourseIdNull || isAnsIdNull || isDefIdNull) {
+        if (isTypeIdNull || isCourseIdNull || isAnsIdNull || isDefIdNull) {
           throw new ServiceException();
         }
         // 过滤同名题目
@@ -306,7 +307,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
       }
     } catch (ServiceException e) {
-      throw new ServiceException("请试题目中是否漏填如下信息（如：课程ID、正确答案、难度）");
+      throw new ServiceException("请检查试题中是否漏填如下信息（课程ID、正确答案、难度、类型）");
     } catch (Exception e) {
       // 捕捉所有可能发生的异常，抛出给控制层处理
       throw new ServiceException("题目解析失败");

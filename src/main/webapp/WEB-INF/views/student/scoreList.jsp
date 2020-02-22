@@ -21,10 +21,12 @@
 
         th {
             font-size: 16px;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
+            text-align: center;
         }
 
     </style>
@@ -44,7 +46,6 @@
     <div class="content-wrapper">
         <!-- Main content -->
         <section class="content">
-
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
@@ -62,18 +63,23 @@
                         </c:if>
                         <c:if test="${not empty scoreList}">
                             <tr>
-                                <th width="10"></th>
+                                <th>序号</th>
                                 <th>试卷名称</th>
                                 <th>考试分数</th>
                                 <th>错题ID集合</th>
+                                <th>操作
+                                <th>
                             </tr>
                         </c:if>
                         <c:forEach items="${scoreList}" var="score" varStatus="state">
                             <tr class="rowDetail" rel="${score.id}">
                                 <td>${state.count}</td>
                                 <td>${score.paperName}</td>
-                                <td>&nbsp; &nbsp; &nbsp; ${score.score}</td>
-                                <td>&nbsp; &nbsp; ${score.wrongIds}</td>
+                                <td>${score.score} 分</td>
+                                <td>${score.wrongIds}</td>
+                                <td>
+                                    <button class="btn btn-vk detailBtn">查看试卷详情</button>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -93,10 +99,11 @@
 <script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <script>
-    $(function () {
-
-
-    });
+    $('.detailBtn').click(function () {
+        var id = $(this).parents('tr').eq(0).attr('rel');
+        console.log(id);
+        window.location.href = "/student/score/detail/" + id;
+    })
 </script>
 </body>
 </html>
