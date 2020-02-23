@@ -40,8 +40,8 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
     // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
     List<MajorVo> majors = this.majorMapper.listVo(major);
-    // 根据学院 ID 从小到大排序
-    majors.sort(Comparator.comparingInt(MajorVo::getAcademyId));
+    // 根据 ID 从小到大排序
+    majors.sort(Comparator.comparingInt(MajorVo::getId));
     return new PageInfo<>(majors);
   }
 

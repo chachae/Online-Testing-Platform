@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class AnswerEditDto extends BaseEntity {
 
-  // 题目id
+  // 答题记录编号 id
   private Integer id;
   // 旧的成绩
   private Integer oldScore;

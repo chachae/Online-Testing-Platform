@@ -35,7 +35,6 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label style="color: #af0000">注意: 试卷 Excel 的命名格式（示例：考试名称+专业代码+课程代码，[ 期中考试+1+2.xls ]）</label><br>
                         <label style="color: #af0000">注意：题目类型代码，[ 单选题-1，多选题-2，判断题-3，填空题-4，主观题-5，编程题-6 ]</label><br>
                         <label style="color: #af0000">注意：题目难度，[ 简单-1，中等-2，困难-3 ]</label>
                     </div>

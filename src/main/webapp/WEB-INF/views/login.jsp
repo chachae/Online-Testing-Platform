@@ -79,6 +79,11 @@
                                    class="button_blue " value="立即登录"/>
                         </div>
                     </li>
+                    <li>
+                        <div class="box-footer">
+                            <a class="pull-right" href="<c:url value="/admin/login"/>">我是管理员？点击这里进行登录</a>
+                        </div>
+                    </li>
                 </ul>
             </form>
         </div>
@@ -115,6 +120,11 @@
                         <div class="box-footer">
                             <input type="submit" id="reg" style="width: 100%"
                                    class="button_blue" value="立即登录"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="box-footer">
+                            <a class="pull-right" href="<c:url value="/admin/login"/>">我是管理员？点击这里进行登录</a>
                         </div>
                     </li>
                 </ul>

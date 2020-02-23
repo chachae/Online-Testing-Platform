@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -117,6 +118,8 @@ public class AdminController {
   public String announceList(Model model) {
     // 调用公告列表查询接口
     List<Announce> announceList = this.announceService.list();
+    // 按照时间排序
+    announceList.sort(Comparator.comparing(Announce::getCreateTime));
     model.addAttribute("announceList", announceList);
     return "admin/announceList";
   }
@@ -155,6 +158,20 @@ public class AdminController {
   public R delAnnounce(Integer id) {
     // 调用公告删除接口
     this.announceService.removeById(id);
+    return R.success();
+  }
+
+  /**
+   * 更新单个公告
+   *
+   * @param announce 公告信息
+   * @return 成功信息
+   */
+  @PostMapping("/announce/update")
+  @ResponseBody
+  public R updateAnnounce(Announce announce) {
+    // 调用公告删除接口
+    this.announceService.updateById(announce);
     return R.success();
   }
 
@@ -214,6 +231,25 @@ public class AdminController {
     try {
       // 调用教师信息新增接口
       this.teacherService.save(teacher);
+      return R.success();
+    } catch (ServiceException e) {
+      // 捕获异常
+      return R.error(e.getMessage());
+    }
+  }
+
+  /**
+   * 删除教师
+   *
+   * @param id 教师ID
+   * @return 回调信息
+   */
+  @ResponseBody
+  @PostMapping("/teacher/delete/{id}")
+  public R deleteTeacher(@PathVariable Integer id) {
+    try {
+      // 调用教师信息新增接口
+      this.teacherService.removeById(id);
       return R.success();
     } catch (ServiceException e) {
       // 捕获异常

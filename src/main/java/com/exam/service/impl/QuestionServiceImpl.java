@@ -1,15 +1,20 @@
 package com.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
-import com.exam.entity.*;
+import com.exam.entity.Course;
+import com.exam.entity.Paper;
+import com.exam.entity.PaperForm;
+import com.exam.entity.Question;
 import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.QuestionDto;
+import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentAnswerDto;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.CourseMapper;
@@ -33,9 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 试题业务实现
@@ -83,9 +86,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
     String qIds = paper.getQuestionId();
     // 分割题目序号
-    String[] qIdArray = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
-    Set<Question> questionSet = Sets.newHashSet();
-    for (String id : qIdArray) {
+    List<String> ids = StrUtil.split(qIds, StrUtil.C_COMMA);
+    // 实现随机排序的核心方法
+    Collections.shuffle(ids);
+    Set<Question> questionSet = Sets.newLinkedHashSet();
+    for (String id : ids) {
       // 通过题目 ID 获取问题的信息
       Question question = questionMapper.selectById(id);
       if (qChoiceType.equals(question.getTypeId())) {
@@ -122,44 +127,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   }
 
   @Override
-  public List<Question> listByAnswerRecordList(List<StuAnswerRecord> answerRecordList) {
-    if (CollUtil.isEmpty(answerRecordList)) {
-      throw new ServiceException("未找到主观题答案记录！");
-    }
-    // 获取当前所有ID主观题的正确答案并返回结果集合
-    List<Question> questionList = Lists.newArrayList();
-    for (StuAnswerRecord answerRecord : answerRecordList) {
-      // 调用问题查询接口
-      Question question = questionMapper.selectById(answerRecord.getQuestionId());
-      questionList.add(question);
-    }
-    return questionList;
-  }
-
-  @Override
-  public List<StudentAnswerDto> listMapByStuAnswerRecordAndQuestionList(
-      List<StuAnswerRecord> answerRecordList, List<Question> questionList) {
-    List<StudentAnswerDto> res = Lists.newArrayList();
-    // 循环问题集合
-    for (Question question : questionList) {
-      // 循环学生的答题记录集合
-      for (StuAnswerRecord s : answerRecordList) {
-        // 比较问题的 ID 是否和学生答题记录所属 ID 相同
-        if (question.getId().equals(s.getQuestionId())) {
-          // 将学生答题记录的问题题目和回答内容组装发到
-          StudentAnswerDto dto = new StudentAnswerDto();
-          dto.setId(s.getId());
-          dto.setQuestionName(question.getQuestionName());
-          dto.setAnswer(s.getAnswer());
-          dto.setScore(s.getScore());
-          res.add(dto);
-        }
-      }
-    }
-    return res;
-  }
-
-  @Override
   @Transactional(rollbackFor = Exception.class)
   public void deleteById(Integer id) {
     List<Paper> papers = this.paperMapper.selectList(null);
@@ -181,18 +148,29 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   }
 
   @Override
-  public List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId) {
+  public List<Question> listByQuestionNameAndCourseIdAndTypeId(
+      String questionName, Integer courseId, Integer typeId) {
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getQuestionName, questionName);
     qw.lambda().eq(Question::getCourseId, courseId);
+    qw.lambda().eq(Question::getTypeId, typeId);
     return this.questionMapper.selectList(qw);
   }
 
   @Override
-  public List<Question> listByCourseId(Integer courseId) {
-    QueryWrapper<Question> qw = new QueryWrapper<>();
-    qw.lambda().eq(Question::getCourseId, courseId);
-    return this.questionMapper.selectList(qw);
+  public List<Question> listByStuAnswerRecordDto(StuAnswerRecordDto entity) {
+    // 获取记录对象集合
+    List<StudentAnswerDto> records = entity.getRecords();
+    List<Question> result = Lists.newArrayList();
+    // 循环集合
+    for (StudentAnswerDto record : records) {
+      Integer questionId = record.getQuestionId();
+      // 封装试题数据
+      result.add(this.questionMapper.selectById(questionId));
+    }
+    // 根据问题的 ID 排序
+    result.sort(Comparator.comparingInt(Question::getId));
+    return result;
   }
 
   @Override
@@ -205,23 +183,39 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 准备一个 Map 用来存储题目的类型和分值
       Map<Integer, Integer> typeScoreMap = Maps.newHashMap();
       initMap(typeScoreMap);
+
       // 考试名称
       String paperName = FileUtil.getFileNameNoEx(multipartFile.getOriginalFilename());
       File file = FileUtil.toFile(multipartFile);
+      // 读取 Excel 中的数据
       ExcelReader reader = ExcelUtil.getReader(file);
       // 读取问题的信息
       List<QuestionDto> questions = reader.readAll(QuestionDto.class);
+
       // 插入问题表并组装ID
       List<Integer> idList = Lists.newArrayList();
       for (QuestionDto question : questions) {
-        // 复制 QuestionDto 的数据到 Question 中
-        Question res = BeanUtil.copyObject(question, Question.class);
-        // 向数据库插入数据
-        this.questionMapper.insert(res);
-        // 获取数据的id并组装到 idList 中
-        idList.add(res.getId());
-        // 获取问题的类型
+        // 判断是否存在同名、同课程、同类型题目
+        String qName = question.getQuestionName();
+        Integer cid = question.getCourseId();
         Integer typeId = question.getTypeId();
+        List<Question> theSames = this.listByQuestionNameAndCourseIdAndTypeId(qName, cid, typeId);
+        // 集合不为空，说明存在同名同课程题目
+        if (CollUtil.isNotEmpty(theSames)) {
+          // 取出第一条数据
+          Question sameQuestion = theSames.get(0);
+          // 获取数据的id并组装到 idList 中
+          idList.add(sameQuestion.getId());
+        } else {
+          // 可直接插入
+          // 复制 QuestionDto 的数据到 Question 中
+          Question res = BeanUtil.copyObject(question, Question.class);
+          // 向数据库插入数据
+          this.questionMapper.insert(res);
+          // 获取数据的id并组装到 idList 中
+          idList.add(res.getId());
+        }
+
         // 计算该类型问题的数量和每道题的分值
         Integer num = typeNumMap.get(typeId);
         num++;
@@ -292,12 +286,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         if (isTypeIdNull || isCourseIdNull || isAnsIdNull || isDefIdNull) {
           throw new ServiceException();
         }
-        // 过滤同名题目
+        // 过滤同名、同课程、同类型题目
         // 题目名称
         String questionName = question.getQuestionName();
         // 题目课程id
         Integer courseId = question.getCourseId();
-        List<Question> result = this.listByQuestionNameAndCourseId(questionName, courseId);
+        Integer typeId = question.getTypeId();
+        List<Question> result =
+            this.listByQuestionNameAndCourseIdAndTypeId(questionName, courseId, typeId);
         if (CollUtil.isEmpty(result)) {
           // 如果教师包含该课程，则允许插入
           if (ids.contains(courseId)) {

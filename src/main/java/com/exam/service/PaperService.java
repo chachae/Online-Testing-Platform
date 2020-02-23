@@ -109,4 +109,12 @@ public interface PaperService extends IService<Paper> {
    * @param dto 修改的信息
    */
   void updateQuestionId(PaperQuestionUpdateDto dto);
+
+  /**
+   * 通过教师 ID 查询所有类型试卷
+   *
+   * @param teacherId 教师ID
+   * @return 试卷 List 集合
+   */
+  List<Paper> listByTeacherId(Integer teacherId);
 }

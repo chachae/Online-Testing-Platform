@@ -46,6 +46,11 @@
                                    class="button_blue " value="立即登录"/>
                         </div>
                     </li>
+                    <li>
+                        <div class="box-footer">
+                            <a class="pull-right" href="<c:url value="/"/>">我是学或教师？点击这里进行登录</a>
+                        </div>
+                    </li>
                 </ul>
             </form>
         </div>

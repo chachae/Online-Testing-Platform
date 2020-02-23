@@ -139,7 +139,7 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="text-align: left">题目编号</th>
+                            <th>题目编号</th>
                             <th style="text-align: left">题目名称</th>
                             <th>题目类型</th>
                             <th>难易程度</th>
@@ -151,7 +151,7 @@
                         </c:if>
                         <c:forEach items="${page.list}" var="question">
                             <tr class="rowDetail" rel="${question.id}">
-                                <td style="text-align: left">${question.id}</td>
+                                <td>${question.id}</td>
                                 <td style="text-align: left">${question.questionName}</td>
                                 <td>${question.typeId == '1' ? '单选题' : ''}
                                         ${question.typeId == '2' ? '多选题' : ''}

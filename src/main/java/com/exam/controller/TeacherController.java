@@ -6,7 +6,7 @@ import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.AnswerEditDto;
 import com.exam.entity.dto.ChangePassDto;
-import com.exam.entity.dto.StudentAnswerDto;
+import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentQueryDto;
 import com.exam.entity.vo.MajorVo;
 import com.exam.entity.vo.StudentVo;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -257,43 +258,27 @@ public class TeacherController {
   }
 
   /**
-   * 复查某个同学的试卷
+   * 复查某场考试的试卷
    *
-   * @param stuNumber 学生学号
    * @param paperId 试卷ID
    * @param model model 对象
    * @return 待复查试卷信息
    */
   @GetMapping("/reviewRes")
-  public String reviewPaper(String stuNumber, Integer paperId, Model model, RedirectAttributes r) {
-    // 查询该学生得试卷答题记录
-    List<StuAnswerRecord> answerRecords;
-    List<Question> questionList;
+  public String reviewPaper(Integer paperId, Model model, RedirectAttributes r) {
     try {
-      answerRecords = this.stuAnswerRecordService.selectByStuAndPaper(stuNumber, paperId);
-      // 根据答案记录集合查找正确答案集合
-      questionList = this.questionService.listByAnswerRecordList(answerRecords);
+      List<StuAnswerRecordDto> records =
+          this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
+      model.addAttribute("stuAnswer", records);
+      model.addAttribute("paper", this.paperService.getById(paperId));
+      // 获取题目正确答案
+      List<Question> questions = this.questionService.listByStuAnswerRecordDto(records.get(0));
+      model.addAttribute("questionList", questions);
+      return "teacher/answerRecord";
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
       return "redirect:/teacher/reviewPaper";
     }
-    // 将学生的题目和答案组装成 Map
-    List<StudentAnswerDto> res =
-        questionService.listMapByStuAnswerRecordAndQuestionList(answerRecords, questionList);
-    // 通过学号查询该学生的信息
-    StudentVo student = this.studentService.selectVoByStuNumber(stuNumber);
-    // 查询这张试卷的信息
-    Paper paper = this.paperService.getById(paperId);
-    // 查询分数情况
-    Score score = this.scoreService.selectByStuIdAndPaperId(student.getId(), paperId);
-    // 设置 Model 对象信息
-    model.addAttribute("answerRecords", answerRecords);
-    model.addAttribute("questionList", questionList);
-    model.addAttribute("stuAnswer", res);
-    model.addAttribute("student", student);
-    model.addAttribute("paper", paper);
-    model.addAttribute("score", score);
-    return "teacher/answerRecord";
   }
 
   /**
@@ -302,13 +287,17 @@ public class TeacherController {
    * @param dto 信息
    */
   @ResponseBody
-  @PostMapping("/editScore/{id}")
-  public R editScore(@PathVariable Integer id, AnswerEditDto dto) {
+  @PostMapping("/editScore")
+  public R editScore(AnswerEditDto dto) {
     // 修改该题得分
     StuAnswerRecord record = new StuAnswerRecord();
     record.setId(dto.getId()).setScore(dto.getNewScore());
     this.stuAnswerRecordService.updateById(record);
     // 修改总分
+    StuAnswerRecord stuRec = this.stuAnswerRecordService.getById(dto.getId());
+    // 封装参数
+    dto.setStuId(stuRec.getStuId());
+    dto.setPaperId(stuRec.getPaperId());
     this.scoreService.updateScoreByStuIdAndPaperId(dto);
     return R.success();
   }

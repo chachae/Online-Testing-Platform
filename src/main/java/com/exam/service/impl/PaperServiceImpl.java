@@ -336,6 +336,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     this.paperMapper.updateById(newPaper);
   }
 
+  @Override
+  public List<Paper> listByTeacherId(Integer teacherId) {
+    QueryWrapper<Paper> qw = new QueryWrapper<>();
+    qw.lambda().eq(Paper::getTeacherId,teacherId);
+    return this.paperMapper.selectList(qw);
+  }
+
   /**
    * 计算所属课程+所属试题类型的试题数量
    *

@@ -19,12 +19,12 @@
 
         th {
             font-size: 15px;
-            vertical-align: center;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
-            vertical-align: center;
+            text-align: center;
         }
 
     </style>
@@ -51,35 +51,33 @@
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-hover">
-                        <tbody>
                         <tr>
-                            <th style="width:10px"></th>
-                            <th width="300">教师 ID</th>
-                            <th width="300">姓名</th>
-                            <th width="300">工号</th>
-                            <th width="300">职位</th>
-                            <th width="300">性别</th>
-                            <th width="300">操作<th>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>工号</th>
+                            <th>职位</th>
+                            <th>性别</th>
+                            <th>操作</th>
                         </tr>
                         <c:if test="${empty page.list}">
                             <tr>
                                 <td colspan="6">没有教师</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${page.list}" var="teacher">
+                        <c:forEach items="${page.list}" var="teacher" varStatus="vs">
                             <tr class="rowDetail" rel="${teacher.workNumber}">
-                                <td></td>
-                                <td>${teacher.id}</td>
+                                <td>${vs.count}</td>
+                                <td hidden="hidden">${teacher.id}</td>
                                 <td>${teacher.name}</td>
                                 <td>${teacher.workNumber}</td>
                                 <td>${teacher.job}</td>
                                 <td>${teacher.sex}</td>
                                 <td rel="${teacher.id}">
                                     <a class="btn btn-success btn-sm editTeacher"><i class="fa"></i>编辑</a>
+                                    <a class="btn btn-danger btn-sm delTeacher" rel="${teacher.id}"><i class="fa"></i>删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
-                        </tbody>
                     </table>
                 </div>
                 <!-- /.box-body -->
@@ -305,6 +303,23 @@
                 }).error(function () {
                     layer.msg("服务器异常");
                 });
+            });
+        });
+    });
+
+    // 删除教师
+    $(".delTeacher").click(function () {
+        let id = $(this).attr('rel');
+        layer.confirm("确定删除学教师吗?", function () {
+            $.post("/admin/teacher/delete/"+id).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("删除成功!");
+                    window.location.reload();
+                } else {
+                    layer.msg(data.message);
+                }
+            }).error(function () {
+                layer.msg("服务器异常");
             });
         });
     });

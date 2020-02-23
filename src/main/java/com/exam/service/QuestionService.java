@@ -3,9 +3,8 @@ package com.exam.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.exam.entity.Course;
 import com.exam.entity.Question;
-import com.exam.entity.StuAnswerRecord;
 import com.exam.entity.dto.ImportPaperDto;
-import com.exam.entity.dto.StudentAnswerDto;
+import com.exam.entity.dto.StuAnswerRecordDto;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,24 +63,6 @@ public interface QuestionService extends IService<Question> {
   List<Question> listByTypeIdAndCourseId(Integer typeId, Integer courseId);
 
   /**
-   * 根据答案记录集合查找试题集合
-   *
-   * @param answerRecordList 答题记录
-   * @return 问题正确答案
-   */
-  List<Question> listByAnswerRecordList(List<StuAnswerRecord> answerRecordList);
-
-  /**
-   * 整理出学生答案 以Map<问题 ID，<问题、答案>>的形式
-   *
-   * @param answerRecordList 学生的主观题答案
-   * @param questionList 题库中的主观题标准答案
-   * @return Map 键值信息
-   */
-  List<StudentAnswerDto> listMapByStuAnswerRecordAndQuestionList(
-      List<StuAnswerRecord> answerRecordList, List<Question> questionList);
-
-  /**
    * 导入试卷问题
    *
    * @param multipartFile multipartFile 对象
@@ -107,16 +88,18 @@ public interface QuestionService extends IService<Question> {
    * 通过题目名称查询题目列表
    *
    * @param questionName 题目名称
-   * @param courseId 课程id
+   * @param courseId 课程ID
+   * @param typeId 题目类型ID
    * @return 题目列表
    */
-  List<Question> listByQuestionNameAndCourseId(String questionName, Integer courseId);
+  List<Question> listByQuestionNameAndCourseIdAndTypeId(
+      String questionName, Integer courseId, Integer typeId);
 
   /**
-   * 通过课程id查询题目列表
+   * 通过试卷答题记录查询问题的正确答案集合
    *
-   * @param courseId 课程id
-   * @return 题目列表
+   * @param entity 答题记录数据传输对象
+   * @return 题目集合
    */
-  List<Question> listByCourseId(Integer courseId);
+  List<Question> listByStuAnswerRecordDto(StuAnswerRecordDto entity);
 }

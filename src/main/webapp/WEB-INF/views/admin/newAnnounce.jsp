@@ -27,7 +27,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">新增公告</h3>
                     <div class="box-tools pull-right">
-                        <a href="/admin/home/${sessionScope.get("admin").id}" class="btn btn-primary btn-sm"><i
+                        <a href="/admin/announce" class="btn btn-primary btn-sm"><i
                                 class="fa fa-arrow-left"></i> 返回列表</a>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="form-group">
                             <label>公告内容</label>
-                            <input type="text" name="content" class="form-control">
+                            <textarea type="text" name="content" class="form-control" rows="5"></textarea>
                         </div>
                         <div class="form-group">
                             <label>发布人</label>

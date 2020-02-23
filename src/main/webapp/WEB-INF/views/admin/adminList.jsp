@@ -20,14 +20,12 @@
 
         th {
             font-size: 15px;
-            vertical-align: center;
-            align-content: center;
+            text-align: center;
         }
 
         td {
             font-size: 16px;
-            vertical-align: center;
-            align-content: center;
+            text-align: center;
         }
     </style>
 </head>
@@ -55,22 +53,21 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th width="10"></th>
-                            <th width="300">ID</th>
-                            <th width="300">姓名</th>
-                            <th width="300">用户名</th>
-                            <th width="300">上次登陆时间</th>
-                            <th width="300">操作</th>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>用户名</th>
+                            <th>上次登陆时间</th>
+                            <th>操作</th>
                         </tr>
                         <c:if test="${empty page.list}">
                             <tr>
                                 <td colspan="6">没有学生</td>
                             </tr>
                         </c:if>
-                        <c:forEach items="${page.list}" var="admin">
+                        <c:forEach items="${page.list}" var="admin" varStatus="vs">
                             <tr class="rowDetail" rel="${admin.id}">
-                                <td></td>
-                                <td>${admin.id}</td>
+                                <td>${vs.count}</td>
+                                <td hidden="hidden">${admin.id}</td>
                                 <td>${admin.name}</td>
                                 <td>${admin.number}</td>
                                 <td><fmt:formatDate value="${admin.lastLoginTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>

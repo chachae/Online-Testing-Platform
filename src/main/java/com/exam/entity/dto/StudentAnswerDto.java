@@ -25,4 +25,6 @@ public class StudentAnswerDto extends BaseEntity {
 
   /** 学生得分 */
   private Integer score;
+
+  private Integer questionId;
 }

@@ -1,13 +1,18 @@
 package com.exam.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.constant.SysConsts;
+import com.exam.entity.Course;
+import com.exam.entity.Paper;
 import com.exam.entity.Teacher;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.TeacherMapper;
+import com.exam.service.CourseService;
+import com.exam.service.PaperService;
 import com.exam.service.TeacherService;
 import com.exam.util.RsaCipherUtil;
 import com.github.pagehelper.PageHelper;
@@ -17,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,6 +36,8 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     implements TeacherService {
 
   @Resource private TeacherMapper teacherMapper;
+  @Resource private CourseService courseService;
+  @Resource private PaperService paperService;
 
   @Override
   public Teacher login(String teaNumber, String password) {
@@ -65,8 +73,8 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
 
   @Override
   public PageInfo<Teacher> pageForTeacherList(Integer pageNo) {
-    // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 8);
+    // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
+    PageHelper.startPage(pageNo, 12);
     List<Teacher> teachers = this.teacherMapper.selectList(null);
     return new PageInfo<>(teachers);
   }
@@ -91,5 +99,21 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
       entity.setRoleId(SysConsts.ROLE.TEACHER);
       return super.save(entity);
     }
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean removeById(Serializable id) {
+    // 判断关联关系，（试卷和课程，不存在关联再进行删除）
+    List<Course> courses = this.courseService.listByTeacherId((int) id);
+    if (CollUtil.isNotEmpty(courses)) {
+      throw new ServiceException("该教师存在课程关联，不允许删除");
+    }
+    List<Paper> papers = this.paperService.listByTeacherId((int) id);
+    if (CollUtil.isNotEmpty(papers)) {
+      throw new ServiceException("该教师存在试卷关联，不允许删除");
+    }
+    // 支持，允许被执行删除
+    return super.removeById(id);
   }
 }

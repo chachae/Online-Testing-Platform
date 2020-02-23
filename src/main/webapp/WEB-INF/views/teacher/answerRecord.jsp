@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,47 +33,6 @@
     </jsp:include>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- Main content -->
-        <section class="content col-sm-12">
-            <section class="content col-sm-12">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">试卷详情</h3>
-                        <div class="box-tools">
-                            <a href="<c:url value="/teacher/reviewPaper"/>" class="btn btn-primary btn-sm"><i
-                                    class="fa fa-arrow-left"></i> 返回列表</a>
-                        </div>
-                    </div>
-                    <!-- /.box-header -->
-                    <table class="table table-condensed">
-                        <tr>
-                            <th>学生信息</th>
-                            <th>考试情况</th>
-                            <th>试卷信息</th>
-                        </tr>
-                        <tr>
-                            <td>姓名：${student.name}</td>
-                            <td>
-                                考试名称：${paper.paperName}
-                            </td>
-                            <td>试卷分值：${paper.score}</td>
-                        </tr>
-                        <tr>
-                            <td>学号：${student.stuNumber}</td>
-                            <td>
-                                卷面成绩：${score.score}分
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>专业：${student.major.major}</td>
-                            <td>
-                                考试时间：${paper.beginTime}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </section>
-        </section>
         <!-- /.box-body -->
         <!-- 修改成绩模态框 -->
         <div class="modal fade" id="modifyModal">
@@ -86,6 +46,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group form_datetime">
+                            <input type="hidden" name="id" class="form-control"
+                                   id="id">
                             <!-- 原来的分数禁止修改 -->
                             <label for="oldScore">原来分数</label>
                             <input type="text" name="oldScore" class="form-control"
@@ -106,33 +68,31 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-        <section class="col-sm-6">
-            <div class="box">
-                <div class="box-body">
-                    <table class="table table-hover">
-                        <th>学生答案</th>
-                        <tbody>
-                        <c:if test="${empty stuAnswer}">
-                            <tr>
-                                <td colspan="6">未找到主观题</td>
-                            </tr>
-                        </c:if>
-                        <c:forEach items="${stuAnswer}" var="answer" varStatus="vs">
-                            <tr class="success" rel="${answer.id}">
-                                <td>${vs.count}. ${answer.questionName}</td>
-                            </tr>
-                            <tr class="rowEdit" rel="${answer.id}">
-                                <td>${answer.answer}</td>
-                                <td style="display: none">${answer.score}</td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
 
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">试卷详情</h3>
+                    <div class="box-tools">
+                        <a href="<c:url value="/teacher/reviewPaper"/>" class="btn btn-primary btn-sm"><i
+                                class="fa fa-arrow-left"></i> 返回列表</a>
+                    </div>
                 </div>
+                <!-- /.box-header -->
+                <table class="table table-condensed">
+                    <tr>
+                        <td>
+                            试卷编号：${paper.id}<br>
+                            考试名称：${paper.paperName}<br>
+                            试卷分值：${paper.score}<br>
+                            考试时间：${paper.beginTime}<br>
+                            结束时间：${paper.endTime}<br>
+                            考试类型：${paper.paperType}考试<br>
+                        </td>
+                    </tr>
+                </table>
             </div>
-        </section>
-        <section class="col-sm-6">
+
             <div class="box ">
                 <div class="box-body ">
                     <table class="table table-hover">
@@ -148,15 +108,62 @@
                                 <td>${vs.count}. ${question.questionName}</td>
                             </tr>
                             <tr class="rowDetail" rel="${question.id}">
-                                <td>${question.answer}</td>
+                                <td><b style="color: green">[ 标准答案 ]</b><br>${question.answer}</td>
                             </tr>
                         </c:forEach>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <div class="box">
+                <div class="box-body">
+                    <table class="table table-hover">
+                        <th>学生答案（点击学生答案进行主观题分数修改）</th>
+                        <tbody>
+                        <c:if test="${empty stuAnswer}">
+                            <tr>
+                                <td colspan="6">未找到主观题</td>
+                            </tr>
+                        </c:if>
+                        <c:forEach items="${stuAnswer}" var="answer" varStatus="vs">
+                            <tr class="danger">
+                                <td>
+                                    <b>
+                                        姓名：${answer.student.name}<br>
+                                        学号：${answer.student.stuNumber}<br>
+                                        成绩：${answer.score.score}
+                                    </b>
+                                </td>
+                            </tr>
+                            <c:forEach items="${answer.records}" var="record" varStatus="rvs">
+                                <tr class="success">
+                                    <td>${rvs.count}. ${record.questionName} <b
+                                            class="pull-right">题目得分：${record.score}分</b></td>
+                                </tr>
+                                <tr>
+                                    <td class="editAns" rel="${record.id}"><b style="color: red">[ 学生答案
+                                        ]</b><br>${record.answer}</td>
+                                    <td hidden> ${record.score}</td>
+                                </tr>
+                            </c:forEach>
+                            <tr>
+                                <td>
+                                    <h4 style="text-align: center"><b>[ ${answer.student.name} ]</b> 主观题结束查阅</h4>
+                                    <hr>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </section>
     </div>
+    <!-- /.content-wrapper -->
+    <!-- 底部 -->
+    <%@ include file="../include/footer.jsp" %>
 </div>
 <!-- 公共 js -->
 <%@ include file="../include/js.jsp" %>
@@ -165,41 +172,36 @@
 <script src="<c:url value="/static/plugins/jquery-countdown/jquery.countdown.min.js"/>"></script>
 <!-- BSA AdPacks code. Please ignore and remove.-->
 <script>
-    // 显示正确答案
-    $(function () {
-        $(".rowDetail").click(function () {
-            const id = $(this).attr("rel");
-            window.location.href = "/teacher/question/show/" + id;
-        });
-    });
 
     // 启动模态框
-    $(".rowEdit").click(function () {
+    $(".editAns").click(function () {
         $("#modifyModal").modal({
             show: true,
             backdrop: 'static'
         });
-        const oldScore = $(this).find('td').eq(1).text();
+        const oldScore = $(this).parents('tr').find('td').eq(1).text();
         $('#oldScore').val(oldScore);
         // 题目id
         const id = $(this).attr("rel");
-        $("#saveBtn").click(function () {
-            layer.confirm("确定修改分数么?", function () {
-                let oldScore = $("#oldScore").val();
-                let newScore = $("#newScore").val();
-                $.post("/teacher/editScore/" + id, {
-                    "oldScore": oldScore,
-                    "newScore": newScore,
-                    "paperId": ${paper.id},
-                    "stuId": ${student.id}
-                }).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("修改成功!");
-                        window.location.reload();
-                    }
-                }).error(function () {
-                    layer.msg("服务器异常");
-                });
+        $('#id').val(id);
+    });
+
+    $("#saveBtn").click(function () {
+        layer.confirm("确定修改分数么?", function () {
+            let oldScore = $("#oldScore").val();
+            let newScore = $("#newScore").val();
+            let id = $("#id").val();
+            $.post("/teacher/editScore", {
+                "oldScore": oldScore,
+                "newScore": newScore,
+                "id": id,
+            }).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("修改成功!");
+                    window.location.reload();
+                }
+            }).error(function () {
+                layer.msg("服务器异常");
             });
         });
     });

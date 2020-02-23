@@ -57,7 +57,6 @@
                         </tr>
                         <tr>
                             <td class="td_title">结束时间: ${paper.endTime}</td>
-                            <td></td>
                         </tr>
                         <tr>
                             <td class="td_title">考试时长: ${paper.allowTime}</td>

@@ -224,10 +224,15 @@ public class StudentController {
    */
   @PostMapping("/student/{stuId}/paper/{paperId}")
   public String doPaper(@PathVariable Integer stuId, @PathVariable Integer paperId) {
-    // 获取 request 对象
-    HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
-    // 批改试卷
-    this.paperService.markPaper(stuId, paperId, request);
+    // 判断学生是否提交过试卷
+    Score result = this.scoreService.selectByStuIdAndPaperId(stuId, paperId);
+    // 集合为空说明没有提交过试卷，可以提交
+    if (ObjectUtil.isEmpty(result)) {
+      // 获取 request 对象
+      HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
+      // 批改试卷
+      this.paperService.markPaper(stuId, paperId, request);
+    }
     return "redirect:/student/home/" + stuId;
   }
 
