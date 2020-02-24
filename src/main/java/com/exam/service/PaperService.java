@@ -2,6 +2,7 @@ package com.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.exam.entity.Paper;
+import com.exam.entity.dto.ImportPaperRandomQuestionDto;
 import com.exam.entity.dto.PaperQuestionUpdateDto;
 import com.github.pagehelper.PageInfo;
 
@@ -117,4 +118,12 @@ public interface PaperService extends IService<Paper> {
    * @return 试卷 List 集合
    */
   List<Paper> listByTeacherId(Integer teacherId);
+
+  /**
+   * 导入试卷局部随机
+   *
+   * @param paper 试卷参数
+   * @param entity 局部随机数据传输对象
+   */
+  void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity);
 }

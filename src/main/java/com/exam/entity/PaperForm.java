@@ -57,4 +57,7 @@ public class PaperForm extends Model<PaperForm> {
 
   /** 编程题分数 */
   private String qProgramScore;
+
+  /** 导入题生成的 = 1，模板页面增加的 = 0 */
+  private Integer type;
 }

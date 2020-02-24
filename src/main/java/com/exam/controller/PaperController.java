@@ -1,16 +1,20 @@
 package com.exam.controller;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.entity.*;
 import com.exam.entity.dto.ImportPaperDto;
+import com.exam.entity.dto.ImportPaperRandomQuestionDto;
 import com.exam.entity.dto.PaperQuestionUpdateDto;
 import com.exam.exception.ServiceException;
 import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.io.Console;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 试卷控制层
@@ -27,6 +33,7 @@ import java.util.Set;
  * @author yzn
  * @date 2020/1/28
  */
+@Slf4j
 @Controller
 @RequestMapping("/teacher/paper")
 public class PaperController {
@@ -78,17 +85,17 @@ public class PaperController {
     model.addAttribute("major", major);
     // 显示试卷信息
     Set<Question> qChoiceList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
     Set<Question> qMulChoiceList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
     Set<Question> qTofList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
     Set<Question> qFillList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
     Set<Question> qSaqList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
     Set<Question> qProgramList =
-            questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
+        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
     // 设置 model 对象信息
     model.addAttribute("qChoiceList", qChoiceList);
     model.addAttribute("qMulChoiceList", qMulChoiceList);
@@ -140,14 +147,25 @@ public class PaperController {
 
   @ResponseBody
   @PostMapping("/importNewPaper")
-  public R newPaperByExcel(Paper paper) {
+  public R newPaperByExcel(Paper paper, ImportPaperRandomQuestionDto entity) {
     try {
       HttpSession session = HttpContextUtil.getSession();
       // 获取教师 session ID
       Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
       // 设置出卷老师
       paper.setTeacherId(teacherId);
-      this.paperService.save(paper);
+      // 局部随机参数判断，没有局部随机参数则调用普通的插入接口
+      boolean a = entity.getA() == 0,
+          b = entity.getB() == 0,
+          c = entity.getC() == 0,
+          d = entity.getD() == 0,
+          e = entity.getE() == 0,
+          f = entity.getF() == 0;
+      if (a && b && c && d && e && f) {
+        this.paperService.save(paper);
+      } else {
+        this.paperService.saveWithImportPaper(paper, entity);
+      }
       return R.successWithData(paper.getId());
     } catch (Exception e) {
       return R.error(e.getMessage());
@@ -162,6 +180,8 @@ public class PaperController {
    */
   @PostMapping({"/newPaperForm"})
   public String addPaperForm(PaperForm paperForm) {
+    // 设置模板类型
+    paperForm.setType(SysConsts.PAPER_FORM.INSERT);
     // 调用试卷模板新增接口
     this.paperFormService.save(paperForm);
     return "redirect:/teacher/paper/newPaper/" + paperForm.getId();
@@ -232,7 +252,13 @@ public class PaperController {
   @GetMapping("/showPaperForm")
   public String showPaperForm(Model model) {
     // 调用获取试卷模板集合接口
-    List<PaperForm> formList = this.paperFormService.list();
+    List<PaperForm> formList =
+        this.paperFormService.list().stream()
+            // steam 流过滤模板类型
+            .filter(e -> e.getType().equals(SysConsts.PAPER_FORM.INSERT))
+            // 形成新的 List 集合
+            .collect(Collectors.toList());
+
     model.addAttribute("formList", formList);
     return "paper/showPaperForm";
   }

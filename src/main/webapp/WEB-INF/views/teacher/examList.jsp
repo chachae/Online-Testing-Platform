@@ -183,6 +183,8 @@
                         if (data.state === "success") {
                             layer.msg("修改成功!");
                             window.location.href = "/teacher/exam";
+                        }else{
+                            layer.msg(data.message);
                         }
                     }).error(function () {
                         layer.msg("服务器异常");

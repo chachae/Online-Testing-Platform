@@ -20,6 +20,8 @@ public class ImportPaperDto extends BaseEntity {
 
   private Integer paperFormId;
 
+  private Integer score;
+
   private String paperName;
 
   private String questionIdList;

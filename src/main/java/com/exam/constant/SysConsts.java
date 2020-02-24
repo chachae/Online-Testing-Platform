@@ -57,4 +57,20 @@ public class SysConsts {
     /** 教师 */
     public static final Integer TEACHER = 3;
   }
+
+  /** 试题难度 */
+  public static class Diff {
+    public static final String AVG = "0";
+    public static final String SIMPLE = "1";
+    public static final String MID = "2";
+    public static final String HARD = "3";
+  }
+
+  /** 试卷模板类型 */
+  public static class PAPER_FORM {
+    /** 导入试卷自增 */
+    public static final Integer IMPORT = 1;
+    /** 页面添加 */
+    public static final Integer INSERT = 0;
+  }
 }

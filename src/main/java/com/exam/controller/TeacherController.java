@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -235,8 +234,12 @@ public class TeacherController {
   @PostMapping("/editPaper/{id}")
   @ResponseBody
   public R editExam(@PathVariable Integer id, Paper paper) {
-    this.paperService.updateById(id, paper);
-    return R.success();
+    try {
+      this.paperService.updateById(id, paper);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 
   /**

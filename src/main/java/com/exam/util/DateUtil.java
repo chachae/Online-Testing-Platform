@@ -14,7 +14,7 @@ import java.util.Date;
  * @author yzn
  * @date 2019/12/17 10:46
  */
-public class DateUtil {
+public class DateUtil extends cn.hutool.core.date.DateUtil {
 
   private DateUtil() {}
 

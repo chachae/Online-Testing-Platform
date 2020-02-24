@@ -1,7 +1,6 @@
 package com.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -122,7 +121,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     // 使用 QueryWrapper 条件构造器构造 Sql 条件
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getTypeId, typeId).eq(Question::getCourseId, courseId);
-    // 获取所有对饮条件的问题集合
+    // 获取所有对应条件的问题集合
     return questionMapper.selectList(qw);
   }
 
@@ -136,9 +135,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       String questionId = paper.getQuestionId();
       String[] ids = StrUtil.splitToArray(questionId, StrUtil.C_COMMA);
       // 循环题目 ID
-      for (String s : ids) {
+      for (String e : ids) {
         // 比较 ID 值
-        if (Integer.parseInt(s) == id) {
+        if (Integer.parseInt(e) == id) {
           throw new ServiceException("试题被试卷[ " + paper.getPaperName() + " ]关联，不允许删除");
         }
       }
@@ -151,6 +150,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   public List<Question> listByQuestionNameAndCourseIdAndTypeId(
       String questionName, Integer courseId, Integer typeId) {
     QueryWrapper<Question> qw = new QueryWrapper<>();
+    // 构造查询条件
     qw.lambda().eq(Question::getQuestionName, questionName);
     qw.lambda().eq(Question::getCourseId, courseId);
     qw.lambda().eq(Question::getTypeId, typeId);
@@ -163,11 +163,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     List<StudentAnswerDto> records = entity.getRecords();
     List<Question> result = Lists.newArrayList();
     // 循环集合
-    for (StudentAnswerDto record : records) {
-      Integer questionId = record.getQuestionId();
-      // 封装试题数据
-      result.add(this.questionMapper.selectById(questionId));
-    }
+    records.forEach(record -> result.add(this.questionMapper.selectById(record.getQuestionId())));
     // 根据问题的 ID 排序
     result.sort(Comparator.comparingInt(Question::getId));
     return result;
@@ -179,10 +175,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     try {
       // 准备一个 Map 用来存储题目的类型和数量
       Map<Integer, Integer> typeNumMap = Maps.newHashMap();
-      initMap(typeNumMap);
+      // 初始化题型数量数据
+      for (int i = 1; i <= 6; i++) {
+        typeNumMap.put(i, 0);
+      }
       // 准备一个 Map 用来存储题目的类型和分值
       Map<Integer, Integer> typeScoreMap = Maps.newHashMap();
-      initMap(typeScoreMap);
+      // 初始化题型分值数据
+      for (int i = 1; i <= 6; i++) {
+        typeScoreMap.put(i, 0);
+      }
 
       // 考试名称
       String paperName = FileUtil.getFileNameNoEx(multipartFile.getOriginalFilename());
@@ -234,6 +236,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       form.setQFillNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.FILL_TYPE)));
       form.setQSaqNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.SAQ_TYPE)));
       form.setQProgramNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+
       // 从选择一直到编程题6种题型，设置每到分值
       form.setQChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
       form.setQMulChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
@@ -241,6 +244,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       form.setQFillScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.FILL_TYPE)));
       form.setQSaqScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.SAQ_TYPE)));
       form.setQProgramScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+
+      // 设置模板类型（1）
+      form.setType(SysConsts.PAPER_FORM.IMPORT);
+
+      // 插入数据
       this.paperFormMapper.insert(form);
       // 模板ID
       Integer formId = form.getId();
@@ -249,16 +257,24 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 建立 StringBuilder 对象，用户组装试题集合
       StringBuilder sb = new StringBuilder();
       // 拼接试题 ID 和 逗号
-      for (Integer id : idList) {
-        String idStr = String.valueOf(id);
-        sb.append(idStr).append(StrUtil.COMMA);
-      }
+      idList.forEach(id -> sb.append(id).append(StrUtil.COMMA));
       String ids = sb.toString();
       // 去除最后一个逗号并封装题序参数
       dto.setQuestionIdList(ids.substring(0, ids.length() - 1));
+
+      // 计算试卷卷面分
+      int score =
+          typeNumMap.get(1) * typeScoreMap.get(1)
+              + typeNumMap.get(2) * typeScoreMap.get(2)
+              + typeNumMap.get(3) * typeScoreMap.get(3)
+              + typeNumMap.get(4) * typeScoreMap.get(4)
+              + typeNumMap.get(5) * typeScoreMap.get(5)
+              + typeNumMap.get(6) * typeScoreMap.get(6);
+
       // 封装问题信息参数
       dto.setPaperName(paperName);
       dto.setPaperFormId(formId);
+      dto.setScore(score);
       return dto;
     } catch (Exception e) {
       throw new ServiceException("试题解析失败");
@@ -289,8 +305,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         // 过滤同名、同课程、同类型题目
         // 题目名称
         String questionName = question.getQuestionName();
-        // 题目课程id
+        // 题目课程 id
         Integer courseId = question.getCourseId();
+        // 类型 id
         Integer typeId = question.getTypeId();
         List<Question> result =
             this.listByQuestionNameAndCourseIdAndTypeId(questionName, courseId, typeId);
@@ -308,19 +325,5 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 捕捉所有可能发生的异常，抛出给控制层处理
       throw new ServiceException("题目解析失败");
     }
-  }
-
-  /**
-   * 初始化Map
-   *
-   * @param map Map 对象
-   */
-  private void initMap(Map<Integer, Integer> map) {
-    map.put(1, 0);
-    map.put(2, 0);
-    map.put(3, 0);
-    map.put(4, 0);
-    map.put(5, 0);
-    map.put(6, 0);
   }
 }

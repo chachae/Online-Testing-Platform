@@ -53,7 +53,8 @@
                     <form method="post" id="importPaper">
                         <div class="form-group">
                             <label for="upload">导入试卷 </label>
-                            <input class="form-control btn-file" type="file" name="upload"
+                            <input class="form-control btn btn-flat btn-warning btn-sm" style="border: none" type="file"
+                                   name="upload"
                                    id="upload"/>
                         </div>
                     </form>

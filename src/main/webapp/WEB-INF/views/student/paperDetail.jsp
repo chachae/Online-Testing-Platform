@@ -19,7 +19,14 @@
         }
     </style>
 </head>
-<body class="hold-transition skin-green sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini"
+      οncοntextmenu='return false'
+      οndragstart='return false'
+      onselectstart='return false'
+      οnselect='document.selection.empty()'
+      οncοpy='document.selection.empty()'
+      onbeforecopy='return false'
+      οnmοuseup='document.selection.empty()'>
 <!-- Site wrapper -->
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
@@ -164,7 +171,8 @@
                                             ${state.count }. ${question.questionName}
                                             <div class="form-group">
                                                 <label>答案</label>
-                                                <input type="text" name="${question.id}" class="form-control">
+                                                <input type="text" name="${question.id}" class="form-control"
+                                                       οnpaste="return false">
                                             </div>
                                         </c:forEach>
                                     </div>
@@ -181,7 +189,8 @@
                                             ${state.count }. ${question.questionName}
                                             <div class="form-group">
                                                 <label>答案</label>
-                                                <input type="text" name="${question.id}" class="form-control">
+                                                <input type="text" name="${question.id}" class="form-control"
+                                                       οnpaste="return false">
                                             </div>
                                             <hr/>
                                         </c:forEach>
@@ -200,7 +209,8 @@
                                             ${state.count }. ${question.questionName}
                                             <div class="form-group">
                                                 <label>答案</label>
-                                                <input type="text" name="${question.id}" class="form-control">
+                                                <input type="text" name="${question.id}" class="form-control"
+                                                       οnpaste="return false">
                                             </div>
                                             <hr/>
                                         </c:forEach>
@@ -245,6 +255,15 @@
             });
         });
     });
+
+    // 禁止复制
+    document.oncontextmenu = function () {
+        return false;
+    };
+    // 禁止粘贴
+    document.onpaste = function () {
+        return false;
+    }
 </script>
 </body>
 </html>
