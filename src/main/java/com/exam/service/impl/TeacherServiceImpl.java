@@ -29,6 +29,7 @@ import java.util.List;
  * 教师业务实现
  *
  * @author yzn
+ * @date 2020/2/20
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
@@ -47,6 +48,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     if (ObjectUtil.isEmpty(teacher)) {
       throw new ServiceException("该职工号不存在，请重新输入");
     }
+
     // 比较密码是否相等
     password = RsaCipherUtil.decrypt(password);
     if (!RsaCipherUtil.verify(password, teacher.getPassword())) {
@@ -63,10 +65,13 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     if (ObjectUtil.isEmpty(teacher)) {
       throw new ServiceException("用户不存在");
     }
+
     // 验证密码
     if (!RsaCipherUtil.verify(dto.getOldPassword(), teacher.getPassword())) {
       throw new ServiceException("原密码错误");
     }
+
+    // 封装加密后的密码
     teacher.setPassword(RsaCipherUtil.hash(dto.getPassword()));
     this.updateById(teacher);
   }

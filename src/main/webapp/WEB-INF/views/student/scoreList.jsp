@@ -67,8 +67,7 @@
                                 <th>试卷名称</th>
                                 <th>考试分数</th>
                                 <th>错题ID集合</th>
-                                <th>操作
-                                <th>
+                                <th>操作</th>
                             </tr>
                         </c:if>
                         <c:forEach items="${scoreList}" var="score" varStatus="state">
@@ -78,7 +77,7 @@
                                 <td>${score.score} 分</td>
                                 <td>${score.wrongIds}</td>
                                 <td>
-                                    <button class="btn btn-vk detailBtn">查看试卷详情</button>
+                                    <button class="btn btn-vk detailBtn btn-sm">查看试卷详情</button>
                                 </td>
                             </tr>
                         </c:forEach>

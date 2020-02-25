@@ -81,8 +81,8 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
 
     // 循环设置参数
     for (List<StuAnswerRecord> record : values) {
-      // 取出索引位置 0 的学生ID
-      Integer stuId = record.get(0).getStuId();
+      // 取出索引位置 0 的学生 ID
+      int stuId = record.get(0).getStuId();
       // 查询到该学生学生信息
       Student student = this.studentMapper.selectById(stuId);
       // 查询该考生该本考试的成绩信息
@@ -90,7 +90,7 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
 
       // 拷贝对象信息
       List<StudentAnswerDto> rec = BeanUtil.copyList(record, StudentAnswerDto.class);
-      // 查询并封装题目名称
+      // 遍历查询并封装题目名称
       for (StudentAnswerDto studentAnswerDto : rec) {
         Question qs = this.questionMapper.selectById(studentAnswerDto.getQuestionId());
         studentAnswerDto.setQuestionName(qs.getQuestionName());

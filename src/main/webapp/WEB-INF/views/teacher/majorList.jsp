@@ -80,8 +80,7 @@
                             <th>序号</th>
                             <th>所属学院</th>
                             <th>专业名称</th>
-                            <th>操作
-                            <th>
+                            <th>操作</th>
                         </tr>
                         <c:if test="${empty page.list}">
                             <tr>

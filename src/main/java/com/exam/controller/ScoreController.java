@@ -2,7 +2,6 @@ package com.exam.controller;
 
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
-import com.exam.entity.Course;
 import com.exam.service.CourseService;
 import com.exam.service.ScoreService;
 import com.exam.util.HttpContextUtil;
@@ -11,9 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 分数控制层
@@ -36,12 +32,10 @@ public class ScoreController {
    */
   @GetMapping("/course")
   public String chart(Model model) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 获取课程 List 集合
-    List<Course> courseList =
-        courseService.listByTeacherId((Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID));
-    model.addAttribute("courseList", courseList);
+    // 教师ID
+    int id = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 设置课程的 model 信息
+    model.addAttribute("courseList", courseService.listByTeacherId(id));
     return "teacher/chart";
   }
 
@@ -55,8 +49,7 @@ public class ScoreController {
   @GetMapping("/courseChart")
   public String courseChart(Integer courseId, Model model) {
     // 通过课程 ID 获取课程信息
-    Course course = courseService.getById(courseId);
-    model.addAttribute("course", course);
+    model.addAttribute("course", courseService.getById(courseId));
     return "teacher/scoreCourse";
   }
 
@@ -69,8 +62,7 @@ public class ScoreController {
   @PostMapping("/courseChart/{id}")
   @ResponseBody
   public R courseChart(@PathVariable Integer id) {
-    List<Map<String, Object>> scoreCount = scoreService.countByCourseId(id);
-    return R.successWithData(scoreCount);
+    return R.successWithData(scoreService.countByCourseId(id));
   }
 
   /**
@@ -91,8 +83,7 @@ public class ScoreController {
   @PostMapping("/student/chart/{id}")
   @ResponseBody
   public R stuChart(@PathVariable Integer id) {
-    List<Map<String, Object>> aveAndMyScoreList = scoreService.averageScore(id);
-    return R.successWithData(aveAndMyScoreList);
+    return R.successWithData(scoreService.averageScore(id));
   }
 
   /**
@@ -103,11 +94,9 @@ public class ScoreController {
   @GetMapping("/student/chart2")
   @ResponseBody
   public R stuSelfChart() {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 成绩分布集合
-    List<Map<String, Object>> everyScoreList =
-        scoreService.countByLevel((Integer) session.getAttribute(SysConsts.SESSION.STUDENT_ID));
-    return R.successWithData(everyScoreList);
+    // 获取学生的 ID
+    int stuId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.STUDENT_ID);
+    // 设置成绩分布集合的 model 对象信息
+    return R.successWithData(scoreService.countByLevel(stuId));
   }
 }

@@ -44,10 +44,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   public Student login(String stuNumber, String password) throws ServiceException {
     // 调用通过学号查询学生查询接口
     Student student = this.selectByStuNumber(stuNumber);
+
     // 如果学生对象为空说明不存在该用户，抛出异常信息
     if (ObjectUtil.isEmpty(student)) {
       throw new ServiceException("该学号不存在，请重新输入");
     }
+
     // 加密密码进行比较，比较通过登陆通过，反之说明密码错误
     password = RsaCipherUtil.decrypt(password);
     if (!RsaCipherUtil.verify(password, student.getPassword())) {
@@ -64,9 +66,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     if (ObjectUtil.isEmpty(student)) {
       throw new ServiceException("用户不存在");
     }
+
     if (!RsaCipherUtil.verify(dto.getOldPassword(), student.getPassword())) {
       throw new ServiceException("原密码错误");
     }
+
     // 加密密码之后再存入数据库
     student.setPassword(RsaCipherUtil.hash(dto.getPassword()));
     // 执行密码修改
@@ -90,11 +94,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     // 按照学院 id 从小到大排序
     students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
     return new PageInfo<>(students);
-  }
-
-  @Override
-  public StudentVo selectVoByStuNumber(String stuNumber) {
-    return this.studentMapper.selectVoByStuNumber(stuNumber);
   }
 
   @Override

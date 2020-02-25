@@ -1,21 +1,18 @@
 package com.exam.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.exam.entity.Paper;
 import com.exam.entity.PaperForm;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.PaperFormMapper;
-import com.exam.mapper.PaperMapper;
 import com.exam.service.PaperFormService;
+import com.exam.service.PaperService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 试卷模板服务实现类
@@ -28,7 +25,7 @@ import java.util.List;
 public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm>
     implements PaperFormService {
 
-  @Resource private PaperMapper paperMapper;
+  @Resource private PaperService paperService;
   @Resource private PaperFormMapper paperFormMapper;
 
   @Override
@@ -37,15 +34,13 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm
     // 调用通过ID查询试卷模板信息接口
     PaperForm form = this.paperFormMapper.selectById(id);
     // 如果 from 对象为空，说明模板不存在
-    if (form == null) {
+    if (ObjectUtil.isEmpty(form)) {
       throw new ServiceException("试卷模版不存在!");
     }
     // 查找是否有正在使用该模版的试卷，如果有，则不允许删除模版
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getPaperFormId, id);
-    List<Paper> papers = this.paperMapper.selectList(qw);
+    int count = this.paperService.countPaperByPaperFormId((int) id);
     // 如果试卷集合对象不为空，说明有试卷正在使用，则不能删除
-    if (CollUtil.isNotEmpty(papers)) {
+    if (count > 0) {
       throw new ServiceException("试卷模版正在使用，不能删除该模版！");
     }
     // 至此可以安全删除，调用父级 removeById 方法删除

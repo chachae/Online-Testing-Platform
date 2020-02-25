@@ -74,16 +74,16 @@
                                 <td>${paper.endTime}</td>
                                 <c:choose>
                                     <c:when test="${paper.end}">
-                                        <td><a class="btn btn-danger" disabled>考试已结束</a></td>
+                                        <td><a class="btn btn-danger btn-sm" disabled>考试已结束</a></td>
                                     </c:when>
 
                                     <c:when test="${paper.start}">
                                         <td><a href="/student/${sessionScope.get("studentId")}/paper/${paper.id}"
-                                               class="btn btn-success">进入考试</a></td>
+                                               class="btn btn-success btn-sm">进入考试</a></td>
                                     </c:when>
 
                                     <c:otherwise>
-                                        <td><a id="doPaperBtn" class="btn btn-danger" disabled>等待考试</a></td>
+                                        <td><a id="doPaperBtn" class="btn btn-danger btn-sm" disabled>等待考试</a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>

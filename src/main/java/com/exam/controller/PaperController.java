@@ -1,12 +1,13 @@
 package com.exam.controller;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelUtil;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
-import com.exam.entity.*;
+import com.exam.controller.common.QuestionModel;
+import com.exam.entity.Paper;
+import com.exam.entity.PaperForm;
+import com.exam.entity.Question;
 import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.ImportPaperRandomQuestionDto;
 import com.exam.entity.dto.PaperQuestionUpdateDto;
@@ -14,17 +15,13 @@ import com.exam.exception.ServiceException;
 import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
 import com.github.pagehelper.PageInfo;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-import java.io.Console;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,13 +30,13 @@ import java.util.stream.Collectors;
  * @author yzn
  * @date 2020/1/28
  */
-@Slf4j
 @Controller
 @RequestMapping("/teacher/paper")
 public class PaperController {
 
   @Resource private PaperService paperService;
   @Resource private MajorService majorService;
+  @Resource private QuestionModel questionModel;
   @Resource private CourseService courseService;
   @Resource private AcademyService academyService;
   @Resource private QuestionService questionService;
@@ -54,9 +51,8 @@ public class PaperController {
    */
   @GetMapping
   public String list(Page page, Model model) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 获取教师 ID
+    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 获取试卷分页数据
     PageInfo<Paper> pageInfo = paperService.pageForPaperList(teacherId, page.getPageNo());
     // 设置分页后的数据的 model 对象
@@ -75,34 +71,14 @@ public class PaperController {
   public String show(@PathVariable Integer id, Model model) {
     // 根据 ID 获取试卷的详细信息
     Paper paper = paperService.getById(id);
-    // 根据课程 ID 获取课程信息
-    Course course = courseService.getById(paper.getCourseId());
-    // 根据专业 ID 获取专业信息
-    Major major = majorService.getById(paper.getMajorId());
-    // 设置 model 信息
+    // 设置基础 model 信息
     model.addAttribute("paper", paper);
-    model.addAttribute("course", course);
-    model.addAttribute("major", major);
-    // 显示试卷信息
-    Set<Question> qChoiceList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.CHOICE_TYPE);
-    Set<Question> qMulChoiceList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.MUL_CHOICE_TYPE);
-    Set<Question> qTofList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.TOF_TYPE);
-    Set<Question> qFillList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.FILL_TYPE);
-    Set<Question> qSaqList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.SAQ_TYPE);
-    Set<Question> qProgramList =
-        questionService.selectByPaperIdAndType(id, SysConsts.QUESTION.PROGRAM_TYPE);
-    // 设置 model 对象信息
-    model.addAttribute("qChoiceList", qChoiceList);
-    model.addAttribute("qMulChoiceList", qMulChoiceList);
-    model.addAttribute("qTofList", qTofList);
-    model.addAttribute("qFillList", qFillList);
-    model.addAttribute("qSaqList", qSaqList);
-    model.addAttribute("qProgramList", qProgramList);
+    // 课程信息
+    model.addAttribute("course", courseService.getById(paper.getCourseId()));
+    // 专业信息
+    model.addAttribute("major", majorService.getById(paper.getMajorId()));
+    // 设置题目 model 对象信息
+    questionModel.setQuestionModel(model, id);
     return "paper/show";
   }
 
@@ -118,19 +94,15 @@ public class PaperController {
 
   @GetMapping("/importNewPaper")
   public String importNewPaper(Model model) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 获取教师 session ID
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Course> courseList = this.courseService.listByTeacherId(teacherId);
-    // 专业列表
-    List<Major> majors = this.majorService.list();
-    // 学院列表
-    List<Academy> academyList = this.academyService.list();
     // 封装 model 参数
-    model.addAttribute("academyList", academyList);
-    model.addAttribute("courseList", courseList);
-    model.addAttribute("majorList", majors);
+    // 学院列表
+    model.addAttribute("academyList", this.academyService.list());
+    // 获取教师 ID
+    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 该教师的课程信息
+    model.addAttribute("courseList", this.courseService.listByTeacherId(teacherId));
+    // 专业列表
+    model.addAttribute("majorList", this.majorService.list());
     return "paper/importNewPaper";
   }
 
@@ -138,6 +110,7 @@ public class PaperController {
   @PostMapping("/import/excel")
   public R excel(@RequestParam("file") MultipartFile multipartFile) {
     try {
+      // 导入试卷
       ImportPaperDto dto = this.questionService.importPaper(multipartFile);
       return R.successWithData(dto);
     } catch (Exception e) {
@@ -149,9 +122,8 @@ public class PaperController {
   @PostMapping("/importNewPaper")
   public R newPaperByExcel(Paper paper, ImportPaperRandomQuestionDto entity) {
     try {
-      HttpSession session = HttpContextUtil.getSession();
-      // 获取教师 session ID
-      Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
+      // 获取教师 ID
+      Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
       // 设置出卷老师
       paper.setTeacherId(teacherId);
       // 局部随机参数判断，没有局部随机参数则调用普通的插入接口
@@ -196,19 +168,12 @@ public class PaperController {
    */
   @GetMapping("/newPaper/{id}")
   public String add(Model model, @PathVariable Integer id) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 获取教师 session ID
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Course> courseList = this.courseService.listByTeacherId(teacherId);
-    // 专业列表
-    List<Major> majors = this.majorService.list();
-    // 学院列表
-    List<Academy> academyList = this.academyService.list();
+    // 获取教师 ID
+    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 封装 model 参数
-    model.addAttribute("academyList", academyList);
-    model.addAttribute("courseList", courseList);
-    model.addAttribute("majorList", majors);
+    model.addAttribute("academyList", this.academyService.list());
+    model.addAttribute("courseList", this.courseService.listByTeacherId(teacherId));
+    model.addAttribute("majorList", this.majorService.list());
     return "paper/newPaper";
   }
 
@@ -225,9 +190,8 @@ public class PaperController {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     try {
-      // 获取 session 对象，获取家教师ID
-      HttpSession session = HttpContextUtil.getSession();
-      Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
+      // 获取教师 ID
+      Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
       // 调用组卷接口
       paper.setTeacherId(teacherId);
       // 判断是否指定难度
@@ -287,11 +251,16 @@ public class PaperController {
    * @param id 试卷ID
    * @return 试卷页面
    */
-  @GetMapping("/delete/{id}")
-  public String delPaper(@PathVariable Integer id) {
-    // 级联删除试卷（详见接口实现类）
-    paperService.delPaperById(id);
-    return "redirect:/teacher/paper";
+  @ResponseBody
+  @PostMapping("/delete/{id}")
+  public R delPaper(@PathVariable Integer id) {
+    try {
+      // 级联删除试卷（详见接口实现类）
+      paperService.deletePaperById(id);
+      return R.success();
+    } catch (ServiceException e) {
+      return R.error(e.getMessage());
+    }
   }
 
   /**

@@ -1,6 +1,7 @@
 package com.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -16,7 +17,6 @@ import com.exam.entity.dto.QuestionDto;
 import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentAnswerDto;
 import com.exam.exception.ServiceException;
-import com.exam.mapper.CourseMapper;
 import com.exam.mapper.PaperFormMapper;
 import com.exam.mapper.PaperMapper;
 import com.exam.mapper.QuestionMapper;
@@ -30,6 +30,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,41 +46,41 @@ import java.util.*;
  * @author yzn
  * @date 2020/2/1
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService {
 
   @Resource private QuestionMapper questionMapper;
-  @Resource private CourseMapper courseMapper;
   @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
   @Resource private CourseService courseService;
 
   @Override
   public PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId, Integer typeId) {
-    // 获取本人的课程id
+    // 只查询本人的试题，获取教师本人的课程id，并构造条件
     List<Integer> ids = this.selectIdsFilterByTeacherId();
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().in(Question::getCourseId, ids);
     // 条件情况判断
+    // 课程 ID 不为空，加入判断条件
     if (courseId != null) {
       qw.lambda().eq(Question::getCourseId, courseId);
     }
+    // 题型 ID 不为空，加入判断条件
     if (typeId != null) {
       qw.lambda().eq(Question::getTypeId, typeId);
     }
     // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
     // 查询试题集合信息
-    // 只查询本人的试题
-    // 过滤课程
     List<Question> questionList = questionMapper.selectList(qw);
     return new PageInfo<>(questionList);
   }
 
   @Override
-  public Set<Question> selectByPaperIdAndType(Integer paperId, Integer qChoiceType) {
+  public Set<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
     // 通过 ID 查询试卷信息
     Paper paper = this.paperMapper.selectById(paperId);
     // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
@@ -89,10 +90,12 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     // 实现随机排序的核心方法
     Collections.shuffle(ids);
     Set<Question> questionSet = Sets.newLinkedHashSet();
+
+    // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
     for (String id : ids) {
       // 通过题目 ID 获取问题的信息
       Question question = questionMapper.selectById(id);
-      if (qChoiceType.equals(question.getTypeId())) {
+      if (typeId.equals(question.getTypeId())) {
         questionSet.add(question);
       }
     }
@@ -103,7 +106,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   public List<Course> selectCourseByTeacherId(Integer teacherId) {
     QueryWrapper<Course> qw = new QueryWrapper<>();
     qw.lambda().eq(Course::getTeacherId, teacherId);
-    return this.courseMapper.selectList(qw);
+    return this.courseService.list(qw);
   }
 
   @Override
@@ -112,6 +115,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     Integer id = (Integer) HttpContextUtil.getSession().getAttribute(SysConsts.SESSION.TEACHER_ID);
     List<Course> courses = this.courseService.listByTeacherId(id);
     List<Integer> ids = Lists.newArrayList();
+    // 遍历课程对象，封装 ID 集合
     courses.forEach(c -> ids.add(c.getId()));
     return ids;
   }
@@ -193,14 +197,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       ExcelReader reader = ExcelUtil.getReader(file);
       // 读取问题的信息
       List<QuestionDto> questions = reader.readAll(QuestionDto.class);
+      // 手动删除临时文件
+      if (!multipartFile.isEmpty()) {
+        file.deleteOnExit();
+      }
 
       // 插入问题表并组装ID
       List<Integer> idList = Lists.newArrayList();
       for (QuestionDto question : questions) {
         // 判断是否存在同名、同课程、同类型题目
         String qName = question.getQuestionName();
-        Integer cid = question.getCourseId();
-        Integer typeId = question.getTypeId();
+        int cid = question.getCourseId();
+        int typeId = question.getTypeId();
         List<Question> theSames = this.listByQuestionNameAndCourseIdAndTypeId(qName, cid, typeId);
         // 集合不为空，说明存在同名同课程题目
         if (CollUtil.isNotEmpty(theSames)) {
@@ -209,7 +217,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
           // 获取数据的id并组装到 idList 中
           idList.add(sameQuestion.getId());
         } else {
-          // 可直接插入
           // 复制 QuestionDto 的数据到 Question 中
           Question res = BeanUtil.copyObject(question, Question.class);
           // 向数据库插入数据
@@ -219,10 +226,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
 
         // 计算该类型问题的数量和每道题的分值
-        Integer num = typeNumMap.get(typeId);
-        num++;
+        int num = typeNumMap.get(typeId);
         // 存储数量
-        typeNumMap.put(typeId, num);
+        typeNumMap.put(typeId, ++num);
         // 存储分值
         typeScoreMap.put(typeId, question.getScore());
       }
@@ -230,28 +236,26 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       // 插入试卷模板信息
       PaperForm form = new PaperForm();
       // 设置数量分布
-      form.setQChoiceNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
-      form.setQMulChoiceNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
-      form.setQTofNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.TOF_TYPE)));
-      form.setQFillNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.FILL_TYPE)));
-      form.setQSaqNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.SAQ_TYPE)));
-      form.setQProgramNum(String.valueOf(typeNumMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+      form.setQChoiceNum(String.valueOf(typeNumMap.get(1)));
+      form.setQMulChoiceNum(String.valueOf(typeNumMap.get(2)));
+      form.setQTofNum(String.valueOf(typeNumMap.get(3)));
+      form.setQFillNum(String.valueOf(typeNumMap.get(4)));
+      form.setQSaqNum(String.valueOf(typeNumMap.get(5)));
+      form.setQProgramNum(String.valueOf(typeNumMap.get(6)));
 
       // 从选择一直到编程题6种题型，设置每到分值
-      form.setQChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.CHOICE_TYPE)));
-      form.setQMulChoiceScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.MUL_CHOICE_TYPE)));
-      form.setQTofScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.TOF_TYPE)));
-      form.setQFillScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.FILL_TYPE)));
-      form.setQSaqScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.SAQ_TYPE)));
-      form.setQProgramScore(String.valueOf(typeScoreMap.get(SysConsts.QUESTION.PROGRAM_TYPE)));
+      form.setQChoiceScore(String.valueOf(typeScoreMap.get(1)));
+      form.setQMulChoiceScore(String.valueOf(typeScoreMap.get(2)));
+      form.setQTofScore(String.valueOf(typeScoreMap.get(3)));
+      form.setQFillScore(String.valueOf(typeScoreMap.get(4)));
+      form.setQSaqScore(String.valueOf(typeScoreMap.get(5)));
+      form.setQProgramScore(String.valueOf(typeScoreMap.get(6)));
 
-      // 设置模板类型（1）
+      // 设置模板类型（1），代表设置导入试卷所生成的模板
       form.setType(SysConsts.PAPER_FORM.IMPORT);
 
       // 插入数据
       this.paperFormMapper.insert(form);
-      // 模板ID
-      Integer formId = form.getId();
       // 建立 ImportPaperDto 对象
       ImportPaperDto dto = new ImportPaperDto();
       // 建立 StringBuilder 对象，用户组装试题集合
@@ -273,11 +277,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
       // 封装问题信息参数
       dto.setPaperName(paperName);
-      dto.setPaperFormId(formId);
+      dto.setPaperFormId(form.getId());
       dto.setScore(score);
       return dto;
     } catch (Exception e) {
-      throw new ServiceException("试题解析失败");
+      // 对未知异常打印堆栈信息到控制台
+      log.error(ExceptionUtil.stacktraceToString(e));
+      throw new ServiceException("试题解析失败，请检查 Excel 是否有错误信息！");
     }
   }
 
@@ -289,10 +295,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       File file = FileUtil.toFile(multipartFile);
       // 使用 ExcelUtil 读取 Excel 中的数据
       ExcelReader reader = ExcelUtil.getReader(file);
+
       // 输出到 Question 的 List 集合中
       List<Question> questions = reader.readAll(Question.class);
+      // 手动删除临时文件
+      if (!multipartFile.isEmpty()) {
+        file.deleteOnExit();
+      }
+
       // 通过 lambda 循环的方式将题目数据一次插入 Question 表中
       List<Integer> ids = this.selectIdsFilterByTeacherId();
+
       for (Question question : questions) {
         // 正确答案、难度、所属课程、类型 ID 检测
         boolean isTypeIdNull = question.getTypeId() == null;
@@ -306,14 +319,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         // 题目名称
         String questionName = question.getQuestionName();
         // 题目课程 id
-        Integer courseId = question.getCourseId();
-        // 类型 id
-        Integer typeId = question.getTypeId();
-        List<Question> result =
-            this.listByQuestionNameAndCourseIdAndTypeId(questionName, courseId, typeId);
+        Integer cid = question.getCourseId();
+        // 题目类型 id
+        Integer tid = question.getTypeId();
+        List<Question> result = this.listByQuestionNameAndCourseIdAndTypeId(questionName, cid, tid);
         if (CollUtil.isEmpty(result)) {
           // 如果教师包含该课程，则允许插入
-          if (ids.contains(courseId)) {
+          if (ids.contains(cid)) {
             // 插入题目数据
             this.questionMapper.insert(question);
           }
@@ -323,7 +335,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       throw new ServiceException("请检查试题中是否漏填如下信息（课程ID、正确答案、难度、类型）");
     } catch (Exception e) {
       // 捕捉所有可能发生的异常，抛出给控制层处理
-      throw new ServiceException("题目解析失败");
+      log.error(ExceptionUtil.stacktraceToString(e));
+      throw new ServiceException("题目解析失败，请检查 Excel 内容后重试！");
     }
   }
 }

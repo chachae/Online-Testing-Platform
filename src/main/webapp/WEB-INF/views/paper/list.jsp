@@ -71,7 +71,7 @@
                         <c:forEach items="${page.list}" var="paper" varStatus="vs">
                             <tr class="rowDetail" rel="${paper.id}">
                                 <td>${vs.count}</td>
-                                <td>${paper.id}</td>
+                                <td>No. ${paper.id}</td>
                                 <td>${paper.paperName}</td>
                                 <td>
                                     <c:choose>

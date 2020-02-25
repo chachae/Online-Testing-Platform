@@ -71,7 +71,7 @@
                                 <td>${vs.count}</td>
                                 <td>${course.id}</td>
                                 <td>${course.courseName}</td>
-                                <td><a class="rowDel fa fa-remove btn btn-danger" rel="${course.id}"> 删除</a></td>
+                                <td><a class="rowDel btn btn-danger btn-sm" rel="${course.id}"> 删除</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>

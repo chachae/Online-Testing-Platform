@@ -32,22 +32,6 @@ public class SysConsts {
     public static final String ADMIN = "admin";
   }
 
-  /** 试题题型代码 */
-  public static class QUESTION {
-    /** 单项选择代码 */
-    public static final Integer CHOICE_TYPE = 1;
-    /** 多项选择代码 */
-    public static final Integer MUL_CHOICE_TYPE = 2;
-    /** 判断题代码 */
-    public static final Integer TOF_TYPE = 3;
-    /** 填空题代码 */
-    public static final Integer FILL_TYPE = 4;
-    /** 主观题代码 */
-    public static final Integer SAQ_TYPE = 5;
-    /** 编程题代码 */
-    public static final Integer PROGRAM_TYPE = 6;
-  }
-
   /** 角色代码 */
   public static class ROLE {
     /** 管理员 */

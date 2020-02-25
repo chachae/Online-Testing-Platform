@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.stream.Stream;
 
 /**
  * 公告业务实现类
@@ -36,7 +35,9 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceMapper, Announce>
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void delete(Integer[] ids) {
-    // 使用 lambda 表达式循环删除数据
-    Stream.of(ids).forEach(id -> announceMapper.deleteById((id)));
+    // 遍历 ID 删除数据
+    for (Integer id : ids) {
+      this.announceMapper.deleteById(id);
+    }
   }
 }

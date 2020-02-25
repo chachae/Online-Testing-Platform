@@ -166,7 +166,8 @@
                                 <td>
                                     <button class="view btn btn-sm btn-vk" rel="${announce.id}">查看公告</button>
                                     <button class="edit btn btn-sm btn-dropbox" rel="${announce.id}">编辑公告</button>
-                                    <a href="javascript:;" class="del btn btn-sm btn-danger" rel="${announce.id}">删除公告</a>
+                                    <a href="javascript:;" class="del btn btn-sm btn-danger"
+                                       rel="${announce.id}">删除公告</a>
                                 </td>
                             </tr>
                         </c:forEach>

@@ -102,11 +102,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     Admin current = (Admin) session.getAttribute(SysConsts.SESSION.ADMIN);
     // 当前 session 的 管理员 ID 和被删除的管理员ID一直，不能被删除
     if (current.getId().equals(id)) {
-      throw new ServiceException("不可以刪除自己");
-    } else {
-      // ID 不相同，允许删除
-      return super.removeById(id);
+      throw new ServiceException("不可以删除自己");
     }
+    // ID 不相同，允许删除
+    return super.removeById(id);
   }
 
   @Override

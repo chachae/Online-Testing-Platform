@@ -16,14 +16,6 @@ import java.util.List;
 public interface StudentMapper extends BaseMapper<Student> {
 
   /**
-   * 通过学号查询学生信息
-   *
-   * @param stuNumber 学号
-   * @return 学生信息
-   */
-  StudentVo selectVoByStuNumber(String stuNumber);
-
-  /**
    * 通过条件查询学生 List 集合
    *
    * @param dto 学生查询条件

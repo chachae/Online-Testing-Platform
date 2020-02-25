@@ -40,7 +40,7 @@
                         <a href="<c:url value="/teacher/paper"/>" class="btn btn-primary btn-sm"><i
                                 class="fa fa-arrow-left"></i> 返回列表</a>
 
-                        <button id="delBtn" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> 删除</button>
+                        <button id="delBtn" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> 删除试卷</button>
                     </div>
                 </div>
                 <div class="box-body ">
@@ -50,22 +50,22 @@
                             <th class="td_title" style="background-color: #e4e4e4">试卷名称: ${paper.paperName}</th>
                         </tr>
                         <tr>
-                            <td class="td_title">试卷题目id: ${paper.questionId}</td>
+                            <td class="td_title">试卷题目：${paper.questionId}</td>
                         </tr>
                         <tr>
-                            <td class="td_title">开始时间: ${paper.beginTime}</td>
+                            <td class="td_title">开始时间：${paper.beginTime}</td>
                         </tr>
                         <tr>
-                            <td class="td_title">结束时间: ${paper.endTime}</td>
+                            <td class="td_title">结束时间：${paper.endTime}</td>
                         </tr>
                         <tr>
-                            <td class="td_title">考试时长: ${paper.allowTime}</td>
+                            <td class="td_title">考试时长：${paper.allowTime}</td>
                         </tr>
                         <tr>
-                            <td class="td_title">试卷总分: ${paper.score}</td>
+                            <td class="td_title">试卷总分：${paper.score} 分</td>
                         </tr>
                         <tr>
-                            <td class="td_title">试卷状态:
+                            <td class="td_title">试卷状态：
                                 <c:choose>
                                     <c:when test="${paper.end}">已结束</c:when>
                                     <c:when test="${paper.start}">考试中</c:when>
@@ -74,13 +74,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="td_title">试卷类型: ${paper.paperType}</td>
+                            <td class="td_title">试卷类型： ${paper.paperType}考试</td>
                         </tr>
                         <tr>
-                            <td class="td_title">考试课程: ${course.courseName}</td>
+                            <td class="td_title">考试课程：《${course.courseName}》</td>
                         </tr>
                         <tr>
-                            <td class="td_title">考试班级: ${major.major}</td>
+                            <td class="td_title">考试专业：${major.major}</td>
                         </tr>
                     </table>
                 </div>
@@ -402,9 +402,19 @@
         var paperId = ${paper.id};
         //删除试卷
         $("#delBtn").click(function () {
-            layer.confirm("确定要删除改试卷么？", function () {
-                window.location.href = "/teacher/paper/delete/" + paperId;
-            })
+            layer.confirm("确定要删除试卷吗？",
+                function () {
+                    $.post("/teacher/paper/delete/" + paperId).done(function (data) {
+                        if (data.state === "success") {
+                            layer.msg("删除成功!");
+                            window.location.href = "/teacher/paper";
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    }).error(function () {
+                        layer.msg("服务器异常");
+                    })
+                });
         });
     });
 

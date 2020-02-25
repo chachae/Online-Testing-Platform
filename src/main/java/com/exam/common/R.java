@@ -1,6 +1,7 @@
 package com.exam.common;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +12,9 @@ import lombok.NoArgsConstructor;
  * @date 2019/12/31
  */
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class R {
 
   // 默认的成功信息
@@ -30,9 +32,7 @@ public class R {
    * @return 成功的回调数据
    */
   public static R success() {
-    R r = new R();
-    r.setState(STATE_SUCCESS);
-    return r;
+    return R.builder().state(STATE_SUCCESS).build();
   }
 
   /**
@@ -42,10 +42,7 @@ public class R {
    * @return 失败的回调信息
    */
   public static R error(String message) {
-    R r = new R();
-    r.setMessage(message);
-    r.setData(STATE_ERROR);
-    return r;
+    return R.builder().message(message).data(STATE_ERROR).build();
   }
 
   /**
@@ -55,9 +52,6 @@ public class R {
    * @return 成功回调信息
    */
   public static R successWithData(Object data) {
-    R r = new R();
-    r.setState(STATE_SUCCESS);
-    r.setData(data);
-    return r;
+    return R.builder().state(STATE_SUCCESS).data(data).build();
   }
 }

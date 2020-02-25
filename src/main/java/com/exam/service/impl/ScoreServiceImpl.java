@@ -112,11 +112,11 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     long aNum = 0L;
 
     // 预备用于拼接各科成绩等级分布信息的 StringBuilder 对象
-    StringBuilder sbe = StrUtil.builder();
-    StringBuilder sbd = StrUtil.builder();
-    StringBuilder sbc = StrUtil.builder();
-    StringBuilder sbb = StrUtil.builder();
-    StringBuilder sba = StrUtil.builder();
+    StringBuilder sbe = new StringBuilder();
+    StringBuilder sbd = new StringBuilder();
+    StringBuilder sbc = new StringBuilder();
+    StringBuilder sbb = new StringBuilder();
+    StringBuilder sba = new StringBuilder();
 
     // 预备用于存储分数、等级、结果的集合
     Map<String, Object> scoreMap = Maps.newHashMap();
@@ -129,22 +129,34 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
 
     // 循环该学生的分数 List 集合并计算出各门考试成绩分数分布信息
     for (Score s : scoreList) {
-      int score = Integer.parseInt(s.getScore());
-      if (score < 60) {
-        eNum++;
-        sbe.append(startBracket).append(s.getPaperName()).append(endBracket);
-      } else if (score < 70) {
-        bNum++;
-        sbd.append(startBracket).append(s.getPaperName()).append(endBracket);
-      } else if (score < 80) {
-        cNum++;
-        sbc.append(startBracket).append(s.getPaperName()).append(endBracket);
-      } else if (score < 90) {
-        bNum++;
-        sbb.append(startBracket).append(s.getPaperName()).append(endBracket);
-      } else {
-        aNum++;
-        sba.append(startBracket).append(s.getPaperName()).append(endBracket);
+      // 取除数
+      int mdn = Integer.parseInt(s.getScore()) / 10;
+      switch (mdn) {
+        case 5:
+        case 4:
+        case 3:
+        case 2:
+        case 1:
+        case 0:
+          eNum++;
+          sbe.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 6:
+          bNum++;
+          sbd.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 7:
+          cNum++;
+          sbc.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 8:
+          bNum++;
+          sbb.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        default:
+          aNum++;
+          sba.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
       }
     }
 

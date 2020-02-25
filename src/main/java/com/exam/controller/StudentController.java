@@ -3,6 +3,7 @@ package com.exam.controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.exam.constant.SysConsts;
+import com.exam.controller.common.QuestionModel;
 import com.exam.entity.*;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.exception.ServiceException;
@@ -20,7 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 學生控制层
@@ -31,6 +31,7 @@ import java.util.Set;
 @Controller
 public class StudentController {
 
+  @Resource private QuestionModel questionModel;
   @Resource private MajorService majorService;
   @Resource private PaperService paperService;
   @Resource private ScoreService scoreService;
@@ -85,9 +86,8 @@ public class StudentController {
    */
   @GetMapping("/student/home/{id}")
   public String home(@PathVariable Integer id, Model model) {
-    // 调用通过ID查询接口
-    Student student = studentService.getById(id);
-    model.addAttribute("student", student);
+    // 设置学生信息 model 对象信息
+    model.addAttribute("student", studentService.getById(id));
     return "student/home";
   }
 
@@ -149,10 +149,8 @@ public class StudentController {
    */
   @GetMapping("/student/announce/system")
   public String announceSystem(Model model) {
-    // 嗲用查询全部公告的借口
-    List<Announce> announceList = this.announceService.list();
-    // 设置 model 对象信息
-    model.addAttribute("announceList", announceList);
+    // 设置公告集合的 model 对象信息
+    model.addAttribute("announceList", this.announceService.list());
     return "student/sysAnnounceList";
   }
 
@@ -164,18 +162,17 @@ public class StudentController {
    */
   @GetMapping("/student/exam")
   public String exam(Model model) {
-    // 通过 SpringContext 上下文获取 Session 对象
-    HttpSession session = HttpContextUtil.getSession();
     // 获取学生的ID
-    Integer id = (Integer) session.getAttribute(SysConsts.SESSION.STUDENT_ID);
+    int id = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.STUDENT_ID);
     Student student = studentService.getById(id);
+
     // 查询所有该专业的正式试卷
     List<Paper> paperList = paperService.selectByMajorId(student.getMajorId());
     model.addAttribute("paperList", paperList);
-    // 模拟试卷
-    List<Paper> practicePaperList =
-        paperService.selectPracticePapersByMajorId(student.getMajorId());
-    model.addAttribute("practicePaperList", practicePaperList);
+
+    // 模拟试卷 model 对象信息
+    model.addAttribute(
+        "practicePaperList", paperService.selectPracticePapersByMajorId(student.getMajorId()));
     return "student/examList";
   }
 
@@ -189,28 +186,10 @@ public class StudentController {
    */
   @GetMapping("/student/{stuId}/paper/{paperId}")
   public String doPaper(@PathVariable Integer stuId, @PathVariable Integer paperId, Model model) {
-    // 通过 ID 查询试卷信息并将各种题型的题目放进 Set 集合中返回给前端，显示成试卷
-    Paper paper = paperService.getById(paperId);
-    Set<Question> qChoiceList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
-    Set<Question> qMulChoiceList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
-    Set<Question> qTofList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
-    Set<Question> qFillList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
-    Set<Question> qSaqList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
-    Set<Question> qProgramList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
-    // 设置 model 对象信息
-    model.addAttribute("paper", paper);
-    model.addAttribute("qChoiceList", qChoiceList);
-    model.addAttribute("qMulChoiceList", qMulChoiceList);
-    model.addAttribute("qTofList", qTofList);
-    model.addAttribute("qFillList", qFillList);
-    model.addAttribute("qSaqList", qSaqList);
-    model.addAttribute("qProgramList", qProgramList);
+    // 设置试卷信息的 model 对象信息
+    model.addAttribute("paper", paperService.getById(paperId));
+    // 各类题型的 model 对象信息
+    questionModel.setQuestionModel(model, paperId);
     // 返回试卷
     return "student/paperDetail";
   }
@@ -245,10 +224,8 @@ public class StudentController {
    */
   @GetMapping("/student/score/{id}")
   public String scoreList(@PathVariable Integer id, Model model) {
-    // 通过学生 ID 查询成绩集合
-    List<Score> scoreList = this.scoreService.selectByStuId(id);
-    // 设置 model 对象
-    model.addAttribute("scoreList", scoreList);
+    // 通过学生 ID 查询成绩集合并设置其 model 对象信息
+    model.addAttribute("scoreList", this.scoreService.selectByStuId(id));
     return "student/scoreList";
   }
 
@@ -286,7 +263,7 @@ public class StudentController {
         model.addAttribute("course", course);
         return "student/question";
       } else {
-        String message = "题号不存在，请勿乱输！";
+        String message = "题号不存在！";
         model.addAttribute("message", message);
         return "student/home";
       }
@@ -306,30 +283,12 @@ public class StudentController {
     Score score = this.scoreService.getById(id);
     // 设置试卷信息
     Integer paperId = score.getPaperId();
-    Paper paper = this.paperService.getById(paperId);
 
-    // 显示试卷信息
-    Set<Question> qChoiceList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.CHOICE_TYPE);
-    Set<Question> qMulChoiceList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.MUL_CHOICE_TYPE);
-    Set<Question> qTofList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.TOF_TYPE);
-    Set<Question> qFillList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.FILL_TYPE);
-    Set<Question> qSaqList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.SAQ_TYPE);
-    Set<Question> qProgramList =
-        questionService.selectByPaperIdAndType(paperId, SysConsts.QUESTION.PROGRAM_TYPE);
-    // 设置 model 对象信息
-    model.addAttribute("qChoiceList", qChoiceList);
-    model.addAttribute("qMulChoiceList", qMulChoiceList);
-    model.addAttribute("qTofList", qTofList);
-    model.addAttribute("qFillList", qFillList);
-    model.addAttribute("qSaqList", qSaqList);
-    model.addAttribute("qProgramList", qProgramList);
+    // 设置题目的 model 对象信息
+    questionModel.setQuestionModel(model, paperId);
 
     // 设置分数和试卷 model 信息
+    Paper paper = this.paperService.getById(paperId);
     model.addAttribute("score", score);
     model.addAttribute("paper", paper);
 

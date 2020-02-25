@@ -33,10 +33,10 @@ public interface QuestionService extends IService<Question> {
    * 根据paperId和试题类型查找该类型题目集合
    *
    * @param paperId 试卷ID
-   * @param qChoiceType 试卷类型
+   * @param typeId 试卷类型
    * @return 问题 Set 集合
    */
-  Set<Question> selectByPaperIdAndType(Integer paperId, Integer qChoiceType);
+  Set<Question> selectByPaperIdAndType(Integer paperId, Integer typeId);
 
   /**
    * 根据教师id查找他教的所有课程（可以出题的课程）

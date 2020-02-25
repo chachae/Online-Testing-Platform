@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * (Major)表服务实现类
+ * 专业表服务实现类
  *
  * @author yzn
  * @since 2020-02-08 14:26:53
@@ -52,7 +52,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
     if (CollUtil.isNotEmpty(papers)) {
       throw new ServiceException("专业存在试卷关联，请删除试卷后重试");
     }
-    Integer studentCount = this.studentService.selectCountByMajorId((int) id);
+    int studentCount = this.studentService.selectCountByMajorId((int) id);
     if (studentCount > 0) {
       throw new ServiceException("专业存在学生关联，请删除相关学生后重试");
     }

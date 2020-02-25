@@ -94,7 +94,7 @@ public interface PaperService extends IService<Paper> {
    *
    * @param id 试卷ID
    */
-  void delPaperById(Integer id);
+  void deletePaperById(Integer id);
 
   /**
    * 通过专业ID查询试卷 List 集合
@@ -126,4 +126,12 @@ public interface PaperService extends IService<Paper> {
    * @param entity 局部随机数据传输对象
    */
   void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity);
+
+  /**
+   * 通过试卷模板 ID 查询试卷数量
+   *
+   * @param paperFormId 试卷模板ID
+   * @return 数量
+   */
+  int countPaperByPaperFormId(Integer paperFormId);
 }

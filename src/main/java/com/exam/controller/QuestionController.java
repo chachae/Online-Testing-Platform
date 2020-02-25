@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -53,7 +52,7 @@ public class QuestionController {
     // 设置 model 对象信息
     model.addAttribute("page", pageInfo);
     // 课程集合
-    int id = (int) HttpContextUtil.getSession().getAttribute(SysConsts.SESSION.TEACHER_ID);
+    int id = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     List<Course> courses = this.courseService.listByTeacherId(id);
     model.addAttribute("courseList", courses);
     // 当前选中课程
@@ -99,17 +98,13 @@ public class QuestionController {
    */
   @GetMapping("/new")
   public String add(Model model) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 调用试题类型集合借口
-    List<Type> typeList = this.typeService.list();
-    // 通过 session 获取教师的ID
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    // 通过教师 ID 获取该老师的课程集合
-    List<Course> courseList = questionService.selectCourseByTeacherId(teacherId);
     // 设置 model 对象信息
-    model.addAttribute("typeList", typeList);
-    model.addAttribute("courseList", courseList);
+    // 题目类型
+    model.addAttribute("typeList", this.typeService.list());
+    // 通过 session 获取教师的ID
+    int teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 通过教师 ID 获取该老师的课程集合
+    model.addAttribute("courseList", questionService.selectCourseByTeacherId(teacherId));
     return "question/new";
   }
 
@@ -123,7 +118,7 @@ public class QuestionController {
   @PostMapping("/new")
   public String add(Question question, RedirectAttributes r) {
     // 调用试题新增接口
-    questionService.save(question);
+    this.questionService.save(question);
     r.addFlashAttribute("message", "试题添加成功！");
     return "redirect:/teacher/question/show/" + question.getId();
   }
@@ -138,8 +133,7 @@ public class QuestionController {
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable Integer id, Model model) {
     // 调用通过试题ID查询实体信息接口
-    Question question = this.questionService.getById(id);
-    model.addAttribute("question", question);
+    model.addAttribute("question", this.questionService.getById(id));
     return "question/edit";
   }
 
@@ -154,7 +148,7 @@ public class QuestionController {
   public String edit(@PathVariable Integer id, Question question) {
     // 更新试题信息
     question.setId(id);
-    questionService.updateById(question);
+    this.questionService.updateById(question);
     return "/question/show/" + id;
   }
 

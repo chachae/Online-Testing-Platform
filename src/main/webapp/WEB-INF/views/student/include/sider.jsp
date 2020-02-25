@@ -32,7 +32,7 @@
             <!-- 我的考试 -->
             <li class="treeview ${param.menu == 'exam'?'active':''}">
                 <a href="<c:url value="/student/exam"/>">
-                    <i class="fa fa-bars"></i> <span>我的考试</span>
+                    <i class="fa fa-file-text"></i> <span>我的考试</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -41,7 +41,7 @@
             <!-- 我的成绩 -->
             <li class="treeview ${fn:startsWith(param.menu,'score')?'active':''}">
                 <a href="/student/score/${sessionScope.get("studentId")}">
-                    <i class="fa fa-calendar"></i> <span>我的成绩</span>
+                    <i class="fa fa-print"></i> <span>我的成绩</span>
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i></span>
                 </a>
@@ -49,7 +49,7 @@
             <!-- 成绩分析 -->
             <li class="treeview ${fn:startsWith(param.menu,'chart_')?'active':''}">
                 <a href="">
-                    <i class="fa fa-window-restore"></i> <span>成绩分析</span>
+                    <i class="fa fa-pie-chart"></i> <span>成绩分析</span>
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i></span>
                 </a>

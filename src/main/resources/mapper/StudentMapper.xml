@@ -34,12 +34,6 @@
         m.academy_id = a.id
     </sql>
 
-    <!-- 通过学号查询学生 -->
-    <select id="selectVoByStuNumber" parameterType="string" resultMap="voResultMap">
-        <include refid="baseSql"/>
-        where s.stu_number = #{stuNumber,jdbcType=INTEGER}
-    </select>
-
     <!-- 通过条件查询学生 List 集合 -->
     <select id="listVo" parameterType="StudentQueryDto" resultMap="voResultMap">
         <include refid="baseSql"/>

@@ -24,11 +24,12 @@
 
         th {
             font-size: 15px;
-            align: "center"
+            text-align: center;
         }
 
         td {
             font-size: 16px;
+            text-align: center;
         }
     </style>
 
@@ -64,7 +65,7 @@
                         </c:if>
                         <c:if test="${not empty paperList}">
                             <tr>
-                                <th style="width: 10px"></th>
+                                <th>序号</th>
                                 <th>试卷名称</th>
                                 <th>开考时间</th>
                                 <th>结束时间</th>
@@ -79,7 +80,7 @@
                                 <td>${paper.beginTime}</td>
                                 <td>${paper.endTime}</td>
                                 <td>${paper.allowTime}</td>
-                                <td><a class="rowDel" rel="${paper.id}">修改时间</a></td>
+                                <td><a rel="${paper.id}" class="rowDel btn btn-sm btn-vk">修改时间</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>

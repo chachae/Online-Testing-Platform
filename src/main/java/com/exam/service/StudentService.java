@@ -50,14 +50,6 @@ public interface StudentService extends IService<Student> {
   PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto);
 
   /**
-   * 获取 StudentVo 对象
-   *
-   * @param number 学号
-   * @return 学生信息
-   */
-  StudentVo selectVoByStuNumber(String number);
-
-  /**
    * 通过专业 ID 查询学生数量
    *
    * @param majorId 专业ID

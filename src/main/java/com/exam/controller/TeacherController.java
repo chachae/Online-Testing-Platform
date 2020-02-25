@@ -8,12 +8,9 @@ import com.exam.entity.dto.AnswerEditDto;
 import com.exam.entity.dto.ChangePassDto;
 import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentQueryDto;
-import com.exam.entity.vo.MajorVo;
-import com.exam.entity.vo.StudentVo;
 import com.exam.exception.ServiceException;
 import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -116,8 +113,7 @@ public class TeacherController {
   @GetMapping("/home/{id}")
   public String home(Model model, @PathVariable Integer id) {
     // 调用通过 ID 查询教师信息接口
-    Teacher teacher = teacherService.getById(id);
-    model.addAttribute("teacher", teacher);
+    model.addAttribute("teacher", teacherService.getById(id));
     return "teacher/home";
   }
 
@@ -144,13 +140,9 @@ public class TeacherController {
    */
   @GetMapping("/course/list")
   public String courseList(Model model) {
-    HttpSession session = HttpContextUtil.getSession();
-    // 从 session 中获取教师ID
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    // 获取当前教师的所有课程信息
-    List<Course> courseList = courseService.listByTeacherId(teacherId);
+    Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 设置 model 信息
-    model.addAttribute("courseList", courseList);
+    model.addAttribute("courseList", courseService.listByTeacherId((int) id));
     return "teacher/courseList";
   }
 
@@ -164,9 +156,6 @@ public class TeacherController {
   @GetMapping("/course/new")
   @ResponseBody
   public R newCourse(String courseName, Integer teacherId) {
-    // 调用保存接口
-    Teacher teacher = this.teacherService.getById(teacherId);
-    String name = teacher.getName();
     // 封装参数
     Course build = Course.builder().courseName(courseName).teacherId(teacherId).build();
     this.courseService.save(build);
@@ -199,10 +188,8 @@ public class TeacherController {
    */
   @GetMapping("/announce/system")
   public String announceSystem(Model model) {
-    // 调用公告查询接口
-    List<Announce> announceList = this.announceService.list();
     // 设置 model 对象信息
-    model.addAttribute("announceList", announceList);
+    model.addAttribute("announceList", this.announceService.list());
     return "teacher/sysAnnounceList";
   }
 
@@ -215,12 +202,9 @@ public class TeacherController {
   @GetMapping("/exam")
   public String exam(Model model) {
     // 获取教师 ID
-    HttpSession session = HttpContextUtil.getSession();
-    Integer id = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    // 查询符合条件的时间 List 集合
-    List<Paper> paperList = paperService.listUnDoByTeacherId(id);
+    Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 设置 model 对象信息
-    model.addAttribute("paperList", paperList);
+    model.addAttribute("paperList", paperService.listUnDoByTeacherId((int) id));
     return "teacher/examList";
   }
 
@@ -250,13 +234,10 @@ public class TeacherController {
    */
   @GetMapping("/reviewPaper")
   public String reviewPaper(Model model) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 获取该老师所属的已完成的试卷信息
-    Integer teacherId = (Integer) session.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    List<Paper> paperList = paperService.listDoneByTeacherId(teacherId);
+    // 获取教师id
+    Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 返回 Model 对象
-    model.addAttribute("paperList", paperList);
+    model.addAttribute("paperList", paperService.listDoneByTeacherId((int) id));
     return "teacher/review";
   }
 
@@ -270,13 +251,13 @@ public class TeacherController {
   @GetMapping("/reviewRes")
   public String reviewPaper(Integer paperId, Model model, RedirectAttributes r) {
     try {
+      // 答题记录传输对象 List 集合
       List<StuAnswerRecordDto> records =
           this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
       model.addAttribute("stuAnswer", records);
       model.addAttribute("paper", this.paperService.getById(paperId));
-      // 获取题目正确答案
-      List<Question> questions = this.questionService.listByStuAnswerRecordDto(records.get(0));
-      model.addAttribute("questionList", questions);
+      model.addAttribute(
+          "questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
       return "teacher/answerRecord";
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
@@ -337,16 +318,11 @@ public class TeacherController {
    */
   @GetMapping("/student")
   public String listStudent(Page page, Model model, StudentQueryDto dto) {
-    // 获取学生分页数据
-    PageInfo<StudentVo> pageInfo = this.studentService.pageForStudentList(page.getPageNo(), dto);
-    // 获取专业数据
-    List<Major> majorList = this.majorService.list();
-    // 获取学院数据
-    List<Academy> academyList = this.academyService.list();
+
     // 设置分页后的数据的 model 对象
-    model.addAttribute("page", pageInfo);
-    model.addAttribute("majorList", majorList);
-    model.addAttribute("academyList", academyList);
+    model.addAttribute("page", this.studentService.pageForStudentList(page.getPageNo(), dto));
+    model.addAttribute("majorList", this.majorService.list());
+    model.addAttribute("academyList", this.academyService.list());
 
     // 当前查询的学院 ID
     if (dto.getAcademyId() != null) {
@@ -416,12 +392,9 @@ public class TeacherController {
    */
   @GetMapping("/major")
   public String listMajor(Page page, Model model, Major major) {
-    // 获取分页专业数据
-    PageInfo<MajorVo> pageInfo = this.majorService.pageForMajorList(page.getPageNo(), major);
-    List<Academy> academies = this.academyService.list();
     // 设置数据 model 对象
-    model.addAttribute("page", pageInfo);
-    model.addAttribute("academyList", academies);
+    model.addAttribute("page", this.majorService.pageForMajorList(page.getPageNo(), major));
+    model.addAttribute("academyList", this.academyService.list());
     // 设置当前选中的学院id
     if (major.getAcademyId() != null) {
       model.addAttribute("curAcademyId", major.getAcademyId());

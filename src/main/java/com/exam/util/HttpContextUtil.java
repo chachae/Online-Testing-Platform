@@ -41,6 +41,15 @@ public class HttpContextUtil {
   }
 
   /**
+   * 获取Session 对象信息
+   *
+   * @return obj
+   */
+  public static Object getAttribute(String attr) {
+    return getHttpServletRequest().getSession().getAttribute(attr);
+  }
+
+  /**
    * 获取头部信息
    *
    * @param header /

@@ -82,9 +82,9 @@
                 <table class="table table-condensed">
                     <tr>
                         <td>
-                            试卷编号：${paper.id}<br>
+                            试卷编号：No. ${paper.id}<br>
                             考试名称：${paper.paperName}<br>
-                            试卷分值：${paper.score}<br>
+                            试卷分值：${paper.score} 分<br>
                             考试时间：${paper.beginTime}<br>
                             结束时间：${paper.endTime}<br>
                             考试类型：${paper.paperType}考试<br>
@@ -132,7 +132,7 @@
                                     <b>
                                         姓名：${answer.student.name}<br>
                                         学号：${answer.student.stuNumber}<br>
-                                        成绩：${answer.score.score}
+                                        成绩：${answer.score.score} 分
                                     </b>
                                 </td>
                             </tr>

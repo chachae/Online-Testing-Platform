@@ -25,14 +25,14 @@
             <!-- 消息公告 -->
             <li class="treeview ${param.menu == 'announce' ? 'active' : ''}">
                 <a href="${pageContext.request.contextPath}/teacher/announce/system">
-                    <i class="fa fa-address-book-o"></i> <span>消息公告</span>
+                    <i class="fa fa-commenting"></i> <span>消息公告</span>
                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
             </li>
             <!-- 课程管理 -->
             <li class="treeview ${param.menu == 'course'?'active':''}">
                 <a href="${pageContext.request.contextPath}/teacher/course/list">
-                    <i class="fa fa-users"></i> <span>课程管理</span>
+                    <i class="fa fa-book"></i> <span>课程管理</span>
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i></span>
                 </a>
@@ -56,7 +56,7 @@
             <!-- 试题管理 -->
             <li class="treeview ${param.menu == 'question'?'active':''}">
                 <a href="<c:url value="/teacher/question"/>">
-                    <i class="fa fa-bars"></i> <span>试题管理</span>
+                    <i class="fa fa-file-pdf-o"></i> <span>试题管理</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -81,7 +81,7 @@
             <!-- 试卷复查 -->
             <li class="treeview ${param.menu == 'review'?'active':''}">
                 <a href="<c:url value="/teacher/reviewPaper"/>">
-                    <i class="fa fa-calendar"></i> <span>试卷复查</span>
+                    <i class="fa fa-retweet"></i> <span>试卷复查</span>
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i></span>
                 </a>

@@ -36,7 +36,7 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
     QueryWrapper<Major> qw = new QueryWrapper<>();
     qw.lambda().eq(Major::getAcademyId, id);
     // 查询数量，如果为 0 说明不存在关联
-    Integer count = this.majorMapper.selectCount(qw);
+    int count = this.majorMapper.selectCount(qw);
     if (count > 0) {
       throw new ServiceException("存在专业关联，不允许删除！");
     }
