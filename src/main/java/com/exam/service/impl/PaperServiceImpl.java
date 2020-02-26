@@ -182,26 +182,31 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     score += essayMark.getScore();
     wrongIds.addAll(essayMark.getWrongIds());
 
-    // 通过循环的方式依次将主观题的错题信息插入学生答题记录表中
-    for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
-      // 封装学生、试卷、分数信息
-      record.setPaperId(paperId).setStuId(stuId);
-      stuAnswerRecordMapper.insert(record);
-    }
-
     // 编程题批改
     MarkInfoDto programMark = PaperMarkUtil.essayMark(programs, programScore, request);
     score += programMark.getScore();
     wrongIds.addAll(programMark.getWrongIds());
+
+    // 加同步锁
+    synchronized (this) {
+      // 通过循环的方式依次将主观题的错题信息插入学生答题记录表中
+      for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
+        // 封装学生、试卷、分数信息
+        record.setPaperId(paperId).setStuId(stuId);
+        stuAnswerRecordMapper.insert(record);
+      }
+    }
+
     /* -------------------------- 结束评分 -------------------------- */
 
     // 组装错题集合信息
     StringBuilder builder = new StringBuilder();
     wrongIds.forEach(id -> builder.append(id).append(StrUtil.COMMA));
-    // 和上面一样将最后一个逗号去除
+    // 最后一个逗号去除
     String wrong = builder.toString();
+    // 预备一个空错题字符串
     String wrongStr = null;
-    // 如果没有错题，就直赋值空
+    // 如果没有错题，就直赋值空，长度大于0就说明包含错题
     if (wrong.length() > 0) {
       wrongStr = wrong.substring(0, wrong.length() - 1);
     }

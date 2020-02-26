@@ -1,12 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh_CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 学生帮助中心</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <%@include file="../include/css.jsp" %>
+    <!-- css style -->
+    <%include("../include/css.html"){}%>
     <style>
         p {
             text-indent: 30px;
@@ -17,11 +16,10 @@
 <body class="hold-transition skin-green sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
-    <%@include file="../student/include/header.jsp" %>
+    <!-- 顶部导航栏部分 -->
+    <%include("../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <jsp:include page="../student/include/sider.jsp">
-        <jsp:param name="menu" value="help"/>
-    </jsp:include>
+    <%include("../student/include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -68,11 +66,11 @@
         </section>
         <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <%@include file="../include/footer.jsp" %>
+    <!-- 引入footer -->
+    <%include("../include/footer.html"){}%>
 </div>
-<!-- ./wrapper -->
-<%@include file="../include/js.jsp" %>
+<!-- 引入全局 js 脚本文件 -->
+<%include("../include/js.html"){}%>
 </body>
 </html>
 

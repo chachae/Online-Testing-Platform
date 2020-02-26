@@ -1,17 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh_CN">
 <head>
     <title>OES | 学生成绩分析</title>
-    <%@ include file="../include/css.jsp" %>
+    <!-- 引入全局 css 文件 -->
+    <%
+    include("../include/css.html"){}
+    %>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
-    <%@include file="../student/include/header.jsp" %>
-    <jsp:include page="../student/include/sider.jsp">
-        <jsp:param name="menu" value="chart_my"/>
-    </jsp:include>
+    <!-- 顶部导航栏部分 -->
+    <%include("../student/include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <%include("../student/include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -33,17 +35,17 @@
         </section>
         <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <%@ include file="../include/footer.jsp" %>
+    <!-- 引入footer -->
+    <%include("../include/footer.html"){}%>
 </div>
-<!-- ./wrapper -->
-<%@include file="../include/js.jsp" %>
-<script src="<c:url value="/static/plugins/echarts/echarts.min.js"/>"></script>
-<script src="<c:url value="/static/plugins/layer/layer.js"/>"></script>
+<!-- 引入全局 js 脚本文件 -->
+<%include("../include/js.html"){}%>
+<script src="/static/plugins/echarts/echarts.min.js"></script>
+<script src="/static/plugins/layer/layer.js"></script>
 <script>
     $(function () {
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        const myChart = echarts.init(document.getElementById('main'));
 
         // 指定图表的配置项和数据
         option = {
@@ -88,14 +90,12 @@
         myChart.setOption(option);
 
         //post请求后端数据并整理
-        $.post("/score/student/chart/${sessionScope.get("studentId")}").done(function (json) {
+        $.post("/score/student/chart/${session.studentId}").done(function (json) {
             if (json.state === 'success') {
-
                 var keyArray = [];
                 var avgArray = [];
                 var myArray = [];
                 var data = json.data;
-
                 var Course = function (name, max) {
                     this.name = name;
                     this.max = max;

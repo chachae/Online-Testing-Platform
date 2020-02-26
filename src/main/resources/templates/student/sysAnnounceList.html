@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 系统公告列表</title>
+    <%
+    include("../include/css.html"){}
+    %>
+    <style>
+        .table > tbody > tr:hover {
+            cursor: pointer;
+        }
+
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 16px;
+        }
+
+        td {
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body class="hold-transition skin-green sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+    <%
+    include("../student/include/header.html"){}
+    %>
+    <!-- 左侧菜单栏 -->
+    <%
+    include("../student/include/sider.html"){}
+    %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <!-- Main content -->
+        <section class="content">
+            <!-- Default box -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">系统公告</h3>
+                    <div class="box-tools pull-right">
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                        <%
+                            for(announce in announceList){
+                        %>
+                        <tr class="rowDetail success" rel="${announce.id}">
+                            <th class="td_title">${announceLP.index}. ${announce.title} <span class="pull-right">
+                                    发布时间： ${announce.createTime,dateFormat="yyyy-MM-dd HH:mm:ss"}
+                                </span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>${announce.content}</td>
+                        </tr>
+                        <%}elsefor{%>
+                        <tr>
+                            <td colspan="6">暂无公告信息</td>
+                        </tr>
+                        <%}%>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- 引入footer -->
+    <%
+    include("../include/footer.html"){}
+    %>
+</div>
+<!-- 引入全局 js 脚本文件 -->
+<%
+include("../include/js.html"){}
+%>
+</body>
+</html>
+
+

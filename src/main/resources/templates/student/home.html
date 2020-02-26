@@ -1,12 +1,13 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh_CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 学生首页</title>
     <!-- 引入全局 css 文件 -->
-    <%@include file="../include/css.jsp" %>
+    <%
+        include("../include/css.html"){}
+    %>
     <!-- 样式 -->
     <style>
         p {
@@ -17,11 +18,13 @@
 <body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%@include file="include/header.jsp" %>
+    <%
+        include("include/header.html"){}
+    %>
     <!-- 左侧菜单栏 -->
-    <jsp:include page="include/sider.jsp">
-        <jsp:param name="menu" value="home"/>
-    </jsp:include>
+    <%
+        include("include/sider.html"){}
+    %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content-header">
@@ -58,19 +61,20 @@
                 <div class="box-footer ">
                     <blockquote class="blockquote-reverse">
                         <p style="color: green">祝您开启愉快的一天！</p>
-                        <a class="close" aria-hidden="true">
-                            ${message}
-                        </a>
                     </blockquote>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <%@include file="../include/footer.jsp" %>
+    <%
+      include("../include/footer.html"){}
+    %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%@include file="../include/js.jsp" %>
+<%
+    include("../include/js.html"){}
+%>
 </body>
 </html>
 

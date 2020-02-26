@@ -12,12 +12,7 @@ server:
 
 # SpringMvc 配置
 spring:
-  mvc:
-    view:
-      # webMvc 页面前缀
-      prefix: /WEB-INF/views/
-      # webMvc 页面后缀
-      suffix: .jsp
+
 
   # 数据源配置
   datasource:
@@ -26,8 +21,6 @@ spring:
     # url: jdbc:p6spy:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
     # 数据库访问地址
     url: jdbc:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-    # 数据库驱动
-    driver-class-name: com.mysql.jdbc.Driver
     #数据库账号
     username: root
     # 数据库密码
@@ -71,6 +64,12 @@ spring:
       # 池大小
       pool:
         size: 2
+
+
+  resources:
+    static-locations: classpath:/static/
+  mvc:
+    static-path-pattern: /static/**
 
 # MyBatisPlus 配置
 mybatis-plus:

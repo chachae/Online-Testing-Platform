@@ -60,7 +60,7 @@ public class TeacherController {
       session.setAttribute(SysConsts.SESSION.TEACHER, teacher);
       // 重定向到教师主页
       return "redirect:/teacher/home/" + teacher.getId();
-    } catch (Exception e) {
+    } catch (ServiceException e) {
       // 捕捉账号密码异常信息
       r.addFlashAttribute("message_tea", e.getMessage());
       return "redirect:/";
