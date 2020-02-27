@@ -13,7 +13,6 @@ import javax.annotation.Resource;
  * @author yzn
  * @date 2020/1/31
  */
-@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
   /** 基本拦截路径 */

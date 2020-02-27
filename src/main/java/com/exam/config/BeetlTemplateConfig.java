@@ -43,3 +43,4 @@ public class BeetlTemplateConfig {
     return beetlSpringViewResolver;
   }
 }
+

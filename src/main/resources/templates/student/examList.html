@@ -26,16 +26,14 @@
     </style>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
-<!-- Site wrapper -->
+
 <div class="wrapper">
     <%include("../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <%include("../student/include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- Main content -->
         <section class="content">
-            <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">正式考试</h3>
@@ -78,7 +76,6 @@
                     </table>
                 </div>
             </div>
-            <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">模拟考试</h3>
@@ -110,16 +107,16 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- /.box-body -->
             </div>
         </section>
-        <!-- /.content -->
     </div>
     <!-- 引入footer -->
     <%include("../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%include("../include/js.html"){}%>
+<%
+include("../include/js.html"){}
+%>
 </body>
 </html>
 

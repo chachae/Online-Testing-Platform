@@ -26,16 +26,14 @@
     </style>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
-<!-- Site wrapper -->
+
 <div class="wrapper">
     <%include("../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <%include("../student/include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- Main content -->
         <section class="content">
-            <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">成绩列表</h3>
@@ -73,10 +71,8 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- /.box-body -->
             </div>
         </section>
-        <!-- /.content -->
     </div>
     <!-- 引入footer -->
     <%include("../include/footer.html"){}%>
@@ -87,8 +83,10 @@
 <script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <script>
+
+    // 成绩详情
     $('.detailBtn').click(function () {
-        var id = $(this).parents('tr').eq(0).attr('rel');
+        let id = $(this).parents('tr').eq(0).attr('rel');
         console.log(id);
         window.location.href = "/student/score/detail/" + id;
     })

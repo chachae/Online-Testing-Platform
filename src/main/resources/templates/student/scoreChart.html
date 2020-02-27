@@ -8,7 +8,7 @@
     %>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
-<!-- Site wrapper -->
+
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
     <%include("../student/include/header.html"){} %>
@@ -16,7 +16,6 @@
     <%include("../student/include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- Main content -->
         <section class="content">
             <div class="box" style="background-color: inherit">
                 <div class="box-header with-border">
@@ -33,7 +32,6 @@
             </div>
             <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
         </section>
-        <!-- /.content -->
     </div>
     <!-- 引入footer -->
     <%include("../include/footer.html"){}%>
@@ -42,19 +40,25 @@
 <%include("../include/js.html"){}%>
 <script src="/static/plugins/echarts/echarts.min.js"></script>
 <script src="/static/plugins/layer/layer.js"></script>
+<script src="/static/plugins/moment/moment.js"></script>
 <script>
+
+    // EChart
     $(function () {
         // 基于准备好的dom，初始化echarts实例
         const myChart = echarts.init(document.getElementById('main'));
-
         // 指定图表的配置项和数据
-        option = {
+        const option = {
+
             title: {
                 text: '学期成绩雷达图',
+                x: 'center'
             },
             tooltip: {},
             legend: {
-                data: ['平均成绩（Average Achievement）', '我的成绩（My Achievement）']
+                data: ['平均成绩（Average Achievement）', '我的成绩（My Achievement）'],
+                orient: 'vertical',
+                left: 'left',
             },
             radar: {
                 // shape: 'circle',
@@ -67,12 +71,11 @@
                     }
                 },
                 indicator: [
-                    {name: '市场营销学（Marketing）', max: 100}]
+                    {}]
             },
             series: [{
                 name: '平均 vs 我的（Average vs My）',
                 type: 'radar',
-                // areaStyle: {normal: {}},
                 data: [
                     {
                         value: [62, 67, 76, 73, 78, 84],
@@ -92,16 +95,16 @@
         //post请求后端数据并整理
         $.post("/score/student/chart/${session.studentId}").done(function (json) {
             if (json.state === 'success') {
-                var keyArray = [];
-                var avgArray = [];
-                var myArray = [];
-                var data = json.data;
-                var Course = function (name, max) {
+                let keyArray = [];
+                let avgArray = [];
+                let myArray = [];
+                let data = json.data;
+                let Course = function (name, max) {
                     this.name = name;
                     this.max = max;
                     this.getName = function () {
                         return this.name;
-                    }
+                    };
                     this.getMax = function () {
                         return this.max;
                     }
@@ -127,7 +130,6 @@
                     radar: {
                         indicator:
                         keyArray //一定要吧【】去掉！！！！！ 对象数组，对象有两个属性name,max
-                        // { name: keyArray[1], max: 100},
                     },
                     series: [{
                         name: '平均 vs 我的（Average vs My）',
@@ -155,7 +157,6 @@
 
         // 基于准备好的dom，初始化 Echarts 实例
         const chart = echarts.init(document.getElementById('chart'));
-
         chart.setOption({
             title: {
                 text: '本学期成绩分数段统计',
@@ -243,10 +244,8 @@
                     }
                 });
 
-                //行点击 委托
+                //行点击委托
                 $(document).delegate("#analyse", "click", function () {
-
-
                     //分析的话
                     var txta = "";
                     var txtb = "";

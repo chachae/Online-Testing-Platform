@@ -45,9 +45,11 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
 
   @Override
   public List<StuAnswerRecord> selectByPaperId(Integer paperId) {
+    // 构造通过试卷 ID 插叙你答题记录的条件
     QueryWrapper<StuAnswerRecord> qw = new QueryWrapper<>();
     qw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
     List<StuAnswerRecord> result = this.stuAnswerRecordMapper.selectList(qw);
+    // 检查集合对象的情况
     if (CollUtil.isEmpty(result)) {
       throw new ServiceException("这场试卷不存待复查的主观题");
     } else {
@@ -104,6 +106,7 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
       stuAnswerRecordDtoList.add(dto);
     }
 
+    // 返回集合数据
     return stuAnswerRecordDtoList;
   }
 }

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 试卷模板列表</title>
+    <!-- 引入全局 css 文件 -->
+    <%
+    include("../include/css.html"){}
+    %>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <!-- 引入头部 -->
+    <%
+    include("../teacher/include/header.html"){}
+    %>
+    <!-- 左侧菜单栏 -->
+    <%
+    include("../teacher/include/sider.html"){}
+    %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">模版列表</h3>
+                    <div class="box-tools">
+                        <a href="/teacher/paper" class="btn btn-primary btn-sm"><i
+                                class="fa fa-arrow-left"></i> 返回列表</a>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>题型</th>
+                            <th>数量</th>
+                            <th>分数</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for( form in formList ){ %>
+                        <tr>
+                            <th scope="row">模版 ${formLP.index}</th>
+                            <td>单选题</td>
+                            <td> ${form.QChoiceNum}</td>
+                            <td> ${form.QChoiceScore}</td>
+                            <td>多选题</td>
+                            <td> ${form.QMulChoiceNum}</td>
+                            <td> ${form.QMulChoiceScore}</td>
+                            <td>判断题</td>
+                            <td> ${form.QTofNum}</td>
+                            <td> ${form.QTofScore}</td>
+                            <td>填空题</td>
+                            <td> ${form.QFillNum}</td>
+                            <td> ${form.QFillScore}</td>
+                            <td>简答题</td>
+                            <td> ${form.QSaqNum}</td>
+                            <td> ${form.QSaqScore}</td>
+                            <td>编程题</td>
+                            <td> ${form.QProgramNum}</td>
+                            <td> ${form.QProgramScore}</td>
+                            <td><a href="/teacher/paper/newPaper/${form.id}">使用</a> <a class="rowDel" rel="${form.id}">删除</a>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 引入footer -->
+    <%
+    include("../include/footer.html"){}
+    %>
+</div><!-- 引入全局 js 脚本文件 -->
+<%
+include("../include/js.html"){}
+%>
+<script src="/static/plugins/layer/layer.js"></script>
+<script>
+    // 操作试卷模板
+    $(function () {
+        $(".rowDel").click(function () {
+            const id = $(this).attr("rel");
+            layer.confirm("确定删除该模版么?", function () {
+                $.get("/teacher/paper/delPaperForm/" + id).done(function (data) {
+                    if (data.state === "success") {
+                        layer.msg("删除成功!");
+                        window.location.href = "/teacher/paper/showPaperForm";
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }).error(function () {
+                    layer.msg("服务器异常");
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>
+

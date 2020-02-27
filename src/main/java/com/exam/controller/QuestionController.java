@@ -1,6 +1,5 @@
 package com.exam.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
@@ -44,11 +43,10 @@ public class QuestionController {
    * @return 试题集合页面
    */
   @GetMapping
-  public String list(Page page, Model model, String courseId, String typeId) {
-    Integer cid = StrUtil.isBlank(courseId) ? null : Integer.parseInt(courseId);
-    Integer tid = StrUtil.isBlank(typeId) ? null : Integer.parseInt(typeId);
+  public String list(Page page, Model model, Integer courseId, Integer typeId) {
     // 分页查询试题接口
-    PageInfo<Question> pageInfo = questionService.pageForQuestionList(page.getPageNo(), cid, tid);
+    PageInfo<Question> pageInfo =
+        questionService.pageForQuestionList(page.getPageNo(), courseId, typeId);
     // 设置 model 对象信息
     model.addAttribute("page", pageInfo);
     // 课程集合
@@ -56,17 +54,9 @@ public class QuestionController {
     List<Course> courses = this.courseService.listByTeacherId(id);
     model.addAttribute("courseList", courses);
     // 当前选中课程
-    if (StrUtil.isNotBlank(courseId)) {
-      model.addAttribute("curCourseId", courseId);
-    } else {
-      model.addAttribute("curCourseId", "");
-    }
-    if (StrUtil.isNotBlank(typeId)) {
-      model.addAttribute("curTypeId", typeId);
-    } else {
-      model.addAttribute("curTypeId", "");
-    }
-    // 调用试题类型集合借口
+    model.addAttribute("curCourseId", courseId);
+    model.addAttribute("curTypeId", typeId);
+    // 调用试题类型集合
     List<Type> typeList = this.typeService.list();
     model.addAttribute("typeList", typeList);
     return "question/list";
@@ -87,7 +77,7 @@ public class QuestionController {
     Course course = this.courseService.getById(question.getCourseId());
     model.addAttribute("question", question);
     model.addAttribute("course", course);
-    return "question/show";
+    return "/question/show";
   }
 
   /**
@@ -105,7 +95,7 @@ public class QuestionController {
     int teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 通过教师 ID 获取该老师的课程集合
     model.addAttribute("courseList", questionService.selectCourseByTeacherId(teacherId));
-    return "question/new";
+    return "/question/new";
   }
 
   /**
@@ -134,7 +124,7 @@ public class QuestionController {
   public String edit(@PathVariable Integer id, Model model) {
     // 调用通过试题ID查询实体信息接口
     model.addAttribute("question", this.questionService.getById(id));
-    return "question/edit";
+    return "/question/edit";
   }
 
   /**

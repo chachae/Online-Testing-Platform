@@ -18,15 +18,7 @@
         }
     </style>
 </head>
-<body class="hold-transition skin-green sidebar-mini"
-      οncοntextmenu='return false'
-      οndragstart='return false'
-      onselectstart='return false'
-      οnselect='document.selection.empty()'
-      οncοpy='document.selection.empty()'
-      onbeforecopy='return false'
-      οnmοuseup='document.selection.empty()'>
-<!-- Site wrapper -->
+<body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
     <!-- 引入头部 -->
     <%
@@ -34,7 +26,6 @@
     %>
     <!-- 右侧内容部分 -->
     <div class="content">
-        <!-- Main content -->
         <section class="content">
             <div class="box">
                 <div class=" with-border text-center">
@@ -85,7 +76,6 @@
                                 </div>
                             </div>
                             <%}%>
-
                             <!-- 多选题 -->
                             <%if(isNotEmpty(qChoiceList)){%>
                             <div class="panel panel-primary">
@@ -124,7 +114,6 @@
                                 </div>
                             </div>
                             <%}%>
-
                             <!--判断题-->
                             <%if(isNotEmpty(qTofList)){%>
                             <div class="panel panel-primary">
@@ -151,7 +140,6 @@
                                 </div>
                             </div>
                             <%}%>
-
                             <!--填空题-->
                             <%if(isNotEmpty(qFillList)){%>
                             <div class="panel panel-primary">
@@ -189,7 +177,6 @@
                                 </div>
                             </div>
                             <%}%>
-
                             <!--编程题-->
                             <%if(isNotEmpty(qProgramList)){%>
                             <div class="panel panel-primary">
@@ -214,14 +201,10 @@
                     </form>
                 </div>
             </div>
-
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
     <!-- 底部 -->
 </div>
-<!-- ./wrapper -->
 <!-- 引入全局 js 脚本文件 -->
 <%
 include("../include/js.html"){}
@@ -229,9 +212,8 @@ include("../include/js.html"){}
 <script src="/static/plugins/layer/layer.js"></script>
 <script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
-
-<!-- BSA AdPacks code. Please ignore and remove.-->
 <script>
+
     // 计时答题核心代码（通过JQuery实现）
     $(function () {
         // countdown 用于减少时间，一旦检测到时间为00:00：:00则自动提交试卷
@@ -250,10 +232,31 @@ include("../include/js.html"){}
     document.oncontextmenu = function () {
         return false;
     };
+
     // 禁止粘贴
     document.onpaste = function () {
         return false;
-    }
+    };
+
+    document.ondragstart = function () {
+        return false;
+    };
+
+    document.onselectstart = function () {
+        return false;
+    };
+
+    document.onselect = function () {
+        return false;
+    };
+
+    document.oncopy = function () {
+        return false;
+    };
+
+    document.onmouseup = function () {
+        return false;
+    };
 </script>
 </body>
 </html>

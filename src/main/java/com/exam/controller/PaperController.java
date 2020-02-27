@@ -94,15 +94,6 @@ public class PaperController {
 
   @GetMapping("/importNewPaper")
   public String importNewPaper(Model model) {
-    // 封装 model 参数
-    // 学院列表
-    model.addAttribute("academyList", this.academyService.list());
-    // 获取教师 ID
-    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
-    // 该教师的课程信息
-    model.addAttribute("courseList", this.courseService.listByTeacherId(teacherId));
-    // 专业列表
-    model.addAttribute("majorList", this.majorService.list());
     return "paper/importNewPaper";
   }
 
@@ -173,7 +164,6 @@ public class PaperController {
     // 封装 model 参数
     model.addAttribute("academyList", this.academyService.list());
     model.addAttribute("courseList", this.courseService.listByTeacherId(teacherId));
-    model.addAttribute("majorList", this.majorService.list());
     return "paper/newPaper";
   }
 

@@ -55,8 +55,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 构造条件询条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getTeacherId, teacherId);
-    // 分页查询，默认每页8条数据
-    PageHelper.startPage(pageNo, 8);
+    // 分页查询，默认每页 12 条数据
+    PageHelper.startPage(pageNo, 12);
     List<Paper> paperList = paperMapper.selectList(qw);
     return new PageInfo<>(paperList);
   }
@@ -70,18 +70,18 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 预先准备试卷问题集合
     List<Integer> qs = Lists.newArrayList();
     // 为每种题型进行随机组题
-    randomQuestions(form.getQChoiceNum(), qs, 1, cid);
-    randomQuestions(form.getQMulChoiceNum(), qs, 2, cid);
-    randomQuestions(form.getQTofNum(), qs, 3, cid);
-    randomQuestions(form.getQFillNum(), qs, 4, cid);
-    randomQuestions(form.getQSaqNum(), qs, 5, cid);
-    randomQuestions(form.getQProgramNum(), qs, 6, cid);
+    this.randomQuestions(form.getQChoiceNum(), qs, 1, cid);
+    this.randomQuestions(form.getQMulChoiceNum(), qs, 2, cid);
+    this.randomQuestions(form.getQTofNum(), qs, 3, cid);
+    this.randomQuestions(form.getQFillNum(), qs, 4, cid);
+    this.randomQuestions(form.getQSaqNum(), qs, 5, cid);
+    this.randomQuestions(form.getQProgramNum(), qs, 6, cid);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
     this.savePaper(paper, qs);
   }
 
   @Override
-  public void randomNewPaper(Paper paper, String difficulty) {
+  public void randomNewPaper(Paper paper, String diff) {
     // 获取试卷模板信息
     PaperForm form = paperFormMapper.selectById(paper.getPaperFormId());
     // 获取试卷归属的课程 ID
@@ -89,12 +89,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 预先准备试卷问题集合
     List<Integer> qs = Lists.newArrayList();
     // 为每种题型进行随机组题
-    randomQuestions(form.getQChoiceNum(), qs, 1, cid, difficulty);
-    randomQuestions(form.getQMulChoiceNum(), qs, 2, cid, difficulty);
-    randomQuestions(form.getQTofNum(), qs, 3, cid, difficulty);
-    randomQuestions(form.getQFillNum(), qs, 4, cid, difficulty);
-    randomQuestions(form.getQSaqNum(), qs, 5, cid, difficulty);
-    randomQuestions(form.getQProgramNum(), qs, 6, cid, difficulty);
+    this.randomQuestions(form.getQChoiceNum(), qs, 1, cid, diff);
+    this.randomQuestions(form.getQMulChoiceNum(), qs, 2, cid, diff);
+    this.randomQuestions(form.getQTofNum(), qs, 3, cid, diff);
+    this.randomQuestions(form.getQFillNum(), qs, 4, cid, diff);
+    this.randomQuestions(form.getQSaqNum(), qs, 5, cid, diff);
+    this.randomQuestions(form.getQProgramNum(), qs, 6, cid, diff);
     // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
     this.savePaper(paper, qs);
   }
@@ -205,14 +205,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 最后一个逗号去除
     String wrong = builder.toString();
     // 预备一个空错题字符串
-    String wrongStr = null;
+    String wstr = null;
     // 如果没有错题，就直赋值空，长度大于0就说明包含错题
     if (wrong.length() > 0) {
-      wrongStr = wrong.substring(0, wrong.length() - 1);
+      wstr = wrong.substring(0, wrong.length() - 1);
     }
 
     // 封装分数参数，并将分数信息插入到分数表中
-    Score scoreResult = new Score(stuId, paperId, paperName, String.valueOf(score), wrongStr);
+    Score scoreResult = new Score(stuId, paperId, paperName, String.valueOf(score), wstr);
     // 此处调用插入接口
     this.scoreMapper.insert(scoreResult);
   }
@@ -278,7 +278,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       // 遍历成绩集合，并逐一删除对应试卷的成绩数据
       scores.forEach(score -> scoreMapper.deleteById(score.getId()));
 
-      // 删除 stu_answer_record
+      // 删除学生与该试卷关联的答题记录
       QueryWrapper<StuAnswerRecord> ansQw = new QueryWrapper<>();
       // 构造查询条件
       ansQw.lambda().eq(StuAnswerRecord::getPaperId, id);
@@ -290,10 +290,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       int paperFormId = paper.getPaperFormId();
       // 排除默认模板
       if (paperFormId != 1) {
-        // 构建根据模板 ID 查询试卷记录数的条件
-        int count = this.countPaperByPaperFormId(paperFormId);
         // 如果数量等于 1，说明只有本考试使用，直接删除
-        if (count == 1) {
+        if (this.countPaperByPaperFormId(paperFormId) == 1) {
           this.paperFormMapper.deleteById(paperFormId);
         }
       }
@@ -327,6 +325,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       throw new ServiceException("新题目不存在");
     }
 
+    // 更新试卷题目ID
+    String ids = paper.getQuestionId();
+    if (StrUtil.split(ids, StrUtil.C_COMMA).contains(String.valueOf(dto.getNewId()))) {
+      throw new ServiceException("新题目试卷中已存在");
+    }
+
     // 查询旧题目信息，进行信息的匹配
     Question oldQuestion = this.questionService.getById(dto.getOldId());
     // 题型匹配
@@ -339,8 +343,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       throw new ServiceException("新题目类型与旧题目所属课程不匹配");
     }
 
-    // 更新试卷题目ID
-    String ids = paper.getQuestionId();
     // 用逗号分割转字符数组
     String[] idStr = StrUtil.splitToArray(ids, StrUtil.C_COMMA);
     // 使用 StringBuilder 拼接 ID
@@ -508,14 +510,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     String ids = sb.toString();
     // 去除最后一个逗号并封装题序参数
     paper.setQuestionId(ids.substring(0, ids.length() - 1));
-    // 设置考试时常
-    paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
     // 插入试卷信息
-    this.paperMapper.insert(paper);
+    this.save(paper);
   }
 
   @Override
   public int countPaperByPaperFormId(Integer paperFormId) {
+    // 构造通过试卷模板查询试卷数量条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getPaperFormId, paperFormId);
     return this.paperMapper.selectCount(qw);
@@ -535,6 +536,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     if (entity.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
       // 計计算起止时间
       String allowTime = calAllowTime(entity.getBeginTime(), entity.getEndTime());
+      // 封装时常
       entity.setAllowTime(allowTime);
     }
     return super.save(entity);
@@ -559,9 +561,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       List<Question> qs = questionService.listByTypeIdAndCourseId(tid, cid);
       List<Integer> idList = Lists.newArrayList();
       // 遍历问题集合获取问题 ID，将 ID 加入idList 中
-      for (Question question : qs) {
-        idList.add(question.getId());
-      }
+      qs.forEach(question -> idList.add(question.getId()));
       // 随机抽题
       List<Integer> randomIds = getRandomIdList(idList, num);
       // 封装 ID
@@ -633,8 +633,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
           throw new ServiceException("试题数量不足，组卷失败！[ 请增加题目或调整难度后重试 ]");
         } else {
           // 不为空则查询提醒，便于定位具体哪些题目数量不足
-          int qId = ids.get(0);
-          Integer typeId = this.questionService.getById(qId).getTypeId();
+          Integer typeId = this.questionService.getById(ids.get(0)).getTypeId();
+          // 获取类型名称
           String typeName = this.typeMapper.selectById(typeId).getTypeName();
           throw new ServiceException("该门课程的 [ " + typeName + " ] 数量不足，请增加题目或调整难度后重试");
         }

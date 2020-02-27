@@ -15,7 +15,6 @@ import com.exam.util.HttpContextUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -97,21 +96,22 @@ public class StudentController {
    * @param dto 密码信息
    * @return 重定向到登录界面
    */
+  @ResponseBody
   @PostMapping("/{id}/changePass")
-  public String changePass(@PathVariable Integer id, ChangePassDto dto, RedirectAttributes r) {
+  public R changePass(@PathVariable Integer id, ChangePassDto dto) {
     // 通过获取 Session 对象
     HttpSession session = HttpContextUtil.getSession();
     try {
       // 调用密码修改接口
-      studentService.updatePassword(id, dto);
+      this.studentService.updatePassword(id, dto);
+      // 移除学生 session 信息
+      session.removeAttribute(SysConsts.SESSION.STUDENT_ID);
+      session.removeAttribute(SysConsts.SESSION.STUDENT);
+      return R.success();
     } catch (ServiceException e) {
-      r.addFlashAttribute("message", e.getMessage());
-      return "redirect:/student/" + id + "/changePass";
+      // 捕捉密码修改失败异常
+      return R.error(e.getMessage());
     }
-    // 移除学生 session 信息
-    session.removeAttribute(SysConsts.SESSION.STUDENT_ID);
-    session.removeAttribute(SysConsts.SESSION.STUDENT);
-    return "redirect:/";
   }
 
   /**

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <title>OES | 试卷复核</title>
+    <!-- 引入全局 css 文件 -->
+    <%
+    include("../include/css.html"){}
+    %>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+
+<div class="wrapper">
+    <!-- 引入头部 -->
+    <%
+    include("include/header.html"){}
+    %>
+    <!-- 左侧菜单栏 -->
+    <%
+    include("include/sider.html"){}
+    %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+
+        <section class="content">
+            <form method="get" action="/teacher/reviewRes" style="z-index: 999; position: relative">
+                <div class="form-group col-sm-12">
+                    <label class="control-label col-sm-2" for="paperId"><h4 style="font-weight: 800">请选择试卷名称</h4>
+                    </label>
+                    <div class="col-sm-8">
+                        <select class="form-control " id="paperId" name="paperId">
+                            <option value="">请选择</option>
+                            <% for( paper in paperList ){ %>
+                            <option value="${paper.id}">${paper.paperName}</option>
+                            <% } %>
+                        </select>
+                        <button id="search" class="form-control btn btn-vk btn-flat">查找</button>
+                        <% if(isNotEmpty(message)){ %>
+                        <h4 style="color: red;text-align: center"><b>${message}</b></h4>
+                        <% } %>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+    <!-- 引入footer -->
+    <%
+    include("../include/footer.html"){}
+    %>
+</div>
+<!-- 引入全局 js 脚本文件 -->
+<%
+include("../include/js.html"){}
+%>
+<script src="/static/plugins/echarts/echarts.min.js"></script>
+<script src="/static/plugins/layer/layer.js"></script>
+</body>
+<script>
+    // select2
+    $('#paperId').select2({width: "100%"});
+</script>
+</html>
