@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 专业管理</title>
+    <!-- 引入全局 css 文件 -->
+    <% include("../../include/css.html"){}%>
+    <style>
+        .table > tbody > tr:hover {
+            cursor: pointer;
+        }
+
+        .table > tbody > tr > td {
+            text-align: center;
+        }
+
+        th {
+            font-size: 15px;
+            text-align: center;
+        }
+
+        td {
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <!-- 引入头部 -->
+    <% include("../include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <% layout("../include/sider.html",{name:major}){} %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">专业管理</h3>
+                    <div class="box-tools pull-right">
+                        <button id="newBtn" class="btn btn-vk btn-sm goSave"><i class="fa fa-plus-circle"></i> 新增专业
+                        </button>
+                    </div>
+                </div>
+                <div class="with-border">
+                    <div class="box-tools pull-right">
+                        <label for="findAcademy">所属学院：</label>
+                        <select class="form-control" name="findAcademy" id="findAcademy">
+                            <option value="" selected>全部</option>
+                            <% for( academy in academyList ){ %>
+                            <% if(isEmpty(curAcademyId)){%>
+                            <option value="${academy.id}">${academy.name}</option>
+                            <% } %>
+                            <% if(isNotEmpty(curAcademyId)){ %>
+                            <% if(curAcademyId == academy.id){ %>
+                            <option value="${academy.id}" selected>${academy.name}</option>
+                            <% }else{ %>
+                            <option value="${academy.id}">${academy.name}</option>
+                            <% } %>
+                            <% } %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <th style="width:17%">序号</th>
+                            <th style="width: 33%">所属学院</th>
+                            <th style="width: 30%">专业名称</th>
+                            <th style="width: 20%">操作</th>
+                        </tr>
+                        <% if(isEmpty(page.list)){ %>
+                        <tr>
+                            <td colspan="6">没有专业</td>
+                        </tr>
+                        <% } %>
+                        <% for(major in page.list){ %>
+                        <tr class="rowDetail" rel="${major.id}">
+                            <td>${majorLP.index}</td>
+                            <td hidden="hidden">${major.id}</td>
+                            <td rel="${major.academy.id}">${major.academy.name}</td>
+                            <td>${major.major}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm goUpdate" onclick="getMajor(${major.id})"><i
+                                        class="fa"></i>编辑
+                                </button>
+                                <button class="btn btn-danger btn-sm delMajor" onclick="deleteMajor(${major.id})"><i
+                                        class="fa"></i>删除
+                                </button>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+    </div>
+    <!-- 增加学院模态框 -->
+    <% include("save-modal.html"){} %>
+    <!-- 修改学员模态框 -->
+    <% include("update-modal.html"){} %>
+    <!-- 引入footer -->
+    <% include("../../include/footer.html"){} %>
+</div>
+<!-- 引入全局 js 脚本文件 -->
+<% include("../../include/js.html"){} %>
+<script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
+<% include("api.html"){} %>
+</body>
+</html>

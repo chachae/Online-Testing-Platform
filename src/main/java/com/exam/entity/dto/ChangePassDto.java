@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChangePassDto extends BaseEntity {
 
+  private Integer id;
+
   private String oldPassword;
 
   private String password;

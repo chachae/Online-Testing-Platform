@@ -1,0 +1,26 @@
+<div class="modal fade" id="save-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增课程</h4>
+            </div>
+            <form id="save-form">
+                <input type="hidden" name="teacherId" value="${session.teacher.id}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="table">
+                            <label for="courseName">课程名称</label>
+                            <input type="text" class="form-control" name="courseName" id="courseName">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

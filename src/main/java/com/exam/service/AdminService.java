@@ -32,10 +32,9 @@ public interface AdminService extends IService<Admin> {
   /**
    * 修改股管理员密码
    *
-   * @param id 管理员ID
    * @param dto 密码信息
    */
-  void updatePassword(Integer id, ChangePassDto dto);
+  void updatePassword(ChangePassDto dto);
 
   /**
    * 获取管理员分页信息

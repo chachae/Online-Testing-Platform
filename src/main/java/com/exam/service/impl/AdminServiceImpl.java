@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * 管理员业务实现
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/10
  */
 @Service
@@ -71,15 +71,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updatePassword(Integer id, ChangePassDto dto) {
+  public void updatePassword(ChangePassDto dto) {
     // 获取该管理员的信息
-    Admin admin = this.adminMapper.selectById(id);
+    Admin admin = this.adminMapper.selectById(dto.getId());
     // 比较旧密码是否输入正确
     if (!RsaCipherUtil.verify(dto.getOldPassword(), admin.getPassword())) {
       throw new ServiceException("旧密码输入错误");
     } else {
       // 旧密码输入正确，进行更新
-      Admin build = Admin.builder().id(id).password(RsaCipherUtil.hash(dto.getPassword())).build();
+      Admin build =
+          Admin.builder().id(dto.getId()).password(RsaCipherUtil.hash(dto.getPassword())).build();
       this.adminMapper.updateById(build);
     }
   }

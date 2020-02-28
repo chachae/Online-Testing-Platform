@@ -1,4 +1,4 @@
-package com.exam.controller;
+package com.exam.rest;
 
 import com.exam.entity.Course;
 import com.exam.service.CourseService;
@@ -14,9 +14,9 @@ import java.util.List;
  * @author chachae
  * @since 2020/2/27 16:25
  */
-@RestController
+@RestController("courseRest")
 @RequestMapping("/course")
-public class CourseController {
+public class CourseRest {
 
   @Resource private CourseService courseService;
 

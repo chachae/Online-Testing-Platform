@@ -7,7 +7,7 @@
     <title>修改密码</title>
     <!-- 引入全局 css 文件 -->
     <%
-    include("../include/css.html"){}
+    include("../../include/css.html"){}
     %>
 </head>
 <body class="hold-transition skin-purple sidebar-mini">
@@ -15,23 +15,24 @@
 <div class="wrapper">
     <!-- 引入头部 -->
     <%
-    include("include/header.html"){}
+    layout("../include/header.html"){}
     %>
     <!-- 左侧菜单栏 -->
     <%
-    include("include/sider.html"){}
+    layout("../include/sider.html",{name:'changePass'}){}
     %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-
         <section class="content">
-
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">修改密码</h3>
                 </div>
                 <div class="box-body">
-                    <form method="post" id="change">
+                    <form method="post" id="update-pass-form">
+                        <div>
+                            <input type="hidden" name="id" value="${session.admin.id}">
+                        </div>
                         <div class="form-group">
                             <label for="oldPassword">原始密码</label>
                             <input id="oldPassword" type="password" name="oldPassword" class="form-control">
@@ -40,61 +41,22 @@
                             <label for="password">新密码</label>
                             <input type="password" id="password" name="password" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="confirm_password">确认密码</label>
-                            <input type="password" id="confirm_password" name="confirm_password" class="form-control">
-                        </div>
                     </form>
                 </div>
                 <div class="box-footer">
-                    <button id="editBtn" class="btn btn-primary">保存</button>
+                    <button id="updateBtn" class="btn btn-primary">保存</button>
                 </div>
 
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <% include("../../include/footer.html"){} %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
+<% include("../../include/js.html"){} %>
 <script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
-<script>
-
-    // 修改密码
-    $(function () {
-        $("#editBtn").click(function () {
-            $("#change").submit();
-        });
-
-        //jqValidate验证
-        $("#change").validate({
-            errorClass: "text-danger",
-            errorElement: "span",
-            rules: {
-                password: {
-                    required: true
-                },
-                confirm_password: {
-                    required: true,
-                    equalTo: "#password"
-                }
-            },
-            messages: {
-                password: {
-                    required: "请输入密码",
-                },
-                confirm_password: {
-                    required: "请再次输入密码",
-                    equalTo: "两次密码输入不一致"
-                }
-            }
-        });
-    });
-</script>
+<!-- 接口 -->
+<% include("api.html"){} %>
 </body>
 </html>

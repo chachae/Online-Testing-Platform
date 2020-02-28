@@ -2,12 +2,12 @@
 <html lang="zh_CN">
 <head>
     <meta charset="UTF-8">
-    <title>OES在线考试系统|管理员登录</title>
-    <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="/webjars/adminlte/2.3.11/bootstrap/css/bootstrap.min.css">
+    <title>OES | 管理员登录</title>
+    <!-- 引入全局公共js / css -->
+    <% include("../../include/js.html"){} %>
+    <!-- 引入全局公共js -->
+    <% include("../../include/css.html"){} %>
     <link rel="stylesheet" type="text/css" href="/static/css/login.css"/>
-    <script type="text/javascript"
-            src="/webjars/adminlte/2.3.11/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jsencrypt/jsencrypt.min.js"></script>
     <script type="text/javascript" src="/static/js/login.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/check.js" charset="UTF-8"></script>
@@ -24,24 +24,26 @@
         <div class="web_login" style="margin-top:20px">
             <form method="post" onsubmit="return login_admin()">
                 <ul class="reg_form">
-                    <label for="adminId">账号：</label>
                     <li>
+                        <div class="">
                         <input type="text" name="adminId" style="width: 100%" value="admin" placeholder="请输入账号"
                                id="adminId" size="35" class="inputstyle2"/>
+                        </div>
                     </li>
-                    <label for="adminPassword">密码：</label>
                     <li>
-                        <input type="password" name="adminPassword"
+                        <div class="">
+                        <input type="hidden" name="adminPassword"
                                id="adminPassword" size="35"
-                               class="inputstyle2 realPass" hidden="hidden"/>
+                               class="inputstyle2"/>
                         <input type="password" style="width: 100%" placeholder="请输入密码" id="encPass" value="123"
                                size="35"
                                class="inputstyle2 encPass"/>
+                        </div>
                     </li>
                     <li>
-                        <div class="box-footer">
-                            <input type="submit" id="s_reg" style="width: 100%"
-                                   class="button_blue " value="立即登录"/>
+                        <div class="">
+                        <input type="button" id="loginBtn" style="width: 100%"
+                               class="button_blue" value="立即登录"/>
                         </div>
                     </li>
                     <li>
@@ -55,8 +57,22 @@
     </div>
 </div>
 <!-- 引入footer -->
-<%
-include("../include/login_footer.html"){}
-%>
+<% include("../../include/login_footer.html"){} %>
 </body>
 </html>
+
+<script>
+    // 管理员登录
+    $('#loginBtn').click(function () {
+        // 密码加密
+        let enc = encryptPass($('#encPass').val());
+        let adminId = $('#adminId').val();
+        $.post("/api/admin/login", {"adminId": adminId, "adminPassword": enc}).done(function (data) {
+            if (data.state === "success") {
+                window.location.href = "/admin/home/" + data.data;
+            } else {
+                layer.msg(data.message);
+            }
+        })
+    })
+</script>

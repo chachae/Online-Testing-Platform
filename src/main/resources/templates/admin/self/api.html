@@ -1,0 +1,15 @@
+<script>
+    // 修改密码
+    $(function () {
+        $("#updateBtn").click(function () {
+            let data = $("#update-pass-form").serialize();
+            $.post("/api/admin/update/pass", data, function (data) {
+                if (data.state === "success") {
+                    window.location.href = "/admin/login"
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        });
+    });
+</script>

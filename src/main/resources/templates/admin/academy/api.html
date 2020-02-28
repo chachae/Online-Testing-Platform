@@ -1,0 +1,70 @@
+<script>
+
+    // 删除学院
+    function deleteAcademy(id) {
+        layer.confirm("确定要删除么？", function () {
+            $.post("/api/academy/delete/" + id).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("删除成功");
+                    history.go(0);
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        })
+    }
+
+    // 修改学院信息
+    $("#updateBtn").click(function () {
+        layer.confirm("确定修改信息吗?", function () {
+            let data = $(".update-form").serialize();
+            $.post("/api/academy/update", data).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("修改成功!");
+                    window.location.reload();
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        })
+    });
+
+    // 增加学院
+    $("#saveBtn").click(function () {
+        layer.confirm("确定增加学院吗?", function () {
+            let data = $(".save-form").serialize();
+            $.post("/api/academy/save", data).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("增加成功!");
+                    window.location.reload();
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        })
+    });
+
+    // 获取学院
+    function getAcademy(id){
+        $.get("/api/academy/"+id,function (data) {
+            $('#id').val(data.id);
+            $('#name').val(data.name);
+        })
+    }
+
+    // 启动模态框
+    $(".goSave").click(function () {
+        $("#save-modal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+    });
+
+    // 启动修改模态框
+    $(".goUpdate").click(function () {
+        $("#update-modal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+    });
+</script>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 管理员列表</title>
+    <!-- 引入全局 css 文件 -->
+    <% include("../../include/css.html"){} %>
+    <style>
+        .table > tbody > tr:hover {
+            cursor: pointer;
+        }
+
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 15px;
+            text-align: center;
+        }
+
+        td {
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-purple sidebar-mini">
+
+<div class="wrapper">
+    <!-- 引入头部 -->
+    <% layout("../include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <% layout("../include/sider.html",{name:'admin'}){} %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">管理员管理</h3>
+                    <div class="box-tools pull-right">
+                        <a class="goSave btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增管理员</a>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <th style="width: 15%">序号</th>
+                            <th style="width: 17%">姓名</th>
+                            <th style="width: 18%">用户名</th>
+                            <th style="width: 35%;">上次登陆时间</th>
+                            <th style="width: 15%">操作</th>
+                        </tr>
+                        <% if(isEmpty(page.list)){ %>
+                        <tr>
+                            <td colspan="6">没有学生</td>
+                        </tr>
+                        <% } %>
+                        <% for( admin in page.list){ %>
+                        <tr class="rowDetail" rel="${admin.id}">
+                            <td>${adminLP.index}</td>
+                            <td hidden="hidden">${admin.id}</td>
+                            <td>${admin.name}</td>
+                            <td>${admin.number}</td>
+                            <td>
+                                ${admin.lastLoginTime,dateFormat="yyyy-MM-dd HH:mm:ss"}
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteAdmin(${admin.id})"><i
+                                        class="fa"></i>删除
+                                </button>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+    </div>
+    <!-- 增加模态框 -->
+    <%include("save-modal.html"){} %>
+    <!-- 引入footer -->
+    <% include("../../include/footer.html"){} %>
+</div><!-- 引入全局 js 脚本文件 -->
+<% include("../../include/js.html"){} %>
+<script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
+<!-- 接口 -->
+<% include("api.html"){} %>
+</body>
+</html>
+
+

@@ -70,12 +70,13 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.ibeetl/beetl-framework-starter -->
+        <!-- https://mvnrepository.com/artifact/com.ibeetl/beetl -->
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetl</artifactId>
-            <version>3.0.11.RELEASE</version>
+            <version>3.0.19.RELEASE</version>
         </dependency>
+
 
         <!-- devtools -->
         <dependency>

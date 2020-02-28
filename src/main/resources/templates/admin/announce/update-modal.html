@@ -1,0 +1,41 @@
+<!-- 编辑模态框 -->
+<div class="modal fade" id="updateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">更新公告</h4>
+            </div>
+            <form class="update-form">
+                <div class="modal-body">
+                    <div class="form-group form_datetime">
+                        <label for="id">ID</label>
+                        <input type="text" name="id" class="form-control id"
+                               id="id" readonly="readonly">
+                    </div>
+                    <div class="form-group form_datetime">
+                        <label for="title">公告标题</label>
+                        <input type="text" name="title" class="form-control title"
+                               id="title">
+                    </div>
+                    <div class="form-group form_datetime">
+                        <label for="content">公告内容</label>
+                        <textarea type="text" name="content" class="form-control content"
+                                  id="content" rows="8"></textarea>
+                    </div>
+                    <div class="form-group form_datetime">
+                        <label for="author">发布人</label>
+                        <input type="text" name="author" class="form-control author"
+                               id="author" readonly="readonly">
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="updateBtn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

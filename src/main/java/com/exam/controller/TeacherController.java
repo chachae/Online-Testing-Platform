@@ -14,6 +14,7 @@ import com.exam.util.HttpContextUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
@@ -106,15 +107,16 @@ public class TeacherController {
   /**
    * 教师个人主页
    *
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @param id 教师ID
    * @return 教师主页
    */
   @GetMapping("/home/{id}")
-  public String home(Model model, @PathVariable Integer id) {
+  public ModelAndView home(ModelAndView mv, @PathVariable Integer id) {
     // 调用通过 ID 查询教师信息接口
-    model.addAttribute("teacher", teacherService.getById(id));
-    return "teacher/home";
+    mv.addObject("teacher", teacherService.getById(id));
+    mv.setViewName("/teacher/self/home");
+    return mv;
   }
 
   /**
@@ -135,15 +137,16 @@ public class TeacherController {
   /**
    * 展示该教师所教课程
    *
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 课程信息
    */
   @GetMapping("/course/list")
-  public String courseList(Model model) {
+  public ModelAndView courseList(ModelAndView mv) {
     Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 设置 model 信息
-    model.addAttribute("courseList", courseService.listByTeacherId((int) id));
-    return "teacher/courseList";
+    mv.addObject("courseList", courseService.listByTeacherId((int) id));
+    mv.setViewName("/teacher/course/list");
+    return mv;
   }
 
   /**
@@ -183,14 +186,15 @@ public class TeacherController {
   /**
    * 查看系统公告列表
    *
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 公告集合
    */
   @GetMapping("/announce/system")
-  public String announceSystem(Model model) {
+  public ModelAndView announceSystem(ModelAndView mv) {
     // 设置 model 对象信息
-    model.addAttribute("announceList", this.announceService.list());
-    return "teacher/sysAnnounceList";
+    mv.addObject("announceList", this.announceService.list());
+    mv.setViewName("/teacher/announce/list");
+    return mv;
   }
 
   /**
@@ -313,76 +317,31 @@ public class TeacherController {
    * 学生分页查询
    *
    * @param page 分页数据
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 分页结果集
    */
   @GetMapping("/student")
-  public String listStudent(Page page, Model model, StudentQueryDto dto) {
+  public ModelAndView listStudent(Page page, ModelAndView mv, StudentQueryDto dto) {
 
     // 设置分页后的数据的 model 对象
-    model.addAttribute("page", this.studentService.pageForStudentList(page.getPageNo(), dto));
-    model.addAttribute("majorList", this.majorService.list());
-    model.addAttribute("academyList", this.academyService.list());
+    mv.addObject("page", this.studentService.pageForStudentList(page.getPageNo(), dto));
+    mv.addObject("majorList", this.majorService.list());
 
     // 当前查询的学院 ID
     if (dto.getAcademyId() != null) {
-      model.addAttribute("curAcademyId", dto.getAcademyId());
+      mv.addObject("curAcademyId", dto.getAcademyId());
     } else {
-      model.addAttribute("curAcademyId", "");
+      mv.addObject("curAcademyId", null);
     }
 
     // 当前查询的学院 ID
     if (dto.getName() != null) {
-      model.addAttribute("curName", dto.getName());
+      mv.addObject("curName", dto.getName());
     } else {
-      model.addAttribute("curName", "");
+      mv.addObject("curName", null);
     }
-
-    return "teacher/studentList";
-  }
-
-  /**
-   * 更新学生
-   *
-   * @param student 学生信息
-   * @return 成功信息
-   */
-  @ResponseBody
-  @PostMapping("/student/update")
-  public R updateStudent(Student student) {
-    this.studentService.updateById(student);
-    return R.success();
-  }
-
-  /**
-   * 删除学生
-   *
-   * @param id 学生ID
-   * @return 成功信息
-   */
-  @ResponseBody
-  @PostMapping("/student/delete/{id}")
-  public R deleteStudent(@PathVariable Integer id) {
-    this.studentService.removeById(id);
-    return R.success();
-  }
-
-  /**
-   * 增加学生
-   *
-   * @param student 学生信息
-   * @return 成功信息
-   */
-  @ResponseBody
-  @PostMapping("/student/save")
-  public R saveStudent(Student student) {
-    try {
-      // 调用增加接口，并捕捉学号存在的异常
-      this.studentService.save(student);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
+    mv.setViewName("/teacher/student/list");
+    return mv;
   }
 
   /**
@@ -391,59 +350,15 @@ public class TeacherController {
    * @return 专业管理页面
    */
   @GetMapping("/major")
-  public String listMajor(Page page, Model model, Major major) {
+  public ModelAndView listMajor(Page page, ModelAndView mv, Major major) {
     // 设置数据 model 对象
-    model.addAttribute("page", this.majorService.pageForMajorList(page.getPageNo(), major));
-    model.addAttribute("academyList", this.academyService.list());
+    mv.addObject("page", this.majorService.pageForMajorList(page.getPageNo(), major));
+    mv.addObject("academyList", this.academyService.list());
     // 设置当前选中的学院id
     if (major.getAcademyId() != null) {
-      model.addAttribute("curAcademyId", major.getAcademyId());
-    } else {
-      model.addAttribute("curAcademyId", "");
+      mv.addObject("curAcademyId", major.getAcademyId());
     }
-    return "teacher/majorList";
-  }
-
-  /**
-   * 更新专业信息
-   *
-   * @param major 专业信息
-   * @return 成功信息
-   */
-  @ResponseBody
-  @PostMapping("/major/update")
-  public R updateMajor(Major major) {
-    this.majorService.updateById(major);
-    return R.success();
-  }
-
-  /**
-   * 新增专业信息
-   *
-   * @param major 专业信息
-   * @return 成功信息
-   */
-  @ResponseBody
-  @PostMapping("/major/save")
-  public R saveMajor(Major major) {
-    this.majorService.save(major);
-    return R.success();
-  }
-
-  /**
-   * 删除专业信息
-   *
-   * @param id 专业ID
-   * @return 回调信息
-   */
-  @ResponseBody
-  @PostMapping("/major/delete/{id}")
-  public R deleteMajor(@PathVariable Integer id) {
-    try {
-      this.majorService.removeById(id);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
+    mv.setViewName("teacher/major/list");
+    return mv;
   }
 }

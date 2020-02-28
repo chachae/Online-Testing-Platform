@@ -1,7 +1,7 @@
 package com.exam.exception;
 
 /**
- * 统一业务异常
+ * 统一业务层异常
  *
  * @author yzn
  * @date 2019/12/29

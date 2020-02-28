@@ -1,5 +1,6 @@
 package com.exam.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.exam.entity.Academy;
@@ -18,7 +19,7 @@ import java.io.Serializable;
 /**
  * 学院服务实现类
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-09 12:09:59
  */
 @Service
@@ -27,6 +28,7 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
     implements AcademyService {
 
   @Resource private MajorMapper majorMapper;
+  @Resource private AcademyMapper academyMapper;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -42,5 +44,32 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
     }
     // 不存在关联，允许删除
     return super.removeById(id);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean updateById(Academy entity) {
+    // 检测学院名称
+    if (ObjectUtil.isNotEmpty(this.selectByName(entity.getName()))) {
+      throw new ServiceException("学院名称已存在");
+    }
+    return super.updateById(entity);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean save(Academy entity) {
+    // 检测学院名称
+    if (ObjectUtil.isNotEmpty(this.selectByName(entity.getName()))) {
+      throw new ServiceException("学院名称已存在");
+    }
+    return super.save(entity);
+  }
+
+  @Override
+  public Academy selectByName(String academyName) {
+    QueryWrapper<Academy> qw = new QueryWrapper<>();
+    qw.lambda().eq(Academy::getName, academyName);
+    return this.academyMapper.selectOne(qw);
   }
 }

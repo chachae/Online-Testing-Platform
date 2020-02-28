@@ -1,0 +1,34 @@
+<!-- 增加专业信息模态框 -->
+<div class="modal fade" id="save-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增专业</h4>
+            </div>
+            <div class="modal-body">
+                <form id="save-form">
+                    <div class="form-group form_datetime">
+                        <label>所属学院</label>
+                        <select name="academy">
+                            <option value="">请选择</option>
+                            <% for( academy in academyList ){ %>
+                            <option value="${academy.id}">${academy.name}</option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group form_datetime">
+                        <label>专业名称</label>
+                        <input type="text" name="major" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

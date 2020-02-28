@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="zh_CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,10 +130,7 @@
 </div>
 <div class="b1"></div>
 <div class="b2"></div>
-<%
-    include("include/login_footer.html"){}
-%>
-<script src="/static/plugins/layer/layer.js"></script>
+<%include("include/login_footer.html"){}%>
 </body>
 
 <script>
@@ -146,8 +144,7 @@
             } else {
                 layer.msg(data.message);
             }
-        }).error(function () {
-            layer.msg("系统异常...");
-        });
+        })
     })
 </script>
+</html>

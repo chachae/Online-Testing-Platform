@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 学生列表</title>
+    <!-- 引入全局 css 文件 -->
+    <%include("../../include/css.html"){} %>
+    <style>
+        .table > tbody > tr:hover {
+            cursor: pointer;
+        }
+
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 15px;
+            text-align: center;
+        }
+
+        td {
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <!-- 引入头部 -->
+    <%include("../include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <% include("../include/sider.html"){} %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">学生管理</h3>
+                    <div class="box-tools pull-right">
+                        <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增学生</a>
+                        <a class="btn btn-vk btn-sm" href="/teacher/student"><i
+                                class="fa fa-refresh"></i> 刷新数据</a>
+                    </div>
+                </div>
+                <div class="with-border">
+                    <div class="box-tools pull-right input-group">
+                        <label for="findAcademy">所属学院：</label>
+                        <select class="form-control pull-right" name="findAcademy" id="findAcademy">
+                        </select>
+                        <button id="findNameBtn" class="pull-right btn btn-primary btn-flat" style="width:80px">搜索
+                        </button>
+                        <label for="findName">姓名：</label>
+                        <% if(isEmpty(curName)){ %>
+                        <input id="findName" class="form-control pull-right form-control-static"
+                               type="text" style="width: 200px">
+                        <% }else{ %>
+                        <input id="findName" class="form-control pull-right form-control-static"
+                               type="text" value="${curName}" style="width: 200px">
+                        <% } %>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <th width="8%">序号</th>
+                            <th width="8%">姓名</th>
+                            <th width="12%">学号</th>
+                            <th width="10%">年级</th>
+                            <th width="24%">所属学院</th>
+                            <th width="17%">所属专业</th>
+                            <th width="8%">性别</th>
+                            <th width="13%">操作</th>
+                        </tr>
+                        <% if(isEmpty(page.list)){ %>
+                        <tr>
+                            <td colspan="6">没有学生</td>
+                        </tr>
+                        <% }else{ %>
+                        <% for( student in page.list ){ %>
+                        <tr class="rowDetail" rel="${student.stuNumber}">
+                            <td>${studentLP.index}</td>
+                            <td hidden="hidden">${student.id}</td>
+                            <td>${student.name}</td>
+                            <td>${student.stuNumber}</td>
+                            <td>${student.level} 级</td>
+                            <td rel="${student.academy.id}">${student.academy.name}</td>
+                            <td rel="${student.majorId}">${student.major.major}</td>
+                            <td>${student.sex}</td>
+                            <td>
+                                <a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                <button class="btn btn-danger btn-sm delStudent" onclick="deleteStudent(${student.id})">
+                                    <i class="fa"></i>删除
+                                </button>
+                            </td>
+                        </tr>
+                        <% } %>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+    </div>
+    <!-- 增加模态框 -->
+    <%include("save-modal.html"){}%>
+    <!-- 更新模态框 -->
+    <%include("update-modal.html"){}%>
+    <!-- 引入footer -->
+    <%include("../../include/footer.html"){}%>
+</div>
+<!-- 引入全局 js 脚本文件 -->
+<% include("../../include/js.html"){} %>
+<script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
+<!-- 接口 -->
+<% include("api.html"){} %>
+</body>
+</html>
+
+

@@ -5,32 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 管理员首页</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
+    <% include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition skin-purple">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%
-    include("include/header.html"){}
-    %>
+    <% layout("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%
-    include("include/sider.html"){}
-    %>
+    <% layout("../include/sider.html",{name:'home'}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1 style="font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;text-align:center">
                 OES后台管理系统
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="/admin/home/${session.admin.id}"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Examples</a></li>
-                <li class="active">Blank page</li>
-            </ol>
         </section>
         <section class="content">
             <div class="box">
@@ -57,13 +45,9 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <% include("../../include/footer.html"){} %>
 </div><!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
+<% include("../../include/js.html"){} %>
 </body>
 </html>
 
