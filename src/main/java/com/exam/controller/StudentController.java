@@ -2,6 +2,7 @@ package com.exam.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.exam.common.Page;
 import com.exam.common.R;
 import com.exam.constant.SysConsts;
 import com.exam.controller.common.QuestionModel;
@@ -15,6 +16,7 @@ import com.exam.util.HttpContextUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -40,31 +42,6 @@ public class StudentController {
   @Resource private AnnounceService announceService;
 
   /**
-   * 学生登录 验证学号和密码
-   *
-   * @param studentId 学号(stuNumber)
-   * @param studentPassword 密码
-   * @return 主界面
-   */
-  @ResponseBody
-  @PostMapping("/login")
-  public R login(String studentId, String studentPassword) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    try {
-      // 执行登录接口
-      Student student = studentService.login(studentId, studentPassword);
-      // 设置 Session 信息
-      session.setAttribute(SysConsts.SESSION.STUDENT_ID, student.getId());
-      session.setAttribute(SysConsts.SESSION.STUDENT, student);
-      // 重定向到学生主界面
-      return R.successWithData(student.getId());
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
-  }
-
-  /**
    * 学生登录后来到home页
    *
    * @param id 学生ID
@@ -87,31 +64,6 @@ public class StudentController {
   @GetMapping("/{id}/changePass")
   public String changePass(@PathVariable Integer id) {
     return "/student/changePass";
-  }
-
-  /**
-   * 密码修改
-   *
-   * @param id 学生ID
-   * @param dto 密码信息
-   * @return 重定向到登录界面
-   */
-  @ResponseBody
-  @PostMapping("/{id}/changePass")
-  public R changePass(@PathVariable Integer id, ChangePassDto dto) {
-    // 通过获取 Session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    try {
-      // 调用密码修改接口
-      this.studentService.updatePassword(id, dto);
-      // 移除学生 session 信息
-      session.removeAttribute(SysConsts.SESSION.STUDENT_ID);
-      session.removeAttribute(SysConsts.SESSION.STUDENT);
-      return R.success();
-    } catch (ServiceException e) {
-      // 捕捉密码修改失败异常
-      return R.error(e.getMessage());
-    }
   }
 
   /**
@@ -167,19 +119,18 @@ public class StudentController {
   /**
    * 学生进入考试
    *
-   * @param stuId 学生ID
    * @param paperId 试卷ID
-   * @param model model 对象
    * @return 考试页面
    */
   @GetMapping("/{stuId}/paper/{paperId}")
-  public String doPaper(@PathVariable Integer stuId, @PathVariable Integer paperId, Model model) {
+  public ModelAndView doPaper(@PathVariable Integer paperId, ModelAndView mv) {
     // 设置试卷信息的 model 对象信息
-    model.addAttribute("paper", paperService.getById(paperId));
+    mv.addObject("paper", paperService.getById(paperId));
     // 各类题型的 model 对象信息
-    questionModel.setQuestionModel(model, paperId);
+    questionModel.setQuestionModel(mv, paperId);
     // 返回试卷
-    return "student/paperDetail";
+    mv.setViewName("/student/paperDetail");
+    return mv;
   }
 
   /**
@@ -231,30 +182,48 @@ public class StudentController {
    * 试卷详情
    *
    * @param id 分数id
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 详情
    */
   @GetMapping("/score/detail/{id}")
-  public String scoreDetail(@PathVariable Integer id, Model model) {
+  public ModelAndView scoreDetail(@PathVariable Integer id, ModelAndView mv) {
     // id = score表对应id，设置 model 对象信息
     Score score = this.scoreService.getById(id);
     // 设置试卷信息
     Integer paperId = score.getPaperId();
 
     // 设置题目的 model 对象信息
-    questionModel.setQuestionModel(model, paperId);
+    questionModel.setQuestionModel(mv, paperId);
 
     // 设置分数和试卷 model 信息
     Paper paper = this.paperService.getById(paperId);
-    model.addAttribute("score", score);
-    model.addAttribute("paper", paper);
+    mv.addObject("score", score);
+    mv.addObject("paper", paper);
 
     // 设置课程和专业 model
-    model.addAttribute("course", courseService.getById(paper.getCourseId()));
-    model.addAttribute("major", majorService.getById(paper.getMajorId()));
+    mv.addObject("course", courseService.getById(paper.getCourseId()));
+    mv.addObject("major", majorService.getById(paper.getMajorId()));
 
     // 改造后的错题id
-    model.addAttribute("wrongList", StrUtil.split(score.getWrongIds(), StrUtil.C_COMMA));
-    return "/student/scoreDetail";
+    mv.addObject("wrongList", StrUtil.split(score.getWrongIds(), StrUtil.C_COMMA));
+    mv.setViewName("/student/scoreDetail");
+    return mv;
+  }
+
+  /**
+   * 试卷分页查询
+   *
+   * @param page 分页数据
+   * @param mv ModelAndView 对象
+   * @return 分页结果集
+   */
+  @GetMapping("/paper")
+  public ModelAndView list(Page page, ModelAndView mv) {
+    // 获取教师 ID
+    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 设置分页后的数据的 model 对象
+    mv.addObject("page", paperService.pageForPaperList(teacherId, page.getPageNo()));
+    mv.setViewName("/teacher/paper/list");
+    return mv;
   }
 }

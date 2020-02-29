@@ -27,10 +27,9 @@ public interface StudentService extends IService<Student> {
   /**
    * 学生修改密码
    *
-   * @param id 学生ID
    * @param dto 新的密码
    */
-  void updatePassword(Integer id, ChangePassDto dto);
+  void updatePassword(ChangePassDto dto);
 
   /**
    * 通过学号查询学生信息
@@ -48,6 +47,14 @@ public interface StudentService extends IService<Student> {
    * @return 学生分页结果集
    */
   PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto);
+
+  /**
+   * 通过 ID 查询学生详细信息
+   *
+   * @param id 学生 ID
+   * @return 学生信息
+   */
+  StudentVo selectVoById(Integer id);
 
   /**
    * 通过专业 ID 查询学生数量

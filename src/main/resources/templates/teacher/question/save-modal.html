@@ -1,0 +1,71 @@
+<!-- 题目查看模态框 -->
+<div class="modal fade" id="save-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增题目</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <form id="save-form">
+                        <div class="form-group">
+                            <label>名称 </label>
+                            <input type="hidden" class="form-control id" name="id" readonly="readonly"/>
+                            <textarea class="form-control questionName" name="questionName" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>选项A </label>
+                            <input class="form-control optionA" name="optionA"/>
+                        </div>
+                        <div class="form-group">
+                            <label>选项B </label>
+                            <input class="form-control optionB" name="optionB"/>
+                        </div>
+                        <div class="form-group">
+                            <label>选项C </label>
+                            <input class="form-control optionC" name="optionC"/>
+                        </div>
+                        <div class="form-group">
+                            <label>选项D </label>
+                            <input class="form-control optionD" name="optionD"/>
+                        </div>
+                        <div class="form-group">
+                            <label>答案 </label>
+                            <textarea class="form-control answer" name="answer" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>所属课程 </label>
+                            <select class="courseSelect" name="courseId"></select>
+                            <!-- 动态获取数据 -->
+                        </div>
+                        <div class="form-group">
+                            <label>类型 </label>
+                            <select class="typeSelect" name="typeId"></select>
+                            <!-- 动态获取数据 -->
+                        </div>
+                        <div class="form-group">
+                            <label>难易度 </label>
+                            <select class="form-control difficulty" name="difficulty">
+                                <option value="1">简单</option>
+                                <option value="2">一般</option>
+                                <option value="3">困难</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>解析 </label>
+                            <input class="form-control remark" name="remark"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="saveQuestion()" data-dismiss="modal">增加
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

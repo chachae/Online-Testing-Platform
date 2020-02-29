@@ -2,7 +2,7 @@
     // 删除课程
     function deleteCourse(id) {
         layer.confirm("确定删除该课程么?", function () {
-            $.get("/teacher/course/del/" + id).done(function (data) {
+            $.get("/api/course/delete/" + id).done(function (data) {
                 if (data.state === "success") {
                     layer.msg("删除成功!");
                     window.location.href = "/teacher/course/list";
@@ -25,7 +25,7 @@
     $("#saveBtn").click(function () {
         layer.confirm("确定添加该课程?", function () {
             let data = $('#save-form').serialize();
-            $.get("/teacher/course/new", data).done(function (data) {
+            $.get("/api/course/save", data).done(function (data) {
                 if (data.state === "success") {
                     layer.msg("添加成功!");
                     window.location.href = "/teacher/course/list";

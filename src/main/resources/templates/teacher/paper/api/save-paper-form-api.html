@@ -1,0 +1,15 @@
+<script>
+    // 添加试卷模板
+    $(function () {
+        $("#saveBtn").click(function () {
+            let data = $("#save-paper-form").serialize();
+            $.post("/api/paperForm/save", data, function (data) {
+                if (data.state === "success") {
+                    window.location.href = "/teacher/paper/save/" + data.data;
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        });
+    });
+</script>

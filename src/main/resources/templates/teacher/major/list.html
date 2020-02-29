@@ -39,27 +39,15 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">专业管理</h3>
                     <div class="box-tools pull-right">
-                        <button id="newBtn" class="btn btn-vk btn-sm goSave"><i class="fa fa-plus-circle"></i> 新增专业
+                        <button id="goSave" class="btn btn-vk btn-sm goSave"><i class="fa fa-plus-circle"></i> 新增专业
                         </button>
                     </div>
                 </div>
                 <div class="with-border">
                     <div class="box-tools pull-right">
                         <label for="findAcademy">所属学院：</label>
-                        <select class="form-control" name="findAcademy" id="findAcademy">
-                            <option value="" selected>全部</option>
-                            <% for( academy in academyList ){ %>
-                            <% if(isEmpty(curAcademyId)){%>
-                            <option value="${academy.id}">${academy.name}</option>
-                            <% } %>
-                            <% if(isNotEmpty(curAcademyId)){ %>
-                            <% if(curAcademyId == academy.id){ %>
-                            <option value="${academy.id}" selected>${academy.name}</option>
-                            <% }else{ %>
-                            <option value="${academy.id}">${academy.name}</option>
-                            <% } %>
-                            <% } %>
-                            <% } %>
+                        <select class="form-control academySelect" style="width: 200px" name="findAcademy" id="findAcademy">
+                            <!-- 填入数据 -->
                         </select>
                     </div>
                 </div>

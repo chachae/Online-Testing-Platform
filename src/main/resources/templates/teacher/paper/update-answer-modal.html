@@ -1,0 +1,29 @@
+<!-- 修改答案模态框 -->
+<div class="modal fade editAns">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">修改答案</h4>
+            </div>
+            <div class="modal-body">
+               <form id="update-answer-form">
+                   <div class="form-group form_datetime">
+                       <label for="modalAns">ID</label>
+                       <input type="text" readonly="readonly" name="id" class="form-control"
+                              id="modalAnsId">
+                       <label for="modalAns">答案</label>
+                       <input type="text" name="answer" class="form-control"
+                              id="modalAns">
+                   </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary subEditAns">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

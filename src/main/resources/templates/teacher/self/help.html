@@ -5,9 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 教师帮助中心</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
+    <%include("../../include/css.html"){} %>
     <style>
         p {
             text-indent: 30px;
@@ -20,13 +18,9 @@
 
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%
-    include("include/header.html"){}
-    %>
+    <%include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%
-    include("include/sider.html"){}
-    %>
+    <%include("../include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -38,9 +32,7 @@
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             </ol>
         </section>
-
         <section class="content">
-
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title lead" style="font-size: 22px;font-weight: 800">帮助说明</h3>
@@ -65,27 +57,19 @@
                     <p>七、学生成绩进行复查、重新给分</p>
                     <p>八、未发布考试时间修改、删除</p>
                 </div>
-
                 <div class="box-footer ">
                     <blockquote class="blockquote-reverse">
                         <p style="color: #2D93CA">祝您开启愉快的一天！</p>
                     </blockquote>
                 </div>
-
             </div>
-
         </section>
-
     </div>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <%include("../../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
+<% include("../../include/js.html"){} %>
 </body>
 </html>
 

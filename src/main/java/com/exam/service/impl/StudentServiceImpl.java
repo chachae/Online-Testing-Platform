@@ -60,9 +60,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updatePassword(Integer id, ChangePassDto dto) {
+  public void updatePassword(ChangePassDto dto) {
     // 通过 ID 查询学生信息
-    Student student = studentMapper.selectById(id);
+    Student student = studentMapper.selectById(dto.getId());
     if (ObjectUtil.isEmpty(student)) {
       throw new ServiceException("用户不存在");
     }
@@ -94,6 +94,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     // 按照学院 id 从小到大排序
     students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
     return new PageInfo<>(students);
+  }
+
+  @Override
+  public StudentVo selectVoById(Integer id) {
+    return this.studentMapper.selectVoById(id);
   }
 
   @Override

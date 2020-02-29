@@ -16,12 +16,14 @@ import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.QuestionDto;
 import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentAnswerDto;
+import com.exam.entity.vo.QuestionVo;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.PaperFormMapper;
 import com.exam.mapper.PaperMapper;
 import com.exam.mapper.QuestionMapper;
 import com.exam.service.CourseService;
 import com.exam.service.QuestionService;
+import com.exam.service.TypeService;
 import com.exam.util.BeanUtil;
 import com.exam.util.FileUtil;
 import com.exam.util.HttpContextUtil;
@@ -52,6 +54,7 @@ import java.util.*;
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService {
 
+  @Resource private TypeService typeService;
   @Resource private QuestionMapper questionMapper;
   @Resource private PaperMapper paperMapper;
   @Resource private PaperFormMapper paperFormMapper;
@@ -170,6 +173,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     records.forEach(record -> result.add(this.questionMapper.selectById(record.getQuestionId())));
     // 根据问题的 ID 排序
     result.sort(Comparator.comparingInt(Question::getId));
+    return result;
+  }
+
+  @Override
+  public QuestionVo selectVoById(Integer id) {
+    Question question = this.questionMapper.selectById(id);
+    QuestionVo result = BeanUtil.copyObject(question, QuestionVo.class);
+    result.setCourse(this.courseService.getById(question.getCourseId()));
+    result.setType(this.typeService.getById(question.getTypeId()));
     return result;
   }
 

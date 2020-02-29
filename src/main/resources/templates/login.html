@@ -6,13 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>OES_学生|教师登录</title>
     <!-- 引入全局公共js / css -->
-    <%
-        include("include/js.html"){}
-    %>
+    <% include("include/js.html"){} %>
     <!-- 引入全局公共js -->
-    <%
-    include("include/css.html"){}
-    %>
+    <%include("include/css.html"){}%>
     <!-- 登录页面的样式和加密脚本 -->
     <link href="/static/css/login.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="/static/plugins/jsencrypt/jsencrypt.min.js"></script>
@@ -55,7 +51,7 @@
         <div class="web_login">
             <form name="student_login" id="student_login" method="post">
                 <div>
-                    <p class="login-box-msg cue">${message!"请输入学号和密码进行登录"}</p>
+                    <p class="login-box-msg cue">请输入学号和密码进行登录</p>
                 </div>
                 <ul class="reg_form">
                     <li>
@@ -67,15 +63,13 @@
                     </li>
                     <li>
                         <div class="">
-                            <input type="password" value="123" placeholder="请输入密码"
-                                   maxlength="16" class="inputstyle2 encPass" style="width: 100%"/>
-                            <input type="password" id="studentPassword" name="studentPassword"
-                                   maxlength="16" class="inputstyle2 realPass" hidden="hidden"/>
+                            <input type="password" value="123" placeholder="请输入密码" name="password"
+                                   maxlength="16" class="inputstyle2" id="stuPassword" style="width: 100%"/>
                         </div>
                     </li>
                     <li>
                         <div class="">
-                            <input type="button" id="stuLogin" style="width: 100%"
+                            <input type="button" id="stuBtn" style="width: 100%"
                                    class="button_blue " value="立即登录"/>
                         </div>
                     </li>
@@ -92,9 +86,10 @@
     <!--老师登录-->
     <div class="qlogin" id="qlogin" style="display: none; ">
         <div class="web_login">
-            <form name="teacher_login" id="regUser" action="/teacher/login"
-                  method="post" onsubmit="return login_teacherID_username()">
-                <p class="login-box-msg cue">${message_tea!"请输入职工号和密码进行登录"}</p>
+            <form id="teacher-login-form">
+                <div>
+                    <p class="login-box-msg cue">请输入工号和密码进行登录</p>
+                </div>
                 <ul class="reg_form" id="reg-ul">
                     <li>
                         <div class="">
@@ -105,15 +100,14 @@
                     </li>
                     <li>
                         <div class="">
-                            <input type="password" id="teacherPassword" name="teacherPassword"
-                                   hidden="hidden" maxlength="16" class="realPass"/>
                         </div>
-                        <input type="password" value="123" style="width: 100%" placeholder="请输入密码"
-                               maxlength="16" class="inputstyle2 encPass"/>
+                        <input type="password" value="123" name="password" id="teacherPassword" style="width: 100%"
+                               placeholder="请输入密码"
+                               maxlength="16" class="inputstyle2"/>
                     </li>
                     <li>
                         <div class="">
-                            <input type="submit" id="reg" style="width: 100%"
+                            <input type="button" id="teacherBtn" style="width: 100%"
                                    class="button_blue" value="立即登录"/>
                         </div>
                     </li>
@@ -135,16 +129,31 @@
 
 <script>
     // 学生登录
-    $('#stuLogin').click(function () {
+    $('#stuBtn').click(function () {
         // 密码加密
-        login_studentID_username();
-        $.post("/student/login", $('#student_login').serialize()).done(function (data) {
+        let username = $("#studentId").val();
+        let password = encryptPass($("#stuPassword").val());
+        $.post("/api/student/login", {"studentId": username, "password": password}).done(function (data) {
             if (data.state === "success") {
                 window.location.href = "/student/home/" + data.data;
             } else {
                 layer.msg(data.message);
             }
         })
-    })
+    }),
+
+        // 学生登录
+        $('#teacherBtn').click(function () {
+            // 密码加密
+            let username = $("#teacherId").val();
+            let password = encryptPass($("#teacherPassword").val());
+            $.post("/api/teacher/login", {"teacherId": username, "password": password}).done(function (data) {
+                if (data.state === "success") {
+                    window.location.href = "/teacher/home/" + data.data;
+                } else {
+                    layer.msg(data.message);
+                }
+            })
+        })
 </script>
 </html>

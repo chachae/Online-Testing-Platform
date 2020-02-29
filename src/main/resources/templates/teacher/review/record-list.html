@@ -5,9 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 学生作答记录</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
+    <%include("../../include/css.html"){}%>
     <style>
         th {
             font-size: 18px;
@@ -17,23 +15,15 @@
             font-size: 17px;
         }
     </style>
-
-
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%
-    include("include/header.html"){}
-    %>
+    <%include("../include/header.html"){}%>
     <!-- 左侧菜单栏 -->
-    <%
-    include("include/sider.html"){}
-    %>
+    <%include("../include/sider.html"){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-
         <!-- 修改成绩模态框 -->
         <div class="modal fade" id="modifyModal">
             <div class="modal-dialog">
@@ -63,9 +53,7 @@
                         <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
                     </div>
                 </div>
-
             </div>
-
         </div>
         <section class="content">
             <div class="box">
@@ -90,7 +78,6 @@
                     </tr>
                 </table>
             </div>
-
             <div class="box ">
                 <div class="box-body ">
                     <table class="table table-hover">
@@ -113,7 +100,6 @@
                     </table>
                 </div>
             </div>
-
             <div class="box">
                 <div class="box-body">
                     <table class="table table-hover">
@@ -160,47 +146,13 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <% include("../include/footer.html"){} %>
+    <% include("../../include/footer.html"){} %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<% include("../include/js.html"){} %>
-<script src="/static/plugins/layer/layer.js"></script>
+<% include("../../include/js.html"){} %>
 <script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
-<script>
-    // 启动模态框
-    $(".editAns").click(function () {
-        $("#modifyModal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-        const oldScore = $(this).parents('tr').find('td').eq(1).text();
-        $('#oldScore').val(oldScore);
-        // 题目id
-        const id = $(this).attr("rel");
-        $('#id').val(id);
-    });
-
-    $("#saveBtn").click(function () {
-        layer.confirm("确定修改分数么?", function () {
-            let oldScore = $("#oldScore").val();
-            let newScore = $("#newScore").val();
-            let id = $("#id").val();
-            $.post("/teacher/editScore", {
-                "oldScore": oldScore,
-                "newScore": newScore,
-                "id": id,
-            }).done(function (data) {
-                if (data.state === "success") {
-                    layer.msg("修改成功!");
-                    window.location.reload();
-                }
-            }).error(function () {
-                layer.msg("服务器异常");
-            });
-        });
-    });
-</script>
+<%include("api.html"){}%>
 </body>
 </html>
 

@@ -17,11 +17,9 @@
                     </div>
                     <div class="form-group form_datetime">
                         <label for="academy">所属学院</label>
-                        <select id="academy" name="academy" class="academyId">
+                        <select id="academy" name="academy" style="width: 100%" class="academyId academySelect">
                             <option value="">请选择</option>
-                            <% for( academy in academyList ){ %>
-                            <option value="${academy.id}">${academy.name}</option>
-                            <% } %>
+                            <!-- 数据填充 -->
                         </select>
                     </div>
                     <div class="form-group form_datetime">

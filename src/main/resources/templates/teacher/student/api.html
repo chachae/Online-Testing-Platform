@@ -31,140 +31,91 @@
     // 获取学院集合
     $.get("/api/academy").done(function (data) {
         let options = "";
-        let curAcademyId = "${curAcademyId}";
-        $('#findAcademy').empty();
+        $('.academySelect').empty();
+        options += "<option value=''>请选择</option>";
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        $("#findAcademy").append(options).select2({width:"200px"}).val(curAcademyId);
+        let curAcademyId = "${curAcademyId}";
+        $(".academySelect").append(options).val(curAcademyId).select2();
     });
 
+    // 获取学生信息
+    function getStudent(id) {
+        $.get("/api/student/" + id, function (data) {
+            // 赋值
+            $('#id').val(data.id);
+            $('#name').val(data.name);
+            $('#stuNumber').val(data.stuNumber);
+            $('#level').val(data.level).select2();
+            $('#sex').val(data.sex).select2();
+            $('#academy').val(data.academy.id).select2();
+            getMajor(data.academy.id, data.major.id);
+        })
+    }
+
     // 专选择框框回填
-    function getAcademy(id) {
+    function getMajor(id, majorId) {
         // 获取学院集合
-        $.get("/major/academy/" + id).done(function (data) {
+        $.get("/api/major/academy/" + id).done(function (data) {
             let options = "";
             //回填的二级类别值
-            $('#majorId').empty();
+            $(".majorSelect").empty();
             options += "<option value=''>请选择</option>";
             $.each(data, function (index, e) {
-                options += "<option selected='true' value=" + e.id + ">" + e.major + "</option>";
+                options += "<option value=" + e.id + ">" + e.major + "</option>";
             });
-            $("#majorId").append(options).select2();
+            $(".majorSelect").append(options).val(majorId).select2();
         });
     };
 
-    // 模态框
     // 启动修改模态框
-    $(".editStudent").click(function () {
-        $("#modifyModal").modal({
+    $(".goUpdate").click(function () {
+        $("#update-modal").modal({
             show: true,
             backdrop: 'static'
         });
 
-        // 模态框赋值
-        const stuId = $(this).parents('tr').find('td').eq(1).text();
-        const name = $(this).parents('tr').find('td').eq(2).text();
-        const stuNumber = $(this).parents('tr').find('td').eq(3).text();
-        const academyId = $(this).parents('tr').find('td').eq(5).attr("rel");
-        const majorId = $(this).parents('tr').find('td').eq(6).attr("rel");
-        const major = $(this).parents('tr').find('td').eq(6).text();
-        const level = $(this).parents('tr').find('td').eq(4).text();
-        const sex = $(this).parents('tr').find('td').eq(7).text();
-        $('#id').val(stuId);
-        $('#name').val(name);
-        $('#stuNumber').val(stuNumber);
-        $('.level').val(level.substring(0, 2)).select2();
-        $('#sex').val(sex).select2();
-        $('#academy').val(academyId).select2();
-
-        var options = "<option selected='true' value=" + majorId + ">" + major + "</option>";
-        $('#major').append(options).select2();
-
-        $("#saveBtn").click(function () {
-            let a = $("#id").val();
-            let b = $("#name").val();
-            let c = $("#stuNumber").val();
-            let d = $("#major").val();
-            let e = $("#sex").val();
-            let f = $('#level').val();
+        // 修改修生信息请求
+        $("#updateBtn").click(function () {
             layer.confirm("确定修改信息吗?", function () {
-                $.post("/teacher/student/update/", {
-                    "id": a,
-                    "name": b,
-                    "stuNumber": c,
-                    "majorId": d,
-                    "sex": e,
-                    "level": f
-                }).done(function (data) {
+                let data = $('#update-form').serialize();
+                $.post("/api/student/update", data).done(function (data) {
                     if (data.state === "success") {
                         layer.msg("修改成功!");
                         window.location.reload();
                     }
-                }).error(function () {
-                    layer.msg("服务器异常");
-                });
-            });
-        });
+                })
+            })
+        })
     });
 
-    // select2
-    $("#ssex").select2({width: "100%"});
-    $("#sacademy").select2({width: "100%"});
-
-    //回填的二级类别值
-    function getAcademy(id) {
-        let options = "";
-        //回填的二级类别值
-        $('.major').empty();
-        options += "<option value=''>请选择</option>";
-        $("${majorList}").each(function (index, element) {
-            var academyId = element.academyId;
-            if (academyId === id) {
-                const value = element.id;
-                const name = element.major;
-                options += "<option selected='true' value=" + value + ">" + name + "</option>";
-            }
-        });
-        $(".major").append(options).select2();
-    }
-
-
-    // 启动模态框
-    $("#newBtn").click(function () {
-        $("#saveModal").modal({
+    // 启动新增模态框
+    $("#goSave").click(function () {
+        $("#save-modal").modal({
             show: true,
             backdrop: 'static'
         });
 
-        $("#ssaveBtn").click(function () {
-            let b = $("#sname").val();
-            let c = $("#sstuNumber").val();
-            let d = $("#smajor").val();
-            let e = $("#ssex").val();
-            let f = $("#spass").val();
-            let g = $("#slevel").val();
+        // 新增学生信息请求
+        $("#saveBtn").click(function () {
             layer.confirm("确定增加学生吗?", function () {
-                $.post("/teacher/student/save/", {
-                    "name": b,
-                    "stuNumber": c,
-                    "majorId": d,
-                    "sex": e,
-                    "password": f,
-                    "level": g
-                }).done(function (data) {
+                let data = $('#save-form').serialize();
+                $.post("/api/student/save", data).done(function (data) {
                     if (data.state === "success") {
                         layer.msg("增加成功!");
                         window.location.reload();
                     } else {
                         layer.msg(data.message);
                     }
-                }).error(function () {
-                    layer.msg("服务器异常");
-                });
-            });
-        });
+                })
+            })
+        })
     });
+
+    // select2 选择框
+    $('.save-sex').select2();
+    $('.save-level').select2();
 
     //分页
     $('#pagination-demo').twbsPagination({
@@ -174,6 +125,6 @@
         last: '末页',
         prev: '上一页',
         next: '下一页',
-        href: "?p={{number}}&academyId=" + $('#findAcademy').val() + "&name=" + $('#findName').val()
+        href: "?p={{number}}&academyId=" + '${curAcademyId}' + "&name=" + '${curName}'
     });
 </script>

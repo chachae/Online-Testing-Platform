@@ -45,7 +45,7 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordMappe
 
   @Override
   public List<StuAnswerRecord> selectByPaperId(Integer paperId) {
-    // 构造通过试卷 ID 插叙你答题记录的条件
+    // 构造通过试卷 ID 查詢答题记录的条件
     QueryWrapper<StuAnswerRecord> qw = new QueryWrapper<>();
     qw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
     List<StuAnswerRecord> result = this.stuAnswerRecordMapper.selectList(qw);

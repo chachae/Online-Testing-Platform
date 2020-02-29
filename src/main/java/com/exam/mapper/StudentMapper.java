@@ -22,4 +22,12 @@ public interface StudentMapper extends BaseMapper<Student> {
    * @return 学生 List 集合
    */
   List<StudentVo> listVo(StudentQueryDto dto);
+
+  /**
+   * 通过 ID 查询学生详细信息
+   *
+   * @param id 学生 ID
+   * @return 学生信息
+   */
+  StudentVo selectVoById(Integer id);
 }

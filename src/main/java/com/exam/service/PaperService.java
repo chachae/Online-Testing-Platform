@@ -67,14 +67,6 @@ public interface PaperService extends IService<Paper> {
   List<Paper> listUnDoByTeacherId(Integer id);
 
   /**
-   * 修改考试时间
-   *
-   * @param id 考试ID
-   * @param paper 试卷信息
-   */
-  void updateById(Integer id, Paper paper);
-
-  /**
    * 根据老师Id查找已结束试卷
    *
    * @param teacherId 教师ID

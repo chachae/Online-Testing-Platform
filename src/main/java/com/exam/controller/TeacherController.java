@@ -1,19 +1,20 @@
 package com.exam.controller;
 
 import com.exam.common.Page;
-import com.exam.common.R;
 import com.exam.constant.SysConsts;
+import com.exam.controller.common.QuestionModel;
 import com.exam.entity.*;
-import com.exam.entity.dto.AnswerEditDto;
-import com.exam.entity.dto.ChangePassDto;
 import com.exam.entity.dto.StuAnswerRecordDto;
 import com.exam.entity.dto.StudentQueryDto;
 import com.exam.exception.ServiceException;
 import com.exam.service.*;
 import com.exam.util.HttpContextUtil;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,84 +25,33 @@ import java.util.List;
 /**
  * 教师模块控制层
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/5
  */
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
 
+  @Resource private TypeService typeService;
   @Resource private PaperService paperService;
-  @Resource private ScoreService scoreService;
   @Resource private MajorService majorService;
+  @Resource private QuestionModel questionModel;
   @Resource private CourseService courseService;
   @Resource private TeacherService teacherService;
-  @Resource private AcademyService academyService;
   @Resource private StudentService studentService;
-  @Resource private QuestionService questionService;
   @Resource private AnnounceService announceService;
+  @Resource private QuestionService questionService;
+  @Resource private PaperFormService paperFormService;
   @Resource private StuAnswerRecordService stuAnswerRecordService;
-  /**
-   * 教师登录
-   *
-   * @param teacherId 教师ID
-   * @param teacherPassword 教师密码
-   * @param r 重定向对象
-   * @return 教师主页
-   */
-  @PostMapping("/login")
-  public String login(String teacherId, String teacherPassword, RedirectAttributes r) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    try {
-      // 执行登录
-      Teacher teacher = teacherService.login(teacherId, teacherPassword);
-      // 设置 session 信息
-      session.setAttribute(SysConsts.SESSION.TEACHER_ID, teacher.getId());
-      session.setAttribute(SysConsts.SESSION.TEACHER, teacher);
-      // 重定向到教师主页
-      return "redirect:/teacher/home/" + teacher.getId();
-    } catch (ServiceException e) {
-      // 捕捉账号密码异常信息
-      r.addFlashAttribute("message_tea", e.getMessage());
-      return "redirect:/";
-    }
-  }
 
   /**
    * 教师修改密码页面
    *
-   * @param id 教师ID
    * @return 页面
    */
-  @GetMapping("/{id}/changePass")
-  public String changePass(@PathVariable Integer id) {
-    return "teacher/changePass";
-  }
-
-  /**
-   * 修改密码
-   *
-   * @param id 教师ID
-   * @param dto 密码信息
-   * @return 重定向登录页面
-   */
-  @PostMapping("/{id}/changePass")
-  public String changePass(@PathVariable Integer id, ChangePassDto dto, RedirectAttributes r) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
-    // 调用密码修改接口
-    try {
-      teacherService.updatePassword(id, dto);
-    } catch (ServiceException e) {
-      r.addFlashAttribute("message", e.getMessage());
-      return "redirect:/teacher/" + id + "/changePass";
-    }
-    // 移除 session 信息
-    session.removeAttribute(SysConsts.SESSION.TEACHER_ID);
-    session.removeAttribute(SysConsts.SESSION.TEACHER);
-    // 重定向登录页面
-    return "redirect:/";
+  @GetMapping("/update/pass")
+  public String updatePass() {
+    return "/teacher/self/update-pass";
   }
 
   /**
@@ -150,40 +100,6 @@ public class TeacherController {
   }
 
   /**
-   * 添加课程
-   *
-   * @param courseName 课程名称
-   * @param teacherId 教师ID
-   * @return 成功信息
-   */
-  @GetMapping("/course/new")
-  @ResponseBody
-  public R newCourse(String courseName, Integer teacherId) {
-    // 封装参数
-    Course build = Course.builder().courseName(courseName).teacherId(teacherId).build();
-    this.courseService.save(build);
-    return R.success();
-  }
-
-  /**
-   * 删除课程
-   *
-   * @param id 课程ID
-   * @return 删除成功信息
-   */
-  @GetMapping("/course/del/{id}")
-  @ResponseBody
-  public R delCourse(@PathVariable Integer id) {
-    try {
-      // 调用课程删除接口
-      this.courseService.removeById(id);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
-  }
-
-  /**
    * 查看系统公告列表
    *
    * @param mv ModelAndView 对象
@@ -200,49 +116,33 @@ public class TeacherController {
   /**
    * 考试管理 可以修改考试时间
    *
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 考试信息
    */
   @GetMapping("/exam")
-  public String exam(Model model) {
+  public ModelAndView exam(ModelAndView mv) {
     // 获取教师 ID
-    Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    int id = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 设置 model 对象信息
-    model.addAttribute("paperList", paperService.listUnDoByTeacherId((int) id));
-    return "teacher/examList";
-  }
-
-  /**
-   * 编辑考试信息
-   *
-   * @param id 试卷ID
-   * @param paper 试卷信息
-   * @return 成功信息
-   */
-  @PostMapping("/editPaper/{id}")
-  @ResponseBody
-  public R editExam(@PathVariable Integer id, Paper paper) {
-    try {
-      this.paperService.updateById(id, paper);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
+    mv.addObject("paperList", paperService.listUnDoByTeacherId(id));
+    mv.setViewName("/teacher/exam/list");
+    return mv;
   }
 
   /**
    * 试卷复查
    *
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 试卷集合
    */
   @GetMapping("/reviewPaper")
-  public String reviewPaper(Model model) {
+  public ModelAndView reviewPaper(ModelAndView mv) {
     // 获取教师id
-    Object id = HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    int id = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
     // 返回 Model 对象
-    model.addAttribute("paperList", paperService.listDoneByTeacherId((int) id));
-    return "teacher/review";
+    mv.addObject("paperList", paperService.listDoneByTeacherId(id));
+    mv.setViewName("/teacher/review/list");
+    return mv;
   }
 
   /**
@@ -262,32 +162,11 @@ public class TeacherController {
       model.addAttribute("paper", this.paperService.getById(paperId));
       model.addAttribute(
           "questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
-      return "teacher/answerRecord";
+      return "/teacher/review/record-list";
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
-      return "redirect:/teacher/reviewPaper";
+      return "redirect:/teacher/reviewRes";
     }
-  }
-
-  /**
-   * 修改主观题成绩
-   *
-   * @param dto 信息
-   */
-  @ResponseBody
-  @PostMapping("/editScore")
-  public R editScore(AnswerEditDto dto) {
-    // 修改该题得分
-    StuAnswerRecord record = new StuAnswerRecord();
-    record.setId(dto.getId()).setScore(dto.getNewScore());
-    this.stuAnswerRecordService.updateById(record);
-    // 修改总分
-    StuAnswerRecord stuRec = this.stuAnswerRecordService.getById(dto.getId());
-    // 封装参数
-    dto.setStuId(stuRec.getStuId());
-    dto.setPaperId(stuRec.getPaperId());
-    this.scoreService.updateScoreByStuIdAndPaperId(dto);
-    return R.success();
   }
 
   /**
@@ -297,20 +176,7 @@ public class TeacherController {
    */
   @GetMapping("/help")
   public String help() {
-    return "teacher/help";
-  }
-
-  /**
-   * 修改试卷状态：未开始 to 已结束
-   *
-   * @param id 试卷ID
-   * @return 成功信息
-   */
-  @GetMapping("/changePaperState/{id}")
-  @ResponseBody
-  public R changPaperState(@PathVariable Integer id) {
-    this.paperService.updateStateById(id);
-    return R.success();
+    return "/teacher/self/help";
   }
 
   /**
@@ -322,19 +188,15 @@ public class TeacherController {
    */
   @GetMapping("/student")
   public ModelAndView listStudent(Page page, ModelAndView mv, StudentQueryDto dto) {
-
     // 设置分页后的数据的 model 对象
     mv.addObject("page", this.studentService.pageForStudentList(page.getPageNo(), dto));
-    mv.addObject("majorList", this.majorService.list());
-
     // 当前查询的学院 ID
     if (dto.getAcademyId() != null) {
       mv.addObject("curAcademyId", dto.getAcademyId());
     } else {
       mv.addObject("curAcademyId", null);
     }
-
-    // 当前查询的学院 ID
+    // 当前查询的姓名
     if (dto.getName() != null) {
       mv.addObject("curName", dto.getName());
     } else {
@@ -353,12 +215,127 @@ public class TeacherController {
   public ModelAndView listMajor(Page page, ModelAndView mv, Major major) {
     // 设置数据 model 对象
     mv.addObject("page", this.majorService.pageForMajorList(page.getPageNo(), major));
-    mv.addObject("academyList", this.academyService.list());
     // 设置当前选中的学院id
     if (major.getAcademyId() != null) {
       mv.addObject("curAcademyId", major.getAcademyId());
+    } else {
+      mv.addObject("curAcademyId", null);
     }
-    mv.setViewName("teacher/major/list");
+    mv.setViewName("/teacher/major/list");
+    return mv;
+  }
+
+  /**
+   * 试卷分页查询
+   *
+   * @param page 分页数据
+   * @param mv ModelAndView 对象
+   * @return 分页结果集
+   */
+  @GetMapping("/paper")
+  public ModelAndView list(Page page, ModelAndView mv) {
+    // 获取教师 ID
+    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    // 设置分页后的数据的 model 对象
+    mv.addObject("page", paperService.pageForPaperList(teacherId, page.getPageNo()));
+    mv.setViewName("/teacher/paper/list");
+    return mv;
+  }
+
+  /**
+   * 查询试卷的详细信息
+   *
+   * @param id 试卷的ID
+   * @param mv ModelAndView 对象
+   * @return 此 ID 的试卷详细信息
+   */
+  @GetMapping("/paper/show/{id}")
+  public ModelAndView show(@PathVariable Integer id, ModelAndView mv) {
+    // 根据 ID 获取试卷的详细信息
+    Paper paper = paperService.getById(id);
+    // 设置基础 model 信息
+    mv.addObject("paper", paper);
+    mv.addObject("course", courseService.getById(paper.getCourseId()));
+    mv.addObject("major", majorService.getById(paper.getMajorId()));
+    // 设置题目 model 对象信息
+    questionModel.setQuestionModel(mv, id);
+    mv.setViewName("/teacher/paper/show");
+    return mv;
+  }
+
+  /**
+   * 转发到随机新增试卷模板页面
+   *
+   * @return 新的试卷模板页面
+   */
+  @GetMapping("/paperForm/save")
+  public String savePaperForm() {
+    return "/teacher/paper/save-paper-form";
+  }
+
+  /**
+   * 导入试卷页面
+   *
+   * @return 导入试卷页面
+   */
+  @GetMapping("/paper/import")
+  public String importNewPaper() {
+    return "/teacher/paper/import-paper";
+  }
+
+  /**
+   * 添加试卷（组卷页面）
+   *
+   * @param id 试卷模板 ID
+   * @param mv ModelAndView 对象
+   * @return 组卷页面
+   */
+  @GetMapping("/paper/save/{id}")
+  public ModelAndView add(@PathVariable Integer id, ModelAndView mv) {
+    // 封装 model 参数
+    mv.addObject("paperFormId", id);
+    mv.setViewName("/teacher/paper/save-paper");
+    return mv;
+  }
+
+  /**
+   * 展示所有试卷模版列表
+   *
+   * @param mv ModelAndView 对象
+   * @return 试卷模板页面
+   */
+  @GetMapping("/paperForm")
+  public ModelAndView showPaperForm(ModelAndView mv) {
+    // 调用获取试卷模板集合接口
+    mv.addObject("formList", this.paperFormService.list());
+    mv.setViewName("/teacher/paper/paper-form-list");
+    return mv;
+  }
+
+  /**
+   * 试题 List 集合
+   *
+   * @param page 当前页
+   * @return 试题集合页面
+   */
+  @GetMapping("/question")
+  public ModelAndView list(Page page, ModelAndView mv, Integer courseId, Integer typeId) {
+    // 分页查询试题接口
+    PageInfo<Question> pageInfo =
+        questionService.pageForQuestionList(page.getPageNo(), courseId, typeId);
+    // 设置 model 对象信息
+    mv.addObject("page", pageInfo);
+    // 课程集合
+    int id = (int) HttpContextUtil.getAttribute(SysConsts.SESSION.TEACHER_ID);
+    List<Course> courses = this.courseService.listByTeacherId(id);
+    mv.addObject("courseList", courses);
+    // 当前选中课程
+    mv.addObject("curCourseId", courseId);
+    mv.addObject("curTypeId", typeId);
+    // 调用试题类型集合
+    List<Type> typeList = this.typeService.list();
+    mv.addObject("typeList", typeList);
+    mv.setViewName("/teacher/question/list");
     return mv;
   }
 }

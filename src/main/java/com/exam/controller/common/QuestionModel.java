@@ -2,7 +2,7 @@ package com.exam.controller.common;
 
 import com.exam.service.QuestionService;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 
@@ -18,15 +18,15 @@ public class QuestionModel {
   /**
    * 设置题目的 model 对象信息
    *
-   * @param model model 对象
+   * @param mv model 对象
    * @param paperId 试卷id
    */
-  public void setQuestionModel(Model model, Integer paperId) {
-    model.addAttribute("qChoiceList", questionService.selectByPaperIdAndType(paperId, 1));
-    model.addAttribute("qMulChoiceList", questionService.selectByPaperIdAndType(paperId, 2));
-    model.addAttribute("qTofList", questionService.selectByPaperIdAndType(paperId, 3));
-    model.addAttribute("qFillList", questionService.selectByPaperIdAndType(paperId, 4));
-    model.addAttribute("qSaqList", questionService.selectByPaperIdAndType(paperId, 5));
-    model.addAttribute("qProgramList", questionService.selectByPaperIdAndType(paperId, 6));
+  public void setQuestionModel(ModelAndView mv, Integer paperId) {
+    mv.addObject("qChoiceList", questionService.selectByPaperIdAndType(paperId, 1));
+    mv.addObject("qMulChoiceList", questionService.selectByPaperIdAndType(paperId, 2));
+    mv.addObject("qTofList", questionService.selectByPaperIdAndType(paperId, 3));
+    mv.addObject("qFillList", questionService.selectByPaperIdAndType(paperId, 4));
+    mv.addObject("qSaqList", questionService.selectByPaperIdAndType(paperId, 5));
+    mv.addObject("qProgramList", questionService.selectByPaperIdAndType(paperId, 6));
   }
 }

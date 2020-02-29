@@ -20,7 +20,8 @@
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="/webjars/adminlte/2.3.11/dist/img/avatar5.png" class="img-circle" alt="User Image">
+                            <img src="/webjars/adminlte/2.3.11/dist/img/avatar5.png" class="img-circle"
+                                 alt="User Image">
                             <p>
                                 <span>${session.teacher.name} 老师你好！</span> <br/>
                                 欢迎使用OES考试系统教师端！
@@ -29,8 +30,7 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="/teacher/${session.teacher.id}/changePass"
-                                   class="btn btn-default btn-flat">个人设置</a>
+                                <a href="/teacher/update/pass" class="btn btn-default btn-flat">个人设置</a>
                             </div>
                             <div class="pull-right">
                                 <a href="/teacher/logout" class="btn btn-default btn-flat">安全退出</a>

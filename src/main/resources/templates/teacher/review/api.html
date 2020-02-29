@@ -1,0 +1,32 @@
+<script>
+    // 启动模态框
+    $(".editAns").click(function () {
+        $("#modifyModal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+        const oldScore = $(this).parents('tr').find('td').eq(1).text();
+        $('#oldScore').val(oldScore);
+        // 题目id
+        const id = $(this).attr("rel");
+        $('#id').val(id);
+    });
+
+    $("#saveBtn").click(function () {
+        layer.confirm("确定修改分数么?", function () {
+            let oldScore = $("#oldScore").val();
+            let newScore = $("#newScore").val();
+            let id = $("#id").val();
+            $.post("/api/paper/update/score", {
+                "oldScore": oldScore,
+                "newScore": newScore,
+                "id": id,
+            }).done(function (data) {
+                if (data.state === "success") {
+                    layer.msg("修改成功!");
+                    window.location.reload();
+                }
+            })
+        });
+    });
+</script>

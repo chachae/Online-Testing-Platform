@@ -59,9 +59,9 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updatePassword(Integer id, ChangePassDto dto) {
+  public void updatePassword(ChangePassDto dto) {
     // 查询该 ID 的教师信息
-    Teacher teacher = this.getById(id);
+    Teacher teacher = this.getById(dto.getId());
     if (ObjectUtil.isEmpty(teacher)) {
       throw new ServiceException("用户不存在");
     }

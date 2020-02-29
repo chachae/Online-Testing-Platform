@@ -2,6 +2,7 @@ package com.exam.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.exam.constant.SysConsts;
 import com.exam.entity.PaperForm;
 import com.exam.exception.ServiceException;
 import com.exam.mapper.PaperFormMapper;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 试卷模板服务实现类
@@ -45,5 +48,16 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm
     }
     // 至此可以安全删除，调用父级 removeById 方法删除
     return super.removeById(id);
+  }
+
+  @Override
+  public List<PaperForm> list() {
+    List<PaperForm> list = super.list();
+    // 过滤出类型1 的数据按模板
+    return list.stream()
+        // steam 流过滤模板类型
+        .filter(e -> e.getType().equals(SysConsts.PAPER_FORM.INSERT))
+        // 形成新的 List 集合
+        .collect(Collectors.toList());
   }
 }

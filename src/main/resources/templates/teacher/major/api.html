@@ -19,7 +19,7 @@
         $.get("/api/major/" + id, function (data) {
             $('.id').val(data.id);
             $('.major').val(data.major);
-            $('.academy').val(data.academyId).select2({width: "100%"});
+            $('.academyId').val(data.academyId).select2({width: "100%"});
         })
     }
 
@@ -72,7 +72,19 @@
         // 调用接口
         let id = $('#findAcademy').val();
         window.location.href = "/teacher/major?p=1&academyId=" + id
-    })
+    });
+
+    // 填充学院信息
+    $.get("/api/academy").done(function (data) {
+        let options = "";
+        $('.academySelect').empty();
+        options += "<option value=''>全部</option>";
+        $.each(data, function (index, e) {
+            options += "<option value=" + e.id + ">" + e.name + "</option>";
+        });
+        $(".academySelect").append(options).val('${curAcademyId}').select2();
+    });
+
 
     //分页
     $('#pagination-demo').twbsPagination({
@@ -82,6 +94,6 @@
         last: '末页',
         prev: '上一页',
         next: '下一页',
-        href: '/teacher/major?p={{number}}&academyId=' + $("#findAcademy").val(),
+        href: '/teacher/major?p={{number}}&academyId=' + '${curAcademyId}',
     });
 </script>

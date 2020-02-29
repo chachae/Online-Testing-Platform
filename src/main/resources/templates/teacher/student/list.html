@@ -31,7 +31,7 @@
     <!-- 引入头部 -->
     <%include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% include("../include/sider.html"){} %>
+    <% layout("../include/sider.html",{name:"student"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -39,7 +39,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">学生管理</h3>
                     <div class="box-tools pull-right">
-                        <a id="newBtn" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增学生</a>
+                        <a id="goSave" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> 新增学生</a>
                         <a class="btn btn-vk btn-sm" href="/teacher/student"><i
                                 class="fa fa-refresh"></i> 刷新数据</a>
                     </div>
@@ -47,7 +47,8 @@
                 <div class="with-border">
                     <div class="box-tools pull-right input-group">
                         <label for="findAcademy">所属学院：</label>
-                        <select class="form-control pull-right" name="findAcademy" id="findAcademy">
+                        <select class="form-control pull-right academySelect" style="width: 200px" name="findAcademy"
+                                id="findAcademy">
                         </select>
                         <button id="findNameBtn" class="pull-right btn btn-primary btn-flat" style="width:80px">搜索
                         </button>
@@ -90,7 +91,8 @@
                             <td rel="${student.majorId}">${student.major.major}</td>
                             <td>${student.sex}</td>
                             <td>
-                                <a class="btn btn-success btn-sm editStudent"><i class="fa"></i>编辑</a>
+                                <a class="btn btn-success btn-sm goUpdate" onclick="getStudent(${student.id})"><i
+                                        class="fa"></i>编辑</a>
                                 <button class="btn btn-danger btn-sm delStudent" onclick="deleteStudent(${student.id})">
                                     <i class="fa"></i>删除
                                 </button>

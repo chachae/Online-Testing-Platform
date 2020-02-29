@@ -5,6 +5,7 @@ import com.exam.entity.Course;
 import com.exam.entity.Question;
 import com.exam.entity.dto.ImportPaperDto;
 import com.exam.entity.dto.StuAnswerRecordDto;
+import com.exam.entity.vo.QuestionVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,4 +103,12 @@ public interface QuestionService extends IService<Question> {
    * @return 题目集合
    */
   List<Question> listByStuAnswerRecordDto(StuAnswerRecordDto entity);
+
+  /**
+   * 通过 ID 查询试题的 VO 信息
+   *
+   * @param id 试题 ID
+   * @return 试题 VO 信息
+   */
+  QuestionVo selectVoById(Integer id);
 }

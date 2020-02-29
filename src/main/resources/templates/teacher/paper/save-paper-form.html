@@ -6,19 +6,15 @@
     <title>OES | 新增试卷</title>
     <!-- 引入全局 css 文件 -->
     <%
-    include("../include/css.html"){}
+    include("../../include/css.html"){}
     %>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%
-    include("../teacher/include/header.html"){}
-    %>
+    <%include("../../teacher/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%
-    include("../teacher/include/sider.html"){}
-    %>
+    <% layout("../../teacher/include/sider.html",{name:"save-paper-form"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -32,14 +28,14 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <form method="post" id="addForm" class="form-horizontal">
+                    <form method="post" id="save-paper-form" class="form-horizontal">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">单选题</label>
                             <label class="col-sm-2 control-label">数量</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" name="qChoiceNum">
                                 <input type="hidden" class="form-control" name="teacherId"
-                                       value="${sessionScope.get('teacherId')}">
+                                       value="${session.teacherId}">
                             </div>
                             <label class="col-sm-2 control-label">每题分数</label>
                             <div class="col-sm-2">
@@ -104,29 +100,19 @@
                     </form>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-primary" id="addBtn">保存</button>
+                    <button class="btn btn-primary" id="saveBtn">保存</button>
                     <a href="javascript:history.go(0)" class="btn btn-danger" id="reset">重置</a>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <%include("../../include/footer.html"){} %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
-<script>
-    // 添加试卷模板
-    $(function () {
-        $("#addBtn").click(function () {
-            $("#addForm").submit();
-        });
-    });
-</script>
+<% include("../../include/js.html"){} %>
+<!-- 接口 -->
+<%include("api/save-paper-form-api.html"){}%>
 </body>
 </html>
 

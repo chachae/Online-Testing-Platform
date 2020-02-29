@@ -1,11 +1,15 @@
 package com.exam.rest;
 
 import com.exam.common.R;
+import com.exam.constant.SysConsts;
 import com.exam.entity.Teacher;
+import com.exam.entity.dto.ChangePassDto;
 import com.exam.service.TeacherService;
+import com.exam.util.HttpContextUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author chachae
@@ -16,6 +20,44 @@ import javax.annotation.Resource;
 public class TeacherRest {
 
   @Resource private TeacherService teacherService;
+
+  /**
+   * 教师登录
+   *
+   * @param teacherId 教师ID
+   * @param password 教师密码
+   * @return 教师主页
+   */
+  @PostMapping("/login")
+  public R login(String teacherId, String password) {
+    // 获取 session 对象
+    HttpSession session = HttpContextUtil.getSession();
+    // 执行登录
+    Teacher teacher = teacherService.login(teacherId, password);
+    // 设置 session 信息
+    session.setAttribute(SysConsts.SESSION.TEACHER_ID, teacher.getId());
+    session.setAttribute(SysConsts.SESSION.TEACHER, teacher);
+    // 重定向到教师主页
+    return R.successWithData(teacher.getId());
+  }
+
+  /**
+   * 修改密码
+   *
+   * @param dto 密码信息
+   * @return 重定向登录页面
+   */
+  @PostMapping("/update/pass")
+  public R updatePassword(ChangePassDto dto) {
+    // 获取 session 对象
+    HttpSession session = HttpContextUtil.getSession();
+    // 调用密码修改接口
+    teacherService.updatePassword(dto);
+    // 移除 session 信息
+    session.removeAttribute(SysConsts.SESSION.TEACHER_ID);
+    session.removeAttribute(SysConsts.SESSION.TEACHER);
+    return R.success();
+  }
 
   @GetMapping("/{id}")
   public Teacher getOne(@PathVariable Integer id) {

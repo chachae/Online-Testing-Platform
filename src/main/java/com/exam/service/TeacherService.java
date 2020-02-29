@@ -25,10 +25,9 @@ public interface TeacherService extends IService<Teacher> {
   /**
    * 修改密码
    *
-   * @param id 教师ID
    * @param dto 密码信息
    */
-  void updatePassword(Integer id, ChangePassDto dto);
+  void updatePassword(ChangePassDto dto);
 
   /**
    * 分页查询教师列表

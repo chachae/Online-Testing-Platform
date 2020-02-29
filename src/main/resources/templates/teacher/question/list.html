@@ -5,9 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 题目列表</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
+    <% include("../../include/css.html"){} %>
     <style>
         .table > tbody > tr:hover {
             cursor: pointer;
@@ -25,19 +23,17 @@
         th {
             font-size: 14px;
             text-align: center;
-            width: 400px;
         }
 
         td {
             font-size: 14px;
             text-align: center;
-            width: 400px;
         }
 
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-<!-- 增加学生信息模态框 -->>
+<!-- 增加学生信息模态框 -->
 <div class="modal fade" id="importModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -67,13 +63,9 @@
 </div>
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%
-    include("../teacher/include/header.html"){}
-    %>
+    <%include("../../teacher/include/header.html"){}%>
     <!-- 左侧菜单栏 -->
-    <%
-    include("../teacher/include/sider.html"){}
-    %>
+    <% layout("../../teacher/include/sider.html",{name:"question"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -85,9 +77,9 @@
                             <i class="fa fa-plus-circle"></i>
                             导入试题
                         </button>
-                        <a href="/teacher/question/new" class="btn btn-success btn-sm"><i
-                                class="fa fa-plus-circle"></i>
-                            新增试题</a>
+                        <button class="goSave btn btn-success btn-sm"><i class="fa fa-plus-circle"></i>
+                            新增试题
+                        </button>
                     </div>
                 </div>
                 <div class="box-tools">
@@ -128,10 +120,11 @@
                     <table class="table table-hover">
                         <tbody>
                         <tr>
-                            <th style="width: 60px">题目编号</th>
-                            <th style="text-align: left">题目名称</th>
-                            <th style="width: 60px">题目类型</th>
-                            <th style="width: 60px">难易程度</th>
+                            <th style="width: 8%">题目编号</th>
+                            <th style="text-align: left;width:47% ">题目名称</th>
+                            <th style="width: 16%">题目类型</th>
+                            <th style="width: 9%">难易程度</th>
+                            <th style="width: 15%">操作</th>
                         </tr>
                         <% if(isEmpty(page.list)){ %>
                         <tr>
@@ -155,6 +148,15 @@
                                 ${question.difficulty == "2"?'★ ★':''}
                                 ${question.difficulty == "3"?'★ ★ ★':''}
                             </td>
+                            <td>
+                                <button onclick="getQuestion(${question.id})" class="goView btn btn-vk btn-sm">查看
+                                </button>
+                                <button onclick="getQuestion(${question.id})" class="goUpdate btn btn-warning btn-sm">
+                                    编辑
+                                </button>
+                                <button onclick="deleteQuestion(${question.id})" class="btn btn-danger btn-sm">删除
+                                </button>
+                            </td>
                         </tr>
                         <% } %>
                         </tbody>
@@ -164,86 +166,20 @@
             <ul id="pagination-demo" class="pagination pull-right"></ul>
         </section>
     </div>
+    <!-- 查看模态框 -->
+    <%include("view-modal.html"){} %>
+    <!-- 查看模态框 -->
+    <%include("update-modal.html"){} %>
+    <!-- 新增模态框 -->
+    <%include("save-modal.html"){} %>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <%include("../../include/footer.html"){} %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
+<% include("../../include/js.html"){} %>
 <script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
-<script src="/static/plugins/layer/layer.js"></script>
-<script>
-
-    // 启动修改模态框
-    $("#importBtn").click(function () {
-        $("#importModal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-    });
-
-    // 自动上传
-    $('body').on('change', '#upload', function () {
-        var formData = new FormData();
-        var files = $($(this))[0].files[0];
-        formData.append("file", files);
-        layer.msg('正在提交中....');
-        $.ajax({
-            url: '/teacher/question/import',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.state === "success") {
-                    layer.msg('题目解析成功，完成导入');
-                    window.location.reload();
-                } else {
-                    layer.msg(res.message);
-                    window.location.reload();
-                }
-            }
-            , error: function (res) {
-                layer.msg(res.message);
-            }
-        });
-    });
-
-    // 进入试题详细信息
-    $(function () {
-        $(".rowDetail").click(function () {
-            let id = $(this).attr("rel");
-            window.location.href = "/teacher/question/show/" + id;
-        });
-
-        // 问题类型筛选
-        $("#typeId").select2({width: "200px"}).change(function () {
-            typeId = $(this).val();
-            window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + typeId;
-        })
-
-        // 课程筛选
-        $("#courseId").select2({width: "200px"}).change(function () {
-            courseId = $(this).val();
-            console.log(courseId);
-            window.location.href = "/teacher/question?p=1&courseId=" + courseId + "&typeId=" + "${curTypeId}";
-        });
-
-        //分页
-        $('#pagination-demo').twbsPagination({
-            totalPages: "${page.pages}",
-            visiblePages: 5,
-            first: '首页',
-            last: '末页',
-            prev: '上一页',
-            next: '下一页',
-            href: "?p={{number}}&courseId=" + "${curCourseId}" + "&typeId=" + "${curTypeId}",
-        });
-    });
-</script>
+<!-- 接口 -->
+<%include("api.html"){}%>
 </body>
 </html>
 

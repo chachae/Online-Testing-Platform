@@ -240,11 +240,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   }
 
   @Override
-  public void updateById(Integer id, Paper paper) {
-    paper.setId(id);
+  public boolean updateById(Paper paper) {
     // 通过起止时间计算考试时长
-    paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
-    this.updateById(paper);
+    if (paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+      paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
+    } else {
+      paper.setBeginTime(null);
+      paper.setEndTime(null);
+    }
+    return super.updateById(paper);
   }
 
   @Override

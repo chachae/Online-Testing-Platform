@@ -50,4 +50,10 @@
         </where>
     </select>
 
+    <!-- 通过条件查询学生 List 集合 -->
+    <select id="selectVoById" parameterType="integer" resultMap="voResultMap">
+        <include refid="baseSql"/>
+        where s.id = #{id,jdbcType=INTEGER}
+    </select>
+
 </mapper>

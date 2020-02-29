@@ -1,0 +1,32 @@
+<script>
+
+    // 查看试卷信息
+    function viewPaper(id) {
+        window.location.href = "/teacher/paper/show/" + id;
+    }
+
+    // 随机增加试卷按钮
+    $(function () {
+        // 新增随机试卷
+        $("#goSave").click(function () {
+            layer.confirm('是否使用默认试卷模版？', {
+                btn: ['是', '否'] //按钮
+            }, function () {
+                window.location.href = "/teacher/paper/save/1";
+            }, function () {
+                window.location.href = "/teacher/paperForm/save";
+            });
+        });
+
+        //分页
+        $('#pagination-demo').twbsPagination({
+            totalPages: "${page.pages}",
+            visiblePages: 5,
+            first: '首页',
+            last: '末页',
+            prev: '上一页',
+            next: '下一页',
+            href: "?p={{number}}"
+        });
+    });
+</script>

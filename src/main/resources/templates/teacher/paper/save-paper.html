@@ -5,9 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 新增试卷</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
+    <% include("../../include/css.html"){} %>
     <link rel="stylesheet" href="/static/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" href="/webjars/adminlte/2.3.11/plugins/datepicker/datepicker3.css">
 </head>
@@ -16,13 +14,9 @@
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
     <!-- 引入头部 -->
-    <%
-    include("../teacher/include/header.html"){}
-    %>
+    <% include("../../teacher/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%
-    include("../teacher/include/sider.html"){}
-    %>
+    <% layout("../../teacher/include/sider.html",{name:"save-paper"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -42,6 +36,7 @@
                                    value="${session.teacherId}">
                             <input type="hidden" class="form-control" name="paperState" value="未开始">
                             <input type="text" class="form-control" name="paperName">
+                            <input type="hidden" class="form-control" name="paperFormId" value="${paperFormId}">
                         </div>
                         <div class="form-group">
                             <label for="courseId">所属课程</label>
@@ -94,116 +89,21 @@
                             <input type="text" name="endTime" class="form-control" id="datepicker2">
                         </div>
                         <hr/>
-
                     </form>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-primary" id="addBtn">保存</button>
+                    <button class="btn btn-primary" id="saveBtn">保存</button>
                     <a href="javascript:history.go(0)" class="btn btn-danger" id="reset">重置</a>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <%
-    include("../include/footer.html"){}
-    %>
+    <% include("../../include/footer.html"){} %>
 </div><!-- 引入全局 js 脚本文件 -->
-<%
-include("../include/js.html"){}
-%>
-<script src="/static/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-<script src="/static/plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="/static/plugins/moment/moment.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/bootstrap-datepicker.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
-<script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
-<script src="/static/plugins/jquery-form/jquery.form.min.js"></script>
-<script src="/static/plugins/layer/layer.js"></script>
-<script>
-
-    // 获取课程集合
-    $.get("/course/teacher/" + "${session.teacherId}").done(function (data) {
-        let options = "";
-        //回填的二级类别值
-        $('#courseId').empty();
-        options += "<option value=''>请选择</option>";
-        $.each(data, function (index, e) {
-            options += "<option selected='true' value=" + e.id + ">" + e.courseName + "</option>";
-        });
-        $("#courseId").append(options).select2();
-    });
-
-    // 获取学院集合
-    $.get("/academy").done(function (data) {
-        let options = "";
-        $('#academy').empty();
-        options += "<option value=''>请选择</option>";
-        $.each(data, function (index, e) {
-            options += "<option selected='true' value=" + e.id + ">" + e.name + "</option>";
-        });
-        $("#academy").append(options).select2();
-    });
-
-    // 专选择框框回填
-    function getAcademy(id) {
-        // 获取学院集合
-        $.get("/major/academy/" + id).done(function (data) {
-            let options = "";
-            //回填的二级类别值
-            $('#majorId').empty();
-            options += "<option value=''>请选择</option>";
-            $.each(data, function (index, e) {
-                options += "<option selected='true' value=" + e.id + ">" + e.major + "</option>";
-            });
-            $("#majorId").append(options).select2();
-        });
-    };
-
-    // 试卷选择框
-    $(function () {
-        // select2
-        $('#courseId').select2({width: "100%"});
-        $('#paperType').select2({width: "100%"});
-
-        const date = new Date();
-        const picker = $("#datepicker").datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true,
-            startDate: date
-        });
-        picker.on("changeDate", function (e) {
-            const time = $("#datepicker").val();
-            const day = time.split(" ")[0];
-            $('#datepicker2').datetimepicker('setStartDate', day);
-        });
-        let timepicker = $('#datepicker2').datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true
-        });
-
-        // 提交组卷
-        $('#addBtn').click(function () {
-            $.ajax({
-                type: "POST",
-                data: $('#addForm').serialize(),
-                success: function (res) {
-                    if (res.state === "success") {
-                        layer.alert("添加成功");
-                        window.location.href = "/teacher/paper/show/" + res.data;
-                    } else {
-                        layer.alert(res.message);
-                    }
-                }
-            });
-            return false;
-        });
-    });
-</script>
+<% include("../../include/js.html"){} %>
+<!-- 接口 -->
+<%include("api/save-paper-api.html"){} %>
 </body>
 </html>
 
