@@ -3,36 +3,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- 子模块 -->
+    <modules>
+        <module>oes-common</module>
+        <module>oes-service</module>
+        <module>oes-core</module>
+    </modules>
+
     <!-- SpringBoot 父工程 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.2.5.RELEASE</version>
         <relativePath/>
     </parent>
 
     <!-- 项目 pom 信息 -->
-    <groupId>com.exam</groupId>
-    <artifactId>online-exam-system</artifactId>
+    <groupId>com.chachae.exam</groupId>
+    <artifactId>oes</artifactId>
     <version>1.0</version>
-    <name>online-exam-system</name>
-    <packaging>jar</packaging>
-
-    <!-- 指定 Maven 中央仓库 -->
-    <repositories>
-        <repository>
-            <id>maven-ali</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public//</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-        </repository>
-    </repositories>
+    <name>oes</name>
+    <packaging>pom</packaging>
 
     <!-- 相关依赖统一版本管理 -->
     <properties>
@@ -46,11 +37,114 @@
         <webjars-admin-lte.version>2.3.11</webjars-admin-lte.version>
         <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
+        <beetl.version>3.0.19.RELEASE</beetl.version>
     </properties>
 
-    <!-- 依赖管理 -->
-    <dependencies>
+    <!-- 依赖版本管理 -->
+    <dependencyManagement>
+        <!-- 依赖管理 -->
+        <dependencies>
 
+            <!-- 模块 [start] -->
+
+            <!-- 通用模块 -->
+            <dependency>
+                <groupId>com.chachae.exam</groupId>
+                <artifactId>oes-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 业务接口模块 -->
+            <dependency>
+                <groupId>com.chachae.exam</groupId>
+                <artifactId>oes-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.chachae.exam</groupId>
+                <artifactId>oes-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 自定义模块 [end] -->
+
+            <!-- beetl -->
+            <dependency>
+                <groupId>com.ibeetl</groupId>
+                <artifactId>beetl</artifactId>
+                <version>${beetl.version}</version>
+            </dependency>
+
+            <!-- MyBatis Plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- PageHelper -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pageHelper.version}</version>
+            </dependency>
+
+            <!-- HuTool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <!-- Joda-time -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+
+            <!-- poi-ooxml -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi-ooxml.version}</version>
+            </dependency>
+
+            <!-- commons-text -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+
+            <!-- AdminLTE -->
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>adminlte</artifactId>
+                <version>${webjars-admin-lte.version}</version>
+            </dependency>
+
+            <!-- font-awesome -->
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>font-awesome</artifactId>
+                <version>${webjars-font-awesome.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 默认依赖 -->
+    <dependencies>
         <!-- SpringBoot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,104 +164,14 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.ibeetl/beetl -->
-        <dependency>
-            <groupId>com.ibeetl</groupId>
-            <artifactId>beetl</artifactId>
-            <version>3.0.19.RELEASE</version>
-        </dependency>
-
-
         <!-- devtools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <!-- websocket -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-
-        <!-- MySql 驱动 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- MyBatis Plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
-        </dependency>
-
-        <!-- PageHelper -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>${pageHelper.version}</version>
-        </dependency>
-
-        <!-- HuTool -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-
-        <!-- guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
-        <!-- Joda-time -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
-
-        <!-- poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>${poi-ooxml.version}</version>
-        </dependency>
-
-        <!-- commons-text -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
-        </dependency>
-
-        <!-- AdminLTE -->
-        <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>adminlte</artifactId>
-            <version>${webjars-admin-lte.version}</version>
-        </dependency>
-
-        <!-- font-awesome -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>font-awesome</artifactId>
-            <version>${webjars-font-awesome.version}</version>
-        </dependency>
-
     </dependencies>
+
 
     <!-- Maven 打包设置 -->
     <build>
