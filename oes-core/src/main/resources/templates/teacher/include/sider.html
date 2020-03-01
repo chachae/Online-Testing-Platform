@@ -76,7 +76,7 @@
                 </a>
             </li>
             <!-- 试卷复查 -->
-            <li class="treeview ${name == 'review'?'active':''}">
+            <li class="treeview ${strutil.contain(name,'review')?'active':''}">
                 <a href="/teacher/reviewPaper">
                     <i class="fa fa-retweet"></i> <span>试卷复查</span>
                     <span class="pull-right-container">

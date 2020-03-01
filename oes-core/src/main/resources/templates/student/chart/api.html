@@ -48,7 +48,7 @@
         myChart.setOption(option);
 
         //post请求后端数据并整理
-        $.post("/api/score/student/chart/${session.studentId}").done(function (json) {
+        $.post("/api/score/student/chart/${session.student.id}").done(function (json) {
             if (json.state === 'success') {
                 let keyArray = [];
                 let avgArray = [];

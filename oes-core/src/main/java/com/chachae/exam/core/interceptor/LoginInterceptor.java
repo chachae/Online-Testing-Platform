@@ -3,94 +3,82 @@ package com.chachae.exam.core.interceptor;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Admin;
-import com.chachae.exam.common.entity.Student;
-import com.chachae.exam.common.entity.Teacher;
-import org.springframework.beans.factory.annotation.Value;
+import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.properties.Props;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * 拦截器
- *
- * @author yzn
- * @date 2020/1/16
+ * @author chachae
+ * @since 2020/3/1 23:52
  */
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-  /** 登录接口 */
-  @Value("${anon.uri}")
-  public String anonUri;
+  @Resource private Props props;
 
-  /** 静态资源匹配接口 */
-  @Value("${match.uri}")
-  public String matchUri;
+  /** 路径匹配器 */
+  private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-  /** 公共访问接口 */
-  @Value("${common.uri}")
-  public String commonUri;
-
-  // 不同身份的接口访问前缀
-  private static final String ADMIN_PREFIX = "/admin";
-  private static final String STUDENT_PREFIX = "/student";
-  private static final String TEACHER_PREFIX = "/teacher";
+  // 页面路径匹配
+  private static final String ADMIN_PATTERN = "/admin/**";
+  private static final String TEACHER_PATTERN = "/teacher/**";
+  private static final String STU_PATTERN = "/student/**";
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
 
-    // 获取当前访问的路径
-    String uri = request.getRequestURI();
-    String[] whiteList = StrUtil.splitToArray(anonUri, StrUtil.C_COMMA);
-    String[] matchList = StrUtil.splitToArray(matchUri, StrUtil.C_COMMA);
-    String[] commonList = StrUtil.splitToArray(commonUri, StrUtil.C_COMMA);
+    // 当前请求路径
+    String curPath = HttpContextUtil.getRequestUri();
 
-    // 处理白名单
-    for (String e : whiteList) {
-      if (e.equals(uri)) {
+    // 白名单匹配
+    String[] anon = StrUtil.splitToArray(props.getSys().getAnonUrl(), StrUtil.C_COMMA);
+    for (String e : anon) {
+      if (pathMatcher.match(e, curPath)) {
         return true;
       }
     }
 
-    // 处理静态资源
-    for (String e : matchList) {
-      if (uri.startsWith(e)) {
-        return true;
+    // 获取 session
+    HttpSession session = HttpContextUtil.getSession();
+    // session 判空
+    if (ObjectUtil.isEmpty(session)) {
+      response.sendRedirect("/login");
+      return false;
+    }
+
+    // 过滤未认证请求
+    // 管理员
+    if (pathMatcher.match(ADMIN_PATTERN, curPath)) {
+      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.ADMIN))) {
+        response.sendRedirect("/login");
+        return false;
       }
     }
 
-    // 处理 session 访问
-    HttpSession session = request.getSession();
-    // 获取管理员的session
-    Admin admin = (Admin) session.getAttribute(SysConsts.SESSION.ADMIN);
-    // 获取教师的 session
-    Teacher teacher = (Teacher) session.getAttribute(SysConsts.SESSION.TEACHER);
-    // 获取学生的session
-    Student student = (Student) session.getAttribute(SysConsts.SESSION.STUDENT);
-
-    // 判断 session 情况
-    boolean exitSessionRes = (admin != null || teacher != null || student != null);
-    boolean adminRes = ObjectUtil.isNotEmpty(admin) && uri.startsWith(ADMIN_PREFIX);
-    boolean teacherRes = ObjectUtil.isNotEmpty(teacher) && uri.startsWith(TEACHER_PREFIX);
-    boolean studentRes = ObjectUtil.isNotEmpty(student) && uri.startsWith(STUDENT_PREFIX);
-    if (adminRes || teacherRes || studentRes) {
-      return true;
-    }
-
-    // 处理公共接口访问
-    for (String e : commonList) {
-      if (uri.startsWith(e) && exitSessionRes) {
-        return true;
+    // 教师
+    if (pathMatcher.match(TEACHER_PATTERN, curPath)) {
+      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.TEACHER))) {
+        response.sendRedirect("/login");
+        return false;
       }
     }
 
-    // 如果以上判断全部匹配不到，说明是非法访问，直接使用 response 对象重定向到登录页面
-    response.sendRedirect("/");
-    return false;
+    // 学生
+    if (pathMatcher.match(STU_PATTERN, curPath)) {
+      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.STUDENT))) {
+        response.sendRedirect("/login");
+        return false;
+      }
+    }
+
+    return true;
   }
 }

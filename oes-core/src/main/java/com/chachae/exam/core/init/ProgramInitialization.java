@@ -3,7 +3,7 @@ package com.chachae.exam.core.init;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.log.Log;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Paper;
+import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.service.PaperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 项目初始化
  *
- * @author yzn
+ * @author chachae
  * @since 2020/2/7 15:41
  */
 @Component
@@ -47,11 +47,11 @@ public class ProgramInitialization implements ApplicationRunner {
     List<Paper> papers = this.paperService.list();
     for (Paper paper : papers) {
       // 只对正式考试做检测
-      boolean type = paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL);
+      boolean type = paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL);
       // 只保留未开始状态的检测
-      boolean state = paper.getPaperState().equals(SysConsts.PAPER.PAPER_STATE_START);
+      boolean state = paper.getPaperState().equals(SysConsts.Paper.PAPER_STATE_START);
       if (type && state && paper.isEnd()) {
-        paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
+        paper.setPaperState(SysConsts.Paper.PAPER_STATE_END);
         paperService.updateById(paper);
         log.info("试卷:{} 状态被修改:{}", paper.getPaperName(), paper.getPaperState());
       }

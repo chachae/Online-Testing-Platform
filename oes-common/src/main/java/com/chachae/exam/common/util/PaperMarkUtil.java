@@ -3,9 +3,9 @@ package com.chachae.exam.common.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
-import com.chachae.exam.common.entity.Question;
-import com.chachae.exam.common.entity.StuAnswerRecord;
-import com.chachae.exam.common.entity.dto.MarkInfoDto;
+import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.StuAnswerRecord;
+import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.google.common.collect.Lists;
 import org.apache.commons.text.similarity.JaccardSimilarity;
 
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * 评分工具
  *
- * @author yzn
+ * @author chachae
  * @since 2020/2/6 21:39
  */
 public class PaperMarkUtil {

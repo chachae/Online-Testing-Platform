@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 修改密码</title>
     <!-- css style -->
-    <%include("../include/css.html"){}%>
+    <%include("../../include/css.html"){}%>
 </head>
 <body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
-    <%include("../student/include/header.html"){} %>
+    <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%layout("../student/include/sider.html",{name:"update-pass"}){}%>
+    <%layout("../../student/include/sider.html",{name:"update-pass"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -30,10 +30,6 @@
                             <label for="password">新密码</label>
                             <input type="password" id="password" name="password" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="confirm_password">确认密码</label>
-                            <input type="password" id="confirm_password" name="confirm_password" class="form-control">
-                        </div>
                     </form>
                 </div>
                 <div class="box-footer">
@@ -43,10 +39,10 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <%include("../include/footer.html"){}%>
+    <%include("../../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%include("../include/js.html"){}%>
+<%include("../../include/js.html"){}%>
 <script src="/static/plugins/layer/layer.js"></script>
 <script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
 <script>
@@ -66,30 +62,6 @@
                     }
                 }
             })
-        });
-
-        //jqValidate验证
-        $("#change").validate({
-            errorClass: "text-danger",
-            errorElement: "span",
-            rules: {
-                password: {
-                    required: true
-                },
-                confirm_password: {
-                    required: true,
-                    equalTo: "#password"
-                }
-            },
-            messages: {
-                password: {
-                    required: "请输入密码",
-                },
-                confirm_password: {
-                    required: "请再次输入密码",
-                    equalTo: "两次密码输入不一致"
-                }
-            }
         });
     });
 </script>

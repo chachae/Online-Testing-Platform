@@ -1,12 +1,7 @@
 # 生产环境配置
-# 服务器端口
 server:
-  # 项目端口
+  # 端口
   port: 8080
-  servlet:
-    # session 过期时间 - 60分钟
-    session:
-      timeout: PT60M
   # 最大文件
   max-http-header-size: 5MB
 
@@ -62,10 +57,43 @@ spring:
       pool:
         size: 2
 
+  redis:
+    # 主机地址
+    host: localhost
+    # 端口
+    port: 6379
+    # 密码
+    password:
+    # 连接超时时间（记得添加单位，Duration）
+    timeout: 2000ms
+    # Redis默认情况下有16个分片，这里配置具体使用的分片
+    database: 0
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-wait: -1ms
+        # 连接池中的最大空闲连接 默认 8
+        max-idle: 8
+        # 连接池中的最小空闲连接 默认 0
+        min-idle: 0
+
   resources:
     static-locations: classpath:/static/
   mvc:
     static-path-pattern: /static/**
+
+  # 分布式 session 配置
+  session:
+    store-type: redis
+    # session 持久化前缀
+    redis:
+      # session 持久化命名空间
+      namespace: oes:session
+    # 过期时间 3小时
+    timeout: PT3H
+
 
 # MyBatisPlus 配置
 mybatis-plus:
@@ -74,7 +102,7 @@ mybatis-plus:
     # 关闭 MyBatisPlus 的 banner
     banner: off
   # 实体类别名
-  type-aliases-package: com.chachae.exam.common.entity
+  type-aliases-package: com.chachae.exam.common.model
   configuration:
     map-underscore-to-camel-case: on
   # 打开驼峰命名

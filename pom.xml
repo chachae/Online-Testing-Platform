@@ -28,7 +28,7 @@
     <!-- 相关依赖统一版本管理 -->
     <properties>
         <java.version>1.8</java.version>
-        <hutool.version>5.1.4</hutool.version>
+        <hutool.version>5.1.5</hutool.version>
         <mybatis-plus.version>3.3.1</mybatis-plus.version>
         <guava.version>28.2-jre</guava.version>
         <joda-time.version>2.10.5</joda-time.version>
@@ -38,6 +38,7 @@
         <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
         <beetl.version>3.0.19.RELEASE</beetl.version>
+        <shiro.version>1.5.1</shiro.version>
     </properties>
 
     <!-- 依赖版本管理 -->
@@ -47,7 +48,7 @@
 
             <!-- 模块 [start] -->
 
-            <!-- 通用模块 -->
+            <!-- 通用工具模块 -->
             <dependency>
                 <groupId>com.chachae.exam</groupId>
                 <artifactId>oes-common</artifactId>
@@ -61,7 +62,7 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- 核心模块 -->
+            <!-- 核心业务模块 -->
             <dependency>
                 <groupId>com.chachae.exam</groupId>
                 <artifactId>oes-core</artifactId>
@@ -70,7 +71,7 @@
 
             <!-- 自定义模块 [end] -->
 
-            <!-- beetl -->
+            <!-- beetl template -->
             <dependency>
                 <groupId>com.ibeetl</groupId>
                 <artifactId>beetl</artifactId>
@@ -82,6 +83,13 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- shiro -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring-boot-web-starter</artifactId>
+                <version>${shiro.version}</version>
             </dependency>
 
             <!-- PageHelper -->
@@ -145,6 +153,7 @@
 
     <!-- 默认依赖 -->
     <dependencies>
+
         <!-- SpringBoot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -2,8 +2,8 @@ package com.chachae.exam.core.job;
 
 import cn.hutool.log.Log;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.mapper.PaperMapper;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.dao.PaperDAO;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * 定时任务
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/3
  */
 @Component
 public class PaperStateChangeJob {
 
-  @Resource private PaperMapper paperMapper;
+  @Resource private PaperDAO paperDAO;
 
   private Log log = Log.get();
 
@@ -40,16 +40,16 @@ public class PaperStateChangeJob {
   @Scheduled(cron = "0 0/15 * * * ? ")
   public void run() {
     log.info("执行考试状态检查任务");
-    List<Paper> paperList = paperMapper.selectList(null);
+    List<Paper> paperList = paperDAO.selectList(null);
     for (Paper paper : paperList) {
       // 改变所有考试时间已过期且状态仍为未开始的试卷状态（更改为"已结束"）
       // 只对正式考试做检测
-      boolean type = paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL);
+      boolean type = paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL);
       // 只保留未开始状态的检测
-      boolean state = paper.getPaperState().equals(SysConsts.PAPER.PAPER_STATE_START);
+      boolean state = paper.getPaperState().equals(SysConsts.Paper.PAPER_STATE_START);
       if (type && state && paper.isEnd()) {
-        paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
-        paperMapper.updateById(paper);
+        paper.setPaperState(SysConsts.Paper.PAPER_STATE_END);
+        paperDAO.updateById(paper);
         log.info("试卷:[{}] 状态被修改:[{}]", paper.getPaperName(), paper.getPaperState());
       }
     }

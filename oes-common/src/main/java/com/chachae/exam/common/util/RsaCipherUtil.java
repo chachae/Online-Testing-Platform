@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * 密码工具
  *
- * @author yzn
+ * @author chachae
  * @since 2020/1/18 12:11
  */
 @Component

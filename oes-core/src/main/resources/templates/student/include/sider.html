@@ -4,7 +4,7 @@
         <!-- 菜单 -->
         <ul class="sidebar-menu">
             <li class="treeview ${name == 'home'?'active':''}"><a
-                    href="/student/home/${session.studentId}"><i class="fa fa-home active"></i>
+                    href="/student/home/${session.student.id}"><i class="fa fa-home active"></i>
                 <span>首页</span></a>
             </li>
             <li class="header">系统功能</li>
@@ -26,7 +26,7 @@
             </li>
             <!-- 我的成绩 -->
             <li class="treeview  ${strutil.contain(name,'score')?'active':''}">
-                <a href="/student/score/${session.studentId}">
+                <a href="/student/score/${session.student.id}">
                     <i class="fa fa-print"></i> <span>我的成绩</span>
                     <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i></span>

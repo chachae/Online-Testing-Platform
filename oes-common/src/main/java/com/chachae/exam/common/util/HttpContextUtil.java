@@ -7,13 +7,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
 /**
  * RequestHolder 上下的文封装
  *
- * @author yzn
+ * @author chachae
  * @since 2019/12/21 11:02
  */
 public class HttpContextUtil {
@@ -29,6 +30,22 @@ public class HttpContextUtil {
     return ((ServletRequestAttributes)
             Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
         .getRequest();
+  }
+
+  /**
+   * 获取 HttpServletRequest 对象
+   *
+   * @return /
+   */
+  public static HttpServletResponse getHttpServletResponse() {
+    return ((ServletRequestAttributes)
+            Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+        .getResponse();
+  }
+
+  /** 获取请求接口 */
+  public static String getRequestUri() {
+    return getHttpServletRequest().getRequestURI();
   }
 
   /**

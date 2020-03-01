@@ -11,7 +11,7 @@
     $('#paperType').select2({width: "100%"});
 
     // 获取课程集合
-    $.get("/api/course/teacher/" + "${session.teacherId}").done(function (data) {
+    $.get("/api/course/teacher/" + "${session.teacher.id}").done(function (data) {
         let options = "";
         $('#courseId').empty();
         options += "<option value=''>请选择</option>";

@@ -1,6 +1,11 @@
 package com.chachae.exam.core.config;
 
+/**
+ * @author chachae
+ * @since 2020/3/1 23:55
+ */
 import com.chachae.exam.core.interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -12,6 +17,7 @@ import javax.annotation.Resource;
  * @author yzn
  * @date 2020/1/31
  */
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
   /** 基本拦截路径 */

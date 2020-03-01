@@ -9,7 +9,7 @@
 <script>
 
     // 获取课程集合
-    $.get("/api/course/teacher/" + "${session.teacherId}").done(function (data) {
+    $.get("/api/course/teacher/" + "${session.teacher.id}").done(function (data) {
         let options = "";
         //回填的二级类别值
         $('#courseId').empty();

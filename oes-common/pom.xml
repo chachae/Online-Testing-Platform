@@ -11,7 +11,7 @@
     <artifactId>oes-common</artifactId>
     <dependencies>
 
-        <!-- MySql 驱动 -->
+        <!-- MySql Driver -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

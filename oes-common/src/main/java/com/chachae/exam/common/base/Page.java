@@ -3,7 +3,7 @@ package com.chachae.exam.common.base;
 /**
  * 分页数据
  *
- * @author yzn
+ * @author chachae
  * @since 2020/2/6 18:06
  */
 public class Page {

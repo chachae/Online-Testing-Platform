@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * ajax 请求的返回结果类
  *
- * @author yzn
+ * @author chachae
  * @date 2019/12/31
  */
 @Data

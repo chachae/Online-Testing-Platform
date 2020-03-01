@@ -38,9 +38,8 @@ public class BeetlTemplateConfig {
     beetlSpringViewResolver.setSuffix(".html");
     beetlSpringViewResolver.setContentType("text/html;charset=UTF-8");
     beetlSpringViewResolver.setOrder(0);
-    beetlSpringViewResolver.setCache(false);
+    beetlSpringViewResolver.setCache(true);
     beetlSpringViewResolver.setConfig(beetlGroupUtilConfiguration);
     return beetlSpringViewResolver;
   }
 }
-
