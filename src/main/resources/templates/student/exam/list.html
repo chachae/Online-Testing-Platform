@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 考试列表</title>
-    <%include("../include/css.html"){}%>
+    <%include("../../include/css.html"){}%>
     <style>
         .table > tbody > tr:hover {
             cursor: pointer;
@@ -28,9 +28,9 @@
 <body class="hold-transition skin-green sidebar-mini">
 
 <div class="wrapper">
-    <%include("../student/include/header.html"){} %>
+    <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%include("../student/include/sider.html"){}%>
+    <%layout("../../student/include/sider.html",{name:"exam-list"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -111,11 +111,11 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <%include("../include/footer.html"){}%>
+    <%include("../../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <%
-include("../include/js.html"){}
+include("../../include/js.html"){}
 %>
 </body>
 </html>

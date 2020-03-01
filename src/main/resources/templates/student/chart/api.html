@@ -1,46 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh_CN">
-<head>
-    <title>OES | 学生成绩分析</title>
-    <!-- 引入全局 css 文件 -->
-    <%
-    include("../include/css.html"){}
-    %>
-</head>
-<body class="hold-transition skin-green sidebar-mini">
-
-<div class="wrapper">
-    <!-- 顶部导航栏部分 -->
-    <%include("../student/include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <%include("../student/include/sider.html"){}%>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <section class="content">
-            <div class="box" style="background-color: inherit">
-                <div class="box-header with-border">
-                    <h3 class="box-title">我的成绩分析</h3>
-                </div>
-                <div class="box-body">
-                    <div id="main" style="height: 560px;width: 100%"></div>
-                </div>
-            </div>
-            <div class="box" style="background-color: inherit">
-                <div class="box-body">
-                    <div id="chart" style="height: 400px;width: 100%"></div>
-                </div>
-            </div>
-            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        </section>
-    </div>
-    <!-- 引入footer -->
-    <%include("../include/footer.html"){}%>
-</div>
-<!-- 引入全局 js 脚本文件 -->
-<%include("../include/js.html"){}%>
-<script src="/static/plugins/echarts/echarts.min.js"></script>
-<script src="/static/plugins/layer/layer.js"></script>
-<script src="/static/plugins/moment/moment.js"></script>
 <script>
 
     // EChart
@@ -49,7 +6,6 @@
         const myChart = echarts.init(document.getElementById('main'));
         // 指定图表的配置项和数据
         const option = {
-
             title: {
                 text: '学期成绩雷达图',
                 x: 'center'
@@ -61,7 +17,6 @@
                 left: 'left',
             },
             radar: {
-                // shape: 'circle',
                 name: {
                     textStyle: {
                         color: '#fff',
@@ -93,7 +48,7 @@
         myChart.setOption(option);
 
         //post请求后端数据并整理
-        $.post("/score/student/chart/${session.studentId}").done(function (json) {
+        $.post("/api/score/student/chart/${session.studentId}").done(function (json) {
             if (json.state === 'success') {
                 let keyArray = [];
                 let avgArray = [];
@@ -190,18 +145,18 @@
             ]
         });
 
-        $.get("/score/student/chart2").done(function (json) {
+        $.get("/api/score/student/chart2").done(function (json) {
             if (json.state === 'success') {
 
-                var aNum;
-                var bNum;
-                var cNum;
-                var dNum;
-                var eNum;
+                let aNum;
+                let bNum;
+                let cNum;
+                let dNum;
+                let eNum;
 
-                var data = json.data;
+                let data = json.data;
 
-                var obj = data[0];
+                let obj = data[0];
                 $.each(obj, function (name, value) {
                     if (name === '90分以上') {
                         aNum = value;
@@ -247,12 +202,12 @@
                 //行点击委托
                 $(document).delegate("#analyse", "click", function () {
                     //分析的话
-                    var txta = "";
-                    var txtb = "";
-                    var txtc = "";
-                    var txtd = "";
-                    var txte = "";
-                    var levelPaper = data[1];
+                    let txta = "";
+                    let txtb = "";
+                    let txtc = "";
+                    let txtd = "";
+                    let txte = "";
+                    let levelPaper = data[1];
                     $.each(levelPaper, function (name, value) {
                         if (name === '60分以下') {
                             if (value) {
@@ -318,5 +273,3 @@
         });
     });
 </script>
-</body>
-</html>

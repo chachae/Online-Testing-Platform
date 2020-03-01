@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 分数列表</title>
-    <%include("../include/css.html"){}%>
+    <%include("../../include/css.html"){}%>
     <style>
         .table > tbody > tr:hover {
             cursor: pointer;
@@ -28,9 +28,9 @@
 <body class="hold-transition skin-green sidebar-mini">
 
 <div class="wrapper">
-    <%include("../student/include/header.html"){} %>
+    <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%include("../student/include/sider.html"){}%>
+    <%layout("../../student/include/sider.html",{name:"score-list"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -63,7 +63,7 @@
                             <td>${score.score} 分</td>
                             <td>${score.wrongIds}</td>
                             <td>
-                                <button class="btn btn-vk detailBtn btn-sm">查看试卷详情</button>
+                                <button onclick="getDetail(${score.id})" class="btn btn-vk btn-sm">详情</button>
                             </td>
                         </tr>
                         <% } %>
@@ -75,23 +75,12 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <%include("../include/footer.html"){}%>
+    <%include("../../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%include("../include/js.html"){}%>
-<script src="/static/plugins/layer/layer.js"></script>
+<%include("../../include/js.html"){}%>
 <script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
-<script>
-
-    // 成绩详情
-    $('.detailBtn').click(function () {
-        let id = $(this).parents('tr').eq(0).attr('rel');
-        console.log(id);
-        window.location.href = "/student/score/detail/" + id;
-    })
-</script>
+<%include("api.html"){}%>
 </body>
 </html>
-
-

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 试卷详情</title>
     <!-- 全局 css -->
-    <%include("../include/css.html"){}%>
+    <%include("../../include/css.html"){}%>
     <style>
         th {
             font-size: 18px;
@@ -19,9 +19,9 @@
 <body class="hold-transition skin-green sidebar-mini">
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
-    <%include("../student/include/header.html"){} %>
+    <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%include("../student/include/sider.html"){}%>
+    <%layout("../../student/include/sider.html",{name:"score-detail"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
         <section class="content">
@@ -335,10 +335,10 @@
         </section>
     </div>
     <!-- 引入footer -->
-    <%include("../include/footer.html"){}%>
+    <%include("../../include/footer.html"){}%>
 </div>
 <!-- 引入全局 js 脚本文件 -->
-<%include("../include/js.html"){}%>
+<%include("../../include/js.html"){}%>
 </body>
 </html>
 

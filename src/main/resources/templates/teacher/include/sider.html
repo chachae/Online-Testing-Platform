@@ -20,14 +20,14 @@
                 <span>首页</span></a></li>
             <li class="header">系统功能</li>
             <!-- 消息公告 -->
-            <li class="treeview">
+            <li class="treeview ${name == 'announce'?'active':''}">
                 <a href="/teacher/announce/system">
-                    <i class="fa fa-commenting"></i> <span>消息公告</span>
+                    <i class="fa fa-commenting ${name == 'announce'?'active':''}"></i> <span>消息公告</span>
                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
             </li>
             <!-- 课程管理 -->
-            <li class="treeview">
+            <li class="treeview ${name == 'course'?'active':''}">
                 <a href="/teacher/course/list">
                     <i class="fa fa-book"></i> <span>课程管理</span>
                     <span class="pull-right-container">
@@ -35,7 +35,7 @@
                 </a>
             </li>
             <!-- 专业管理 -->
-            <li class="treeview">
+            <li class="treeview  ${name == 'major'?'active':''}">
                 <a href="/teacher/major">
                     <i class="fa fa-mortar-board"></i> <span>专业管理</span>
                     <span class="pull-right-container">
@@ -43,7 +43,7 @@
                 </a>
             </li>
             <!-- 学生管理 -->
-            <li class="treeview">
+            <li class="treeview ${name == 'student'?'active':''}">
                 <a href="/teacher/student">
                     <i class="fa fa-user-circle"></i><span>学生管理</span>
                     <span class="pull-right-container">
@@ -51,7 +51,7 @@
                 </a>
             </li>
             <!-- 试题管理 -->
-            <li class="treeview ">
+            <li class="treeview  ${name == 'question'?'active':''}">
                 <a href="/teacher/question">
                     <i class="fa fa-file-pdf-o"></i> <span>试题管理</span>
                     <span class="pull-right-container">
@@ -60,7 +60,7 @@
                 </a>
             </li>
             <!-- 试卷管理 -->
-            <li class="treeview">
+            <li class="treeview  ${strutil.contain(name,'paper')?'active':''}">
                 <a href="/teacher/paper">
                     <i class="fa fa-book"></i> <span>试卷管理</span>
                     <span class="pull-right-container">
@@ -68,7 +68,7 @@
                 </a>
             </li>
             <!-- 考试管理 -->
-            <li class="treeview ">
+            <li class="treeview ${name == 'exam'?'active':''}">
                 <a href="/teacher/exam">
                     <i class="fa fa-paper-plane"></i> <span>考试管理</span>
                     <span class="pull-right-container">
@@ -76,7 +76,7 @@
                 </a>
             </li>
             <!-- 试卷复查 -->
-            <li class="treeview ">
+            <li class="treeview ${name == 'review'?'active':''}">
                 <a href="/teacher/reviewPaper">
                     <i class="fa fa-retweet"></i> <span>试卷复查</span>
                     <span class="pull-right-container">
@@ -84,7 +84,7 @@
                 </a>
             </li>
             <!-- 帮助中心 -->
-            <li class="">
+            <li class="treeview ${name == 'help'?'active':''}">
                 <a href="/teacher/help"><i class="fa fa-share-alt"></i>
                     <span>帮助中心</span></a>
             </li>

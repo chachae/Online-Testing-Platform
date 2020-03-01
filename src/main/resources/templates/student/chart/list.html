@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <title>OES | 学生成绩分析</title>
+    <!-- 引入全局 css 文件 -->
+    <% include("../../include/css.html"){} %>
+</head>
+<body class="hold-transition skin-green sidebar-mini">
+
+<div class="wrapper">
+    <!-- 顶部导航栏部分 -->
+    <%include("../../student/include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <%layout("../../student/include/sider.html",{name:"char-list"}){}%>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="box" style="background-color: inherit">
+                <div class="box-header with-border">
+                    <h3 class="box-title">我的成绩分析</h3>
+                </div>
+                <div class="box-body">
+                    <div id="main" style="height: 560px;width: 100%"></div>
+                </div>
+            </div>
+            <div class="box" style="background-color: inherit">
+                <div class="box-body">
+                    <div id="chart" style="height: 400px;width: 100%"></div>
+                </div>
+            </div>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        </section>
+    </div>
+    <!-- 引入footer -->
+    <%include("../../include/footer.html"){}%>
+</div>
+<!-- 引入全局 js 脚本文件 -->
+<%include("../../include/js.html"){}%>
+<script src="/static/plugins/echarts/echarts.min.js"></script>
+<script src="/static/plugins/moment/moment.js"></script>
+<%include("api.html"){}%>
+</body>
+</html>

@@ -3,20 +3,20 @@
     <section class="sidebar">
         <!-- 菜单 -->
         <ul class="sidebar-menu">
-            <li class=""><a
+            <li class="treeview ${name == 'home'?'active':''}"><a
                     href="/student/home/${session.studentId}"><i class="fa fa-home active"></i>
                 <span>首页</span></a>
             </li>
             <li class="header">系统功能</li>
             <!-- 消息公告 -->
-            <li class="treeview">
-                <a href="/student/announce/system">
+            <li class="treeview ${name == 'announce'?'active':''}">
+                <a href="/student/announce">
                     <i class="fa fa-address-book-o"></i> <span>消息公告</span>
                     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
             </li>
             <!-- 我的考试 -->
-            <li class="treeview">
+            <li class="treeview ${strutil.contain(name,'exam')?'active':''}">
                 <a href="/student/exam">
                     <i class="fa fa-file-text"></i> <span>我的考试</span>
                     <span class="pull-right-container">
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <!-- 我的成绩 -->
-            <li class="treeview">
+            <li class="treeview  ${strutil.contain(name,'score')?'active':''}">
                 <a href="/student/score/${session.studentId}">
                     <i class="fa fa-print"></i> <span>我的成绩</span>
                     <span class="pull-right-container">
@@ -33,7 +33,7 @@
                 </a>
             </li>
             <!-- 成绩分析 -->
-            <li class="treeview">
+            <li class="treeview  ${strutil.contain(name,'chart')?'active':''}">
                 <a href="">
                     <i class="fa fa-pie-chart"></i> <span>成绩分析</span>
                     <span class="pull-right-container">
@@ -41,11 +41,11 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class=""><a
-                            href="/score/student/chart"><i
+                            href="/student/score/chart"><i
                             class="fa fa-circle-o"></i> 我的分析</a></li>
                 </ul>
             </li>
-            <li class="">
+            <li class="treeview  ${name == 'help'?'active':''}">
                 <a href="/student/help"><i class="fa fa-share-alt"></i> <span>帮助中心</span></a>
             </li>
         </ul>
