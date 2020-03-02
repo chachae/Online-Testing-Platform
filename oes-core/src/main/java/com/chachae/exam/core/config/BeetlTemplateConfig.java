@@ -11,7 +11,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
- * beetl
+ * Beetl 配置
  *
  * @author chachae
  * @since 2020/2/26 16:10

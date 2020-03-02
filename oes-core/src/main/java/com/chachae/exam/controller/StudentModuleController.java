@@ -130,7 +130,7 @@ public class StudentModuleController {
     // 设置试卷信息的 model 对象信息
     mv.addObject("paper", paperService.getById(paperId));
     // 各类题型的 model 对象信息
-    questionModel.setQuestionModel(mv, paperId);
+    questionModel.setQuestionModel(mv, paperId, true);
     // 返回试卷
     mv.setViewName("/student/exam/detail");
     return mv;
@@ -197,7 +197,7 @@ public class StudentModuleController {
     Integer paperId = score.getPaperId();
 
     // 设置题目的 model 对象信息
-    questionModel.setQuestionModel(mv, paperId);
+    questionModel.setQuestionModel(mv, paperId, false);
 
     // 设置分数和试卷 model 信息
     Paper paper = this.paperService.getById(paperId);

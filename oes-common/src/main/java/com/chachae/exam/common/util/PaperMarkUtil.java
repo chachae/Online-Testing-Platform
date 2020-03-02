@@ -2,7 +2,6 @@ package com.chachae.exam.common.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.StuAnswerRecord;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
@@ -12,7 +11,6 @@ import org.apache.commons.text.similarity.JaccardSimilarity;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -28,16 +26,16 @@ public class PaperMarkUtil {
   /**
    * 基本评分方法
    *
-   * @param set 问题集合
+   * @param list 问题集合
    * @param score 题目分值
    * @param request request 对象
    * @return 题型所得分值
    */
-  public static MarkInfoDto mark(Set<Question> set, int score, HttpServletRequest request) {
+  public static MarkInfoDto mark(List<Question> list, int score, HttpServletRequest request) {
     int sum = 0;
     List<String> wrongIds = Lists.newArrayList();
-    if (CollUtil.isNotEmpty(set)) {
-      for (Question q : set) {
+    if (CollUtil.isNotEmpty(list)) {
+      for (Question q : list) {
         // 获取问题题目序号
         String res = request.getParameter(String.valueOf(q.getId()));
         // 如果选项正确，加分
@@ -59,19 +57,19 @@ public class PaperMarkUtil {
   /**
    * 多选题批改
    *
-   * @param set 问题集合
+   * @param list 问题集合
    * @param score 题目分值
    * @param request request 对象
    * @return 题型所得分值
    */
-  public static MarkInfoDto mulMark(Set<Question> set, int score, HttpServletRequest request) {
+  public static MarkInfoDto mulMark(List<Question> list, int score, HttpServletRequest request) {
     int sum = 0;
     // 构建错题集集合
     List<String> wrongIds = Lists.newArrayList();
     // 判断问题集合不为空，空的话说明直接加入错题集
-    if (CollUtil.isNotEmpty(set)) {
+    if (CollUtil.isNotEmpty(list)) {
       // 循环正确答案
-      for (Question q : set) {
+      for (Question q : list) {
         // 从 request 对象中获取多选题参数
         String[] res = request.getParameterValues(String.valueOf(q.getId()));
         // 没有选答案就给零分
@@ -105,12 +103,13 @@ public class PaperMarkUtil {
   /**
    * 主观题评分
    *
-   * @param set 问题集合
+   * @param list 问题集合
    * @param score 题目分值
    * @param request request 对象
    * @return 题型所得分值
    */
-  public static MarkInfoDto essayMark(Set<Question> set, double score, HttpServletRequest request) {
+  public static MarkInfoDto essayMark(
+      List<Question> list, double score, HttpServletRequest request) {
     int sum = 0;
     // 错题集
     List<String> wrongIds = Lists.newArrayList();
@@ -121,9 +120,9 @@ public class PaperMarkUtil {
     // #表示整数
     DecimalFormat df = new DecimalFormat("#");
     // 简答题批改
-    if (CollUtil.isNotEmpty(set)) {
+    if (CollUtil.isNotEmpty(list)) {
       double f = 0;
-      for (Question q : set) {
+      for (Question q : list) {
         // 不管主观题答题的质量如何，都放入错题集中
         wrongIds.add(String.valueOf(q.getId()));
         // 从 request 对象中获取参数值

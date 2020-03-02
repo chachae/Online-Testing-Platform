@@ -2,12 +2,12 @@ package com.chachae.exam.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.model.Course;
-import com.chachae.exam.common.model.Question;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.dao.CourseDAO;
 import com.chachae.exam.common.dao.QuestionDAO;
 import com.chachae.exam.common.dao.TeacherDAO;
+import com.chachae.exam.common.exception.ServiceException;
+import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.Question;
 import com.chachae.exam.service.CourseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

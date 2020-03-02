@@ -258,7 +258,7 @@ public class TeacherModuleController {
     mv.addObject("course", courseService.getById(paper.getCourseId()));
     mv.addObject("major", majorService.getById(paper.getMajorId()));
     // 设置题目 model 对象信息
-    questionModel.setQuestionModel(mv, id);
+    questionModel.setQuestionModel(mv, id, false);
     mv.setViewName("/teacher/paper/show");
     return mv;
   }

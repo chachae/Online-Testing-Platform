@@ -2,6 +2,7 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.poi.excel.ExcelReader;
@@ -9,6 +10,10 @@ import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.dao.PaperFormDAO;
+import com.chachae.exam.common.dao.QuestionDAO;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.PaperForm;
@@ -18,10 +23,7 @@ import com.chachae.exam.common.model.dto.QuestionDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.model.dto.StudentAnswerDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.PaperFormDAO;
-import com.chachae.exam.common.dao.PaperDAO;
-import com.chachae.exam.common.dao.QuestionDAO;
+import com.chachae.exam.common.service.RedisService;
 import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.common.util.FileUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
@@ -32,7 +34,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +42,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 试题业务实现
@@ -53,11 +57,15 @@ import java.util.*;
 public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
+  @Resource private RedisService redisService;
   @Resource private TypeService typeService;
   @Resource private QuestionDAO questionDAO;
   @Resource private PaperDAO paperDAO;
   @Resource private PaperFormDAO paperFormDAO;
   @Resource private CourseService courseService;
+
+  @Value("${oes.cache.paper_prefix}")
+  private String prefix;
 
   /** 日志接口 */
   private Log log = Log.get();
@@ -85,39 +93,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   }
 
   @Override
-  public Set<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
-    // 通过 ID 查询试卷信息
-    Paper paper = this.paperDAO.selectById(paperId);
-    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
-    String qIds = paper.getQuestionId();
-    // 分割题目序号
-    List<String> ids = StrUtil.split(qIds, StrUtil.C_COMMA);
-    // 实现随机排序的核心方法
-    Collections.shuffle(ids);
-    Set<Question> questionSet = Sets.newLinkedHashSet();
-
-    // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
-    for (String id : ids) {
-      // 通过题目 ID 获取问题的信息
-      Question question = questionDAO.selectById(id);
-      if (typeId.equals(question.getTypeId())) {
-        questionSet.add(question);
-      }
-    }
-    return questionSet;
-  }
-
-  @Override
-  public List<Course> selectCourseByTeacherId(Integer teacherId) {
-    QueryWrapper<Course> qw = new QueryWrapper<>();
-    qw.lambda().eq(Course::getTeacherId, teacherId);
-    return this.courseService.list(qw);
+  public List<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
+    return this.paperCacheManager(paperId, typeId);
   }
 
   @Override
   public List<Integer> selectIdsFilterByTeacherId() {
     // 获取 session
-    Integer id = (Integer) HttpContextUtil.getSession().getAttribute(SysConsts.Session.TEACHER_ID);
+    int id = (int) HttpContextUtil.getSession().getAttribute(SysConsts.Session.TEACHER_ID);
     List<Course> courses = this.courseService.listByTeacherId(id);
     List<Integer> ids = Lists.newArrayList();
     // 遍历课程对象，封装 ID 集合
@@ -352,5 +335,43 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       log.error(ExceptionUtil.stacktraceToString(e));
       throw new ServiceException("题目解析失败，请检查 Excel 内容后重试！");
     }
+  }
+
+  /**
+   * 试题缓存管理器
+   *
+   * @param paperId 试卷 ID
+   * @param typeId 题目类型 ID
+   * @return 试题集合
+   */
+  @SuppressWarnings("unchecked")
+  private List<Question> paperCacheManager(int paperId, int typeId) {
+
+    // 从缓存中获取试题信息
+    String key = prefix + paperId + StrUtil.DOT + typeId;
+    Object obj = this.redisService.get(key);
+    if (ObjectUtil.isNotEmpty(obj)) {
+      return (List<Question>) obj;
+    }
+
+    // 通过 ID 查询试卷信息
+    Paper paper = this.paperDAO.selectById(paperId);
+    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
+    String qIds = paper.getQuestionId();
+    // 分割题目序号
+    String[] ids = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
+    List<Question> questions = Lists.newArrayList();
+    // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
+    for (String id : ids) {
+      // 通过题目 ID 获取问题的信息
+      Question question = questionDAO.selectById(id);
+      if (typeId == question.getTypeId()) {
+        questions.add(question);
+      }
+    }
+
+    // 写入缓存
+    this.redisService.set(key, questions, 3 * 3600L);
+    return questions;
   }
 }

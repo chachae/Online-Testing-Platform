@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -135,13 +136,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     String paperName = paper.getPaperName();
     // 通过 ID 获取试卷模板信息
     PaperForm paperForm = paperFormDAO.selectById(paper.getPaperFormId());
-    // 获取试卷中各个部分题型的问题信息
-    Set<Question> choices = questionService.selectByPaperIdAndType(paperId, 1);
-    Set<Question> mulChoices = questionService.selectByPaperIdAndType(paperId, 2);
-    Set<Question> tofs = questionService.selectByPaperIdAndType(paperId, 3);
-    Set<Question> fills = questionService.selectByPaperIdAndType(paperId, 4);
-    Set<Question> saqs = questionService.selectByPaperIdAndType(paperId, 5);
-    Set<Question> programs = questionService.selectByPaperIdAndType(paperId, 6);
 
     // 获取模板各个题型的题目分值
     int choiceScore = NumberUtil.strToInteger(paperForm.getQChoiceScore());
@@ -157,6 +151,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     int score = 0;
 
     /* -------------------------- 开始评分 -------------------------- */
+
+    // 获取试卷中各个部分题型的问题信息
+    List<Question> choices = questionService.selectByPaperIdAndType(paperId, 1);
+    List<Question> mulChoices = questionService.selectByPaperIdAndType(paperId, 2);
+    List<Question> tofs = questionService.selectByPaperIdAndType(paperId, 3);
+    List<Question> fills = questionService.selectByPaperIdAndType(paperId, 4);
+    List<Question> saqs = questionService.selectByPaperIdAndType(paperId, 5);
+    List<Question> programs = questionService.selectByPaperIdAndType(paperId, 6);
+
     // 单选题批改
     MarkInfoDto choiceMark = PaperMarkUtil.mark(choices, choiceScore, request);
     score += choiceMark.getScore();
