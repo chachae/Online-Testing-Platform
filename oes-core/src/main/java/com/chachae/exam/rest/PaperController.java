@@ -12,6 +12,7 @@ import com.chachae.exam.common.model.dto.ImportPaperDto;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.ScoreService;
@@ -35,18 +36,21 @@ public class PaperController {
   @Resource private PaperService paperService;
 
   @PostMapping("/update")
+  @Permissions("paper:update")
   public R updateTime(Paper paper) {
     this.paperService.updateById(paper);
     return R.success();
   }
 
   @GetMapping("/{id}")
+  @Permissions("paper:list")
   public Paper getOne(@PathVariable Integer id) {
     return this.paperService.getById(id);
   }
 
   @ResponseBody
   @PostMapping("/import/excel")
+  @Permissions("paper:import")
   public R excel(@RequestParam("file") MultipartFile multipartFile) {
     // 导入试卷
     ImportPaperDto dto = this.questionService.importPaper(multipartFile);
@@ -54,6 +58,7 @@ public class PaperController {
   }
 
   @PostMapping("/save/import")
+  @Permissions("paper:save")
   public R newPaperByExcel(Paper paper, ImportPaperRandomQuestionDto entity) {
     // 获取教师 ID
     Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
@@ -82,6 +87,7 @@ public class PaperController {
    * @return 组卷页面
    */
   @PostMapping("/save/random")
+  @Permissions("paper:save")
   public R add(Paper paper, Integer paperFormId, String difficulty) {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
@@ -106,6 +112,7 @@ public class PaperController {
    */
   @ResponseBody
   @PostMapping("/update/score")
+  @Permissions("paper:update")
   public R editScore(AnswerEditDto dto) {
     // 修改该题得分
     StuAnswerRecord record = new StuAnswerRecord();
@@ -128,6 +135,7 @@ public class PaperController {
    */
   @ResponseBody
   @PostMapping("/delete/{id}")
+  @Permissions("paper:delete")
   public R delPaper(@PathVariable Integer id) {
     // 级联删除试卷（详见接口实现类）
     paperService.deletePaperById(id);
@@ -142,6 +150,7 @@ public class PaperController {
    */
   @ResponseBody
   @PostMapping("/update/answer")
+  @Permissions("paper:update")
   public R updateAnswer(Question question) {
     this.questionService.updateById(question);
     return R.success();
@@ -155,6 +164,7 @@ public class PaperController {
    */
   @ResponseBody
   @PostMapping("/update/question")
+  @Permissions("paper:update")
   public R updateQuestionId(PaperQuestionUpdateDto dto) {
     this.paperService.updateQuestionId(dto);
     return R.success();

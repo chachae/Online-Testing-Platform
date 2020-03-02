@@ -9,19 +9,19 @@ import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Course;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.entity.PaperForm;
-import com.chachae.exam.common.entity.Question;
-import com.chachae.exam.common.entity.dto.ImportPaperDto;
-import com.chachae.exam.common.entity.dto.QuestionDto;
-import com.chachae.exam.common.entity.dto.StuAnswerRecordDto;
-import com.chachae.exam.common.entity.dto.StudentAnswerDto;
-import com.chachae.exam.common.entity.vo.QuestionVo;
+import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.PaperForm;
+import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.dto.ImportPaperDto;
+import com.chachae.exam.common.model.dto.QuestionDto;
+import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
+import com.chachae.exam.common.model.dto.StudentAnswerDto;
+import com.chachae.exam.common.model.vo.QuestionVo;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.PaperFormMapper;
-import com.chachae.exam.common.mapper.PaperMapper;
-import com.chachae.exam.common.mapper.QuestionMapper;
+import com.chachae.exam.common.dao.PaperFormDAO;
+import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.dao.QuestionDAO;
 import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.common.util.FileUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
@@ -50,13 +50,13 @@ import java.util.*;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
+public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
   @Resource private TypeService typeService;
-  @Resource private QuestionMapper questionMapper;
-  @Resource private PaperMapper paperMapper;
-  @Resource private PaperFormMapper paperFormMapper;
+  @Resource private QuestionDAO questionDAO;
+  @Resource private PaperDAO paperDAO;
+  @Resource private PaperFormDAO paperFormDAO;
   @Resource private CourseService courseService;
 
   /** 日志接口 */
@@ -80,14 +80,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
     // 查询试题集合信息
-    List<Question> questionList = questionMapper.selectList(qw);
+    List<Question> questionList = questionDAO.selectList(qw);
     return new PageInfo<>(questionList);
   }
 
   @Override
   public Set<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
     // 通过 ID 查询试卷信息
-    Paper paper = this.paperMapper.selectById(paperId);
+    Paper paper = this.paperDAO.selectById(paperId);
     // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
     String qIds = paper.getQuestionId();
     // 分割题目序号
@@ -99,7 +99,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
     for (String id : ids) {
       // 通过题目 ID 获取问题的信息
-      Question question = questionMapper.selectById(id);
+      Question question = questionDAO.selectById(id);
       if (typeId.equals(question.getTypeId())) {
         questionSet.add(question);
       }
@@ -117,7 +117,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
   @Override
   public List<Integer> selectIdsFilterByTeacherId() {
     // 获取 session
-    Integer id = (Integer) HttpContextUtil.getSession().getAttribute(SysConsts.SESSION.TEACHER_ID);
+    Integer id = (Integer) HttpContextUtil.getSession().getAttribute(SysConsts.Session.TEACHER_ID);
     List<Course> courses = this.courseService.listByTeacherId(id);
     List<Integer> ids = Lists.newArrayList();
     // 遍历课程对象，封装 ID 集合
@@ -131,13 +131,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     QueryWrapper<Question> qw = new QueryWrapper<>();
     qw.lambda().eq(Question::getTypeId, typeId).eq(Question::getCourseId, courseId);
     // 获取所有对应条件的问题集合
-    return questionMapper.selectList(qw);
+    return questionDAO.selectList(qw);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void deleteById(Integer id) {
-    List<Paper> papers = this.paperMapper.selectList(null);
+    List<Paper> papers = this.paperDAO.selectList(null);
     // 查询是否有试卷与试题关联
     for (Paper paper : papers) {
       // 获取试卷的题目 ID，并且转数组
@@ -163,7 +163,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     qw.lambda().eq(Question::getQuestionName, questionName);
     qw.lambda().eq(Question::getCourseId, courseId);
     qw.lambda().eq(Question::getTypeId, typeId);
-    return this.questionMapper.selectList(qw);
+    return this.questionDAO.selectList(qw);
   }
 
   @Override
@@ -172,7 +172,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     List<StudentAnswerDto> records = entity.getRecords();
     List<Question> result = Lists.newArrayList();
     // 循环集合
-    records.forEach(record -> result.add(this.questionMapper.selectById(record.getQuestionId())));
+    records.forEach(record -> result.add(this.questionDAO.selectById(record.getQuestionId())));
     // 根据问题的 ID 排序
     result.sort(Comparator.comparingInt(Question::getId));
     return result;
@@ -180,7 +180,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
   @Override
   public QuestionVo selectVoById(Integer id) {
-    Question question = this.questionMapper.selectById(id);
+    Question question = this.questionDAO.selectById(id);
     QuestionVo result = BeanUtil.copyObject(question, QuestionVo.class);
     result.setCourse(this.courseService.getById(question.getCourseId()));
     result.setType(this.typeService.getById(question.getTypeId()));
@@ -234,7 +234,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
           // 复制 QuestionDto 的数据到 Question 中
           Question res = BeanUtil.copyObject(question, Question.class);
           // 向数据库插入数据
-          this.questionMapper.insert(res);
+          this.questionDAO.insert(res);
           // 获取数据的id并组装到 idList 中
           idList.add(res.getId());
         }
@@ -266,10 +266,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
       form.setQProgramScore(String.valueOf(typeScoreMap.get(6)));
 
       // 设置模板类型（1），代表设置导入试卷所生成的模板
-      form.setType(SysConsts.PAPER_FORM.IMPORT);
+      form.setType(SysConsts.PaperForm.IMPORT);
 
       // 插入数据
-      this.paperFormMapper.insert(form);
+      this.paperFormDAO.insert(form);
       // 建立 ImportPaperDto 对象
       ImportPaperDto dto = new ImportPaperDto();
       // 建立 StringBuilder 对象，用户组装试题集合
@@ -341,7 +341,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
           // 如果教师包含该课程，则允许插入
           if (ids.contains(cid)) {
             // 插入题目数据
-            this.questionMapper.insert(question);
+            this.questionDAO.insert(question);
           }
         }
       }

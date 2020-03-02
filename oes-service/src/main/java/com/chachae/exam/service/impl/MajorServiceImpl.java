@@ -3,11 +3,11 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.entity.Major;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.entity.vo.MajorVo;
+import com.chachae.exam.common.model.Major;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.vo.MajorVo;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.MajorMapper;
+import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.StudentService;
@@ -24,14 +24,14 @@ import java.util.List;
 /**
  * 专业表服务实现类
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-08 14:26:53
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements MajorService {
+public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements MajorService {
 
-  @Resource private MajorMapper majorMapper;
+  @Resource private MajorDAO majorDAO;
   @Resource private PaperService paperService;
   @Resource private StudentService studentService;
 
@@ -39,7 +39,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
   public PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major) {
     // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
-    List<MajorVo> majors = this.majorMapper.listVo(major);
+    List<MajorVo> majors = this.majorDAO.listVo(major);
     return new PageInfo<>(majors);
   }
 
@@ -47,7 +47,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
   public List<Major> listByAcademyId(Integer academyId) {
     QueryWrapper<Major> qw = new QueryWrapper<>();
     qw.lambda().eq(Major::getAcademyId, academyId);
-    return this.majorMapper.selectList(qw);
+    return this.majorDAO.selectList(qw);
   }
 
   @Override

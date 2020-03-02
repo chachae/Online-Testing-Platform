@@ -5,12 +5,12 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Course;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.entity.Teacher;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
+import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.Teacher;
+import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.TeacherMapper;
+import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.PaperService;
@@ -28,15 +28,15 @@ import java.util.List;
 /**
  * 教师业务实现
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/20
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
+public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher>
     implements TeacherService {
 
-  @Resource private TeacherMapper teacherMapper;
+  @Resource private TeacherDAO teacherDAO;
   @Resource private CourseService courseService;
   @Resource private PaperService paperService;
 
@@ -80,7 +80,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
   public PageInfo<Teacher> pageForTeacherList(Integer pageNo) {
     // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
-    List<Teacher> teachers = this.teacherMapper.selectList(null);
+    List<Teacher> teachers = this.teacherDAO.selectList(null);
     return new PageInfo<>(teachers);
   }
 
@@ -89,7 +89,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     // 查询改用户名的教师信息
     QueryWrapper<Teacher> qw = new QueryWrapper<>();
     qw.lambda().eq(Teacher::getWorkNumber, workNumber);
-    return this.teacherMapper.selectOne(qw);
+    return this.teacherDAO.selectOne(qw);
   }
 
   @Override
@@ -101,7 +101,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher>
     } else {
       // 不存在则设置默认的角色ID和对密码进行加密存储
       entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-      entity.setRoleId(SysConsts.ROLE.TEACHER);
+      entity.setRoleId(SysConsts.Role.TEACHER);
       return super.save(entity);
     }
   }

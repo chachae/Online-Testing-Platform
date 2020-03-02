@@ -4,6 +4,7 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.exception.ServiceException;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperFormService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class PaperFormController {
    * @return 当前试卷模板页面
    */
   @GetMapping("/delete/{id}")
+  @Permissions("paperForm:delete")
   public R delPaperForm(@PathVariable Integer id) {
     try {
       // 调用试卷模板已出接口（通过ID删除）
@@ -43,6 +45,7 @@ public class PaperFormController {
    * @return 试卷题型页面
    */
   @PostMapping("/save")
+  @Permissions("paperForm:save")
   public R addPaperForm(PaperForm paperForm) {
     // 设置模板类型
     paperForm.setType(SysConsts.PaperForm.INSERT);

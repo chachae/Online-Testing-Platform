@@ -1,8 +1,8 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Score;
-import com.chachae.exam.common.entity.dto.AnswerEditDto;
+import com.chachae.exam.common.model.Score;
+import com.chachae.exam.common.model.dto.AnswerEditDto;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * 分数业务接口
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-06 22:53:25
  */
 public interface ScoreService extends IService<Score> {

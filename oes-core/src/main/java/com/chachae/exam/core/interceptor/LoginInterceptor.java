@@ -3,7 +3,6 @@ package com.chachae.exam.core.interceptor;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.properties.Props;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -30,55 +29,63 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
   private static final String ADMIN_PATTERN = "/admin/**";
   private static final String TEACHER_PATTERN = "/teacher/**";
   private static final String STU_PATTERN = "/student/**";
+  private static final String REST_PATTERN = "/api/**";
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
 
     // 当前请求路径
-    String curPath = HttpContextUtil.getRequestUri();
+    String curPath = request.getRequestURI();
 
     // 白名单匹配
     String[] anon = StrUtil.splitToArray(props.getSys().getAnonUrl(), StrUtil.C_COMMA);
     for (String e : anon) {
+      // 成功匹配表名单则放行
       if (pathMatcher.match(e, curPath)) {
         return true;
       }
     }
 
     // 获取 session
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = request.getSession();
+
     // session 判空
     if (ObjectUtil.isEmpty(session)) {
-      response.sendRedirect("/login");
+      response.sendRedirect(props.getSys().getLoginUrl());
       return false;
     }
 
-    // 过滤未认证请求
+    // rest 接口一律放行，由 AOP 授权器决定请求是否合法
+    if (pathMatcher.match(REST_PATTERN, curPath)) {
+      if (ObjectUtil.isNotEmpty(session)) {
+        return true;
+      }
+    }
+
     // 管理员
     if (pathMatcher.match(ADMIN_PATTERN, curPath)) {
-      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.ADMIN))) {
-        response.sendRedirect("/login");
-        return false;
+      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.ADMIN))) {
+        return true;
       }
     }
 
     // 教师
     if (pathMatcher.match(TEACHER_PATTERN, curPath)) {
-      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.TEACHER))) {
-        response.sendRedirect("/login");
-        return false;
+      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.TEACHER))) {
+        return true;
       }
     }
 
     // 学生
     if (pathMatcher.match(STU_PATTERN, curPath)) {
-      if (ObjectUtil.isEmpty(session.getAttribute(SysConsts.Session.STUDENT))) {
-        response.sendRedirect("/login");
-        return false;
+      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.STUDENT))) {
+        return true;
       }
     }
 
-    return true;
+    // 未知请求一律过滤
+    response.sendRedirect(props.getSys().getLoginUrl());
+    return false;
   }
 }

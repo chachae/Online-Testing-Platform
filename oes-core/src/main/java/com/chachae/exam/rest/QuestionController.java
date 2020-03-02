@@ -3,6 +3,7 @@ package com.chachae.exam.rest;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.vo.QuestionVo;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public class QuestionController {
   @Resource private QuestionService questionService;
 
   @GetMapping("/{id}")
+  @Permissions("course:list")
   public QuestionVo getOne(@PathVariable Integer id) {
     return this.questionService.selectVoById(id);
   }
@@ -31,6 +33,7 @@ public class QuestionController {
    * @return 当前的试题页面
    */
   @PostMapping("/save")
+  @Permissions("question:save")
   public R add(Question question) {
     // 调用试题新增接口
     this.questionService.save(question);
@@ -44,6 +47,7 @@ public class QuestionController {
    * @return 试题页面
    */
   @PostMapping("/update")
+  @Permissions("question:update")
   public R edit(Question question) {
     // 更新试题信息
     this.questionService.updateById(question);
@@ -57,6 +61,7 @@ public class QuestionController {
    * @return 试题页面
    */
   @PostMapping("/delete/{id}")
+  @Permissions("question:delete")
   public R delete(@PathVariable Integer id) {
     // 通过 ID 移除试题
     questionService.deleteById(id);
@@ -70,6 +75,7 @@ public class QuestionController {
    * @return 导入题目结果
    */
   @PostMapping("/import")
+  @Permissions("question:import")
   public R importQuestion(@RequestParam("file") MultipartFile multipartFile) {
     // 调用试题导入接口
     this.questionService.importQuestion(multipartFile);

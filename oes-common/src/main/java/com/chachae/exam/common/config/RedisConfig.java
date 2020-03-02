@@ -1,4 +1,4 @@
-package com.chachae.exam.core.config;
+package com.chachae.exam.common.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

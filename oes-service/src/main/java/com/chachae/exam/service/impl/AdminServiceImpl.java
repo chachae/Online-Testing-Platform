@@ -4,10 +4,10 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Admin;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
+import com.chachae.exam.common.model.Admin;
+import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.AdminMapper;
+import com.chachae.exam.common.dao.AdminDAO;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
@@ -31,9 +31,9 @@ import java.util.List;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
+public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements AdminService {
 
-  @Resource private AdminMapper adminMapper;
+  @Resource private AdminDAO adminDAO;
 
   /**
    * 管理员登录
@@ -56,8 +56,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
       throw new ServiceException("密码错误");
     }
     // 更新登陆时间
-    Date time = DateUtil.getDate();
-    this.adminMapper.updateById(Admin.builder().id(admin.getId()).lastLoginTime(time).build());
+    Date time = cn.hutool.core.date.DateUtil.date();
+    this.adminDAO.updateById(Admin.builder().id(admin.getId()).lastLoginTime(time).build());
     return admin;
   }
 
@@ -66,14 +66,14 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     // 通过学号获取学生信息
     QueryWrapper<Admin> qw = new QueryWrapper<>();
     qw.lambda().eq(Admin::getNumber, number);
-    return this.adminMapper.selectOne(qw);
+    return this.adminDAO.selectOne(qw);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void updatePassword(ChangePassDto dto) {
     // 获取该管理员的信息
-    Admin admin = this.adminMapper.selectById(dto.getId());
+    Admin admin = this.adminDAO.selectById(dto.getId());
     // 比较旧密码是否输入正确
     if (!RsaCipherUtil.verify(dto.getOldPassword(), admin.getPassword())) {
       throw new ServiceException("旧密码输入错误");
@@ -81,7 +81,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
       // 旧密码输入正确，进行更新
       Admin build =
           Admin.builder().id(dto.getId()).password(RsaCipherUtil.hash(dto.getPassword())).build();
-      this.adminMapper.updateById(build);
+      this.adminDAO.updateById(build);
     }
   }
 
@@ -90,7 +90,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     // 分页信息设置，默认每页 12 条数据
     PageHelper.startPage(pageNo, 12);
     // 调用管理员查询集合接口
-    List<Admin> admins = this.adminMapper.selectList(null);
+    List<Admin> admins = this.adminDAO.selectList(null);
     return new PageInfo<>(admins);
   }
 
@@ -98,7 +98,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 获取当前的管理员ID是否和被删除的相同（一样则不能刪除）
-    Admin cur = (Admin) HttpContextUtil.getAttribute(SysConsts.SESSION.ADMIN);
+    Admin cur = (Admin) HttpContextUtil.getAttribute(SysConsts.Session.ADMIN);
     // 当前 session 的 管理员 ID 和被删除的管理员ID一直，不能被删除
     if (cur.getId().equals(id)) {
       throw new ServiceException("不可以删除自己");
@@ -116,9 +116,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
       throw new ServiceException("用户名已存在");
     }
     // 封装管理员默认角色ID，同时加密密码
-    entity.setRoleId(SysConsts.ROLE.ADMIN);
+    entity.setRoleId(SysConsts.Role.ADMIN);
     entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-    entity.setLastLoginTime(DateUtil.getDate());
+    entity.setLastLoginTime(DateUtil.date());
     return super.save(entity);
   }
 }

@@ -2,6 +2,7 @@ package com.chachae.exam.rest;
 
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Academy;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AcademyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class AcademyController {
    * @return 学院集合
    */
   @GetMapping
+  @Permissions("academy:list")
   public List<Academy> list() {
     return this.academyService.list();
   }
@@ -37,6 +39,7 @@ public class AcademyController {
    * @return 学院信息
    */
   @GetMapping("/{id}")
+  @Permissions("academy:list")
   public Academy getOne(@PathVariable Integer id) {
     return this.academyService.getById(id);
   }
@@ -49,6 +52,7 @@ public class AcademyController {
    */
   @ResponseBody
   @PostMapping("/update")
+  @Permissions("academy:update")
   public R updateAcademy(Academy academy) {
     // 调用学院更新接口
     this.academyService.updateById(academy);
@@ -62,6 +66,7 @@ public class AcademyController {
    * @return 成功信息
    */
   @PostMapping("/save")
+  @Permissions("academy:save")
   public R saveAcademy(Academy academy) {
     // 调用学院新增接口
     this.academyService.save(academy);
@@ -75,6 +80,7 @@ public class AcademyController {
    * @return 响应信息
    */
   @PostMapping("/delete/{id}")
+  @Permissions("academy:delete")
   public R delete(@PathVariable Integer id) {
     // 调用删除接口
     this.academyService.removeById(id);

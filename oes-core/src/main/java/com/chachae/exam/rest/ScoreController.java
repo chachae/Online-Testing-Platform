@@ -4,6 +4,7 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.ScoreService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class ScoreController {
    * @return 成绩与平均成绩比较页面
    */
   @PostMapping("/student/chart/{id}")
+  @Permissions("score:chart")
   public R stuChart(@PathVariable Integer id) {
     return R.successWithData(scoreService.averageScore(id));
   }
@@ -35,6 +37,7 @@ public class ScoreController {
    * @return 统计该学生成绩分布页面
    */
   @GetMapping("/student/chart2")
+  @Permissions("score:chart")
   public R stuSelfChart() {
     // 获取学生的 ID
     Student student = (Student) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);

@@ -2,6 +2,7 @@ package com.chachae.exam.rest;
 
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Announce;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AnnounceService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class AnnounceController {
    * @return 公告页面
    */
   @PostMapping("/save")
+  @Permissions("announce:save")
   public R save(Announce announce) {
     // 调用新增公告接口
     this.announceService.save(announce);
@@ -39,6 +41,7 @@ public class AnnounceController {
    * @return 成功信息
    */
   @GetMapping("/delete/{id}")
+  @Permissions("announce:delete")
   public R delete(@PathVariable Integer id) {
     // 调用公告删除接口
     this.announceService.removeById(id);
@@ -52,6 +55,7 @@ public class AnnounceController {
    * @return 成功信息
    */
   @PostMapping("/update")
+  @Permissions("announce:update")
   public R update(Announce announce) {
     // 调用公告删除接口
     this.announceService.updateById(announce);
@@ -65,6 +69,7 @@ public class AnnounceController {
    * @return 成功信息
    */
   @PostMapping("/delete")
+  @Permissions("announce:delete")
   public R deleteBatch(Integer[] ids) {
     // 调用公告批量删除接口
     this.announceService.delete(ids);
@@ -78,6 +83,7 @@ public class AnnounceController {
    * @return 公告信息
    */
   @GetMapping("/{id}")
+  @Permissions("announce:list")
   public Announce selectOne(@PathVariable Integer id) {
     return this.announceService.getById(id);
   }

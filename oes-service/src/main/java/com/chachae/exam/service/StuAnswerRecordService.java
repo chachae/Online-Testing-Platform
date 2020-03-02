@@ -1,15 +1,15 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.StuAnswerRecord;
-import com.chachae.exam.common.entity.dto.StuAnswerRecordDto;
+import com.chachae.exam.common.model.StuAnswerRecord;
+import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 
 import java.util.List;
 
 /**
  * 学生主观题答题记录表服务接口
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-07 21:49:52
  */
 public interface StuAnswerRecordService extends IService<StuAnswerRecord> {

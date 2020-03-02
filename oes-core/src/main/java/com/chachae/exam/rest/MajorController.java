@@ -3,6 +3,7 @@ package com.chachae.exam.rest;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.exception.ServiceException;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.MajorService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class MajorController {
   @Resource private MajorService majorService;
 
   @GetMapping
+  @Permissions("major:list")
   public List<Major> majorList() {
     return this.majorService.list();
   }
@@ -31,6 +33,7 @@ public class MajorController {
    * @return 专业集合信息
    */
   @GetMapping("/academy/{academyId}")
+  @Permissions("major:list")
   public List<Major> majorList(@PathVariable Integer academyId) {
     return this.majorService.listByAcademyId(academyId);
   }
@@ -42,6 +45,7 @@ public class MajorController {
    * @return 专业信息
    */
   @GetMapping("/{id}")
+  @Permissions("major:list")
   public Major getOne(@PathVariable Integer id) {
     return this.majorService.getById(id);
   }
@@ -54,6 +58,7 @@ public class MajorController {
    */
   @ResponseBody
   @PostMapping("/update")
+  @Permissions("major:update")
   public R updateMajor(Major major) {
     this.majorService.updateById(major);
     return R.success();
@@ -66,6 +71,7 @@ public class MajorController {
    * @return 成功信息
    */
   @PostMapping("/save")
+  @Permissions("major:save")
   public R saveMajor(Major major) {
     this.majorService.save(major);
     return R.success();
@@ -78,6 +84,7 @@ public class MajorController {
    * @return 回调信息
    */
   @PostMapping("/delete/{id}")
+  @Permissions("major:delete")
   public R deleteMajor(@PathVariable Integer id) {
     try {
       this.majorService.removeById(id);

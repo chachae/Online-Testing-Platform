@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Course;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.entity.Score;
-import com.chachae.exam.common.entity.dto.AnswerEditDto;
-import com.chachae.exam.common.mapper.CourseMapper;
-import com.chachae.exam.common.mapper.PaperMapper;
-import com.chachae.exam.common.mapper.ScoreMapper;
+import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.Score;
+import com.chachae.exam.common.model.dto.AnswerEditDto;
+import com.chachae.exam.common.dao.CourseDAO;
+import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.dao.ScoreDAO;
 import com.chachae.exam.service.ScoreService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,16 +27,16 @@ import java.util.Map;
 /**
  * 分数业务实现
  *
- * @author yzn
+ * @author chachae
  * @date 2020/1/7
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements ScoreService {
+public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements ScoreService {
 
-  @Resource private ScoreMapper scoreMapper;
-  @Resource private PaperMapper paperMapper;
-  @Resource private CourseMapper courseMapper;
+  @Resource private ScoreDAO scoreDAO;
+  @Resource private PaperDAO paperDAO;
+  @Resource private CourseDAO courseDAO;
 
   @Override
   public List<Score> selectByStuId(Integer id) {
@@ -44,7 +44,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, id);
     // 返回该学生的分数集合
-    return scoreMapper.selectList(qw);
+    return scoreDAO.selectList(qw);
   }
 
   @Override
@@ -52,12 +52,12 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     // 构造条件询条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getCourseId, courseId);
-    qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
+    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
     // 准备一个 Map 用来存储课程成绩信息
     Map<String, Object> countMap = Maps.newHashMap();
     List<Map<String, Object>> countList = Lists.newArrayList();
     // 调用统计各个分数段人数方法
-    countPerScoreNum(paperMapper.selectList(qw), countMap, countList);
+    countPerScoreNum(paperDAO.selectList(qw), countMap, countList);
     return countList;
   }
 
@@ -74,11 +74,11 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     // 统计每门课程平均成绩
     for (Score s : scoreList) {
       // 通过试卷 ID 查询该试卷的平均分
-      double avg = scoreMapper.avgScoreByPaperId(s.getPaperId());
+      double avg = scoreDAO.avgScoreByPaperId(s.getPaperId());
       // 通过试卷 ID 查询试卷信息
-      Paper paper = paperMapper.selectById(s.getPaperId());
+      Paper paper = paperDAO.selectById(s.getPaperId());
       // 通过课程 ID 查询课程信息
-      Course course = courseMapper.selectById(paper.getCourseId());
+      Course course = courseDAO.selectById(paper.getCourseId());
       // 存入平均分
       avgMap.put(course.getCourseName(), String.valueOf(avg));
     }
@@ -86,9 +86,9 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     for (Score s : scoreList) {
       String scoreMy = s.getScore();
       // 通过 ID 查询试卷信息
-      Paper paper = paperMapper.selectById(s.getPaperId());
+      Paper paper = paperDAO.selectById(s.getPaperId());
       // 通过课程 ID 查询课程信息
-      Course course = courseMapper.selectById(paper.getCourseId());
+      Course course = courseDAO.selectById(paper.getCourseId());
       // 存入我的成绩 Map 集合
       myScoreMap.put(course.getCourseName(), scoreMy);
     }
@@ -184,7 +184,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     // 获取改门成绩的信息
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
-    Score res = this.scoreMapper.selectOne(qw);
+    Score res = this.scoreDAO.selectOne(qw);
     // 更新成绩
     UpdateWrapper<Score> uw = new UpdateWrapper<>();
     uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
@@ -193,7 +193,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     // 构造条件（学生ID+试卷ID）更新 SQL
     uw.lambda().set(Score::getScore, score);
     uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
-    this.scoreMapper.update(null, uw);
+    this.scoreDAO.update(null, uw);
   }
 
   @Override
@@ -202,7 +202,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, stuId).eq(Score::getPaperId, paperId);
     // 返回查询到的数据
-    return this.scoreMapper.selectOne(qw);
+    return this.scoreDAO.selectOne(qw);
   }
 
   @Override
@@ -210,7 +210,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
   public void deleteByStuId(Integer stuId) {
     QueryWrapper<Score> qw = new QueryWrapper<>();
     qw.lambda().eq(Score::getStuId, stuId);
-    this.scoreMapper.delete(qw);
+    this.scoreDAO.delete(qw);
   }
 
   /**
@@ -264,7 +264,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     QueryWrapper<Score> qw = new QueryWrapper<>();
     // gt（GreatThan） 大于
     qw.lambda().gt(Score::getScore, score);
-    return this.scoreMapper.selectCount(qw);
+    return this.scoreDAO.selectCount(qw);
   }
 
   /**
@@ -277,7 +277,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     QueryWrapper<Score> qw = new QueryWrapper<>();
     // le（lessThan）小于
     qw.lambda().le(Score::getScore, score);
-    return this.scoreMapper.selectCount(qw);
+    return this.scoreDAO.selectCount(qw);
   }
 
   /**
@@ -291,6 +291,6 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
     QueryWrapper<Score> qw = new QueryWrapper<>();
     // between 介于两者之间
     qw.lambda().between(Score::getScore, start, end);
-    return this.scoreMapper.selectCount(qw);
+    return this.scoreDAO.selectCount(qw);
   }
 }

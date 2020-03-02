@@ -1,9 +1,9 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Paper;
-import com.chachae.exam.common.entity.dto.ImportPaperRandomQuestionDto;
-import com.chachae.exam.common.entity.dto.PaperQuestionUpdateDto;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
+import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 试卷业务接口
  *
- * @author yzn
+ * @author chachae
  * @date 2020/1/13
  */
 public interface PaperService extends IService<Paper> {

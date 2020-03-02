@@ -7,12 +7,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.*;
-import com.chachae.exam.common.entity.dto.ImportPaperRandomQuestionDto;
-import com.chachae.exam.common.entity.dto.MarkInfoDto;
-import com.chachae.exam.common.entity.dto.PaperQuestionUpdateDto;
+import com.chachae.exam.common.model.*;
+import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
+import com.chachae.exam.common.model.dto.MarkInfoDto;
+import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.*;
+import com.chachae.exam.common.dao.*;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.NumberUtil;
 import com.chachae.exam.common.util.PaperMarkUtil;
@@ -36,19 +36,19 @@ import java.util.stream.Collectors;
 /**
  * 试卷批改业务实现
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/2
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements PaperService {
+public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements PaperService {
 
-  @Resource private PaperMapper paperMapper;
-  @Resource private PaperFormMapper paperFormMapper;
+  @Resource private PaperDAO paperDAO;
+  @Resource private PaperFormDAO paperFormDAO;
   @Resource private QuestionService questionService;
-  @Resource private StuAnswerRecordMapper stuAnswerRecordMapper;
-  @Resource private ScoreMapper scoreMapper;
-  @Resource private TypeMapper typeMapper;
+  @Resource private StuAnswerRecordDAO stuAnswerRecordDAO;
+  @Resource private ScoreDAO scoreDAO;
+  @Resource private TypeDAO typeDAO;
 
   @Override
   public PageInfo<Paper> pageForPaperList(Integer teacherId, Integer pageNo) {
@@ -57,14 +57,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     qw.lambda().eq(Paper::getTeacherId, teacherId);
     // 分页查询，默认每页 12 条数据
     PageHelper.startPage(pageNo, 12);
-    List<Paper> paperList = paperMapper.selectList(qw);
+    List<Paper> paperList = paperDAO.selectList(qw);
     return new PageInfo<>(paperList);
   }
 
   @Override
   public void randomNewPaper(Paper paper) {
     // 获取试卷模板信息
-    PaperForm form = paperFormMapper.selectById(paper.getPaperFormId());
+    PaperForm form = paperFormDAO.selectById(paper.getPaperFormId());
     // 获取试卷归属的课程 ID
     Integer cid = paper.getCourseId();
     // 预先准备试卷问题集合
@@ -83,7 +83,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   @Override
   public void randomNewPaper(Paper paper, String diff) {
     // 获取试卷模板信息
-    PaperForm form = paperFormMapper.selectById(paper.getPaperFormId());
+    PaperForm form = paperFormDAO.selectById(paper.getPaperFormId());
     // 获取试卷归属的课程 ID
     Integer cid = paper.getCourseId();
     // 预先准备试卷问题集合
@@ -122,19 +122,19 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getMajorId, majorId);
     // 只查询模拟考试
-    qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_PRACTICE);
-    return paperMapper.selectList(qw);
+    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_PRACTICE);
+    return paperDAO.selectList(qw);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void markPaper(Integer stuId, Integer paperId, HttpServletRequest request) {
     // 通过 ID 获取试卷信息
-    Paper paper = paperMapper.selectById(paperId);
+    Paper paper = paperDAO.selectById(paperId);
     // 试卷名称
     String paperName = paper.getPaperName();
     // 通过 ID 获取试卷模板信息
-    PaperForm paperForm = paperFormMapper.selectById(paper.getPaperFormId());
+    PaperForm paperForm = paperFormDAO.selectById(paper.getPaperFormId());
     // 获取试卷中各个部分题型的问题信息
     Set<Question> choices = questionService.selectByPaperIdAndType(paperId, 1);
     Set<Question> mulChoices = questionService.selectByPaperIdAndType(paperId, 2);
@@ -193,7 +193,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
         // 封装学生、试卷、分数信息
         record.setPaperId(paperId).setStuId(stuId);
-        stuAnswerRecordMapper.insert(record);
+        stuAnswerRecordDAO.insert(record);
       }
     }
 
@@ -214,7 +214,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 封装分数参数，并将分数信息插入到分数表中
     Score scoreResult = new Score(stuId, paperId, paperName, String.valueOf(score), wstr);
     // 此处调用插入接口
-    this.scoreMapper.insert(scoreResult);
+    this.scoreDAO.insert(scoreResult);
   }
 
   @Override
@@ -224,25 +224,25 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 构造条件查询语句
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getTeacherId, id);
-    qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
+    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
     // 开始时间大于当前时间
     qw.lambda().gt(Paper::getBeginTime, now);
-    return paperMapper.selectList(qw);
+    return paperDAO.selectList(qw);
   }
 
   @Override
   public List<Paper> listDoneByTeacherId(Integer teacherId) {
     // 构造通过教师ID查询已经完成的试卷信息
     QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getPaperState, SysConsts.PAPER.PAPER_STATE_END);
+    qw.lambda().eq(Paper::getPaperState, SysConsts.Paper.PAPER_STATE_END);
     qw.lambda().eq(Paper::getTeacherId, teacherId);
-    return paperMapper.selectList(qw);
+    return paperDAO.selectList(qw);
   }
 
   @Override
   public boolean updateById(Paper paper) {
     // 通过起止时间计算考试时长
-    if (paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+    if (paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
       paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
     } else {
       paper.setBeginTime(null);
@@ -254,20 +254,20 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   @Override
   public void updateStateById(Integer id) {
     // 更新试卷的状态
-    Paper paper = paperMapper.selectById(id);
+    Paper paper = paperDAO.selectById(id);
     // 更新状态为 [结束状态]
-    paper.setPaperState(SysConsts.PAPER.PAPER_STATE_END);
-    paperMapper.updateById(paper);
+    paper.setPaperState(SysConsts.Paper.PAPER_STATE_END);
+    paperDAO.updateById(paper);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void deletePaperById(Integer id) {
     // 查询试卷是否存在
-    Paper paper = this.paperMapper.selectById(id);
+    Paper paper = this.paperDAO.selectById(id);
     if (ObjectUtil.isNotEmpty(paper)) {
       // 检查试卷是否在考试时间范围内，是的话不允许被删除（结束的话可以被删除/模拟考可以直接删除）
-      if (paper.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)
+      if (paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)
           // 已经开始
           && paper.isStart()
           // 还未结束
@@ -278,17 +278,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       // 删除score表中paperId为传入参数的对象
       QueryWrapper<Score> scoreQw = new QueryWrapper<>();
       scoreQw.lambda().eq(Score::getPaperId, id);
-      List<Score> scores = this.scoreMapper.selectList(scoreQw);
+      List<Score> scores = this.scoreDAO.selectList(scoreQw);
       // 遍历成绩集合，并逐一删除对应试卷的成绩数据
-      scores.forEach(score -> scoreMapper.deleteById(score.getId()));
+      scores.forEach(score -> scoreDAO.deleteById(score.getId()));
 
       // 删除学生与该试卷关联的答题记录
       QueryWrapper<StuAnswerRecord> ansQw = new QueryWrapper<>();
       // 构造查询条件
       ansQw.lambda().eq(StuAnswerRecord::getPaperId, id);
-      List<StuAnswerRecord> ans = this.stuAnswerRecordMapper.selectList(ansQw);
+      List<StuAnswerRecord> ans = this.stuAnswerRecordDAO.selectList(ansQw);
       // 遍历删除答题记录
-      ans.forEach(an -> stuAnswerRecordMapper.deleteById(an.getId()));
+      ans.forEach(an -> stuAnswerRecordDAO.deleteById(an.getId()));
 
       // 获取试卷模板，如果只有他使用，则进行删除
       int paperFormId = paper.getPaperFormId();
@@ -296,12 +296,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
       if (paperFormId != 1) {
         // 如果数量等于 1，说明只有本考试使用，直接删除
         if (this.countPaperByPaperFormId(paperFormId) == 1) {
-          this.paperFormMapper.deleteById(paperFormId);
+          this.paperFormDAO.deleteById(paperFormId);
         }
       }
 
       // 删除试卷
-      paperMapper.deleteById(id);
+      paperDAO.deleteById(id);
     }
   }
 
@@ -310,15 +310,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getMajorId, majorId);
     // 只查询正式考试
-    qw.lambda().eq(Paper::getPaperType, SysConsts.PAPER.PAPER_TYPE_FORMAL);
-    return this.paperMapper.selectList(qw);
+    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
+    return this.paperDAO.selectList(qw);
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void updateQuestionId(PaperQuestionUpdateDto dto) {
     // 查询试卷信息
-    Paper paper = this.paperMapper.selectById(dto.getPaperId());
+    Paper paper = this.paperDAO.selectById(dto.getPaperId());
     if (ObjectUtil.isEmpty(paper)) {
       throw new ServiceException("试卷不存在");
     }
@@ -365,14 +365,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     ids = ids.substring(0, ids.length() - 1);
 
     // 插入新数据
-    this.paperMapper.updateById(Paper.builder().id(dto.getPaperId()).questionId(ids).build());
+    this.paperDAO.updateById(Paper.builder().id(dto.getPaperId()).questionId(ids).build());
   }
 
   @Override
   public List<Paper> listByTeacherId(Integer teacherId) {
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getTeacherId, teacherId);
-    return this.paperMapper.selectList(qw);
+    return this.paperDAO.selectList(qw);
   }
 
   @Override
@@ -380,7 +380,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   public void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity) {
     // 获取试卷模板信息
     Integer paperFormId = paper.getPaperFormId();
-    PaperForm form = this.paperFormMapper.selectById(paperFormId);
+    PaperForm form = this.paperFormDAO.selectById(paperFormId);
 
     // 预备随机开启值
     // 开启单选题
@@ -502,7 +502,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     }
 
     // 至此，完成随机抽题，更新试卷模板
-    this.paperFormMapper.updateById(form);
+    this.paperFormDAO.updateById(form);
     // 拼接 ID，获取试卷原本的试题集合 ID
     List<String> idStr = StrUtil.split(paper.getQuestionId(), StrUtil.C_COMMA);
     idList.forEach(e -> idStr.add(String.valueOf(e)));
@@ -523,7 +523,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 构造通过试卷模板查询试卷数量条件
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getPaperFormId, paperFormId);
-    return this.paperMapper.selectCount(qw);
+    return this.paperDAO.selectCount(qw);
   }
 
   @Override
@@ -531,13 +531,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
   public boolean save(Paper entity) {
 
     // 将模拟试卷的日期移除掉
-    if (entity.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_PRACTICE)) {
+    if (entity.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_PRACTICE)) {
       entity.setBeginTime(null);
       entity.setEndTime(null);
     }
 
     // 正式考试才要计算起止时间
-    if (entity.getPaperType().equals(SysConsts.PAPER.PAPER_TYPE_FORMAL)) {
+    if (entity.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
       // 計计算起止时间
       String allowTime = calAllowTime(entity.getBeginTime(), entity.getEndTime());
       // 封装时常
@@ -639,7 +639,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
           // 不为空则查询提醒，便于定位具体哪些题目数量不足
           Integer typeId = this.questionService.getById(ids.get(0)).getTypeId();
           // 获取类型名称
-          String typeName = this.typeMapper.selectById(typeId).getTypeName();
+          String typeName = this.typeDAO.selectById(typeId).getTypeName();
           throw new ServiceException("该门课程的 [ " + typeName + " ] 数量不足，请增加题目或调整难度后重试");
         }
       }

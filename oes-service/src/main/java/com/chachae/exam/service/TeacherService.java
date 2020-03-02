@@ -1,14 +1,14 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Teacher;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
+import com.chachae.exam.common.model.Teacher;
+import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.github.pagehelper.PageInfo;
 
 /**
  * 教师业务接口
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/5
  */
 public interface TeacherService extends IService<Teacher> {

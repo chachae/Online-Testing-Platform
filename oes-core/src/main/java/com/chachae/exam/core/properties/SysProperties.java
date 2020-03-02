@@ -11,6 +11,8 @@ public class SysProperties {
 
   private String anonUrl;
 
+  private String loginUrl;
+
   private String logoutUrl;
 
   private String indexUrl;

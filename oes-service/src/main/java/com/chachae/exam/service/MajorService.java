@@ -1,14 +1,14 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Major;
-import com.chachae.exam.common.entity.vo.MajorVo;
+import com.chachae.exam.common.model.Major;
+import com.chachae.exam.common.model.vo.MajorVo;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
 /**
- * @author yzn
+ * @author chachae
  * @since 2020/2/8 14:26
  */
 public interface MajorService extends IService<Major> {

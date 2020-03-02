@@ -1,14 +1,14 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Admin;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
+import com.chachae.exam.common.model.Admin;
+import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.github.pagehelper.PageInfo;
 
 /**
  * 管理员业务接口
  *
- * @author yzn
+ * @author chachae
  */
 public interface AdminService extends IService<Admin> {
 

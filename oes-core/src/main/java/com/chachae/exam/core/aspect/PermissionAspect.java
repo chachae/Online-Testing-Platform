@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,7 +24,6 @@ import java.util.Set;
  */
 @Slf4j
 @Aspect
-@Order(1)
 @Component
 public class PermissionAspect {
 
@@ -36,13 +34,14 @@ public class PermissionAspect {
   public void permissionPointCut() {}
 
   /**
-   * 配置环绕通知,使用在方法logPointcut() 上注册的切入点
+   * 配置环绕通知
    *
-   * @param joinPoint join point for advice
+   * @param joinPoint 切点
    */
   @Around("permissionPointCut()")
-  public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-    // 获取用户角色信息
+  public Object permissionCheckAround(ProceedingJoinPoint joinPoint) throws Throwable {
+
+    // 获取用户角色信息（session 情况交给拦截器处理，此处不用管）
     int roleId = (int) HttpContextUtil.getAttribute(SysConsts.Session.ROLE_ID);
     Set<String> permissions = this.permissionService.selectExpressionByRoleId(roleId);
 
@@ -60,9 +59,9 @@ public class PermissionAspect {
       // 获取请求接口
       String uri = HttpContextUtil.getRequestUri();
       if (uri.contains(uriStart)) {
-        throw new RestApiException("用户不存在 [ " + permission + " ]权限，无权操作");
+        throw new RestApiException("用户不存在 [ " + permission + " ] 权限，无权操作");
       } else {
-        throw new ApiException("用户不存在 [ " + permission + " ]权限，无权操作");
+        throw new ApiException("用户不存在 [ " + permission + " ] 权限，无权操作");
       }
     }
     return joinPoint.proceed();

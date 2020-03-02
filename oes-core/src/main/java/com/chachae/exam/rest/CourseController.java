@@ -2,6 +2,7 @@ package com.chachae.exam.rest;
 
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Course;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.CourseService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ public class CourseController {
   @Resource private CourseService courseService;
 
   @GetMapping("/teacher/{teacherId}")
+  @Permissions("course:list")
   public List<Course> listByTeacherId(@PathVariable Integer teacherId) {
     return this.courseService.listByTeacherId(teacherId);
   }
@@ -34,6 +36,7 @@ public class CourseController {
    * @return 成功信息
    */
   @GetMapping("/save")
+  @Permissions("course:save")
   public R newCourse(String courseName, Integer teacherId) {
     // 封装参数
     Course build = Course.builder().courseName(courseName).teacherId(teacherId).build();
@@ -47,7 +50,8 @@ public class CourseController {
    * @param id 课程ID
    * @return 删除成功信息
    */
-  @GetMapping("/delete{id}")
+  @GetMapping("/delete/{id}")
+  @Permissions("course:delete")
   public R delCourse(@PathVariable Integer id) {
     // 调用课程删除接口
     this.courseService.removeById(id);

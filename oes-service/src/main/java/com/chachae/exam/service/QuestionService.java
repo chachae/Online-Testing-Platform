@@ -1,11 +1,11 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Course;
-import com.chachae.exam.common.entity.Question;
-import com.chachae.exam.common.entity.dto.ImportPaperDto;
-import com.chachae.exam.common.entity.dto.StuAnswerRecordDto;
-import com.chachae.exam.common.entity.vo.QuestionVo;
+import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.dto.ImportPaperDto;
+import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
+import com.chachae.exam.common.model.vo.QuestionVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * 试题接口
  *
- * @author yzn
+ * @author chachae
  * @date 2020/1/22
  */
 public interface QuestionService extends IService<Question> {

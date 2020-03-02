@@ -1,7 +1,7 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Academy;
+import com.chachae.exam.common.model.Academy;
 
 /**
  * 学院表服务接口

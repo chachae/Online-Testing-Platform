@@ -4,12 +4,12 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.Student;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
-import com.chachae.exam.common.entity.dto.StudentQueryDto;
-import com.chachae.exam.common.entity.vo.StudentVo;
+import com.chachae.exam.common.model.Student;
+import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.StudentQueryDto;
+import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.StudentMapper;
+import com.chachae.exam.common.dao.StudentDAO;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
@@ -28,15 +28,15 @@ import java.util.List;
 /**
  * 学生业务实现
  *
- * @author yzn
+ * @author chachae
  * @date 2020/1/25
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
+public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student>
     implements StudentService {
 
-  @Resource private StudentMapper studentMapper;
+  @Resource private StudentDAO studentDAO;
   @Resource private StuAnswerRecordService stuAnswerRecordService;
   @Resource private ScoreService scoreService;
 
@@ -62,7 +62,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
   @Transactional(rollbackFor = Exception.class)
   public void updatePassword(ChangePassDto dto) {
     // 通过 ID 查询学生信息
-    Student student = studentMapper.selectById(dto.getId());
+    Student student = studentDAO.selectById(dto.getId());
     if (ObjectUtil.isEmpty(student)) {
       throw new ServiceException("用户不存在");
     }
@@ -74,7 +74,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     // 加密密码之后再存入数据库
     student.setPassword(RsaCipherUtil.hash(dto.getPassword()));
     // 执行密码修改
-    studentMapper.updateById(student);
+    studentDAO.updateById(student);
   }
 
   @Override
@@ -83,14 +83,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
     QueryWrapper<Student> qw = new QueryWrapper<>();
     qw.lambda().eq(Student::getStuNumber, stuNumber);
     // 通过学号查询学生信息
-    return studentMapper.selectOne(qw);
+    return studentDAO.selectOne(qw);
   }
 
   @Override
   public PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto) {
     // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
     PageHelper.startPage(pageNo, 12);
-    List<StudentVo> students = this.studentMapper.listVo(dto);
+    List<StudentVo> students = this.studentDAO.listVo(dto);
     // 按照学院 id 从小到大排序
     students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
     return new PageInfo<>(students);
@@ -98,14 +98,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
 
   @Override
   public StudentVo selectVoById(Integer id) {
-    return this.studentMapper.selectVoById(id);
+    return this.studentDAO.selectVoById(id);
   }
 
   @Override
   public Integer selectCountByMajorId(Integer majorId) {
     QueryWrapper<Student> qw = new QueryWrapper<>();
     qw.lambda().eq(Student::getMajorId, majorId);
-    return this.studentMapper.selectCount(qw);
+    return this.studentDAO.selectCount(qw);
   }
 
   @Override
@@ -117,7 +117,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student>
       throw new ServiceException("学号已存在");
     } else {
       // 默认角色值2
-      entity.setRoleId(SysConsts.ROLE.STUDENT);
+      entity.setRoleId(SysConsts.Role.STUDENT);
       // 密码加密之后再存入数据库
       entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
       // 调用父级 save 接口

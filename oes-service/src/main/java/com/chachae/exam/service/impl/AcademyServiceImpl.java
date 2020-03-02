@@ -3,11 +3,11 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.entity.Academy;
-import com.chachae.exam.common.entity.Major;
+import com.chachae.exam.common.model.Academy;
+import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.AcademyMapper;
-import com.chachae.exam.common.mapper.MajorMapper;
+import com.chachae.exam.common.dao.AcademyDAO;
+import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.service.AcademyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,11 +24,11 @@ import java.io.Serializable;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
+public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy>
     implements AcademyService {
 
-  @Resource private MajorMapper majorMapper;
-  @Resource private AcademyMapper academyMapper;
+  @Resource private MajorDAO majorDAO;
+  @Resource private AcademyDAO academyDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -38,7 +38,7 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
     QueryWrapper<Major> qw = new QueryWrapper<>();
     qw.lambda().eq(Major::getAcademyId, id);
     // 查询数量，如果为 0 说明不存在关联
-    int count = this.majorMapper.selectCount(qw);
+    int count = this.majorDAO.selectCount(qw);
     if (count > 0) {
       throw new ServiceException("存在专业关联，不允许删除！");
     }
@@ -70,6 +70,6 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyMapper, Academy>
   public Academy selectByName(String academyName) {
     QueryWrapper<Academy> qw = new QueryWrapper<>();
     qw.lambda().eq(Academy::getName, academyName);
-    return this.academyMapper.selectOne(qw);
+    return this.academyDAO.selectOne(qw);
   }
 }

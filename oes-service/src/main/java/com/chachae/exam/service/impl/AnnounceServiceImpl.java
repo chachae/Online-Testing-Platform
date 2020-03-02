@@ -2,8 +2,8 @@ package com.chachae.exam.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.chachae.exam.common.entity.Announce;
-import com.chachae.exam.common.mapper.AnnounceMapper;
+import com.chachae.exam.common.model.Announce;
+import com.chachae.exam.common.dao.AnnounceDAO;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.service.AnnounceService;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,15 @@ import javax.annotation.Resource;
 /**
  * 公告业务实现类
  *
- * @author yzn
+ * @author chachae
  * @since 2020/2/14 17:42
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class AnnounceServiceImpl extends ServiceImpl<AnnounceMapper, Announce>
+public class AnnounceServiceImpl extends ServiceImpl<AnnounceDAO, Announce>
     implements AnnounceService {
 
-  @Resource private AnnounceMapper announceMapper;
+  @Resource private AnnounceDAO announceDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -38,7 +38,7 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceMapper, Announce>
   public void delete(Integer[] ids) {
     // 遍历 ID 删除数据
     for (Integer id : ids) {
-      this.announceMapper.deleteById(id);
+      this.announceDAO.deleteById(id);
     }
   }
 }

@@ -3,9 +3,9 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.entity.PaperForm;
+import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.mapper.PaperFormMapper;
+import com.chachae.exam.common.dao.PaperFormDAO;
 import com.chachae.exam.service.PaperFormService;
 import com.chachae.exam.service.PaperService;
 import org.springframework.stereotype.Service;
@@ -20,22 +20,22 @@ import java.util.stream.Collectors;
 /**
  * 试卷模板服务实现类
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-14 17:51:18
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm>
+public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
     implements PaperFormService {
 
   @Resource private PaperService paperService;
-  @Resource private PaperFormMapper paperFormMapper;
+  @Resource private PaperFormDAO paperFormDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 调用通过ID查询试卷模板信息接口
-    PaperForm form = this.paperFormMapper.selectById(id);
+    PaperForm form = this.paperFormDAO.selectById(id);
     // 如果 from 对象为空，说明模板不存在
     if (ObjectUtil.isEmpty(form)) {
       throw new ServiceException("试卷模版不存在!");
@@ -56,7 +56,7 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormMapper, PaperForm
     // 过滤出类型1 的数据按模板
     return list.stream()
         // steam 流过滤模板类型
-        .filter(e -> e.getType().equals(SysConsts.PAPER_FORM.INSERT))
+        .filter(e -> e.getType().equals(SysConsts.PaperForm.INSERT))
         // 形成新的 List 集合
         .collect(Collectors.toList());
   }

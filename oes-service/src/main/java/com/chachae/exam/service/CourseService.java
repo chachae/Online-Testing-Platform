@@ -1,14 +1,14 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Course;
+import com.chachae.exam.common.model.Course;
 
 import java.util.List;
 
 /**
  * 课程服务接口
  *
- * @author yzn
+ * @author chachae
  * @since 2020-02-14 17:48:48
  */
 public interface CourseService extends IService<Course> {

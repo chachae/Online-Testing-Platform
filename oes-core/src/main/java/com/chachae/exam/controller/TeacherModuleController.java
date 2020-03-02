@@ -2,16 +2,15 @@ package com.chachae.exam.controller;
 
 import com.chachae.exam.common.base.Page;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.*;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.model.dto.StudentQueryDto;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.controller.common.QuestionModel;
 import com.chachae.exam.service.*;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -149,23 +148,24 @@ public class TeacherModuleController {
    * 复查某场考试的试卷
    *
    * @param paperId 试卷ID
-   * @param model model 对象
+   * @param mv ModelAndView 对象
    * @return 待复查试卷信息
    */
   @GetMapping("/reviewRes")
-  public String reviewPaper(Integer paperId, Model model, RedirectAttributes r) {
+  public ModelAndView reviewPaper(Integer paperId, ModelAndView mv, RedirectAttributes r) {
     try {
       // 答题记录传输对象 List 集合
       List<StuAnswerRecordDto> records =
           this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
-      model.addAttribute("stuAnswer", records);
-      model.addAttribute("paper", this.paperService.getById(paperId));
-      model.addAttribute(
-          "questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
-      return "/teacher/review/record-list";
+      mv.addObject("stuAnswer", records);
+      mv.addObject("paper", this.paperService.getById(paperId));
+      mv.addObject("questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
+      mv.setViewName("/teacher/review/record-list");
+      return mv;
     } catch (ServiceException e) {
       r.addFlashAttribute("message", e.getMessage());
-      return "redirect:/teacher/reviewRes";
+      mv.setViewName("redirect:/teacher/reviewPaper");
+      return mv;
     }
   }
 

@@ -7,6 +7,7 @@ import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +53,8 @@ public class StudentController {
    * @return 重定向到登录界面
    */
   @PostMapping("/update/password")
-  public R changePass(ChangePassDto dto) {
+  @Permissions("student:update:password")
+  public R updatePassword(ChangePassDto dto) {
     // 通过获取 Session 对象
     HttpSession session = HttpContextUtil.getSession();
     try {
@@ -76,6 +78,7 @@ public class StudentController {
    * @return 成功信息
    */
   @PostMapping("/update")
+  @Permissions("student:update")
   public R updateStudent(Student student) {
     this.studentService.updateById(student);
     return R.success();
@@ -88,6 +91,7 @@ public class StudentController {
    * @return 成功信息
    */
   @PostMapping("/delete/{id}")
+  @Permissions("student:delete")
   public R deleteStudent(@PathVariable Integer id) {
     this.studentService.removeById(id);
     return R.success();
@@ -100,6 +104,7 @@ public class StudentController {
    * @return 成功信息
    */
   @PostMapping("/save")
+  @Permissions("student:save")
   public R saveStudent(Student student) {
     // 调用增加接口，并捕捉学号存在的异常
     this.studentService.save(student);
@@ -113,6 +118,7 @@ public class StudentController {
    * @return 学生信息
    */
   @GetMapping("/{id}")
+  @Permissions("student:list")
   public StudentVo getOne(@PathVariable Integer id) {
     return this.studentService.selectVoById(id);
   }

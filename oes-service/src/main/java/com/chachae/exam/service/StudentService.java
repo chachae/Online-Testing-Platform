@@ -1,16 +1,16 @@
 package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.entity.Student;
-import com.chachae.exam.common.entity.dto.ChangePassDto;
-import com.chachae.exam.common.entity.dto.StudentQueryDto;
-import com.chachae.exam.common.entity.vo.StudentVo;
+import com.chachae.exam.common.model.Student;
+import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.StudentQueryDto;
+import com.chachae.exam.common.model.vo.StudentVo;
 import com.github.pagehelper.PageInfo;
 
 /**
  * 学生业务接口
  *
- * @author yzn
+ * @author chachae
  * @date 2020/2/5
  */
 public interface StudentService extends IService<Student> {
