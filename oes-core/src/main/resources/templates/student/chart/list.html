@@ -5,39 +5,75 @@
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
 </head>
-<body class="hold-transition skin-green sidebar-mini">
-
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
     <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%layout("../../student/include/sider.html",{name:"char-list"}){}%>
-    <!-- 右侧内容部分 -->
+    <%layout("../../student/include/sider.html",{name:"myScore-chart-list"}){}%>
     <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>成绩分析</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/student/score/chart">成绩分析</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- table 部分 -->
         <section class="content">
-            <div class="box" style="background-color: inherit">
-                <div class="box-header with-border">
-                    <h3 class="box-title">我的成绩分析</h3>
-                </div>
-                <div class="box-body">
-                    <div id="main" style="height: 560px;width: 100%"></div>
-                </div>
+
+            <!-- 模拟考试 -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-yellow">
+                                <h3 class="card-title">表格</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <div class="container-fluid">
+                                        <div class="box-body">
+                                            <div id="main" style="height: 500px;width: 100%"></div>
+                                        </div>
+                                        <hr>
+                                        <div class="box-body">
+                                            <div id="chart" style="height: 500px;width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div><!-- /.row -->
             </div>
-            <div class="box" style="background-color: inherit">
-                <div class="box-body">
-                    <div id="chart" style="height: 400px;width: 100%"></div>
-                </div>
-            </div>
-            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
         </section>
     </div>
     <!-- 引入footer -->
     <%include("../../include/footer.html"){}%>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+</div>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <%include("../../include/js.html"){}%>
 <script src="/static/plugins/echarts/echarts.min.js"></script>
-<script src="/static/plugins/moment/moment.js"></script>
 <%include("api.html"){}%>
 </body>
 </html>

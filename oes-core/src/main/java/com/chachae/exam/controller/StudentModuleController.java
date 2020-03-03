@@ -160,12 +160,12 @@ public class StudentModuleController {
   /**
    * 查询成绩列表
    *
-   * @param id 学生ID
    * @param mv ModelAndView 对象
    * @return 成绩列表
    */
-  @GetMapping("/score/{id}")
-  public ModelAndView scoreList(@PathVariable Integer id, ModelAndView mv) {
+  @GetMapping("/score")
+  public ModelAndView scoreList(ModelAndView mv) {
+    int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT_ID);
     // 通过学生 ID 查询成绩集合并设置其 model 对象信息
     mv.addObject("scoreList", this.scoreService.selectByStuId(id));
     mv.setViewName("/student/score/list");

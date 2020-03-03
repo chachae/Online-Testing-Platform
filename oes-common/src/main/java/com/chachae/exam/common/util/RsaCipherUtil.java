@@ -17,7 +17,7 @@ public class RsaCipherUtil {
 
   private RsaCipherUtil() {}
 
-  /** 后端解密私钥 [merbac.properties] */
+  /** 后端解密私钥 [application.properties] */
   private static String rsaPrivateKey;
 
   @Value("${rsa.private.key}")

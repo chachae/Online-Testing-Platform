@@ -1,53 +1,89 @@
-<!-- 左侧菜单栏 -->
-<aside class="main-sidebar">
-    <section class="sidebar">
-        <!-- 菜单 -->
-        <ul class="sidebar-menu">
-            <li class="treeview ${name == 'home'?'active':''}"><a
-                    href="/student/home/${session.student.id}"><i class="fa fa-home active"></i>
-                <span>首页</span></a>
-            </li>
-            <li class="header">系统功能</li>
-            <!-- 消息公告 -->
-            <li class="treeview ${name == 'announce'?'active':''}">
-                <a href="/student/announce">
-                    <i class="fa fa-address-book-o"></i> <span>消息公告</span>
-                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 我的考试 -->
-            <li class="treeview ${strutil.contain(name,'exam')?'active':''}">
-                <a href="/student/exam">
-                    <i class="fa fa-file-text"></i> <span>我的考试</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <!-- 我的成绩 -->
-            <li class="treeview  ${strutil.contain(name,'score')?'active':''}">
-                <a href="/student/score/${session.student.id}">
-                    <i class="fa fa-print"></i> <span>我的成绩</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 成绩分析 -->
-            <li class="treeview  ${strutil.contain(name,'chart')?'active':''}">
-                <a href="">
-                    <i class="fa fa-pie-chart"></i> <span>成绩分析</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class=""><a
-                            href="/student/score/chart"><i
-                            class="fa fa-circle-o"></i> 我的分析</a></li>
-                </ul>
-            </li>
-            <li class="treeview  ${name == 'help'?'active':''}">
-                <a href="/student/help"><i class="fa fa-share-alt"></i> <span>帮助中心</span></a>
-            </li>
-        </ul>
-    </section>
+<aside class="main-sidebar elevation-4 sidebar-dark-success">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link navbar-success"">
+        <img src="/webjars/AdminLTE/3.0.0/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">OES 学生端</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="/webjars/AdminLTE/3.0.0/dist/img/avatar5.png" class="img-circle elevation-2"
+                     alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">${session.student.name}</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- 首页 -->
+                <li class="nav-item">
+                    <a href="/student/home/${session.student.id}" class="nav-link ${name == 'home'?'active':''}">
+                        <i class="nav-icon fa fa-vcard"></i>
+                        <p>学生首页</p>
+                    </a>
+                </li>
+
+                <!-- 系统公告 -->
+                <li class="nav-item">
+                    <a href="/student/announce" class="nav-link  ${name == 'announce'?'active':''}">
+                        <i class="nav-icon fa fa-paper-plane"></i>
+                        <p>系统公告</p>
+                    </a>
+                </li>
+
+                <!-- 我的考试 -->
+                <li class="nav-item">
+                    <a href="/student/exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
+                        <i class="nav-icon fa fa-file-excel-o"></i>
+                        <p>我的考试</p>
+                    </a>
+                </li>
+
+                <!-- 成绩分析 -->
+                <li class="nav-item has-treeview ${strutil.contain(name,'myScore')?'menu-open':''}">
+                    <a href="#" class="nav-link ${strutil.contain(name,'myScore')?'active':''}">
+                        <i class="nav-icon fa fa-bookmark"></i>
+                        <p>
+                            我的成绩
+                            <i class="right fa fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview ">
+                        <li class="nav-item">
+                            <a href="/student/score" class="nav-link  ${strutil.contain(name,'score')?'active':''}">
+                                <i class="fa fa-pie-chart nav-icon"></i>
+                                <p>成绩列表</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview ">
+                        <li class="nav-item">
+                            <a href="/student/score/chart" class="nav-link  ${strutil.contain(name,'chart')?'active':''}">
+                                <i class="fa fa-pie-chart nav-icon"></i>
+                                <p>成绩分析</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 我的考试 -->
+                <li class="nav-item">
+                    <a href="/student/help" class="nav-link  ${name == 'help'?'active':''}">
+                        <i class="nav-icon fa fa-user-circle"></i>
+                        <p>帮助中心</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
 </aside>

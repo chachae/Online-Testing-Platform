@@ -53,8 +53,16 @@
 
         <!-- AdminLTE -->
         <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>adminlte</artifactId>
+            <groupId>org.webjars</groupId>
+            <artifactId>AdminLTE</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- bootstrap -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>4.4.1-1</version>
         </dependency>
 
         <!-- font-awesome -->

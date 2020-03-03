@@ -25,61 +25,89 @@
         }
     </style>
 </head>
-<body class="hold-transition skin-green sidebar-mini">
-
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%layout("../../student/include/sider.html",{name:"score-list"}){}%>
+    <%layout("../../student/include/sider.html",{name:"myScore-score-list"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">成绩列表</h3>
-                    <div class="box-tools pull-right">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>成绩列表</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/student/score">成绩列表</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                        <% if(isEmpty(scoreList)){ %>
-                        <tr>
-                            <td colspan="6">暂无成绩</td>
-                        </tr>
-                        <% } %>
-                        <% if(isNotEmpty(scoreList)){ %>
-                        <tr>
-                            <th>序号</th>
-                            <th>试卷名称</th>
-                            <th>考试分数</th>
-                            <th>错题ID集合</th>
-                            <th>操作</th>
-                        </tr>
-                        <%for(score in scoreList){%>
-                        <tr class="rowDetail" rel="${score.id}">
-                            <td>${scoreLP.index}</td>
-                            <td>${score.paperName}</td>
-                            <td>${score.score} 分</td>
-                            <td>${score.wrongIds}</td>
-                            <td>
-                                <button onclick="getDetail(${score.id})" class="btn btn-vk btn-sm">详情</button>
-                            </td>
-                        </tr>
-                        <% } %>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
+            </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <!-- 模拟考试 -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-info">
+                                <h3 class="card-title">成绩详情</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <% if(isEmpty(scoreList)){ %>
+                                    <tr>
+                                        <td colspan="6">暂无成绩</td>
+                                    </tr>
+                                    <% } %>
+                                    <% if(isNotEmpty(scoreList)){ %>
+                                    <tr>
+                                        <th style="width: 15%">序号</th>
+                                        <th style="width: 25%">试卷名称</th>
+                                        <th style="width: 10%">考试分数</th>
+                                        <th style="width: 25%">错题ID集合</th>
+                                        <th style="width: 25%">操作</th>
+                                    </tr>
+                                    <%for(score in scoreList){%>
+                                    <tr class="rowDetail" rel="${score.id}">
+                                        <td>${scoreLP.index}</td>
+                                        <td>${score.paperName}</td>
+                                        <td>${score.score} 分</td>
+                                        <td>${score.wrongIds}</td>
+                                        <td>
+                                            <button onclick="getDetail(${score.id})" class="btn btn-outline-info btn-sm">成绩详情
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div><!-- /.row -->
             </div>
         </section>
     </div>
     <!-- 引入footer -->
     <%include("../../include/footer.html"){}%>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <%include("../../include/js.html"){}%>
-<script src="/static/plugins/moment/moment.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <%include("api.html"){}%>
 </body>

@@ -6,13 +6,8 @@
     <title>OES | 学生帮助中心</title>
     <!-- css style -->
     <%include("../../include/css.html"){}%>
-    <style>
-        p {
-            text-indent: 30px;
-        }
-    </style>
 </head>
-<body class="hold-transition skin-green sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 顶部导航栏部分 -->
     <%include("../include/header.html"){} %>
@@ -20,45 +15,81 @@
     <%layout("../include/sider.html",{name:"help"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1 style="font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;text-align:center; font-size: 30px">
-                这里是 OES - 学生端帮助中心
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            </ol>
-        </section>
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title lead" style="font-size: 22px;font-weight: 800">帮助说明</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                                title="Collapse">
-                            <i class="fa fa-minus"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip"
-                                title="Remove">
-                            <i class="fa fa-times"></i></button>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>帮助中心</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">帮助中心</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body" style="font-size: 20px">
-                    <p>学生端包含如下功能：</p>
-                    <p>一、查询系统公告</p>
-                    <p>二、查看考试信息</p>
-                    <p>三、在线考试</p>
-                    <p>四、查看成绩</p>
-                    <p>五、成绩分析查询</p>
-                </div>
-                <div class="box-footer ">
-                    <blockquote class="blockquote-reverse">
-                        <p style="color: #2D93CA">祝您开启愉快的一天！</p>
-                    </blockquote>
+            </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="callout callout-info">
+                            <h5><i class="fa fa-info"></i>&nbsp;${session.student.name}同学，你好：</h5>
+                            这里是 OES - 学生端帮助中心
+                        </div>
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fa fa-sticky-note-o"></i> 帮助说明
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- info row -->
+                            <div class="col-12 table-responsive">
+                                <table class="table table-light">
+                                    <thead>
+                                    <tr>
+                                        <th>学生端包含如下功能：</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>一、查询系统公告</td>
+                                    </tr>
+                                    <tr>
+                                        <td>二、查看考试信息</td>
+                                    </tr>
+                                    <tr>
+                                        <td>三、在线考试</td>
+                                    </tr>
+                                    <tr>
+                                        <td>四、查看成绩</td>
+                                    </tr>
+                                    <tr>
+                                        <td>五、成绩分析查询</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
     <%include("../../include/footer.html"){}%>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <%include("../../include/js.html"){}%>

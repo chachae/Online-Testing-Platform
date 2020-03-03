@@ -85,13 +85,6 @@
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
-            <!-- shiro -->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring-boot-web-starter</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-
             <!-- PageHelper -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
