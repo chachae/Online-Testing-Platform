@@ -71,7 +71,7 @@
                                         <%if(paper.end){%>
                                         <td><a class="btn btn-sm btn-danger disabled">考试结束</a></td>
                                         <%}else if(paper.start){%>
-                                        <td><a href="/student/${session.student.id}/paper/${paper.id}"
+                                        <td><a href="/student/paper/${paper.id}"
                                                class="btn btn-sm btn-success">进入考试</a></td>
                                         <%}else{%>
                                         <td><a id="doPaperBtn" class="btn btn-sm btn-warning disabled">等待考试</a></td>
@@ -116,7 +116,7 @@
                                         <td>${paperLP.index}</td>
                                         <td>${paper.paperName}</td>
                                         <td><a class="btn btn-sm btn-outline-success" id="doPaper"
-                                               href="/student/${session.student.id}/paper/${paper.id}">进入考试</a></td>
+                                               href="/student/paper/${paper.id}">进入考试</a></td>
                                     </tr>
                                     <%}elsefor{%>
                                     <tr>

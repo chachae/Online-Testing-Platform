@@ -3,6 +3,7 @@ package com.chachae.exam.rest;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Student;
+import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.ScoreService;
@@ -40,7 +41,7 @@ public class ScoreController {
   @Permissions("score:chart")
   public R stuSelfChart() {
     // 获取学生的 ID
-    Student student = (Student) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
     // 设置成绩分布集合的 model 对象信息
     return R.successWithData(scoreService.countByLevel(student.getId()));
   }

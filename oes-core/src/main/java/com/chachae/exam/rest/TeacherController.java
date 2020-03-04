@@ -25,16 +25,16 @@ public class TeacherController {
   /**
    * 教师登录
    *
-   * @param teacherId 教师ID
+   * @param teacherNumber 教师ID
    * @param password 教师密码
    * @return 教师主页
    */
   @PostMapping("/login")
-  public R login(String teacherId, String password) {
+  public R login(String teacherNumber, String password) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 执行登录
-    Teacher teacher = teacherService.login(teacherId, password);
+    Teacher teacher = teacherService.login(teacherNumber, password);
     // 设置 session 信息
     session.setAttribute(SysConsts.Session.ROLE_ID, teacher.getRoleId());
     session.setAttribute(SysConsts.Session.TEACHER_ID, teacher.getId());

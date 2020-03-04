@@ -6,8 +6,8 @@ import com.chachae.exam.common.base.Page;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
-import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.Teacher;
+import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.controller.common.QuestionModel;
 import com.chachae.exam.service.*;
@@ -59,11 +59,10 @@ public class StudentModuleController {
   /**
    * 学生修改密码
    *
-   * @param id 学生ID
    * @return 密码修改界面
    */
-  @GetMapping("/{id}/update/pass")
-  public String changePass(@PathVariable Integer id) {
+  @GetMapping("/update/password")
+  public String changePass() {
     return "/student/self/update-pass";
   }
 
@@ -106,7 +105,7 @@ public class StudentModuleController {
   @GetMapping("/exam")
   public ModelAndView exam(ModelAndView mv) {
     // 获取学生
-    Student student = (Student) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
 
     // 查询所有该专业的正式试卷
     List<Paper> papers = paperService.selectByMajorId(student.getMajorId());
@@ -125,7 +124,7 @@ public class StudentModuleController {
    * @param paperId 试卷ID
    * @return 考试页面
    */
-  @GetMapping("/{stuId}/paper/{paperId}")
+  @GetMapping("/paper/{paperId}")
   public ModelAndView doPaper(@PathVariable Integer paperId, ModelAndView mv) {
     // 设置试卷信息的 model 对象信息
     mv.addObject("paper", paperService.getById(paperId));
@@ -139,13 +138,13 @@ public class StudentModuleController {
   /**
    * 学生进行考试 批改试卷
    *
-   * @param stuId 学生ID
    * @param paperId 试卷ID
    * @return 学生主页
    */
-  @PostMapping("/{stuId}/paper/{paperId}")
-  public String doPaper(@PathVariable Integer stuId, @PathVariable Integer paperId) {
+  @PostMapping("/paper/{paperId}")
+  public String doPaper(@PathVariable Integer paperId) {
     // 判断学生是否提交过试卷
+    int stuId = (int) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT_ID);
     Score result = this.scoreService.selectByStuIdAndPaperId(stuId, paperId);
     // 集合为空说明没有提交过试卷，可以提交
     if (ObjectUtil.isEmpty(result)) {

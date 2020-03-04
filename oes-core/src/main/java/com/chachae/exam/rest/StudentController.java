@@ -27,17 +27,17 @@ public class StudentController {
   /**
    * 学生登录 验证学号和密码
    *
-   * @param studentId 学号(stuNumber)
+   * @param studentNumber 学号(stuNumber)
    * @param password 密码
    * @return 主界面
    */
   @ResponseBody
   @PostMapping("/login")
-  public R login(String studentId, String password) {
+  public R login(String studentNumber, String password) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 执行登录接口
-    Student student = studentService.login(studentId, password);
+    StudentVo student = studentService.login(studentNumber, password);
     // 设置 Session 信息
     session.setAttribute(SysConsts.Session.ROLE_ID, student.getRoleId());
     session.setAttribute(SysConsts.Session.STUDENT_ID, student.getId());

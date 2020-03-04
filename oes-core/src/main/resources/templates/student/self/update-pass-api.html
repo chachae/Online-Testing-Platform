@@ -1,0 +1,66 @@
+<script>
+    // 校验表单
+    $(document).ready(function () {
+        $('#change').validate({
+            rules: {
+                oldPassword: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+                ps2: {
+                    required: true,
+                    equalTo: "#password"
+                },
+            },
+            messages: {
+                oldPassword: {
+                    required: "旧密码不能为空",
+                },
+                password: {
+                    required: "新密码不能为空",
+                },
+                ps2: {
+                    required: "请填写第二次密码",
+                    equalTo: "两次密码输入不一致"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+
+    // 提交密码
+    $(function () {
+        $("#editBtn").click(function () {
+            if ($("#change").valid()) {
+                let data = $("#change").serialize();
+                $.ajax({
+                    type: "POST",
+                    data: data,
+                    url: '/api/student/update/password',
+                    success: function (res) {
+                        if (res.state === 'success') {
+                            toastr.info('修改成功');
+                            $(this).delay(1500).queue(function () {
+                                window.location.href = "/";
+                            });
+                        } else {
+                            toastr.error(res.message);
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>

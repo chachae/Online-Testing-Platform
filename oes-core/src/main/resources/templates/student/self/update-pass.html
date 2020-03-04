@@ -6,6 +6,8 @@
     <title>OES | 修改密码</title>
     <!-- css style -->
     <%include("../../include/css.html"){}%>
+    <!-- Toastr -->
+    <link rel="stylesheet" href="/webjars/AdminLTE/3.0.0/plugins/toastr/toastr.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -13,30 +15,103 @@
     <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <%layout("../../student/include/sider.html",{name:"update-pass"}){}%>
-    <!-- 右侧内容部分 -->
+
+    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">修改密码</h3>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>个人设置</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/student/${session.studentId}/update/pass">个人设置</a>
+                            </li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="box-body">
-                    <form method="post" id="change">
-                        <div class="form-group">
-                            <label for="oldPass">原始密码</label>
-                            <input type="password" id="oldPass" name="oldPassword" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">新密码</label>
-                            <input type="password" id="password" name="password" class="form-control">
-                        </div>
-                    </form>
-                </div>
-                <div class="box-footer">
-                    <button id="editBtn" class="btn btn-primary">保存</button>
-                </div>
-            </div>
+            </div><!-- /.container-fluid -->
         </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle"
+                                         src="/webjars/AdminLTE/3.0.0/dist/img/avatar5.png"
+                                         alt="User profile picture">
+                                </div>
+
+                                <h3 class="profile-username text-center">${session.student.name}</h3>
+
+                                <p class="text-muted text-center">${session.student.stuNumber}</p>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>年级</b> <a class="float-right">${session.student.level} 级</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>学院</b> <a class="float-right">${session.student.academy.name}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>专业</b> <a class="float-right">${session.student.major.major}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>性别</b> <a class="float-right">${session.student.sex}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">修改密码</h3>
+                            </div>
+                            <!-- form start -->
+                            <form role="form" id="change">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="oldPassword">旧密码</label>
+                                        <input type="hidden" name="id" value="${session.studentId}">
+                                        <input type="password" name="oldPassword" class="form-control" id="oldPassword"
+                                               placeholder="旧密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">新密码</label>
+                                        <input type="password" name="password" class="form-control" id="password"
+                                               placeholder="新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ps2">请再输入一遍密码</label>
+                                        <input type="password" name="ps2" class="form-control" id="ps2"
+                                               placeholder="请再输入一遍密码">
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="button" id="editBtn" class="btn btn-primary pull-right">修改</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.nav-tabs-custom -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
     </div>
     <!-- 引入footer -->
     <%include("../../include/footer.html"){}%>
@@ -44,26 +119,11 @@
 <!-- 引入全局 js 脚本文件 -->
 <%include("../../include/js.html"){}%>
 <script src="/static/plugins/layer/layer.js"></script>
-<script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
-<script>
-
-    // 提交密码
-    $(function () {
-        $("#editBtn").click(function () {
-            let data = $("#change").serialize();
-            $.ajax({
-                type: "POST",
-                data: data,
-                success: function (res) {
-                    if (res.state === 'success') {
-                        window.location.href = "/";
-                    } else {
-                        layer.msg(res.message);
-                    }
-                }
-            })
-        });
-    });
-</script>
+<!-- 校验 -->
+<script src="/webjars/AdminLTE/3.0.0/plugins/jquery-validation/jquery.validate.min.js"></script>
+<!-- Toastr -->
+<script src="/webjars/AdminLTE/3.0.0/plugins/toastr/toastr.min.js"></script>
+<!-- 接口 -->】
+<% include("update-pass-api.html"){} %>
 </body>
 </html>

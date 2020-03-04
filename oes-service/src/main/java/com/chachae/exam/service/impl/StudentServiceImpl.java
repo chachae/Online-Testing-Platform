@@ -4,12 +4,12 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.StudentDAO;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.StudentQueryDto;
 import com.chachae.exam.common.model.vo.StudentVo;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.StudentDAO;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
@@ -33,15 +33,14 @@ import java.util.List;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student>
-    implements StudentService {
+public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> implements StudentService {
 
   @Resource private StudentDAO studentDAO;
   @Resource private StuAnswerRecordService stuAnswerRecordService;
   @Resource private ScoreService scoreService;
 
   @Override
-  public Student login(String stuNumber, String password) throws ServiceException {
+  public StudentVo login(String stuNumber, String password) throws ServiceException {
     // 调用通过学号查询学生查询接口
     Student student = this.selectByStuNumber(stuNumber);
 
@@ -55,7 +54,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student>
     if (!RsaCipherUtil.verify(password, student.getPassword())) {
       throw new ServiceException("密码错误");
     }
-    return student;
+
+    return this.selectVoById(student.getId());
   }
 
   @Override
@@ -64,7 +64,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student>
     // 通过 ID 查询学生信息
     Student student = studentDAO.selectById(dto.getId());
     if (ObjectUtil.isEmpty(student)) {
-      throw new ServiceException("用户不存在");
+      throw new ServiceException("用户身份异常");
     }
 
     if (!RsaCipherUtil.verify(dto.getOldPassword(), student.getPassword())) {

@@ -22,7 +22,7 @@ public interface StudentService extends IService<Student> {
    * @param stuPassword 学生密码
    * @return 学生信息
    */
-  Student login(String stuNumber, String stuPassword);
+  StudentVo login(String stuNumber, String stuPassword);
 
   /**
    * 学生修改密码
