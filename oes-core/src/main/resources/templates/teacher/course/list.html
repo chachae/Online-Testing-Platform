@@ -6,83 +6,99 @@
     <title>OES | 课程列表</title>
     <!-- 引入全局 css 文件 -->
     <%include("../../include/css.html"){} %>
-    <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 16px;
-            text-align: center;
-        }
-    </style>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
     <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <% layout("../include/sider.html",{name:"course"}){} %>
     <!-- 右侧内容部分 -->
+    <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">课程管理</h3>
-                    <div class="box-tools pull-right">
-                        <button id="goSave" class="btn btn-vk btn-sm"><i class="fa fa-plus"></i> 新增课程</button>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>课程管理</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/teacher/course">课程管理</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                        <tr>
-                            <th>序号</th>
-                            <th>课程统一编号</th>
-                            <th>课程名称</th>
-                            <th>操作</th>
-                        </tr>
-                        <% if( isEmpty(courseList) ){ %>
-                        <td colspan="6">老师您还未添加课程</td>
-                        <% }else{ %>
-                        <% for( course in courseList ){ %>
-                        <tr class="rowDetail" rel="${course.id}">
-                            <td>${courseLP.index}</td>
-                            <td>${course.id}</td>
-                            <td>${course.courseName}</td>
-                            <td>
-                                <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(${course.id})"> 删除
-                                </button>
-                            </td>
-                        </tr>
-                        <% } %>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">课程内容</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <button id="goSave" class="btn btn-info btn-sm"><i
+                                                class="fa fa-plus"></i>&nbsp;新增课程
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table id="example2" class="table table-bordered table-striped dataTable table-head-fixed text-nowrap" role="grid"
+                                       aria-describedby="example2_info">
+                                    <tbody>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>课程统一编号</th>
+                                        <th>课程名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <% if( isEmpty(courseList) ){ %>
+                                    <td colspan="6">老师您还未添加课程</td>
+                                    <% }else{ %>
+                                    <% for( course in courseList ){ %>
+                                    <tr class="rowDetail" rel="${course.id}">
+                                        <td>${courseLP.index}</td>
+                                        <td>${course.id}</td>
+                                        <td>${course.courseName}</td>
+                                        <td>
+                                            <button class="rowDel btn btn-danger btn-sm"
+                                                    onclick="deleteCourse(${course.id})">
+                                                <i class="fa fa-remove"></i>&nbsp;删除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div><!-- /.row -->
+            </div>
         </section>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
     <!-- 新增课程模态框 -->
     <% include("save-modal.html"){} %>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <% include("api.html"){} %>
 </body>
 </html>
-
-

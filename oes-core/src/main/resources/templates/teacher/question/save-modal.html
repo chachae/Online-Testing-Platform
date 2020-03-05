@@ -3,47 +3,46 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <h4 class="modal-title">新增题目</h4>
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">新增题目</h4>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <form id="save-form">
                         <div class="form-group">
                             <label>名称 </label>
-                            <input type="hidden" class="form-control id" name="id" readonly="readonly"/>
-                            <textarea class="form-control questionName" name="questionName" rows="2"></textarea>
+                            <textarea class="form-control" name="questionName" rows="2"></textarea>
                         </div>
                         <div class="form-group">
                             <label>选项A </label>
-                            <input class="form-control optionA" name="optionA"/>
+                            <input class="form-control" name="optionA"/>
                         </div>
                         <div class="form-group">
                             <label>选项B </label>
-                            <input class="form-control optionB" name="optionB"/>
+                            <input class="form-control" name="optionB"/>
                         </div>
                         <div class="form-group">
                             <label>选项C </label>
-                            <input class="form-control optionC" name="optionC"/>
+                            <input class="form-control" name="optionC"/>
                         </div>
                         <div class="form-group">
                             <label>选项D </label>
-                            <input class="form-control optionD" name="optionD"/>
+                            <input class="form-control" name="optionD"/>
                         </div>
                         <div class="form-group">
                             <label>答案 </label>
-                            <textarea class="form-control answer" name="answer" rows="2"></textarea>
+                            <textarea class="form-control" name="answer" rows="2"></textarea>
                         </div>
                         <div class="form-group">
                             <label>所属课程 </label>
-                            <select class="courseSelect" name="courseId"></select>
+                            <select class="courseSelect" id="save-course" name="courseId"></select>
                             <!-- 动态获取数据 -->
                         </div>
                         <div class="form-group">
                             <label>类型 </label>
-                            <select class="typeSelect" name="typeId"></select>
+                            <select class="typeSelect" id="save-type" name="typeId"></select>
                             <!-- 动态获取数据 -->
                         </div>
                         <div class="form-group">

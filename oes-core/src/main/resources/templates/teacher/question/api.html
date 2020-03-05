@@ -1,66 +1,78 @@
 <script>
-
-    // 启动修改模态框
-    $("#importBtn").click(function () {
-        $("#importModal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-    });
-
-
     // 启动查看模态框
-    $(".goView").click(function () {
+    function goView(id) {
         $("#view-modal").modal({
             show: true,
             backdrop: 'static'
         });
-    });
+        $.get("/api/question/" + id, function (data) {
+            $(".questionName").val(data.questionName);
+            $(".answer").val(data.answer);
+            $(".course").val(data.course.courseName);
+            $(".teacherName").val(data.course.teacher.name);
+            $(".remark").val(data.remark);
+        })
+    }
 
-    // 启动修改模态框
-    $(".goUpdate").click(function () {
+    // 打开更新题目模态框
+    function goUpdate(id) {
+        $.get("/api/question/" + id, function (data) {
+            // 填充基本信息
+            $("#questionName").val(data.questionName);
+            $("#answer").val(data.answer);
+            $("#course").val(data.course.courseName);
+            $("#difficulty").val(data.difficulty).select2({width: "100%", theme: 'bootstrap4'});
+            $("#teacherName").val(data.course.teacher.name);
+            $("#optionA").val(data.optionA);
+            $("#optionB").val(data.optionB);
+            $("#optionC").val(data.optionC);
+            $("#optionD").val(data.optionD);
+            $("#remark").val(data.remark);
+            $("#id").val(data.id);
+            $("#typeId").val(data.id).select2({width: "100%", theme: 'bootstrap4'});
+        });
+
+        // 打开模态框
         $("#update-modal").modal({
             show: true,
             backdrop: 'static'
         });
+    }
+
+    // 试题类型下拉框信息
+    $.get("/api/type", function (data) {
+        let options = "";
+        //回填的二级类别值
+        $('.typeSelect').empty();
+        options += "<option value=''>全部</option>";
+        $.each(data, function (index, e) {
+            options += "<option value=" + e.id + ">" + e.typeName + "</option>";
+        });
+        $(".typeSelect").append(options).val('${curTypeId}').select2({theme: 'bootstrap4', width: "250px"});
+    });
+
+    // 教师课程下拉框信息
+    $.get("/api/course/teacher/" + "${session.teacher.id}", function (data) {
+        let options = "";
+        //回填的二级类别值
+        $('.courseSelect').empty();
+        options += "<option value=''>全部</option>";
+        $.each(data, function (index, e) {
+            options += "<option value=" + e.id + ">" + e.courseName + "</option>";
+        });
+        $(".courseSelect").append(options).val('${curCourseId}').select2({theme: 'bootstrap4', width: "250px"});
     });
 
     // 启动新增模态框
     $(".goSave").click(function () {
-        $.get("/api/course/teacher/" + "${session.teacher.id}", function (data) {
-            let options = "";
-            //回填的二级类别值
-            $('.courseSelect').empty();
-            options += "<option value=''>请选择</option>";
-            $.each(data, function (index, e) {
-                options += "<option value=" + e.id + ">" + e.courseName + "</option>";
-            });
-            $(".courseSelect").append(options).select2({width: "100%"});
-        });
-        $(".difficulty").select2({width: "100%"});
+        $(".difficulty").select2({theme: 'bootstrap4', width: "100%"});
+        $("#save-course").select2({theme: 'bootstrap4', width: "100%"});
+        $("#save-type").select2({theme: 'bootstrap4', width: "100%"});
         $("#save-modal").modal({
             show: true,
             backdrop: 'static'
         });
     });
-
-    // 获取题目
-    function getQuestion(id) {
-        $.get("/api/question/" + id, function (data) {
-            $(".questionName").val(data.questionName);
-            $(".answer").val(data.answer);
-            $(".course").val(data.course.courseName);
-            $(".difficulty").val(data.difficulty).select2({width: "100%"});
-            $(".teacherName").val(data.course.teacher.name);
-            $(".typeId").val(data.type.id).select2({width: "100%"});
-            $(".optionA").val(data.optionA);
-            $(".optionB").val(data.optionB);
-            $(".optionC").val(data.optionC);
-            $(".optionD").val(data.optionD);
-            $(".remark").val(data.remark);
-            $(".id").val(data.id);
-        })
-    }
 
     // 更新题目
     function updateQuestion() {
@@ -103,16 +115,12 @@
         });
     }
 
-    // 获取类型
-    $.get("/api/type", function (data) {
-        let options = "";
-        //回填的二级类别值
-        $('.typeSelect').empty();
-        options += "<option value=''>请选择</option>";
-        $.each(data, function (index, e) {
-            options += "<option selected='true' value=" + e.id + ">" + e.typeName + "</option>";
+    // 启动导入试题模态框
+    $("#importBtn").click(function () {
+        $("#importModal").modal({
+            show: true,
+            backdrop: 'static'
         });
-        $(".typeSelect").append(options).select2({width: "100%"});
     });
 
     // 自动上传
@@ -142,27 +150,14 @@
     // 进入试题详细信息
     $(function () {
         // 问题类型筛选
-        $("#typeId").select2({width: "200px"}).change(function () {
-            typeId = $(this).val();
-            window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + typeId;
+        $("#findType").select2().change(function () {
+            window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + $(this).val()
         })
 
         // 课程筛选
-        $("#courseId").select2({width: "200px"}).change(function () {
-            courseId = $(this).val();
-            console.log(courseId);
-            window.location.href = "/teacher/question?p=1&courseId=" + courseId + "&typeId=" + "${curTypeId}";
+        $("#findCourse").select2().change(function () {
+            window.location.href = "/teacher/question?p=1&courseId=" + $(this).val() + "&typeId=" + "${curTypeId}";
         });
 
-        //分页
-        $('#pagination-demo').twbsPagination({
-            totalPages: "${page.pages}",
-            visiblePages: 5,
-            first: '首页',
-            last: '末页',
-            prev: '上一页',
-            next: '下一页',
-            href: "?p={{number}}&courseId=" + "${curCourseId}" + "&typeId=" + "${curTypeId}",
-        });
     });
 </script>

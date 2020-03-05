@@ -2,25 +2,28 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
-                </button>
                 <h4 class="modal-title">新增课程</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <form id="save-form">
-                <input type="hidden" name="teacherId" value="${session.teacher.id}">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div class="table">
-                            <label for="courseName">课程名称</label>
-                            <input type="text" class="form-control" name="courseName" id="courseName">
-                        </div>
+            <div class="modal-body">
+                <form id="save-form">
+                    <input type="hidden" name="teacherId" value="${session.teacher.id}">
+                    <div class="table">
+                        <label for="courseName"></label>
+                        <input type="text" placeholder="请输入课程名称" class="form-control" name="courseName"
+                               id="courseName">
                     </div>
-                </div>
-            </form>
-            <div class="modal-footer">
+                </form>
+            </div>
+            <div class="modal-footer justify-content-end">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
             </div>
         </div>
+        <!-- /.modal-content -->
     </div>
+    <!-- /.modal-dialog -->
 </div>
+<!-- /.modal -->

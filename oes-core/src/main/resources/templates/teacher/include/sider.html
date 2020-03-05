@@ -1,81 +1,112 @@
 <!-- 左侧菜单栏 -->
-<aside class="main-sidebar">
-    <section class="sidebar">
-        <!-- 菜单 -->
-        <ul class="sidebar-menu">
-            <li class=""><a
-                    href="/teacher/home/${session.teacher.id}"><i class="fa fa-home"></i>
-                <span>首页</span></a></li>
-            <li class="header">系统功能</li>
-            <!-- 消息公告 -->
-            <li class="treeview ${name == 'announce'?'active':''}">
-                <a href="/teacher/announce/system">
-                    <i class="fa fa-commenting ${name == 'announce'?'active':''}"></i> <span>消息公告</span>
-                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 课程管理 -->
-            <li class="treeview ${name == 'course'?'active':''}">
-                <a href="/teacher/course/list">
-                    <i class="fa fa-book"></i> <span>课程管理</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 专业管理 -->
-            <li class="treeview  ${name == 'major'?'active':''}">
-                <a href="/teacher/major">
-                    <i class="fa fa-mortar-board"></i> <span>专业管理</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 学生管理 -->
-            <li class="treeview ${name == 'student'?'active':''}">
-                <a href="/teacher/student">
-                    <i class="fa fa-user-circle"></i><span>学生管理</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 试题管理 -->
-            <li class="treeview  ${name == 'question'?'active':''}">
-                <a href="/teacher/question">
-                    <i class="fa fa-file-pdf-o"></i> <span>试题管理</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <!-- 试卷管理 -->
-            <li class="treeview  ${strutil.contain(name,'paper')?'active':''}">
-                <a href="/teacher/paper">
-                    <i class="fa fa-book"></i> <span>试卷管理</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 考试管理 -->
-            <li class="treeview ${name == 'exam'?'active':''}">
-                <a href="/teacher/exam">
-                    <i class="fa fa-paper-plane"></i> <span>考试管理</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 试卷复查 -->
-            <li class="treeview ${strutil.contain(name,'review')?'active':''}">
-                <a href="/teacher/reviewPaper">
-                    <i class="fa fa-retweet"></i> <span>试卷复查</span>
-                    <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span>
-                </a>
-            </li>
-            <!-- 帮助中心 -->
-            <li class="treeview ${name == 'help'?'active':''}">
-                <a href="/teacher/help"><i class="fa fa-share-alt"></i>
-                    <span>帮助中心</span></a>
-            </li>
-        </ul>
-    </section>
+<aside class="main-sidebar elevation-4 sidebar-dark-info">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link navbar-info">
+        <img src="/webjars/AdminLTE/3.0.0/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">OES 教师端</span>
+    </a>
+
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="/webjars/AdminLTE/3.0.0/dist/img/avatar5.png" class="img-circle elevation-2"
+                     alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">${session.teacher.name}</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- 首页 -->
+                <li class="nav-item">
+                    <a href="/teacher/home/${session.teacher.id}" class="nav-link ${name == 'home'?'active':''}">
+                        <i class="nav-icon fa fa-vcard"></i>
+                        <p>教师首页</p>
+                    </a>
+                </li>
+
+                <!-- 系统公告 -->
+                <li class="nav-item">
+                    <a href="/teacher/announce" class="nav-link  ${name == 'announce'?'active':''}">
+                        <i class="nav-icon fa fa-paper-plane"></i>
+                        <p>系统公告</p>
+                    </a>
+                </li>
+
+                <!-- 课程管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/course" class="nav-link  ${name == 'course'?'active':''}">
+                        <i class="nav-icon fa fa-address-book-o"></i>
+                        <p>课程管理</p>
+                    </a>
+                </li>
+
+                <!-- 专业管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/major" class="nav-link  ${name == 'major'?'active':''}">
+                        <i class="nav-icon fa fa-imdb"></i>
+                        <p>专业管理</p>
+                    </a>
+                </li>
+
+                <!-- 学生管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/student" class="nav-link  ${name == 'student'?'active':''}">
+                        <i class="nav-icon fa fa-users"></i>
+                        <p>学生管理</p>
+                    </a>
+                </li>
+
+                <!-- 试题管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/question" class="nav-link  ${name == 'question'?'active':''}">
+                        <i class="nav-icon fa fa-question-circle"></i>
+                        <p>试题管理</p>
+                    </a>
+                </li>
+
+                <!-- 试卷管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/paper" class="nav-link  ${strutil.contain(name,'paper')?'active':''}">
+                        <i class="nav-icon fa fa-file"></i>
+                        <p>试卷管理</p>
+                    </a>
+                </li>
+
+                <!-- 考试管理 -->
+                <li class="nav-item">
+                    <a href="/teacher/exam" class="nav-link  ${strutil.contain(name,'paper')?'active':''}">
+                        <i class="nav-icon fa fa-clock-o"></i>
+                        <p>考试管理</p>
+                    </a>
+                </li>
+
+                <!-- 试卷复查 -->
+                <li class="nav-item">
+                    <a href="/teacher/reviewPaper" class="nav-link ${strutil.contain(name,'review')?'active':''}">
+                        <i class="nav-icon fa fa-refresh"></i>
+                        <p>试卷复查</p>
+                    </a>
+                </li>
+
+                <!-- 帮助中心 -->
+                <li class="nav-item">
+                    <a href="/teacher/help" class="nav-link  ${name == 'help'?'active':''}">
+                        <i class="nav-icon fa fa-user-circle"></i>
+                        <p>帮助中心</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
 </aside>

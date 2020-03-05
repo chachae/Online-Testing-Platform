@@ -2,13 +2,12 @@
 
     // 删除学生
     function deleteStudent(id) {
-        layer.confirm("确定删除学生吗?", function () {
+        OesUtil.confirm("确定删除学生吗?", function () {
             $.post("/api/student/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("删除成功!");
                     window.location.reload();
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         })
@@ -22,7 +21,7 @@
     });
 
     // 触发搜索学院筛选
-    $('#findAcademy').select2({width: "200px"}).change(function () {
+    $('#findAcademy').select2({theme: 'bootstrap4'}).change(function () {
         let id = $('#findAcademy').val();
         let name = $('#findName').val();
         window.location.href = "/teacher/student?academyId=" + id + "&name=" + name
@@ -32,25 +31,32 @@
     $.get("/api/academy").done(function (data) {
         let options = "";
         $('.academySelect').empty();
-        options += "<option value=''>请选择</option>";
+        options += "<option value=''>全部</option>";
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
         let curAcademyId = "${curAcademyId}";
-        $(".academySelect").append(options).val(curAcademyId).select2();
+        $(".academySelect").append(options).val(curAcademyId).select2({theme: 'bootstrap4'});
     });
 
     // 获取学生信息
-    function getStudent(id) {
+    function goUpdate(id) {
         $.get("/api/student/" + id, function (data) {
             // 赋值
             $('#id').val(data.id);
             $('#name').val(data.name);
             $('#stuNumber').val(data.stuNumber);
-            $('#level').val(data.level).select2();
-            $('#sex').val(data.sex).select2();
-            $('#academy').val(data.academy.id).select2();
+            $('#level').val(data.level).select2({theme: 'bootstrap4'});
+            $('#sex').val(data.sex).select2({theme: 'bootstrap4'});
+            $('#academy').val(data.academy.id).select2({theme: 'bootstrap4'});
             getMajor(data.academy.id, data.major.id);
+            // 启动修改模态框
+            $(".goUpdate").click(function () {
+                $("#update-modal").modal({
+                    show: true,
+                    backdrop: 'static'
+                });
+            });
         })
     }
 
@@ -65,27 +71,20 @@
             $.each(data, function (index, e) {
                 options += "<option value=" + e.id + ">" + e.major + "</option>";
             });
-            $(".majorSelect").append(options).val(majorId).select2();
+            $(".majorSelect").append(options).val(majorId).select2({theme: 'bootstrap4'});
         });
-    };
+    }
 
-    // 启动修改模态框
-    $(".goUpdate").click(function () {
-        $("#update-modal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-
-        // 修改修生信息请求
-        $("#updateBtn").click(function () {
-            layer.confirm("确定修改信息吗?", function () {
-                let data = $('#update-form').serialize();
-                $.post("/api/student/update", data).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("修改成功!");
-                        window.location.reload();
-                    }
-                })
+    // 修改修生信息请求
+    $("#updateBtn").click(function () {
+        OesUtil.confirm("确定增加学生吗?", function () {
+            let data = $('#update-form').serialize();
+            $.post("/api/student/update", data).done(function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
             })
         })
     });
@@ -96,35 +95,22 @@
             show: true,
             backdrop: 'static'
         });
-
-        // 新增学生信息请求
-        $("#saveBtn").click(function () {
-            layer.confirm("确定增加学生吗?", function () {
-                let data = $('#save-form').serialize();
-                $.post("/api/student/save", data).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("增加成功!");
-                        window.location.reload();
-                    } else {
-                        layer.msg(data.message);
-                    }
-                })
-            })
-        })
+        // select2 选择框
+        $('.save-sex').select2({theme: 'bootstrap4'});
+        $('.save-level').select2({theme: 'bootstrap4'});
     });
 
-    // select2 选择框
-    $('.save-sex').select2();
-    $('.save-level').select2();
-
-    //分页
-    $('#pagination-demo').twbsPagination({
-        totalPages: "${page.pages}",
-        visiblePages: 3,
-        first: '首页',
-        last: '末页',
-        prev: '上一页',
-        next: '下一页',
-        href: "?p={{number}}&academyId=" + '${curAcademyId}' + "&name=" + '${curName}'
+    // 新增学生信息请求
+    $("#saveBtn").click(function () {
+        OesUtil.confirm("确定增加学生吗?", function () {
+            let data = $('#save-form').serialize();
+            $.post("/api/student/save", data).done(function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+        })
     });
 </script>

@@ -3,17 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师主页</title>
+    <title>OES | 学生首页</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
-    <style>
-        p {
-            text-indent: 30px;
-        }
-    </style>
+    <%include("../../include/css.html"){}%>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
-
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
     <% include("../include/header.html"){} %>
@@ -21,49 +15,90 @@
     <% layout("../include/sider.html",{name:"home"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1 style="font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;text-align:center; font-size: 30px">
-                欢迎使用 On-line Examination System 在线考试系统！
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            </ol>
-        </section>
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title lead" style="font-size: 22px;font-weight: 800">系统说明</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                                title="Collapse">
-                            <i class="fa fa-minus"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip"
-                                title="Remove">
-                            <i class="fa fa-times"></i></button>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>教师首页</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">教师首页</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body" style="font-size: 20px">
-                    <p>On-line Examination System 在线考试系统是一款构建在 SpringBoot 和 MyBatis 上基于 JSP 开发的线考试系统。</p>
-                    <p>教师端包含如下功能：</p>
-                    <p>一、查询系统公告</p>
-                    <p>二、课程统一管理</p>
-                    <p>三、全校专业统一管理</p>
-                    <p>四、学生信息统一管理</p>
-                    <p>五、发布、Excel 导入、修改、删除试题</p>
-                    <p>六、发布、Excel 导入、修改、删除考试</p>
-                    <p>七、学生成绩复查、修改分数</p>
-                    <p>八、未发布考试时间修改、删除</p>
-                </div>
-                <div class="box-footer ">
-                    <blockquote class="blockquote-reverse">
-                        <p style="color: #2D93CA">祝您开启愉快的一天！</p>
-                    </blockquote>
+            </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="callout callout-info">
+                            <h5><i class="fa fa-info"></i>&nbsp;${session.teacher.name}老师，你好：</h5>
+                            欢迎使用 On-line Examination System 在线考试系统
+                        </div>
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="invoice-title">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fa fa-book"></i> 功能概述
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- info row -->
+                            <div class="col-12 table-responsive">
+                                <table class="table table-light">
+                                    <thead>
+                                    <tr>
+                                        <th>教师端包含如下功能：</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>一、查询系统公告</td>
+                                    </tr>
+                                    <tr>
+                                        <td>二、课程统一管理</td>
+                                    </tr>
+                                    <tr>
+                                        <td>三、全校专业统一管理</td>
+                                    </tr>
+                                    <tr>
+                                        <td>四、学生信息统一管理</td>
+                                    </tr>
+                                    <tr>
+                                        <td>五、发布、Excel 导入、修改、删除试题</td>
+                                    </tr>
+                                    <tr>
+                                        <td>六、发布、Excel 导入、修改、删除考试</td>
+                                    </tr>
+                                    <tr>
+                                        <td>七、学生成绩复查、修改分数</td>
+                                    </tr>
+                                    <tr>
+                                        <td>八、未发布考试时间修改、删除</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <%include("../../include/footer.html"){} %>
+    <%include("../../include/footer.html"){}%>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
