@@ -9,24 +9,33 @@
     $(function () {
         // 新增随机试卷
         $("#goSave").click(function () {
-            layer.confirm('是否使用默认试卷模版？', {
-                btn: ['是', '否'] //按钮
-            }, function () {
-                window.location.href = "/teacher/paper/save/1";
-            }, function () {
-                window.location.href = "/teacher/paperForm/save";
-            });
-        });
-
-        //分页
-        $('#pagination-demo').twbsPagination({
-            totalPages: "${page.pages}",
-            visiblePages: 5,
-            first: '首页',
-            last: '末页',
-            prev: '上一页',
-            next: '下一页',
-            href: "?p={{number}}"
+            $.confirm({
+                title: '确认框',
+                content: '是否使用默认试卷模版',
+                buttons: {
+                    confirm: {
+                        text: '是的',
+                        btnClass: 'btn btn-default',
+                        action: function () {
+                            window.location.href = "/teacher/paper/save/1";
+                        }
+                    },
+                    cancel: {
+                        text: '不是',
+                        btnClass: 'btn btn-default',
+                        action: function () {
+                            window.location.href = "/teacher/paperForm/save";
+                        }
+                    },
+                    other: {
+                        text: '取消',
+                        btnClass: 'btn btn-danger',
+                        action: function () {
+                            toastr.success("取消操作");
+                        }
+                    }
+                }
+            })
         });
     });
 </script>

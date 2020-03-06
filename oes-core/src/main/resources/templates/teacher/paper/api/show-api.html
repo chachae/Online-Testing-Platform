@@ -1,86 +1,77 @@
-<script src="/static/plugins/moment/moment.js"></script>
-<script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <script>
     // 删除试卷
     function deletePaper(id) {
-        layer.confirm("确定要删除试卷吗？",
-            function () {
-                $.post("/api/paper/delete/" + id).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("删除成功!");
-                        window.location.href = "/teacher/paper";
-                    } else {
-                        layer.msg(data.message);
-                    }
-                })
-            });
-    }
-
-    // 打开修改答案模态框
-    $(".openEditChoiceAnsBtn").click(function () {
-        var x = "${paper.paperType == '模拟'}";
-        var y = "!${paper.start}";
-        // 获取考试时间
-        if (x || y) {
-            $(".editAns").modal({
-                show: true,
-                backdrop: 'static'
-            });
-            // 题目id
-            const b = $(this).parents().attr('rel');
-            // 原答案
-            const a = $(this).attr("rel");
-            $('#modalAns').val(a);
-            $('#modalAnsId').val(b);
-        } else {
-            layer.msg("只允许修改未开始的考试和模拟考试！")
-        }
-    });
-
-    //提交答案修改
-    $('.subEditAns').click(function () {
-        layer.confirm("确定修改答案吗?", function () {
-            let data = $("#update-answer-form").serialize();
-            $.post("/api/paper/update/answer", data).done(function (data) {
+        OesUtil.confirm("确定要删除试卷吗？", function () {
+            $.post("/api/paper/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
-                    window.location.reload();
+                    window.location.href = "/teacher/paper";
+                } else {
+                    toastr.error(data.message);
                 }
             })
         });
+    }
+
+    // 打开修改答案模态框
+    function goUpdateAnswer(id, answer) {
+        let x = "${paper.paperType == '模拟'}";
+        let y = "!${paper.start}";
+        if (x || y) {
+            // 符合条件，打开模态框
+            $("#updateAnswerModal").modal({
+                show: true,
+                backdrop: 'static'
+            });
+            $('#update-answer-id').val(id);
+            $('#update-answer-answer').val(answer);
+        } else {
+
+        }
+
+    }
+
+    //提交答案修改
+    $('#updateAnswerBtn').click(function () {
+        OesUtil.confirm("确定修改题目答案吗?", function () {
+            let data = $("#update-answer-form").serialize();
+            $.post("/api/question/update/answer", data).done(function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+        })
     });
 
 
     // 打开修改题目模态框
-    $(".editExistBtn").click(function () {
-        var x = "${paper.paperType == '模拟'}";
-        var y = "!${paper.start}";
+    function goUpdateQuestion(id) {
+        let x = "${paper.paperType == '模拟'}";
+        let y = "!${paper.start}";
         // 获取考试时间
         if (x || y) {
-            $(".editQueAll").modal({
+            // 题目id
+            $('#oldQuestionId').val(id);
+            $("#updateQuestionIdModal").modal({
                 show: true,
                 backdrop: 'static'
             });
-            // 题目id
-            const b = $(this).parents().attr('rel');
-            $('#modalQueOldId').val(b);
-            // 题目类型id
         } else {
-            layer.msg("只允许修改未开始的考试和模拟考试！")
+            toastr.error("只允许修改未开始的考试和模拟考试！")
         }
-    });
+    }
 
     //提交答案修改
-    $('.subEditQueExist').click(function () {
-        layer.confirm("确定修改题目吗?", function () {
+    $('#updateQuestionIdBtn').click(function () {
+        OesUtil.confirm("确定修改题目吗?", function () {
             let data = $("#update-question-form").serialize();
             $.post("/api/paper/update/question", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
                     window.location.reload();
                 } else {
-                    $('#modalQueNewId').val("");
-                    layer.msg(data.message);
+                    $('#newQuestionId').val("");
+                    toastr.error(data.message);
                 }
             })
         })

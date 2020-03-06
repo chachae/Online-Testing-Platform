@@ -6,19 +6,8 @@
     <title>OES | 试卷详情</title>
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
-    <style>
-        th {
-            font-size: 18px;
-        }
-
-        td {
-            font-size: 17px;
-        }
-    </style>
-
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
-
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
     <% include("../../teacher/include/header.html"){} %>
@@ -26,70 +15,356 @@
     <% layout("../../teacher/include/sider.html",{name:"show-paper"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">试卷信息</h3>
-                    <div class="box-tools">
-                        <a href="/teacher/paper" class="btn btn-primary btn-sm"><i
-                                class="fa fa-arrow-left"></i> 返回列表</a>
-
-                        <button class="btn btn-danger btn-sm" onclick="deletePaper(${paper.id})"><i class="fa fa-trash-o"></i> 删除试卷</button>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>试卷信息</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/teacher/paper">返回列表</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body ">
-                    <table class="table">
-                        <tr>
-                            <th class="td_title" style="background-color: #e4e4e4">试卷名称: ${paper.paperName}</th>
-                        </tr>
-                        <tr>
-                            <td class="td_title">试卷题目：${paper.questionId}</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">开始时间：${paper.beginTime}</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">结束时间：${paper.endTime}</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">考试时长：${paper.allowTime} 分钟</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">试卷总分：${paper.score} 分</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">试卷状态：
-                                <% if(paper.end){ %>
-                                已结束
-                                <% }else if(paper.start){ %>
-                                考试中
-                                <% }else{ %>
-                                未开始
-                                <% } %>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">试卷类型： ${paper.paperType}考试</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">考试课程：《${course.courseName}》</td>
-                        </tr>
-                        <tr>
-                            <td class="td_title">考试专业：${major.major}</td>
-                        </tr>
-                    </table>
-                </div>
             </div>
-            <!-- 修改答案模态框 -->
-            <%include("update-answer-modal.html"){}%>
-            <!-- 修改题目模态框（已知） -->
-           <%include("update-question-modal.html"){}%>
         </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">试卷列表</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <a href="/teacher/paper" class="btn btn-primary btn-sm">返回列表</a>&nbsp;
+                                        <button class="btn btn-danger btn-sm" onclick="deletePaper(${paper.id})">删除试卷
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table">
+                                    <tr>
+                                        <th class="td_title" style="background-color: #e4e4e4">
+                                            试卷名称：${paper.paperName}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">试卷题目：${paper.questionId}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">开始时间：${paper.beginTime}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">结束时间：${paper.endTime}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">考试时长：${paper.allowTime}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">试卷总分：${paper.score} 分</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">试卷状态：
+                                            <% if(paper.end){ %>
+                                            已结束
+                                            <% }else if(paper.start){ %>
+                                            考试中
+                                            <% }else{ %>
+                                            未开始
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">试卷类型： ${paper.paperType}考试</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">考试课程：《${course.courseName}》</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td_title">考试专业：${major.major}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div><!-- /.row -->
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <!--单选题-->
+                            <%if(isNotEmpty(qChoiceList)){%>
+                            <!-- title row -->
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>单项选择题</h4>
+                                    </div>
+                                </div>
+                                <hr>
+                                <dl>
+                                    <%for(choice in qChoiceList){%>
+                                    <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
+                                    <div class="box-tools pull-right">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${choice.id}','${choice.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm" onclick="goUpdateQuestion('${choice.id}')">
+                                            修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        A. <span>${choice.optionA} </span>
+                                    </dd>
+                                    <dd>
+                                        B. <span>${choice.optionB} </span>
+                                    </dd>
+                                    <dd>
+                                        C. <span>${choice.optionC} </span>
+                                    </dd>
+                                    <dd>
+                                        D. <span>${choice.optionD} </span>
+                                    </dd>
+                                    <dd>
+                                        <div><strong style="color: limegreen">正确答案：${choice.answer}</strong></div>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${choice.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <br>
+                            <%}%>
+
+                            <!-- 多选题 -->
+                            <%if(isNotEmpty(qMulChoiceList)){%>
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>多项选择题</h4>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <%for(qMulChoice in qMulChoiceList){%>
+                                    <dt style="font-size: 17px">${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
+                                    <div class="box-tools pull-right" rel="${qMulChoice.id}">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${qMulChoice.id}','${qMulChoice.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateQuestion('${qMulChoice.id}')">修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        A. <span>${qMulChoice.optionA} </span>
+                                    </dd>
+                                    <dd>
+                                        B. <span>${qMulChoice.optionB}</span>
+                                    </dd>
+                                    <dd>
+                                        C. <span>${qMulChoice.optionC}</span>
+                                    </dd>
+                                    <dd>
+                                        D. <span>${qMulChoice.optionD}</span>
+                                    </dd>
+                                    <dd>
+                                        <div><strong style="color: limegreen">正确答案：${qMulChoice.answer}</strong></div>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${qMulChoice.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <br>
+                            <%}%>
+
+                            <!--判断题-->
+                            <%if(isNotEmpty(qTofList)){%>
+                            <!-- title row -->
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>判断题</h4>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <%for(question in qTofList){%>
+                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                                    <div class="box-tools pull-right" rel="${question.id}">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateQuestion('${question.id}')">修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        <input type="radio" name="${question.id}" required value="对">
+                                        A. 对<span></span>
+                                    </dd>
+                                    <dd>
+                                        <input type="radio" name="${question.id}" required value="错">
+                                        B. 错<span></span>
+                                    </dd>
+                                    <dd>
+                                        <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <br>
+                            <%}%>
+
+                            <!--填空题-->
+                            <%if(isNotEmpty(qFillList)){%>
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>填空题</h4>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <%for(question in qFillList){%>
+                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                                    <div class="box-tools pull-right" rel="${question.id}">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateQuestion('${question.id}')">修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <br>
+                            <%}%>
+
+                            <!--简答题-->
+                            <%if(isNotEmpty(qSaqList)){%>
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>简答题</h4>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <%for(question in qSaqList){%>
+                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                                    <div class="box-tools pull-right" rel="${question.id}">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateQuestion('${question.id}')">修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        <label><strong style="color: limegreen">正确答案：</strong></label>
+                                        <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <br>
+                            <%}%>
+
+                            <!--编程题-->
+                            <%if(isNotEmpty(qProgramList)){%>
+                            <div class="col-12 table-responsive">
+                                <div class="invoice-title">
+                                    <div class="invoice-col">
+                                        <h4>简答题</h4>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <%for(question in qProgramList){%>
+                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                                    <div class="box-tools pull-right" rel="${question.id}">
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
+                                        </button>
+                                        <button class="btn bg-olive btn-sm"
+                                                onclick="goUpdateQuestion('${question.id}')">修改题目
+                                        </button>
+                                    </div>
+                                    <dd></dd>
+                                    <dd>
+                                        <label><strong style="color: limegreen">正确答案：</strong></label>
+                                        <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
+                                    </dd>
+                                    <dd>
+                                        <label>解析：</label>
+                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                                    </dd>
+                                    <hr>
+                                    <%}%>
+                                </dl>
+                            </div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+            </div>
+        </section>
+        <!-- 修改答案模态框 -->
+        <%include("update-answer-modal.html"){}%>
+        <!-- 修改题目模态框（已知） -->
+        <%include("update-question-modal.html"){}%>
     </div>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){} %>
-</div><!-- 引入全局 js 脚本文件 -->
+</div>
+<!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <%include("api/show-api.html"){} %>
 </body>

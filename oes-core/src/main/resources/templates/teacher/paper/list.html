@@ -21,12 +21,12 @@
         }
 
         td {
-            font-size: 16px;
+            font-size: 15px;
             text-align: center;
         }
     </style>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
     <% include("../../teacher/include/header.html"){} %>
@@ -34,59 +34,101 @@
     <% layout("../../teacher/include/sider.html",{name:"paper"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">  试卷管理</h3>
-                    <div class="box-tools pull-right">
-                        <a href="/teacher/paper/import" class="btn btn-primary btn-sm"><i
-                                class="fa fa-plus-circle"></i>  导入试题</a>
-                        <a id="goSave" class="btn btn-success btn-sm"><i class="fa fa-plus-circle"></i>    随机组卷</a>
-                        <a href="/teacher/paperForm" class="btn btn-warning btn-sm"><i class="fa fa-search"></i>
-                            查看模版</a>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>试卷管理</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/teacher/paper">试卷管理</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                        <tr>
-                            <th>序号</th>
-                            <th>试卷编号</th>
-                            <th>试卷名称</th>
-                            <th>试卷状态</th>
-                            <th>试卷类型</th>
-                            <th>操作</th>
-                        </tr>
-                        <% if( isEmpty(page.list) ){ %>
-                        <tr>
-                            <td colspan="6">试卷库中还未添加试卷</td>
-                        </tr>
-                        <% } %>
-                        <% for( paper in page.list ){ %>
-                        <tr class="rowDetail" rel="${paper.id}">
-                            <td>${paperLP.index}</td>
-                            <td>No. ${paper.id}</td>
-                            <td>${paper.paperName}</td>
-                            <td>
-                                <% if(paper.end){ %>
-                                已结束
-                                <% }else if(paper.start){ %>
-                                考试中
-                                <% }else{ %>
-                                未开始
-                                <% } %>
-                            </td>
-                            <td>${paper.paperType}</td>
-                            <td>
-                                <button class="btn btn-vk btn-sm viewBtn" onclick="viewPaper(${paper.id})">查看试卷</button>
-                            </td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">试卷列表</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <a href="/teacher/paper/import" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> 导入试题</a>&nbsp;
+                                        <a id="goSave" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> 随机组卷</a>&nbsp;
+                                        <a href="/teacher/paperForm" class="btn btn-default btn-sm"><i class="fa fa-search"></i> 查看模版</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
+                                    <tbody>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>试卷编号</th>
+                                        <th>试卷名称</th>
+                                        <th>试卷状态</th>
+                                        <th>试卷类型</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <% if( isEmpty(page.list) ){ %>
+                                    <tr>
+                                        <td colspan="6">试卷库中还未添加试卷</td>
+                                    </tr>
+                                    <% } %>
+                                    <% for( paper in page.list ){ %>
+                                    <tr class="rowDetail" rel="${paper.id}">
+                                        <td>${paperLP.index}</td>
+                                        <td>No. ${paper.id}</td>
+                                        <td>${paper.paperName}</td>
+                                        <td>
+                                            <% if(paper.end){ %>
+                                            已结束
+                                            <% }else if(paper.start){ %>
+                                            考试中
+                                            <% }else{ %>
+                                            未开始
+                                            <% } %>
+                                        </td>
+                                        <td>${paper.paperType}考试</td>
+                                        <td>
+                                            <button class="btn btn-info btn-sm viewBtn" onclick="viewPaper(${paper.id})">查看试卷 </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer clearfix">
+                                <ul class="pagination m-0 float-right">
+                                    <%for(var i=1;i<=page.pages;i++){ %>
+                                    <% if(page.pageNum == i){ %>
+                                    <li class="page-item active">
+                                        <a class="page-link"
+                                           href="?p={{i}}">${i}</a>
+                                    </li>
+                                    <%}else{%>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?p={{i}}">${i}</a>
+                                    </li>
+                                    <%}%>
+                                    <% }%>
+                                </ul>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div><!-- /.row -->
         </section>
     </div>
     <!-- 引入footer -->
@@ -94,7 +136,8 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
-<script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
+<!-- 自定义工具 -->
+<script src="/static/js/OesUtil.js"></script>
 <%include("api/list-api.html"){} %>
 </body>
 </html>
