@@ -5,49 +5,90 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 管理员首页</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
+    <%include("../../include/css.html"){}%>
 </head>
-<body class="hold-transition skin-purple">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% layout("../include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:'home'}){} %>
+    <% layout("../include/sider.html",{name:"home"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1 style="font-family: 'Microsoft Yahei', Arial, Helvetica, sans-serif;text-align:center">
-                OES后台管理系统
-            </h1>
-        </section>
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">管理员首页</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                                title="Collapse">
-                            <i class="fa fa-minus"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip"
-                                title="Remove">
-                            <i class="fa fa-times"></i></button>
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>管理员首页</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">管理员首页</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body" style="font-size: 20px">
-                    <p>On-line Examination System 在线考试系统是一款构建在 SpringBoot 和 MyBatis 上基于 JSP 开发的线考试系统。</p>
-                    <p>管理员端包含如下功能：</p>
-                    <p>一、发布系统公告</p>
-                    <p>二、教师管理</p>
-                    <p>三、学院管理</p>
-                    <p>四、管理员管理</p>
+            </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="callout callout-info">
+                            <h5><i class="fa fa-info"></i>&nbsp;${session.admin.name}管理员，你好：</h5>
+                            欢迎使用 On-line Examination System 在线考试系统
+                        </div>
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="invoice-title">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fa fa-book"></i> 功能概述
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- info row -->
+                            <div class="col-12 table-responsive">
+                                <table class="table table-light">
+                                    <thead>
+                                    <tr>
+                                        <th>管理员端包含如下功能：</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>一、发布系统公告</td>
+                                    </tr>
+                                    <tr>
+                                        <td>二、教师管理</td>
+                                    </tr>
+                                    <tr>
+                                        <td>三、学院管理</td>
+                                    </tr>
+                                    <tr>
+                                        <td>四、管理员管理</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
-</div><!-- 引入全局 js 脚本文件 -->
+    <%include("../../include/footer.html"){}%>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+</div>
+<!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
 </body>
 </html>
-

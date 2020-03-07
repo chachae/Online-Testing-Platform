@@ -1,28 +1,30 @@
 <script>
     // 初始化下拉框 select2 样式
-    $('.job-select').select2({width: "100%", placeholder: "请选择"});
-    $('.sex-select').select2({width: "100%", placeholder: "请选择"});
+    $('.job-select').select2({width: "100%", theme: "bootstrap4"});
+    $('.sex-select').select2({width: "100%", theme: "bootstrap4"});
 
     // 启动修改模态框
-    $(".goUpdate").click(function () {
+    function goUpdate(id) {
+        getTeacher(id);
         $("#update-modal").modal({
             show: true,
             backdrop: 'static'
         });
-    });
+    }
 
     // 执行更新请求
-    $("#updateBtn").click(function () {
-        layer.confirm("确定修改信息吗?", function () {
+    function updateTeacher() {
+        OesUtil.confirm("确定修改信息吗?", function () {
             let data = $(".update-form").serialize();
             $.post("/api/teacher/update/", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
                     window.location.reload();
+                } else {
+                    toastr.error(data.message);
                 }
             })
         })
-    });
+    }
 
     // 获取教师信息
     function getTeacher(id) {
@@ -30,8 +32,8 @@
             $('#id').val(data.id);
             $('#name').val(data.name);
             $('#workNumber').val(data.workNumber);
-            $('#job').val(data.job).select2({width: "100%", placeholder: '请选择'});
-            $('#sex').val(data.sex).select2({width: "100%", placeholder: '请选择'});
+            $('#job').val(data.job).select2({width: "100%", theme: "bootstrap4"});
+            $('#sex').val(data.sex).select2({width: "100%", theme: "bootstrap4"});
             $("#sex option").each(function () {
                 if ($(this).val() === data.sex) {
                     $(this).attr('selected', true);
@@ -41,50 +43,37 @@
     }
 
     // 启动新增模态框
-    $(".goSave").click(function () {
+    function goSave() {
         $("#save-modal").modal({
             show: true,
             backdrop: 'static'
         });
+    }
 
-        // 增加教师
-        $("#saveBtn").click(function () {
-            layer.confirm("确定增加学教师吗?", function () {
-                let data = $(".save-form").serialize();
-                $.post("/api/teacher/save/", data).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("增加成功!");
-                        window.location.reload();
-                    } else {
-                        layer.msg(data.message);
-                    }
-                })
-            })
-        })
-    });
-
-    // 删除教师
-    function deleteTeacher (id) {
-        layer.confirm("确定删除学教师吗?", function () {
-            $.post("/api/teacher/delete/" + id).done(function (data) {
+    // 增加教师
+    function saveTeacher() {
+        OesUtil.confirm("确定增加学教师吗?", function () {
+            let data = $(".save-form").serialize();
+            $.post("/api/teacher/save/", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("删除成功!");
                     window.location.reload();
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         })
     }
 
-    //分页
-    $('#pagination-demo').twbsPagination({
-        totalPages: "${page.pages}",
-        visiblePages: 3,
-        first: '首页',
-        last: '末页',
-        prev: '上一页',
-        next: '下一页',
-        href: "?p={{number}}"
-    });
+    // 删除教师
+    function deleteTeacher(id) {
+        OesUtil.confirm("确定删除学教师吗?", function () {
+            $.post("/api/teacher/delete/" + id).done(function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+        })
+    }
 </script>

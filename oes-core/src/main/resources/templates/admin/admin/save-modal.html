@@ -3,12 +3,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                <h4 class="modal-title">增加管理员</h4>
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">增加管理员</h4>
             </div>
-            <form class="save-form">
+            <form id="save-form">
                 <div class="modal-body">
                     <div class="form-group form_datetime">
                         <label for="name">姓名</label>
@@ -29,7 +29,7 @@
             </form>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+                <button type="button" class="btn btn-primary" onclick="saveAdmin()">确定</button>
             </div>
         </div>
     </div>

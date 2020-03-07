@@ -1,126 +1,71 @@
 <script>
-    // 改变按钮状态
-    $(function () {
-        $("#ckFather").click(function () {
-            let sons = $(".ckSon");
-            for (let i = 0; i < sons.length; i++) {
-                sons[i].checked = $(this)[0].checked;
-            }
-            if ($(this)[0].checked === true) {
-                $("#markBtn").removeAttr("disabled");
-            } else {
-                $("#markBtn").attr("disabled", "disabled");
-            }
-        });
-
-        // 改变按钮状态
-        $(".ckSon").click(function () {
-            var sons = $(".ckSon");
-            var num = 0;
-            for (var i = 0; i < sons.length; i++) {
-                if (sons[i].checked === true) {
-                    num++;
-                }
-            }
-            $("#ckFather")[0].checked = num === sons.length;
-            if (num > 0) {
-                $("#markBtn").removeAttr("disabled");
-                $("#delBtn").removeAttr("disabled");
-            } else {
-                $("#markBtn").attr("disabled", "disabled");
-                $("#delBtn").attr("disabled", "disabled");
-            }
-        });
-
-        //批量删除公告
-        $("#delBtn").click(function () {
-            layer.confirm("确定要删除么？", function () {
-                let sons = $(".ckSon");
-                let num = 0;
-                let ids = '';
-                for (let i = 0; i < sons.length; i++) {
-                    if (sons[i].checked === true) {
-                        ids += sons[i].value + ',';
-                        num++;
-                    }
-                }
-                $.post("/api/announce/delete", {"ids": ids}).done(function (data) {
-                    if (data.state === "success") {
-                        layer.msg("删除成功");
-                        history.go(0);
-                    } else {
-                        layer.msg(data.message);
-                    }
-                })
-            });
-        });
-    });
 
     // 删除单个公告
     function deleteAnnounce(id) {
-        layer.confirm("确定要删除么？", function () {
+        OesUtil.confirm("确定要删除么？", function () {
             $.get("/api/announce/delete/" + id).done(function (json) {
                 if (json.state === "success") {
-                    layer.msg("删除成功");
                     history.go(0);
                 } else {
-                    layer.msg(json.message);
+                    toastr.error(json.message);
                 }
             })
         })
     }
 
     // 更新公告
-    $('#updateBtn').click(function () {
-        layer.confirm("确定修改公告吗?", function () {
-            let data = $('.update-form').serialize();
+    function updateAnnounce() {
+        OesUtil.confirm("确定修改公告吗？", function () {
+            let data = $('#update-form').serialize();
             $.post("/api/announce/update", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
                     history.go(0);
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         })
-    });
+    }
 
     // 增加公告
-    $("#saveBtn").click(function () {
-        let data = $(".save-form").serialize();
-        $.post("/api/announce/save", data, function (data) {
-            if (data.state === "success") {
-                layer.msg("增加成功");
-                history.go(0);
-            } else {
-                layer.msg(data.message);
-            }
+    function saveAnnounce() {
+        OesUtil.confirm("确定新增公告吗？", function () {
+            let data = $("#save-form").serialize();
+            $.post("/api/announce/save", data, function (data) {
+                if (data.state === "success") {
+                    history.go(0);
+                } else {
+                    toastr.error(data.message);
+                }
+            })
         })
-    });
+    }
 
     // 启动修改模态框
-    $(".edit").click(function () {
+    function goUpdate(id) {
+        getAnnounce(id);
         $("#updateModal").modal({
             show: true,
             backdrop: 'static'
         });
-    });
+    }
 
     // 启动查看模态框
-    $(".view").click(function () {
+    function goView(id) {
+        getAnnounce(id);
         $("#viewModal").modal({
             show: true,
             backdrop: 'static'
         });
-    });
+    }
 
     // 启动新增模态框
-    $(".goSave").click(function () {
+    function goSave() {
         $("#saveModal").modal({
             show: true,
             backdrop: 'static'
         });
-    });
+    }
 
     // 模态框赋值
     function getAnnounce(id) {

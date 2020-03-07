@@ -28,70 +28,108 @@
     </style>
 </head>
 <body class="hold-transition skin-purple">
+
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% layout("../include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <% layout("../include/sider.html",{name:'teacher'}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">教师管理</h3>
-                    <div class="box-tools pull-right">
-                        <a class="btn btn-success btn-sm goSave"><i class="fa fa-plus"></i> 新增教师</a>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+
+                    <div class="col-sm-6">
+                        <h1>教师管理</h1>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <tr>
-                            <th style="width: 5%">序号</th>
-                            <th style="width: 20%">姓名</th>
-                            <th style="width: 15%">工号</th>
-                            <th style="width: 15%">职位</th>
-                            <th style="width: 10%">性别</th>
-                            <th style="width: 35%">操作</th>
-                        </tr>
-                        <% if(isEmpty(page.list)){ %>
-                        <tr>
-                            <td colspan="6">没有教师</td>
-                        </tr>
-                        <% } %>
-                        <% for( teacher in page.list ){ %>
-                        <tr class="rowDetail" rel="${teacher.workNumber}">
-                            <td>${teacherLP.index}</td>
-                            <td hidden="hidden">${teacher.id}</td>
-                            <td>${teacher.name}</td>
-                            <td>${teacher.workNumber}</td>
-                            <td>${teacher.job}</td>
-                            <td>${teacher.sex}</td>
-                            <td rel="${teacher.id}">
-                                <button class="btn btn-success btn-sm goUpdate" onclick="getTeacher(${teacher.id})"><i
-                                        class="fa"></i>编辑
-                                </button>
-                                <a class="btn btn-danger btn-sm delTeacher" onclick="deleteTeacher(${teacher.id})"><i
-                                        class="fa"></i>删除</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </table>
-                </div>
             </div>
-            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">教师信息</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-success btn-sm" onclick="goSave()"><i class="fa fa-plus"></i> 新增教师</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
+                                    <tr>
+                                        <th style="width: 5%">序号</th>
+                                        <th style="width: 20%">姓名</th>
+                                        <th style="width: 15%">工号</th>
+                                        <th style="width: 15%">职位</th>
+                                        <th style="width: 10%">性别</th>
+                                        <th style="width: 35%">操作</th>
+                                    </tr>
+                                    <% if(isEmpty(page.list)){ %>
+                                    <tr>
+                                        <td colspan="6">没有教师</td>
+                                    </tr>
+                                    <% } %>
+                                    <% for( teacher in page.list ){ %>
+                                    <tr class="rowDetail" rel="${teacher.workNumber}">
+                                        <td>${teacherLP.index}</td>
+                                        <td hidden="hidden">${teacher.id}</td>
+                                        <td>${teacher.name}</td>
+                                        <td>${teacher.workNumber}</td>
+                                        <td>${teacher.job}</td>
+                                        <td>${teacher.sex}</td>
+                                        <td rel="${teacher.id}">
+                                            <button class="btn btn-success btn-sm"
+                                                    onclick="goUpdate(${teacher.id})"><i
+                                                    class="fa"></i>编辑
+                                            </button>
+                                            <a class="btn btn-danger btn-sm delTeacher"
+                                               onclick="deleteTeacher(${teacher.id})"><i
+                                                    class="fa"></i>删除</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </table>
+                            </div>
+                            <div class="card-footer clearfix">
+                                <ul class="pagination m-0 float-right">
+                                    <%for(var i=1;i<=page.pages;i++){ %>
+                                    <% if(page.pageNum == i){ %>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="?p=${i}">${i}</a>
+                                    </li>
+                                    <%}else{%>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?p=${i}">${i}</a>
+                                    </li>
+                                    <%}%>
+                                    <% }%>
+                                </ul>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div><!-- /.row -->
+            </div>
         </section>
     </div>
-    <!-- 增加模态框 -->
-    <%include("save-modal.html"){} %>
-    <!-- 更新模态框 -->
-    <%include("update-modal.html"){} %>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){} %>
 </div>
+<%include("update-modal.html"){}%>
+<%include("save-modal.html"){}%>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
-<!-- 分页 -->
-<script src="/static/plugins/jquery-pagination/jquery.twbsPagination.min.js"></script>
+<!-- 自定义工具 -->
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <% include("api.html"){} %>
 </body>

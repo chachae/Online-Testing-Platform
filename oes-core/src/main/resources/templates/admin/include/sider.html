@@ -1,47 +1,71 @@
-<aside class="main-sidebar">
-    <section class="sidebar">
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">系统功能</li>
-            <li class="treeview ${name == 'home'?'active':''}">
-                <a href="/admin/home/${session.admin.id}">
-                    <i class="fa fa-dashboard"></i> <span>首页</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <li class="treeview  ${strutil.contain(name,'announce')?'active':''}">
-                <a href="/admin/announce">
-                    <i class="fa fa-dashboard"></i> <span>公告管理</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <li class="treeview ${name == 'academy'?'active':''}">
-                <a href="/admin/academy">
-                    <i class="fa fa-university"></i> <span>学院管理</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <li class="treeview ${name == 'teacher'?'active':''}">
-                <a href="/admin/teacher">
-                    <i class="fa fa-dashboard"></i> <span>教师管理</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-            <li class="treeview ${name == 'admin'?'active':''}">
-                <a href="/admin">
-                    <i class="fa fa-dashboard"></i> <span>管理员管理</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </section>
+<!-- 左侧菜单栏 -->
+<aside class="main-sidebar elevation-4 sidebar-dark-olive">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link navbar-olive">
+        <img src="/webjars/AdminLTE/3.0.0/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">OES 管理员端</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="/webjars/AdminLTE/3.0.0/dist/img/avatar5.png" class="img-circle elevation-2"
+                     alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">${session.admin.name}</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- 首页 -->
+                <li class="nav-item">
+                    <a href="/admin/home/${session.admin.id}" class="nav-link ${name == 'home'?'active':''}">
+                        <i class="nav-icon fa fa-vcard"></i>
+                        <p>首页</p>
+                    </a>
+                </li>
+
+                <!-- 系统公告 -->
+                <li class="nav-item">
+                    <a href="/admin/announce" class="nav-link  ${strutil.contain(name,'announce')?'active':''}">
+                        <i class="nav-icon fa fa-paper-plane"></i>
+                        <p>公告管理</p>
+                    </a>
+                </li>
+
+                <!-- 学院管理 -->
+                <li class="nav-item">
+                    <a href="/admin/academy" class="nav-link  ${name == 'academy'?'active':''}">
+                        <i class="nav-icon fa fa-address-book-o"></i>
+                        <p>学院管理</p>
+                    </a>
+                </li>
+
+                <!-- 教师管理 -->
+                <li class="nav-item">
+                    <a href="/admin/teacher" class="nav-link ${name == 'teacher'?'active':''}">
+                        <i class="nav-icon fa fa-imdb"></i>
+                        <p>教师管理</p>
+                    </a>
+                </li>
+
+                <!-- 管理员管理 -->
+                <li class="nav-item">
+                    <a href="/admin" class="nav-link ${name == 'admin'?'active':''}">
+                        <i class="nav-icon fa fa-file"></i>
+                        <p>管理员管理</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
 </aside>

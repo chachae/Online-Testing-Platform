@@ -51,7 +51,7 @@ public class AdminModuleController {
    *
    * @return 修改密码界面
    */
-  @GetMapping("{id}/changePass")
+  @GetMapping("/update/pass")
   public String toChangPass() {
     return "/admin/self/update-pass";
   }
@@ -68,7 +68,7 @@ public class AdminModuleController {
     // 删除当前用户的session
     session.removeAttribute(SysConsts.Session.ADMIN);
     session.removeAttribute(SysConsts.Session.ROLE_ID);
-    return "redirect:/admin/login";
+    return "redirect:/";
   }
 
   /**

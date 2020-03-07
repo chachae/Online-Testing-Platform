@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * @author chachae
  * @since 2020/2/27 23:11
  */
-@RestController("announceRest")
+@RestController
 @RequestMapping("/api/announce")
 public class AnnounceController {
 

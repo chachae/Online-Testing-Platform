@@ -7,14 +7,6 @@
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
     <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
         th {
             font-size: 15px;
             text-align: center;
@@ -26,89 +18,114 @@
         }
     </style>
 </head>
-<body class="hold-transition skin-purple">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% layout("../include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <% layout("../include/sider.html",{name:'announce'}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <!-- 增加模态框 -->
-            <%include("save-modal.html"){} %>
-            <!-- 修改模态框 -->
-            <%include("update-modal.html"){} %>
-            <!-- 查看模态框 -->
-            <%include("view-modal.html"){} %>
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">公告管理</h3>
-                    <div class="box-tools pull-right">
-                        <button class="btn btn-primary btn-sm goSave"><i class="fa fa-dustbin"></i> 发布公告
-                        </button>
-                        <button id="delBtn" class="btn btn-danger btn-sm" disabled><i class="fa fa-dustbin"></i> 批量删除
-                        </button>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>公告管理</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/admin/announce">系统公告</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th style="width: 5%"><input type="checkbox" id="ckFather"></th>
-                            <th style="text-align: left;width: 30%">公告标题</th>
-                            <th style="width: 8%">发布人</th>
-                            <th style="width: 8%">身份</th>
-                            <th style="width: 21%">发布日期</th>
-                            <th style="width: 29%">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% if(isEmpty(announceList)){ %>
-                        <tr>
-                            <td colspan="6">暂无公告信息</td>
-                        </tr>
-                        <% } %>
-                        <% for( announce in announceList){ %>
-                        <tr class="rowDetail" rel="${announce.id}">
-                            <td><input value="${announce.id}" type="checkbox" class="ckSon"></td>
-                            <td style="text-align: left">${announce.title}</td>
-                            <td>${announce.authorName}</td>
-                            <td hidden="hidden">${announce.content}</td>
-                            <td>
-                                ${announce.roleId == 1 ? "管理员" : ''}
-                                ${announce.roleId == 3 ? "教师" : ''}
-                            </td>
-                            <td>
-                                ${announce.createTime,dateFormat="yyyy年MM月dd日 HH:mm:ss"}
-                            </td>
-                            <td>
-                                <button class="view btn btn-sm btn-vk"
-                                        onclick="javascript:getAnnounce('${announce.id}')">
-                                    查看公告
-                                </button>
-                                <button class="edit btn btn-sm btn-dropbox" rel="${announce.id}"
-                                        onclick="javascript:getAnnounce('${announce.id}')">
-                                    编辑公告
-                                </button>
-                                <a href="javascript:;" class="btn btn-sm btn-danger"
-                                   onclick="javascript:deleteAnnounce(${announce.id})">删除公告</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-            <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">公告信息</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="goSave()"><i class="fa fa-dustbin"></i> 发布公告
+                                        </button>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: left;width: 30%">公告标题</th>
+                                        <th style="width: 8%">发布人</th>
+                                        <th style="width: 8%">身份</th>
+                                        <th style="width: 21%">发布日期</th>
+                                        <th style="width: 29%">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <% if(isEmpty(announceList)){ %>
+                                    <tr>
+                                        <td colspan="6">暂无公告信息</td>
+                                    </tr>
+                                    <% } %>
+                                    <% for( announce in announceList){ %>
+                                    <tr class="rowDetail" rel="${announce.id}">
+                                        <td style="text-align: left">${announce.title}</td>
+                                        <td>${announce.authorName}</td>
+                                        <td hidden="hidden">${announce.content}</td>
+                                        <td>
+                                            ${announce.roleId == 1 ? "管理员" : ''}
+                                            ${announce.roleId == 3 ? "教师" : ''}
+                                        </td>
+                                        <td>
+                                            ${announce.createTime,dateFormat="yyyy年MM月dd日 HH:mm:ss"}
+                                        </td>
+                                        <td>
+                                            <button class="view btn btn-sm btn-success"
+                                                    onclick="goView('${announce.id}')">
+                                                查看公告
+                                            </button>
+                                            <button class="edit btn btn-sm btn-warning" rel="${announce.id}"
+                                                    onclick="goUpdate('${announce.id}')">
+                                                编辑公告
+                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                    onclick="deleteAnnounce('${announce.id}')">删除公告
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div><!-- /.row -->
+            </div>
         </section>
     </div>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){} %>
 </div>
+<!-- 增加模态框 -->
+<%include("save-modal.html"){} %>
+<!-- 修改模态框 -->
+<%include("update-modal.html"){} %>
+<!-- 查看模态框 -->
+<%include("view-modal.html"){} %>
 <!-- 公共脚本 -->
 <% include("../../include/js.html"){} %>
+<!-- 自定義工具 -->
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <% include("api.html"){} %>
 </body>
