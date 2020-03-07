@@ -32,16 +32,6 @@ public class AdminModuleController {
   @Resource private AnnounceService announceService;
 
   /**
-   * 管理员登录页面
-   *
-   * @return 管理员登录页面
-   */
-  @GetMapping("/login")
-  public String login() {
-    return "/admin/self/login";
-  }
-
-  /**
    * 管理员主界面
    *
    * @param id 管理员 ID

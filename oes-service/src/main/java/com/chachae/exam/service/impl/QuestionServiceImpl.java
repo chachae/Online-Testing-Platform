@@ -86,7 +86,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       qw.lambda().eq(Question::getTypeId, typeId);
     }
     // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 12);
+    PageHelper.startPage(pageNo, 10);
     // 查询试题集合信息
     List<Question> questionList = questionDAO.selectList(qw);
     return new PageInfo<>(questionList);

@@ -37,8 +37,8 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
 
   @Override
   public PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major) {
-    // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 12);
+    // 设置分页信息，默认每页显示 10 条数据，此处采用 PageHelper 物理分页插件实现数据分页
+    PageHelper.startPage(pageNo, 10);
     List<MajorVo> majors = this.majorDAO.listVo(major);
     return new PageInfo<>(majors);
   }

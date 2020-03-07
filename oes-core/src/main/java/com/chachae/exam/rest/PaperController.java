@@ -48,7 +48,6 @@ public class PaperController {
     return this.paperService.getById(id);
   }
 
-  @ResponseBody
   @PostMapping("/import/excel")
   @Permissions("paper:import")
   public R excel(@RequestParam("file") MultipartFile multipartFile) {
@@ -92,7 +91,7 @@ public class PaperController {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     // 获取教师 ID
-    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 调用组卷接口
     paper.setTeacherId(teacherId);
     // 判断是否指定难度
@@ -110,7 +109,6 @@ public class PaperController {
    *
    * @param dto 信息
    */
-  @ResponseBody
   @PostMapping("/update/score")
   @Permissions("paper:update")
   public R editScore(AnswerEditDto dto) {
@@ -133,7 +131,6 @@ public class PaperController {
    * @param id 试卷ID
    * @return 试卷页面
    */
-  @ResponseBody
   @PostMapping("/delete/{id}")
   @Permissions("paper:delete")
   public R delPaper(@PathVariable Integer id) {
@@ -143,26 +140,11 @@ public class PaperController {
   }
 
   /**
-   * 修改試卷题目答案
-   *
-   * @param question 问题信息
-   * @return 回调信息
-   */
-  @ResponseBody
-  @PostMapping("/update/answer")
-  @Permissions("paper:update")
-  public R updateAnswer(Question question) {
-    this.questionService.updateById(question);
-    return R.success();
-  }
-
-  /**
    * 修改試卷题目
    *
    * @param dto 修改的信息
    * @return 回调信息
    */
-  @ResponseBody
   @PostMapping("/update/question")
   @Permissions("paper:update")
   public R updateQuestionId(PaperQuestionUpdateDto dto) {

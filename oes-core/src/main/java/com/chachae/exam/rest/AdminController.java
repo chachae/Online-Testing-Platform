@@ -29,15 +29,15 @@ public class AdminController {
    * 管理员登录<a href="http://localhost:8080/admin/login">管理员登录接口</a>
    *
    * @param adminId 管理员账号
-   * @param adminPassword 管理员密码
+   * @param password 管理员密码
    * @return 管理员信息
    */
   @PostMapping("/login")
-  public R login(String adminId, String adminPassword) {
+  public R login(String adminId, String password) {
     // 获取session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 登陆操作
-    Admin admin = this.adminService.login(adminId, adminPassword);
+    Admin admin = this.adminService.login(adminId, password);
     // 设置session
     session.setAttribute(SysConsts.Session.ADMIN, admin);
     session.setAttribute(SysConsts.Session.ROLE_ID, admin.getRoleId());

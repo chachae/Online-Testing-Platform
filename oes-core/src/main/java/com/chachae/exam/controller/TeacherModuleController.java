@@ -89,7 +89,7 @@ public class TeacherModuleController {
    * @param mv ModelAndView 对象
    * @return 课程信息
    */
-  @GetMapping("/course/list")
+  @GetMapping("/course")
   public ModelAndView courseList(ModelAndView mv) {
     Object id = HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 设置 model 信息
@@ -104,7 +104,7 @@ public class TeacherModuleController {
    * @param mv ModelAndView 对象
    * @return 公告集合
    */
-  @GetMapping("/announce/system")
+  @GetMapping("/announce")
   public ModelAndView announceSystem(ModelAndView mv) {
     // 设置 model 对象信息
     mv.addObject("announceList", this.announceService.list());

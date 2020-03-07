@@ -65,6 +65,39 @@
         });
     });
 
+    // 校验表单
+    $(document).ready(function () {
+        $('#admin-form').validate({
+            rules: {
+                adminId: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+            },
+            messages: {
+                adminId: {
+                    required: "请填写管理员账号",
+                },
+                password: {
+                    required: "请填写密码",
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+
     // 学生登录
     $('#stuBtn').click(function () {
         // 密码加密
@@ -80,22 +113,39 @@
                 toastr.error(data.message);
             }
         })
-    })
+    });
 
-        // 学生登录
-        $('#teacherBtn').click(function () {
-            // 密码加密
-            let username = $("#teacherNumber").val();
-            let password = encryptPass($("#teacherPassword").val());
-            $.post("/api/teacher/login", {"teacherNumber": username, "password": password}).done(function (data) {
-                if (data.state === "success") {
-                    toastr.success('认证成功');
-                    $(this).delay(1000).queue(function () {
-                        window.location.href = "/teacher/home/" + data.data;
-                    });
-                } else {
-                    toastr.error(data.message);
-                }
-            })
+    // 教师登录
+    $('#teacherBtn').click(function () {
+        // 密码加密
+        let username = $("#teacherNumber").val();
+        let password = encryptPass($("#teacherPassword").val());
+        $.post("/api/teacher/login", {"teacherNumber": username, "password": password}).done(function (data) {
+            if (data.state === "success") {
+                toastr.success('认证成功');
+                $(this).delay(1000).queue(function () {
+                    window.location.href = "/teacher/home/" + data.data;
+                });
+            } else {
+                toastr.error(data.message);
+            }
         })
+    });
+
+    // 管理员登录
+    $('#adminBtn').click(function () {
+        // 密码加密
+        let username = $("#adminId").val();
+        let password = encryptPass($("#adminPassword").val());
+        $.post("/api/admin/login", {"adminId": username, "password": password}).done(function (data) {
+            if (data.state === "success") {
+                toastr.success('认证成功');
+                $(this).delay(1000).queue(function () {
+                    window.location.href = "/admin/home/" + data.data;
+                });
+            } else {
+                toastr.error(data.message);
+            }
+        })
+    });
 </script>

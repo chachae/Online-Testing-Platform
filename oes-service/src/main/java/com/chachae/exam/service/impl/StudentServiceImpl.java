@@ -89,7 +89,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   @Override
   public PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto) {
     // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 12);
+    PageHelper.startPage(pageNo, 10);
     List<StudentVo> students = this.studentDAO.listVo(dto);
     // 按照学院 id 从小到大排序
     students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
