@@ -11,7 +11,7 @@
         $.each(data, function (index, e) {
             options += "<option selected='true' value=" + e.id + ">" + e.courseName + "</option>";
         });
-        $("#courseId").append(options).select2({theme: 'bootstrap4'});
+        $("#courseId").append(options).select2({theme: 'bootstrap4',width:'100%'});
     });
 
     // 获取学院集合
@@ -22,7 +22,7 @@
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        $("#academy").append(options).val('').select2({theme: 'bootstrap4'});
+        $("#academy").append(options).val('').select2({theme: 'bootstrap4',width:'100%'});
     });
 
     // 专选择框框回填
@@ -36,7 +36,7 @@
             $.each(data, function (index, e) {
                 options += "<option value=" + e.id + ">" + e.major + "</option>";
             });
-            $("#majorId").append(options).val('').select2({theme: 'bootstrap4'});
+            $("#majorId").append(options).val('').select2({theme: 'bootstrap4',width:'100%'});
         });
     };
 
@@ -69,22 +69,24 @@
 
     // 加載时间选择框
     $(function () {
-        OesUtil.dateTimePick(".dateTimepicker", false, false);
+        // 起止时间
+        OesUtil.dateTimePick("#beginTime", false, false);
+        OesUtil.dateTimePick("#endTime", false, false);
     });
 
     // 提交组卷
     $('#saveImportBtn').click(function () {
         if ($('.paperName').val() === '') {
-            layer.alert("请填写试卷名称");
+            toastr.info("请填写试卷名称");
             return false;
         } else if ($('.courseId').val() === '') {
-            layer.alert("请选择课程");
+            toastr.info("请选择课程");
             return false;
         } else if ($('.majorId').val() === '') {
-            layer.alert("请选择专业");
+            toastr.info("请选择专业");
             return false;
         } else if ($('.paperType').val() === '') {
-            layer.alert("请选择试卷类型");
+            toastr.info("请选择试卷类型");
             return false;
         } else {
             $.ajax({
@@ -93,10 +95,10 @@
                 data: $('#addForm').serialize(),
                 success: function (res) {
                     if (res.state === "success") {
-                        layer.alert("添加成功");
+                        toastr.success("添加成功");
                         window.location.href = "/teacher/paper/show/" + res.data;
                     } else {
-                        layer.alert(res.message);
+                        toastr.error(res.message);
                     }
                 }
             });
@@ -104,17 +106,17 @@
     });
 
     // 随机部分
-    $("#a").select2({theme: 'bootstrap4'}).val(0);
-    $("#b").select2({theme: 'bootstrap4'}).val(0);
-    $("#c").select2({theme: 'bootstrap4'}).val(0);
-    $("#d").select2({theme: 'bootstrap4'}).val(0);
-    $("#e").select2({theme: 'bootstrap4'}).val(0);
-    $("#f").select2({theme: 'bootstrap4'}).val(0);
-    $("#aDif").select2({theme: 'bootstrap4'}).val("0");
-    $("#bDif").select2({theme: 'bootstrap4'}).val("0");
-    $("#cDif").select2({theme: 'bootstrap4'}).val("0");
-    $("#dDif").select2({theme: 'bootstrap4'}).val("0");
-    $("#eDif").select2({theme: 'bootstrap4'}).val("0");
-    $("#fDif").select2({theme: 'bootstrap4'}).val("0");
+    $("#a").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#b").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#c").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#d").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#e").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#f").select2({theme: 'bootstrap4',width:'100%'}).val(0);
+    $("#aDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
+    $("#bDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
+    $("#cDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
+    $("#dDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
+    $("#eDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
+    $("#fDif").select2({theme: 'bootstrap4',width:'100%'}).val("0");
 
 </script>

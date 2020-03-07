@@ -4,11 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 考试列表</title>
+    <!-- 时间选择器 -->
+    <link rel="stylesheet" href="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.css">
     <!-- 引入全局 css 文件 -->
     <%include("../../include/css.html"){}%>
-    <link rel="stylesheet" href="/webjars/adminlte/2.3.11/plugins/datepicker/datepicker3.css">
-    <link rel="stylesheet"
-          href="/static/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
     <!-- 样式 -->
     <style>
         .table > tbody > tr:hover {
@@ -38,45 +37,65 @@
     <% layout("../include/sider.html",{name:"exam"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">正式考试</h3>
-                    <div class="box-tools pull-right">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>考试管理</h1>
                     </div>
                 </div>
-                <div class="box-body no-padding">
-                    <table class="table table-hover">
-                        <tbody>
-                        <% if(isEmpty(paperList)){ %>
-                        <tr>
-                            <td colspan="6">暂无需要管理的考试</td>
-                        </tr>
-                        <% } %>
-                        <% if(isNotEmpty(paperList)){ %>
-                        <tr>
-                            <th style="width: 10%">序号</th>
-                            <th style="width: 20%">名称</th>
-                            <th style="width: 20%">开考时间</th>
-                            <th style="width: 20%">结束时间</th>
-                            <th style="width: 10%">时长</th>
-                            <th style="width: 20%">操作</th>
-                        </tr>
-                        <% } %>
-                        <% for( paper in paperList ){ %>
-                        <tr class="rowDetail" rel="${paper.id}">
-                            <td>${paperLP.index}</td>
-                            <td>${paper.paperName}</td>
-                            <td>${paper.beginTime}</td>
-                            <td>${paper.endTime}</td>
-                            <td>${paper.allowTime}</td>
-                            <td><a onclick="getExam(${paper.id})" class="goUpdate btn btn-sm btn-vk">修改时间</a></td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
             </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">试卷列表</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <% if(isEmpty(paperList)){ %>
+                                    <tr>
+                                        <td colspan="6">暂无需要管理的考试</td>
+                                    </tr>
+                                    <% } %>
+                                    <% if(isNotEmpty(paperList)){ %>
+                                    <tr>
+                                        <th style="width: 10%">序号</th>
+                                        <th style="width: 20%">名称</th>
+                                        <th style="width: 20%">开考时间</th>
+                                        <th style="width: 20%">结束时间</th>
+                                        <th style="width: 10%">时长</th>
+                                        <th style="width: 20%">操作</th>
+                                    </tr>
+                                    <% } %>
+                                    <% for( paper in paperList ){ %>
+                                    <tr class="rowDetail" rel="${paper.id}">
+                                        <td>${paperLP.index}</td>
+                                        <td>${paper.paperName}</td>
+                                        <td>${paper.beginTime}</td>
+                                        <td>${paper.endTime}</td>
+                                        <td>${paper.allowTime}</td>
+                                        <td>
+                                            <a onclick="goUpdate(${paper.id})" class="btn btn-sm btn-warning">修改时间</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div><!-- /.row -->
         </section>
     </div>
     <!-- 引入footer -->
@@ -86,6 +105,11 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<!-- 时间选择器 js -->
+<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/moment.min.js"></script>
+<!-- 自定义工具 -->
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <% include("api.html"){} %>
 </body>

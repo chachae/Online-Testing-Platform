@@ -12,42 +12,32 @@
                 <div class="form-group">
                     <form id="update-form">
                         <div class="form-group">
-                            <label>名称 </label>
                             <input type="hidden" class="form-control" id="id" name="id" readonly="readonly"/>
-                            <textarea class="form-control" id="questionName" name="questionName" rows="2"></textarea>
+                            <textarea class="form-control" id="questionName" name="questionName" rows="2" autocomplete="off" placeholder="题目名称"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>选项A </label>
-                            <input class="form-control" id="optionA" name="optionA"/>
+                            <input class="form-control" id="optionA" name="optionA" placeholder="选项A (非选择题不用填写)" autocomplete="off"/>
                         </div>
                         <div class="form-group">
-                            <label>选项B </label>
-                            <input class="form-control" id="optionB" name="optionB"/>
+                            <input class="form-control" id="optionB" name="optionB" placeholder="选项B (非选择题不用填写)" autocomplete="off"/>
                         </div>
                         <div class="form-group">
-                            <label>选项C </label>
-                            <input class="form-control" id="optionC" name="optionC"/>
+                            <input class="form-control" id="optionC" name="optionC" placeholder="选项C (非选择题不用填写)" autocomplete="off"/>
                         </div>
                         <div class="form-group">
-                            <label>选项D </label>
-                            <input class="form-control" id="optionD" name="optionD"/>
+                            <input class="form-control" id="optionD" name="optionD" placeholder="选项D (非选择题不用填写)" autocomplete="off"/>
                         </div>
                         <div class="form-group">
-                            <label>答案 </label>
-                            <textarea class="form-control" id="answer" name="answer" rows="2"
-                                      readonly="readonly"></textarea>
+                            <textarea class="form-control" id="answer" name="answer" rows="2" placeholder="答案 (多选题请用逗号隔开)" autocomplete="off"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>所属课程 </label>
-                            <input class="form-control" id="course" readonly="readonly"/>
+                            <input class="form-control" id="course" readonly="readonly" placeholder="所属课程" autocomplete="off"/>
                         </div>
                         <div class="form-group">
-                            <label>类型 </label>
                             <select class="form-control typeSelect" name="typeId" id="typeId"></select>
                             <!-- 动态获取数据 -->
                         </div>
                         <div class="form-group">
-                            <label>难易度 </label>
                             <select class="form-control" id="difficulty" name="difficulty">
                                 <option value="1">简单</option>
                                 <option value="2">一般</option>
@@ -55,18 +45,12 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>出题人 </label>
-                            <input class="form-control" id="teacherName" readonly="readonly"/>
-                        </div>
-                        <div class="form-group">
-                            <label>解析 </label>
-                            <input class="form-control" id="remark" name="remark"/>
+                            <textarea class="form-control" id="remark" name="remark" placeholder="解析" rows="3" autocomplete="off"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="updateQuestion()" data-dismiss="modal">更新
-                    </button>
+                    <button type="button" class="btn btn-primary" onclick="updateQuestion()">更新</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div>

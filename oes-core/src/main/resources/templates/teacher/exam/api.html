@@ -1,69 +1,41 @@
-<script src="/static/plugins/moment/moment.js"></script>
-<script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
-<script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
-<script src="/static/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/bootstrap-datepicker.js"></script>
-<script src="/static/plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
 <script>
 
     //修改考试时间
-    function getExam(id) {
+    function goUpdate(id) {
         $.get("/api/paper/" + id, function (data) {
             // 模态框赋值
             $('#id').val(data.id);
             $('#paperName').val(data.paperName);
             $('#paperType').val(data.paperType);
-            $('#datepicker').val(data.beginTime);
-            $('#datepicker2').val(data.endTime);
+            $('#beginTime').val(data.beginTime);
+            $('#endTime').val(data.endTime);
         });
-    }
-
-    $(function () {
-
-        const date = new Date();
-        const picker = $("#datepicker").datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true,
-            startDate: date
-        });
-        picker.on("changeDate", function (e) {
-            const time = $("#datepicker").val();
-            const day = time.split(" ")[0];
-            $('#datepicker2').datetimepicker('setStartDate', day);
-        });
-
-        const timepicker = $('#datepicker2').datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true
-        })
-    });
-
-    // 启动时间修改
-    $(".goUpdate").click(function () {
+        // 打开模态框
         $("#update-modal").modal({
             show: true,
             backdrop: 'static'
         });
+    }
+
+    // 起止时间选择器
+    $(function () {
+        // 起止时间
+        OesUtil.dateTimePick("#beginTime", false, false);
+        OesUtil.dateTimePick("#endTime", false, false);
     });
 
-    // 修改请求
-    $("#updateBtn").click(function () {
-        layer.confirm("确定修改考试时间么?", function () {
+    // 修改试卷信息请求
+    function updatePaperInfo() {
+        OesUtil.confirm("确定修改考试时间么?", function () {
             let data = $("#update-form").serialize();
             $.post("/api/paper/update", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
-                    window.location.href = "/teacher/exam";
+                    window.location.reload();
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         })
-    });
+    }
 
 </script>

@@ -1,11 +1,3 @@
-<script src="/static/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-<script src="/static/plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="/static/plugins/moment/moment.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/bootstrap-datepicker.js"></script>
-<script src="/webjars/adminlte/2.3.11/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
-<script src="/static/plugins/jquery-validation/jquery.validate.js"></script>
-<script src="/static/plugins/jquery-form/jquery.form.min.js"></script>
-<script src="/static/plugins/layer/layer.js"></script>
 <script>
 
     // 获取课程集合
@@ -17,7 +9,7 @@
         $.each(data, function (index, e) {
             options += "<option selected='true' value=" + e.id + ">" + e.courseName + "</option>";
         });
-        $("#courseId").append(options).select2();
+        $("#courseId").append(options).select2({theme: 'bootstrap4', width: '100%'});
     });
 
     // 获取学院集合
@@ -28,7 +20,7 @@
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        $("#academy").append(options).val('').select2();
+        $("#academy").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
     });
 
     // 专选择框框回填
@@ -42,52 +34,33 @@
             $.each(data, function (index, e) {
                 options += "<option value=" + e.id + ">" + e.major + "</option>";
             });
-            $("#majorId").append(options).val('').select2();
+            $("#majorId").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
         });
-    };
+    }
 
-    // 试卷选择框
+    // 试卷类型下拉框
+    $('#paperType').select2({theme: 'bootstrap4', width: "100%"});
+
+    // 起止时间选择器
     $(function () {
-        // select2
-        $('#courseId').select2({width: "100%"});
-        $('#paperType').select2({width: "100%"});
-
-        const date = new Date();
-        const picker = $("#datepicker").datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true,
-            startDate: date
-        });
-        picker.on("changeDate", function (e) {
-            const time = $("#datepicker").val();
-            const day = time.split(" ")[0];
-            $('#datepicker2').datetimepicker('setStartDate', day);
-        });
-        let timepicker = $('#datepicker2').datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language: "zh-CN",
-            autoclose: true,
-            todayHighlight: true
-        });
-
-        // 提交组卷
-        $('#saveBtn').click(function () {
-            $.ajax({
-                url:"/api/paper/save/random",
-                type: "post",
-                data: $('#addForm').serialize(),
-                success: function (res) {
-                    if (res.state === "success") {
-                        layer.msg("添加成功");
-                        window.location.href = "/teacher/paper/show/" + res.data;
-                    } else {
-                        layer.msg(res.message);
-                    }
-                }
-            });
-            return false;
-        });
+        // 起止时间
+        OesUtil.dateTimePick("#beginTime", false, false);
+        OesUtil.dateTimePick("#endTime", false, false);
     });
+
+
+    // 提交随机组卷
+    function saveRandomPaper() {
+        OesUtil.confirm("确定添加试卷吗？", function () {
+            let data = $("#addForm").serialize();
+            $.post("/api/paper/save/random", data, function (data) {
+                if (data.state === "success") {
+                    window.location.href = "/teacher/paper/show/" + res.data;
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+        })
+    }
+
 </script>

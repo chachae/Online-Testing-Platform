@@ -6,8 +6,7 @@
     <title>OES | 新增试卷</title>
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
-    <link rel="stylesheet" href="/static/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
-    <link rel="stylesheet" href="/webjars/adminlte/2.3.11/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 
@@ -19,89 +18,130 @@
     <% layout("../../teacher/include/sider.html",{name:"save-paper"}){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">新增试卷</h3>
-                    <div class="box-tools pull-right">
-                        <a href="/teacher/paper" class="btn btn-primary btn-sm"><i
-                                class="fa fa-arrow-left"></i> 返回列表</a>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>新增试卷</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/teacher/paper">返回列表</a></li>
+                        </ol>
                     </div>
                 </div>
-                <div class="box-body">
-                    <form method="post" id="addForm">
-                        <div class="form-group">
-                            <label for="teacherId">试卷名称</label>
-                            <input type="hidden" class="form-control" id="teacherId" name="teacherId"
-                                   value="${session.teacher.id}">
-                            <input type="hidden" class="form-control" name="paperState" value="未开始">
-                            <input type="text" class="form-control" name="paperName">
-                            <input type="hidden" class="form-control" name="paperFormId" value="${paperFormId}">
-                        </div>
-                        <div class="form-group">
-                            <label for="courseId">所属课程</label>
-                            <select class="form-control" id="courseId" name="courseId">
-                                <option value="">请选择</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="paperType">试卷类型 </label>
-                            <select class="form-control" name="paperType" id="paperType">
-                                <option value="">请选择</option>
-                                <option value="正式">正式</option>
-                                <option value="模拟">模拟</option>
-                            </select>
-                        </div>
-                        <div class="form-group form_datetime">
-                            <label for="difficulty">难度</label>
-                            <select class="form-control" name="difficulty" id="difficulty">
-                                <option value="">难度均摊</option>
-                                <option value="1">容易</option>
-                                <option value="2">中等</option>
-                                <option value="3">困难</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="academy">学院</label>
-                            <select id="academy" onchange="getAcademy(this.value)" name="academy" class="form-control">
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="majorId">考试专业</label>
-                            <select id="majorId" name="majorId" class="form-control">
-                                <option value="">请先择学院</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="score">试卷总分 (默认模版为100分)</label>
-                            <input type="text" id="score" name="score" value="100" class="form-control">
-                        </div>
-                        <hr/>
-                        <div class="form-group">
-                            <label style="color: #af0000">注意: 正式试卷必选，模拟试卷无需选择时间</label>
-                        </div>
-                        <div class="form-group form_datetime">
-                            <label for="datepicker">开始时间</label>
-                            <input type="text" name="beginTime" class="form-control" id="datepicker">
-                        </div>
-                        <div class="form-group form_datetime">
-                            <label for="datepicker2">结束时间</label>
-                            <input type="text" name="endTime" class="form-control" id="datepicker2">
-                        </div>
-                        <hr/>
-                    </form>
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-primary" id="saveBtn">保存</button>
-                    <a href="javascript:history.go(0)" class="btn btn-danger" id="reset">重置</a>
-                </div>
             </div>
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice p-3 mb-3">
+                            <div class="card-header">
+                                <h3 class="card-title">试卷信息</h3>
+                            </div>
+                            <br>
+                            <!-- /.card-header -->
+                            <div class="invoice-col">
+                                <form method="post" id="addForm">
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" id="teacherId" name="teacherId"
+                                               value="${session.teacher.id}">
+                                        <input type="hidden" class="form-control" name="paperState" value="未开始">
+                                        <input type="hidden" class="form-control" name="paperFormId"
+                                               value="${paperFormId}">
+                                        <label>试卷名称</label>
+                                        <input type="text" class="form-control" name="paperName" autocomplete="off">
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            <label for="courseId">所属课程</label>
+                                            <select class="form-control" id="courseId" name="courseId">
+                                                <option value="">请选择</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="paperType">试卷类型 </label>
+                                            <select class="form-control" name="paperType" id="paperType">
+                                                <option value="">请选择</option>
+                                                <option value="正式">正式</option>
+                                                <option value="模拟">模拟</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="difficulty">难度</label>
+                                            <select class="form-control" name="difficulty" id="difficulty">
+                                                <option value="">难度均摊</option>
+                                                <option value="1">容易</option>
+                                                <option value="2">中等</option>
+                                                <option value="3">困难</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            <label for="academy">学院</label>
+                                            <select id="academy" onchange="getAcademy(this.value)" name="academy"
+                                                    class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="majorId">考试专业</label>
+                                            <select id="majorId" name="majorId" class="form-control">
+                                                <option value="">请先择学院</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="score">试卷总分 (默认模版为100分)</label>
+                                            <input type="text" id="score" name="score" value="100" class="form-control"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="form-group">
+                                        <label style="color: red">注意: 正式试卷必选，模拟试卷无需选择时间</label>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6">
+                                            <label for="beginTIme">开始时间</label>
+                                            <input type="text" name="beginTime" class="form-control" id="beginTime"  autocomplete="off">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="endTime">结束时间</label>
+                                            <input type="text" name="endTime" class="form-control" id="endTime"  autocomplete="off">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer clearfix bg-white">
+                                <div class="form-group float-right">
+                                    <a href="javascript:history.go(0)" class="btn btn-warning"
+                                       id="reset">重置</a>&nbsp;
+                                    <button class="btn btn-primary" onclick="saveRandomPaper()">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div><!-- /.row -->
         </section>
     </div>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){} %>
-</div><!-- 引入全局 js 脚本文件 -->
+</div>
+<!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<!-- 时间选择器 js -->
+<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/moment.min.js"></script>
+<!-- 自定义工具 -->
+<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <%include("api/save-paper-api.html"){} %>
 </body>

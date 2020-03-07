@@ -22,14 +22,13 @@
             $("#answer").val(data.answer);
             $("#course").val(data.course.courseName);
             $("#difficulty").val(data.difficulty).select2({width: "100%", theme: 'bootstrap4'});
-            $("#teacherName").val(data.course.teacher.name);
             $("#optionA").val(data.optionA);
             $("#optionB").val(data.optionB);
             $("#optionC").val(data.optionC);
             $("#optionD").val(data.optionD);
             $("#remark").val(data.remark);
             $("#id").val(data.id);
-            $("#typeId").val(data.id).select2({width: "100%", theme: 'bootstrap4'});
+            $("#typeId").val(data.type.id).select2({width: "100%", theme: 'bootstrap4'});
         });
 
         // 打开模态框
@@ -76,40 +75,41 @@
 
     // 更新题目
     function updateQuestion() {
-        let data = $("#update-form").serialize();
-        $.post("/api/question/update", data, function (data) {
-            if (data.state === "success") {
-                layer.msg("修改成功");
-                window.location.reload();
-            } else {
-                layer.msg(data.message);
-            }
+        OesUtil.confirm("确定更新题目吗?", function () {
+            let data = $("#update-form").serialize();
+            $.post("/api/question/update", data, function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            })
         })
     }
 
     // 新增题目
     function saveQuestion() {
-        let data = $("#save-form").serialize();
-        $.post("/api/question/save", data, function (data) {
-            if (data.state === "success") {
-                layer.msg("增加成功");
-                window.location.reload();
-            } else {
-                layer.msg(data.message);
-            }
+        OesUtil.confirm("确定新增题目吗?", function () {
+            let data = $("#save-form").serialize();
+            $.post("/api/question/save", data, function (data) {
+                if (data.state === "success") {
+                    window.location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            })
         })
     }
 
 
     // 删除题目
     function deleteQuestion(id) {
-        layer.confirm("确定要删除么？", function () {
+        OesUtil.confirm("确定要删除么？", function () {
             $.post("/api/question/delete/" + id, function (data) {
                 if (data.state === "success") {
-                    layer.msg("删除成功");
                     window.location.reload();
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         });
@@ -125,10 +125,10 @@
 
     // 自动上传
     $('body').on('change', '#upload', function () {
-        var formData = new FormData();
-        var files = $($(this))[0].files[0];
+        let formData = new FormData();
+        let files = $($(this))[0].files[0];
         formData.append("file", files);
-        layer.msg('正在提交中....');
+        toastr.info('正在提交中....');
         $.ajax({
             url: '/api/question/import',
             type: 'POST',
@@ -137,11 +137,12 @@
             contentType: false,
             success: function (res) {
                 if (res.state === "success") {
-                    layer.msg('题目解析成功，完成导入');
-                    window.location.reload();
+                    toastr.success('题目解析成功，完成导入');
+                    $(this).delay(800).queue(function () {
+                        window.location.reload();
+                    })
                 } else {
-                    layer.msg(res.message);
-                    window.location.reload();
+                    toastr.error(res.message);
                 }
             }
         });
@@ -150,12 +151,12 @@
     // 进入试题详细信息
     $(function () {
         // 问题类型筛选
-        $("#findType").select2().change(function () {
+        $("#findType").change(function () {
             window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + $(this).val()
         })
 
         // 课程筛选
-        $("#findCourse").select2().change(function () {
+        $("#findCourse").change(function () {
             window.location.href = "/teacher/question?p=1&courseId=" + $(this).val() + "&typeId=" + "${curTypeId}";
         });
 

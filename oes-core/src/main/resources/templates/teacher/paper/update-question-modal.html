@@ -8,15 +8,17 @@
                 </button>
             </div>
             <div class="modal-body">
-                    <div class="form-group form_datetime">
-                        <form id="update-question-form">
-                        <input type="hidden" readonly="readonly" name="paperId" value="${paper.id}">
-                        <label for="oldQuestionId">原题目 ID</label>
-                        <input type="text" readonly="readonly" name="oldId" class="form-control" id="oldQuestionId">
-                        <label for="newQuestionId">新题目 ID</label>
-                        <input type="text" name="newId" class="form-control" id="newQuestionId">
-                        </form>
-                    </div>
+                <div class="form-group form_datetime">
+                    <form id="update-question-form">
+                        <input type="hidden" readonly="readonly" name="paperId" value="${paper.id}" placeholder="试卷编号">
+                        <div class="form-group">
+                            <input type="text" readonly="readonly" name="oldId" class="form-control" id="oldQuestionId" placeholder="旧的题目 ID">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="newId" class="form-control" id="newQuestionId" placeholder="新的题目 ID">
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>

@@ -80,6 +80,6 @@
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        $(".academySelect").append(options).val('${curAcademyId}').select2({theme: 'bootstrap4'});
+        $(".academySelect").append(options).val('${curAcademyId}').select2({theme: 'bootstrap4',width:"200px"});
     });
 </script>

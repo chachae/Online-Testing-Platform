@@ -5,7 +5,7 @@
         OesUtil.confirm("确定删除该模版么?", function () {
             $.get("/api/paperForm/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.href = "/teacher/paperForm";
+                    window.location.reload();
                 } else {
                     toastr.error(data.message);
                 }

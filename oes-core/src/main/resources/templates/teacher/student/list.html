@@ -41,9 +41,8 @@
                                 <h3 class="card-title">学生信息</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button id="goSave" class="btn btn-success btn-sm float-right">新增学生</button>
-                                        &nbsp;
-                                        <a class="btn btn-warning btn-sm" href="/teacher/student">刷新数据</a>
+                                        <button id="goSave" class="btn btn-default btn-sm float-right"><i class="fa fa-plus-circle"></i>&nbsp;新增学生</button>&nbsp;
+                                        <a class="btn btn-default btn-sm" href="/teacher/student"><i class="fa fa-refresh"></i>&nbsp;刷新数据</a>
                                     </div>
                                 </div>
                             </div>
@@ -67,8 +66,7 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
-                                <table id="example2" class="table table-bordered table-striped table-head-fixed text-nowrap" role="grid"
-                                       aria-describedby="example2_info">
+                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
                                     <tbody>
                                     <tr>
                                         <th width="8%">序号</th>
@@ -96,7 +94,7 @@
                                         <td rel="${student.majorId}">${student.major.major}</td>
                                         <td>${student.sex}</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm goUpdate"
+                                            <button class="btn btn-success btn-sm"
                                                onclick="goUpdate(${student.id})"><i
                                                     class="fa"></i>编辑</button>
                                             <button class="btn btn-danger btn-sm delStudent"

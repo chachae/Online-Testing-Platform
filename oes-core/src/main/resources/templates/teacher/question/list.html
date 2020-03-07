@@ -15,6 +15,12 @@
     .table > tbody > tr > td {
         vertical-align: middle;
     }
+
+    td {
+        font-size: 14px;
+    }
+
+
 </style>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -54,12 +60,12 @@
                                 <h3 class="card-title">试题信息</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-warning btn-sm" id="importBtn">
+                                        <button class="btn btn-default btn-sm" id="importBtn">
                                             <i class="fa fa-plus-circle"></i>
                                             导入试题
                                         </button>
-                                        &nbsp
-                                        <button class="goSave btn btn-success btn-sm"><i class="fa fa-plus-circle"></i>
+                                        &nbsp;
+                                        <button class="goSave btn btn-default btn-sm"><i class="fa fa-plus-circle"></i>
                                             新增试题
                                         </button>
                                     </div>
@@ -69,34 +75,27 @@
                             <div class="card-header">
                                 <div class="card-tools">
                                     <div class="input-group">
-                                        <select class="typeSelect float-right form-control" name="typeId"
-                                                id="findType"></select>&nbsp;
-                                        <select class="courseSelect float-right form-control" name="courseId"
-                                                id="findCourse"></select>
+                                        <select class="typeSelect  form-control" name="typeId" id="findType"></select>&nbsp;
+                                        <select class="courseSelect  form-control" name="courseId" id="findCourse"></select>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
-                                <table id="example2"
-                                       class="table table-bordered table-striped"
-                                       role="grid">
+                                <table class="table table-head-fixed text-nowrap table-bordered table-striped">
                                     <tbody>
                                     <tr>
-                                        <th style="width: 8%">题目编号</th>
-                                        <th style="width:54%">题目名称</th>
-                                        <th style="width: 8%">题目类型</th>
-                                        <th style="width: 10%">难易程度</th>
-                                        <th style="width: 15%">操作</th>
+                                        <th style="width:55%">名称</th>
+                                        <th style="width: 10%">类型</th>
+                                        <th style="width: 35%">操作</th>
                                     </tr>
                                     <% if(isEmpty(page.list)){ %>
                                     <tr>
-                                        <td colspan="6">题库中还未添加题目</td>
+                                        <td colspan="3">题库中还未添加题目</td>
                                     </tr>
                                     <% } %>
                                     <% for( question in page.list ){ %>
                                     <tr class="rowDetail" rel="${question.id}">
-                                        <td style="width: 60px">${question.id}</td>
                                         <td style="text-align: left">${question.questionName}</td>
                                         <td style="width: 60px">
                                             ${question.typeId == 1?"单选题":''}
@@ -105,11 +104,6 @@
                                             ${question.typeId == 4?"填空题":''}
                                             ${question.typeId == 5?"简答题":''}
                                             ${question.typeId == 6?"编程题":''}
-                                        </td>
-                                        <td class="star" style="width: 60px">
-                                            ${question.difficulty == "1"?'★':''}
-                                            ${question.difficulty == "2"?'★ ★':''}
-                                            ${question.difficulty == "3"?'★ ★ ★':''}
                                         </td>
                                         <td>
                                             <button onclick="goView(${question.id})"

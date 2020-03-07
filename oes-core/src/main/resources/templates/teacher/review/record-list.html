@@ -6,15 +6,6 @@
     <title>OES | 学生作答记录</title>
     <!-- 引入全局 css 文件 -->
     <%include("../../include/css.html"){}%>
-    <style>
-        th {
-            font-size: 18px;
-        }
-
-        td {
-            font-size: 17px;
-        }
-    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -24,134 +15,149 @@
     <%layout("../include/sider.html",{name:"review-list"}){}%>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
-        <!-- 修改成绩模态框 -->
-        <div class="modal fade" id="modifyModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">修改主观题得分</h4>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>主观题复查</h1>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group form_datetime">
-                            <input type="hidden" name="id" class="form-control"
-                                   id="id">
-                            <!-- 原来的分数禁止修改 -->
-                            <label for="oldScore">原来分数</label>
-                            <input type="text" name="oldScore" class="form-control"
-                                   id="oldScore" readonly="readonly">
-                        </div>
-                        <div class="form-group form_datetime">
-                            <label for="newScore">新的分数</label>
-                            <input type="text" name="newScore" class="form-control" id="newScore">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/teacher/reviewPaper">返回列表</a></li>
+                        </ol>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+
+        <!-- table 部分 -->
         <section class="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">试卷详情</h3>
-                    <div class="box-tools">
-                        <a href="/teacher/reviewPaper" class="btn btn-primary btn-sm"><i
-                                class="fa fa-arrow-left"></i> 返回列表</a>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header  bg-olive">
+                                <h3 class="card-title">试卷信息</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td>
+                                            试卷编号：No. ${paper.id}<br>
+                                            考试名称：${paper.paperName}<br>
+                                            试卷分值：${paper.score} 分<br>
+                                            考试时间：${paper.beginTime}<br>
+                                            结束时间：${paper.endTime}<br>
+                                            考试类型：${paper.paperType}考试<br>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.box-header -->
-                <table class="table table-condensed">
-                    <tr>
-                        <td>
-                            试卷编号：No. ${paper.id}<br>
-                            考试名称：${paper.paperName}<br>
-                            试卷分值：${paper.score} 分<br>
-                            考试时间：${paper.beginTime}<br>
-                            结束时间：${paper.endTime}<br>
-                            考试类型：${paper.paperType}考试<br>
-                        </td>
-                    </tr>
-                </table>
+            </div><!-- /.row -->
+        </section>
+
+        <!-- table 部分 -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <% for( answer in stuAnswer ){ %>
+                    <div class="col-6">
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <th class="bg-warning">学生答案</th>
+                                    <tbody>
+                                    <tr class="danger">
+                                        <td>
+                                            <b>
+                                                姓名：${answer.student.name}<br>
+                                                学号：${answer.student.stuNumber}<br>
+                                                成绩：${answer.score.score} 分
+                                            </b>
+                                        </td>
+                                    </tr>
+                                    <% for( record in answer.records ){ %>
+                                    <tr>
+                                        <td><strong>${recordLP.index}. ${record.questionName} </strong><b
+                                                class="pull-right">得分 : <span style="color: red">${record.score}分</span></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <textarea class="form-control" rows="5"
+                                                      readonly> ${record.answer} </textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button class="btn btn-success pull-right"
+                                                    onclick="goUpdate('${record.id}','${record.score}')">修改
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    <tr>
+                                        <td>
+                                            <span style="color: green">结束 <b>[ ${answer.student.name} ]</b> 的主观题查阅 </span>
+                                            <hr>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+
+                    <div class="col-6">
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <th class="bg-success">题库答案</th>
+                                    <tbody>
+                                    <% if(isEmpty(questionList)){ %>
+                                    <tr>
+                                        <td colspan="6">未找到主观题</td>
+                                    </tr>
+                                    <% } %>
+                                    <% for( question in questionList ){ %>
+                                    <tr class="rowDetail success" rel="${question.id}">
+                                        <td><strong>${questionLP.index}. ${question.questionName}</strong></td>
+                                    </tr>
+                                    <tr class="rowDetail" rel="${question.id}">
+                                        <td><b style="color: green">[ 标准答案 ]</b><br>${question.answer}</td>
+                                    </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <% } %>
+
+                </div><!-- /.row -->
             </div>
-            <div class="box ">
-                <div class="box-body ">
-                    <table class="table table-hover">
-                        <th>题库答案</th>
-                        <tbody>
-                        <% if(isEmpty(questionList)){ %>
-                        <tr>
-                            <td colspan="6">未找到主观题</td>
-                        </tr>
-                        <% } %>
-                        <% for( question in questionList ){ %>
-                        <tr class="rowDetail success" rel="${question.id}">
-                            <td>${questionLP.index}. ${question.questionName}</td>
-                        </tr>
-                        <tr class="rowDetail" rel="${question.id}">
-                            <td><b style="color: green">[ 标准答案 ]</b><br>${question.answer}</td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="box">
-                <div class="box-body">
-                    <table class="table table-hover">
-                        <th>学生答案（点击学生答案进行主观题分数修改）</th>
-                        <tbody>
-                        <% if(isEmpty(stuAnswer)){ %>
-                        <tr>
-                            <td colspan="6">未找到主观题</td>
-                        </tr>
-                        <% } %>
-                        <% for( answer in stuAnswer ){ %>
-                        <tr class="danger">
-                            <td>
-                                <b>
-                                    姓名：${answer.student.name}<br>
-                                    学号：${answer.student.stuNumber}<br>
-                                    成绩：${answer.score.score} 分
-                                </b>
-                            </td>
-                        </tr>
-                        <% for( record in answer.records ){ %>
-                        <tr class="success">
-                            <td>${recordLP.index}. ${record.questionName} <b
-                                    class="pull-right">题目得分：${record.score}分</b></td>
-                        </tr>
-                        <tr>
-                            <td class="editAns" rel="${record.id}"><b style="color: red">[ 学生答案
-                                ]</b><br>${record.answer}
-                            </td>
-                            <td hidden> ${record.score}</td>
-                        </tr>
-                        <% } %>
-                        <tr>
-                            <td>
-                                <h4 style="text-align: center"><b>[ ${answer.student.name} ]</b> 主观题结束查阅</h4>
-                                <hr>
-                            </td>
-                        </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
         </section>
     </div>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){} %>
 </div>
+<!-- 修改成绩模态框 -->
+<%include("update-modal.html"){}%>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
-<script src="/static/plugins/moment/moment.js"></script>
-<script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
+<script src="/static/js/OesUtil.js"></script>
 <%include("api.html"){}%>
 </body>
 </html>

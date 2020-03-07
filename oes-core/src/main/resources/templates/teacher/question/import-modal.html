@@ -3,19 +3,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span>
-                </button>
                 <h4 class="modal-title">导入题目</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <form method="post" id="importPaper">
                         <div class="form-group">
-                            <label for="upload">导入试卷 </label>
-                            <input class="form-control btn btn-flat btn-warning btn-sm" style="border: none" type="file"
-                                   name="upload"
-                                   id="upload"/>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="upload" id="upload"/>
+                                    <label class="custom-file-label" for="upload">选择文件</label>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>

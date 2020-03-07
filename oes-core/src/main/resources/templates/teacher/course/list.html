@@ -42,16 +42,14 @@
                                 <h3 class="card-title">课程内容</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button id="goSave" class="btn btn-info btn-sm"><i
-                                                class="fa fa-plus"></i>&nbsp;新增课程
+                                        <button id="goSave" class="btn btn-info btn-sm"><i class="fa fa-plus"></i>&nbsp;新增课程
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
-                                <table id="example2" class="table table-bordered table-striped dataTable table-head-fixed text-nowrap" role="grid"
-                                       aria-describedby="example2_info">
+                                <table class="table table-bordered table-striped dataTable table-head-fixed text-nowrap">
                                     <tbody>
                                     <tr>
                                         <th>序号</th>
@@ -68,9 +66,7 @@
                                         <td>${course.id}</td>
                                         <td>${course.courseName}</td>
                                         <td>
-                                            <button class="rowDel btn btn-danger btn-sm"
-                                                    onclick="deleteCourse(${course.id})">
-                                                <i class="fa fa-remove"></i>&nbsp;删除
+                                            <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(${course.id})">&nbsp;删除
                                             </button>
                                         </td>
                                     </tr>
@@ -97,6 +93,7 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<!-- 自定義工具 -->
 <script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
 <% include("api.html"){} %>

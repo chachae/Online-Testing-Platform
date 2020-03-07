@@ -22,7 +22,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>新增信息</h1>
+                        <h1>导入试卷</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -40,15 +40,14 @@
                     <div class="col-12">
                         <div class="invoice p-3 mb-3">
                             <div class="card-header">
-                                <h3 class="card-title">试卷列表</h3>
+                                <h3 class="card-title">试卷信息</h3>
                             </div>
                             <div class="invoice-col">
                                 <form method="post" id="importPaper">
                                     <div class="form-group">
-
                                     </div>
                                     <div class="custom-file">
-                                        <label class="custom-file-label" for="upload">选择试卷</label>
+                                        <label class="custom-file-label" for="upload">选择试卷文件</label>
                                         <input class="custom-file-input" type="file" name="upload" id="upload"/>
                                     </div>
                                 </form>
@@ -56,7 +55,7 @@
                             <hr>
                             <!-- /.card-header -->
                             <div class="invoice-col">
-                                <form method="post" id="addForm">
+                                <form method="post" id="addForm" autocomplete="off">
                                     <div class="form-group">
                                         <input type="hidden" class="form-control" id="teacherId" name="teacherId"
                                                value="${session.teacher.id}">
@@ -67,79 +66,87 @@
                                         <input type="hidden" name="questionId" id="questionId">
                                         <input type="hidden" name="paperFormId" id="paperFormId">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="teacherId">目前试卷分值</label>
-                                        <input type="text" class="form-control teacherId" id="curScore" disabled>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            <label for="curScore">目前试卷分值</label>
+                                            <input type="text" class="form-control teacherId" id="curScore" disabled>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="score">卷面分 (默认模板：100分)</label>
+                                            <input type="text" id="score" name="score" value="100" class="form-control">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="paperType">试卷类型 </label>
+                                            <select class="form-control paperType" name="paperType" id="paperType"
+                                                    required="required">
+                                                <option value="">请选择</option>
+                                                <option value="正式">正式</option>
+                                                <option value="模拟">模拟</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="courseId">所属课程</label>
-                                        <select class="form-control courseId" id="courseId" name="courseId">
-                                        </select>
+                                    <hr>
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            <label for="courseId">所属课程</label>
+                                            <select class="form-control courseId" id="courseId"
+                                                    name="courseId"> </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="academy">学院</label>
+                                            <select id="academy" onchange="getAcademy(this.value)" name="academy"
+                                                    class="form-control" required> </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="majorId">考试专业</label>
+                                            <select id="majorId" name="majorId" class="form-control majorId"
+                                                    required="required">
+                                                <option>请先选择学院</option>
+                                            </select>
+                                        </div>
                                     </div>
+                                    <hr>
                                     <div class="form-group">
-                                        <label for="paperType">试卷类型 </label>
-                                        <select class="form-control paperType" name="paperType" id="paperType"
-                                                required="required">
-                                            <option value="">请选择</option>
-                                            <option value="正式">正式</option>
-                                            <option value="模拟">模拟</option>
-                                        </select>
+                                        <label style="color: red">正式考试必选，模拟试卷无需选择时间</label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="academy">学院</label>
-                                        <select id="academy" onchange="getAcademy(this.value)" name="academy"
-                                                class="form-control" required>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="majorId">考试专业</label>
-                                        <select id="majorId" name="majorId" class="form-control majorId"
-                                                required="required">
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="score">试卷总分 (默认模版为100分)</label>
-                                        <input type="text" id="score" name="score" value="100" class="form-control">
+                                    <div class="form-group row">
+                                        <div class="form-group col-sm-6">
+                                            <label for="beginTime">开始时间</label>
+                                            <input type="text" name="beginTime" class="form-control dateTimepicker"
+                                                   id="beginTime" autocomplete="off">
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <label for="endTime">结束时间</label>
+                                            <input type="text" name="endTime" class="form-control dateTimepicker"
+                                                   id="endTime" autocomplete="off">
+                                        </div>
                                     </div>
                                     <hr/>
                                     <div class="form-group">
-                                        <label style="color: #af0000">注意: 正式试卷必选，模拟试卷无需选择时间</label>
-                                    </div>
-                                    <div class="form-group form_datetime">
-                                        <label for="datepicker">开始时间</label>
-                                        <input type="text" name="beginTime" class="form-control dateTimepicker"
-                                               id="datepicker"
-                                               autocomplete="off">
-                                    </div>
-                                    <div class="form-group form_datetime">
-                                        <label for="datepicker2">结束时间</label>
-                                        <input type="text" name="endTime" class="form-control dateTimepicker"
-                                               id="datepicker2"
-                                               autocomplete="off">
-                                    </div>
-                                    <hr/>
-                                    <div class="form-group">
-                                        <label style="color: #af0000">局部题型随机【请根据当前卷面分值自行判断】</label><br>
-                                        <label style="color: #af0000">按需选择，对于试卷已存在的题型进行随机抽题将驳回试卷提交请求！</label><br>
+                                        <label style="color: red">局部题型随机，请根据当前卷面分值自行判断</label><br>
+                                        <label style="color: red">按需选择，对于试卷已存在的题型进行随机抽题将驳回试卷的提交请求</label><br>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="a" class="control-label">单项选择题</label>
+                                            <label for="a">单项选择题</label>
                                             <select id="a" name="a" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="aNum" class="control-label">数量</label>
-                                            <input id="aNum" name="aNum" class="form-control"/>
+                                            <label for="aNum">数量</label>
+                                            <input id="aNum" name="aNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="aScore" class="control-label">每题分值</label>
-                                            <input id="aScore" name="aScore" class="form-control"/>
+                                            <label for="aScore">每题分值</label>
+                                            <input id="aScore" name="aScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="aDif" class="control-label">难度</label>
+                                            <label for="aDif">难度</label>
                                             <select id="aDif" name="aDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -150,22 +157,24 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="b" class="control-label">多项选择题</label>
+                                            <label for="b">多项选择题</label>
                                             <select id="b" name="b" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="bNum" class="control-label">数量</label>
-                                            <input id="bNum" name="bNum" class="form-control"/>
+                                            <label for="bNum">数量</label>
+                                            <input id="bNum" name="bNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="bScore" class="control-label">每题分值</label>
-                                            <input id="bScore" name="bScore" class="form-control"/>
+                                            <label for="bScore">每题分值</label>
+                                            <input id="bScore" name="bScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="bDif" class="control-label">难度</label>
+                                            <label for="bDif">难度</label>
                                             <select id="bDif" name="bDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -176,22 +185,24 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="c" class="control-label">判断题</label>
+                                            <label for="c">判断题</label>
                                             <select id="c" name="c" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="cNum" class="control-label">数量</label>
-                                            <input id="cNum" name="cNum" class="form-control"/>
+                                            <label for="cNum">数量</label>
+                                            <input id="cNum" name="cNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="cScore" class="control-label">每题分值</label>
-                                            <input id="cScore" name="cScore" class="form-control"/>
+                                            <label for="cScore">每题分值</label>
+                                            <input id="cScore" name="cScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="cDif" class="control-label">难度</label>
+                                            <label for="cDif">难度</label>
                                             <select id="cDif" name="cDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -202,22 +213,24 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="d" class="control-label">填空题</label>
+                                            <label for="d">填空题</label>
                                             <select id="d" name="d" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="dNum" class="control-label">数量</label>
-                                            <input id="dNum" name="dNum" class="form-control"/>
+                                            <label for="dNum">数量</label>
+                                            <input id="dNum" name="dNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="dScore" class="control-label">每题分值</label>
-                                            <input id="dScore" name="dScore" class="form-control"/>
+                                            <label for="dScore">每题分值</label>
+                                            <input id="dScore" name="dScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="dDif" class="control-label">难度</label>
+                                            <label for="dDif">难度</label>
                                             <select id="dDif" name="dDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -228,22 +241,24 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="e" class="control-label">主观题</label>
+                                            <label for="e">主观题</label>
                                             <select id="e" name="e" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="eNum" class="control-label">数量</label>
-                                            <input id="eNum" name="eNum" class="form-control"/>
+                                            <label for="eNum">数量</label>
+                                            <input id="eNum" name="eNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="eScore" class="control-label">每题分值</label>
-                                            <input id="eScore" name="eScore" class="form-control"/>
+                                            <label for="eScore">每题分值</label>
+                                            <input id="eScore" name="eScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="eDif" class="control-label">难度</label>
+                                            <label for="eDif">难度</label>
                                             <select id="eDif" name="eDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -254,22 +269,24 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-sm-3">
-                                            <label for="f" class="control-label">编程题</label>
+                                            <label for="f">编程题</label>
                                             <select id="f" name="f" class="form-control">
                                                 <option value="1">是</option>
                                                 <option value="0" selected>否</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="fNum" class="control-label">数量</label>
-                                            <input id="fNum" name="fNum" class="form-control"/>
+                                            <label for="fNum">数量</label>
+                                            <input id="fNum" name="fNum" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="fScore" class="control-label">每题分值</label>
-                                            <input id="fScore" name="fScore" class="form-control"/>
+                                            <label for="fScore">每题分值</label>
+                                            <input id="fScore" name="fScore" type="text" class="form-control"
+                                                   autocomplete="off"/>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="fDif" class="control-label">难度</label>
+                                            <label for="fDif">难度</label>
                                             <select id="fDif" name="fDif" class="form-control">
                                                 <option value="0" selected>平均</option>
                                                 <option value="1">简答</option>
@@ -280,9 +297,12 @@
                                     </div>
                                     <hr/>
                                 </form>
-                                <div class="box-footer">
-                                    <button class="btn btn-primary" id="saveImportBtn">保存</button>
-                                    <a href="javascript:history.go(0)" class="btn btn-danger" id="reset">重置</a>
+                            </div>
+                            <div class="card-footer clearfix bg-white">
+                                <div class="form-group float-right">
+                                        <a href="javascript:history.go(0)" class="btn btn-warning"
+                                           id="reset">重置</a>&nbsp;
+                                        <button class="btn btn-primary " id="saveImportBtn">保存</button>
                                 </div>
                             </div>
                         </div>
@@ -295,16 +315,14 @@
     <!-- 引入footer -->
     <%include("../../include/footer.html"){} %>
 </div><!-- 引入全局 js 脚本文件 -->
-<%
-include("../../include/js.html"){}
-%>
-<!-- 接口 -->
-<%include("api/import-paper-api.html"){}%>
+<% include("../../include/js.html"){} %>
 <!-- 时间选择器 js -->
 <script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/moment.min.js"></script>
 <!-- 自定义工具 -->
 <script src="/static/js/OesUtil.js"></script>
+<!-- 接口 -->
+<%include("api/import-paper-api.html"){}%>
 </body>
 </html>
 

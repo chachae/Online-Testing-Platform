@@ -51,11 +51,9 @@
             $('#academy').val(data.academy.id).select2({theme: 'bootstrap4'});
             getMajor(data.academy.id, data.major.id);
             // 启动修改模态框
-            $(".goUpdate").click(function () {
-                $("#update-modal").modal({
-                    show: true,
-                    backdrop: 'static'
-                });
+            $("#update-modal").modal({
+                show: true,
+                backdrop: 'static'
             });
         })
     }
