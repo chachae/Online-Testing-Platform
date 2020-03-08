@@ -29,4 +29,12 @@ public interface MajorService extends IService<Major> {
    * @return 集合信息
    */
   List<Major> listByAcademyId(Integer academyId);
+
+  /**
+   * 通过专业名称获取专业集合
+   *
+   * @param majorName 专业名称
+   * @return 集合信息
+   */
+  List<Major> listByMajorName(String majorName);
 }

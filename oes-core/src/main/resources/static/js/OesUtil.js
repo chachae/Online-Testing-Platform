@@ -30,7 +30,7 @@ OesUtil.confirm = function oesConfirm(content, fnc) {
 };
 
 /**
- * 日历
+ * 封装日历选择器
  * @param e 日期输入框
  * @param doubleTime  是否为双日期（true）
  * @param second 有无时分秒（有则true）
@@ -80,5 +80,33 @@ OesUtil.dateTimePick = function calenders(e, doubleTime, second) {
     //清空
     $(e).siblings().click(function () {
         $(e).val('');
+    })
+};
+
+// 封装表单
+OesUtil.initNormalTable = function normalTable(e, api, method, columns) {
+    $(e).bootstrapTable({
+        method: method,
+        url: api,//请求路径
+        queryParamsType: '',
+        queryParams: function (params) {
+            return {
+                current: params.pageNumber,
+                size: params.pageSize
+            }
+        },
+        responseHandler: function (res) {
+            //在ajax获取到数据，渲染表格之前，修改数据源
+            const nres = [];
+            nres.push({total: res.total, rows: res.list});
+            return nres[0];
+        },
+        buttonsClass: 'primary',
+        pageNumber: 1, //初始化加载第一页
+        pageSize: 10,//单页记录数
+        pageList: [5, 10, 20, 30, 50],//可选择单页记录数
+        pagination: true,//是否分页
+        sidePagination: 'server',//server:服务器端分页|client：前端分页
+        columns: columns
     })
 };

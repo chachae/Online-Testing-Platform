@@ -5,6 +5,7 @@ server:
   # 最大文件
   max-http-header-size: 5MB
 
+
 # SpringMvc 配置
 spring:
   # 数据源配置
@@ -93,6 +94,9 @@ spring:
       namespace: oes:session
     # 过期时间 3小时
     timeout: PT3H
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 
 # MyBatisPlus 配置

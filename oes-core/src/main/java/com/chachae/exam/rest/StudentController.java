@@ -2,7 +2,6 @@ package com.chachae.exam.rest;
 
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.vo.StudentVo;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 /**
  * @author chachae
@@ -31,7 +31,6 @@ public class StudentController {
    * @param password 密码
    * @return 主界面
    */
-  @ResponseBody
   @PostMapping("/login")
   public R login(String studentNumber, String password) {
     // 获取 session 对象
@@ -54,21 +53,16 @@ public class StudentController {
    */
   @PostMapping("/update/password")
   @Permissions("student:update:password")
-  public R updatePassword(ChangePassDto dto) {
+  public R updatePassword(@Valid ChangePassDto dto) {
     // 通过获取 Session 对象
     HttpSession session = HttpContextUtil.getSession();
-    try {
-      // 调用密码修改接口
-      this.studentService.updatePassword(dto);
-      // 移除学生 session 信息
-      session.removeAttribute(SysConsts.Session.ROLE_ID);
-      session.removeAttribute(SysConsts.Session.STUDENT_ID);
-      session.removeAttribute(SysConsts.Session.STUDENT);
-      return R.success();
-    } catch (ServiceException e) {
-      // 捕捉密码修改失败异常
-      return R.error(e.getMessage());
-    }
+    // 调用密码修改接口
+    this.studentService.updatePassword(dto);
+    // 移除学生 session 信息
+    session.removeAttribute(SysConsts.Session.ROLE_ID);
+    session.removeAttribute(SysConsts.Session.STUDENT_ID);
+    session.removeAttribute(SysConsts.Session.STUDENT);
+    return R.success();
   }
 
   /**

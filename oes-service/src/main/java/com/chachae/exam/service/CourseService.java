@@ -20,4 +20,12 @@ public interface CourseService extends IService<Course> {
    * @return 课程集合
    */
   List<Course> listByTeacherId(Integer teacherId);
+
+  /**
+   * 通过课程名称查询课程集合
+   *
+   * @param courseName 课程名称
+   * @return 课程集合信息
+   */
+  List<Course> selectByCourseName(String courseName);
 }

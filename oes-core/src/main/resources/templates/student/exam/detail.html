@@ -42,6 +42,18 @@
                                 </div>
                                 <div>
                                     <strong>
+                                        注意:
+                                        <span style="color: #af0000">重复提交无效，考试成绩以第一次为准</span>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <strong>
+                                        注意:
+                                        <span style="color: #af0000">考试时间结束系统将自动交卷，请同学们把握好时间</span>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <strong>
                                         距离考试结束:
                                         <span class="clock" style="color: #af0000" id="clock">xx分xx秒</span>
                                     </strong>
@@ -207,7 +219,7 @@
                                 </div>
                                 <%}%>
                                 <div class="card-body">
-                                    <button id="submitBtn" class="btn btn-success pull-right">提交答案 </button>
+                                    <button id="submitBtn" class="btn btn-success pull-right">提交答案</button>
                                 </div>
                             </form>
                         </div>
@@ -231,7 +243,7 @@
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <!-- iCheck -->
 <script src="/static/plugins/iCheck/icheck.min.js"></script>
-<%include("api.html"){}%>
+<%include("api/api.html"){}%>
 </body>
 </html>
 

@@ -2,12 +2,12 @@ package com.chachae.exam.rest;
 
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Major;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.MajorService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -59,7 +59,7 @@ public class MajorController {
   @ResponseBody
   @PostMapping("/update")
   @Permissions("major:update")
-  public R updateMajor(Major major) {
+  public R updateMajor(@Valid Major major) {
     this.majorService.updateById(major);
     return R.success();
   }
@@ -72,7 +72,7 @@ public class MajorController {
    */
   @PostMapping("/save")
   @Permissions("major:save")
-  public R saveMajor(Major major) {
+  public R saveMajor(@Valid Major major) {
     this.majorService.save(major);
     return R.success();
   }
@@ -86,11 +86,7 @@ public class MajorController {
   @PostMapping("/delete/{id}")
   @Permissions("major:delete")
   public R deleteMajor(@PathVariable Integer id) {
-    try {
-      this.majorService.removeById(id);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
+    this.majorService.removeById(id);
+    return R.success();
   }
 }

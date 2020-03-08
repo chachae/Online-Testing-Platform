@@ -1,5 +1,6 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
@@ -8,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 试卷业务接口
@@ -42,14 +44,6 @@ public interface PaperService extends IService<Paper> {
   void randomNewPaper(Paper paper, String difficulty);
 
   /**
-   * 根据专业班级查找模拟试卷
-   *
-   * @param majorId 专业ID
-   * @return 试卷 List 集合.
-   */
-  List<Paper> selectPracticePapersByMajorId(Integer majorId);
-
-  /**
    * 教师批改试卷
    *
    * @param stuId 学生ID
@@ -73,13 +67,6 @@ public interface PaperService extends IService<Paper> {
    * @return 该教师所属已完成的试卷
    */
   List<Paper> listDoneByTeacherId(Integer teacherId);
-
-  /**
-   * 改变试卷状态未已完成
-   *
-   * @param id 试卷ID
-   */
-  void updateStateById(Integer id);
 
   /**
    * 删除试卷
@@ -126,4 +113,12 @@ public interface PaperService extends IService<Paper> {
    * @return 数量
    */
   int countPaperByPaperFormId(Integer paperFormId);
+
+  /**
+   * 分页查询考试信息
+   *
+   * @param majorId 专业 ID
+   * @return 分页信息
+   */
+  Map<String, Object> pageByMajorId(Page<Paper> page, Integer majorId, String type);
 }

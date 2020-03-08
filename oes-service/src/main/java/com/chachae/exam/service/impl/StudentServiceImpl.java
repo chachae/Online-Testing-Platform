@@ -46,7 +46,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
 
     // 如果学生对象为空说明不存在该用户，抛出异常信息
     if (ObjectUtil.isEmpty(student)) {
-      throw new ServiceException("该学号不存在，请重新输入");
+      throw new ServiceException("该学号不存在");
     }
 
     // 加密密码进行比较，比较通过登陆通过，反之说明密码错误

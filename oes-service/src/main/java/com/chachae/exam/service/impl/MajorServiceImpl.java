@@ -3,11 +3,11 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chachae.exam.common.dao.MajorDAO;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.vo.MajorVo;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.StudentService;
@@ -51,6 +51,13 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
   }
 
   @Override
+  public List<Major> listByMajorName(String majorName) {
+    QueryWrapper<Major> qw = new QueryWrapper<>();
+    qw.lambda().eq(Major::getMajor, majorName);
+    return this.majorDAO.selectList(qw);
+  }
+
+  @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     List<Paper> papers = this.paperService.selectByMajorId((int) id);
@@ -62,5 +69,23 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
       throw new ServiceException("专业存在学生关联，请删除相关学生后重试");
     }
     return super.removeById(id);
+  }
+
+  @Override
+  public boolean save(Major entity) {
+    if (CollUtil.isEmpty(this.listByMajorName(entity.getMajor()))) {
+      return super.save(entity);
+    } else {
+      throw new ServiceException("专业已存在，请重重新输入");
+    }
+  }
+
+  @Override
+  public boolean updateById(Major entity) {
+    if (CollUtil.isEmpty(this.listByMajorName(entity.getMajor()))) {
+      return super.updateById(entity);
+    } else {
+      throw new ServiceException("专业已存在，请重重新输入");
+    }
   }
 }

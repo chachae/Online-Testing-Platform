@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh_CN">
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,26 +39,8 @@
                                 <h3 class="card-title">公告内容</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover">
-                                    <tbody>
-                                    <%for(announce in announceList){%>
-                                    <tr class="flex-row bg-gradient-yellow" rel="${announce.id}">
-                                        <th>${announceLP.index}. ${announce.title}
-                                            <span class="pull-right">
-                                                发布时间：${announce.createTime,dateFormat="yyyy-MM-dd HH:mm:ss"}
-                                            </span>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-size: 17px">${announce.content}</td>
-                                    </tr>
-                                    <%}elsefor{%>
-                                    <tr>
-                                        <td colspan="6">暂无公告信息</td>
-                                    </tr>
-                                    <%}%>
-                                    </tbody>
+                            <div class="card-body">
+                                <table id="pageInfo" class="table table-bordered table-striped text-nowrap">
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -78,7 +60,13 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<!-- 模态框 -->
+<%include("view-modal.html"){}%>
 </body>
+<!-- 自定义封装 -->
+<script src="/static/js/OesUtil.js"></script>
+<!-- 接口 -->
+<%include("api.html"){}%>
 </html>
 
 

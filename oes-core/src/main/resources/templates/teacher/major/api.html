@@ -5,10 +5,9 @@
         OesUtil.confirm('确定删除专业吗?', function () {
             $.post("/api/major/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("删除成功!");
                     window.location.reload();
                 } else {
-                    layer.msg(data.message);
+                    toastr.error(data.message);
                 }
             })
         })
@@ -29,20 +28,22 @@
 
 
     // 更新专业信息
-    $("#updateBtn").click(function () {
+    function updateMajor() {
         OesUtil.confirm('确定修改信息吗?', function () {
             let data = $('#update-form').serialize();
             $.post("/api/major/update/", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("修改成功!");
                     window.location.reload();
+                } else {
+                    toastr.error(data.message);
                 }
             })
         })
-    });
+    }
 
     // 启动新增模态框
     function goSave() {
+        $("#academyId").select2({theme: "bootstrap4"});
         $("#save-modal").modal({
             show: true,
             backdrop: 'static'
@@ -50,17 +51,18 @@
     }
 
     // 增加专业信息
-    $("#saveBtn").click(function () {
+    function saveMajor() {
         OesUtil.confirm('确定增加专业吗?', function () {
             let data = $('#save-form').serialize();
             $.post("/api/major/save/", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("增加成功!");
                     window.location.reload();
+                } else {
+                    toastr.error(data.message);
                 }
             })
         })
-    });
+    }
 
     // 分学院搜索
     $("#findAcademy").select2({
@@ -80,6 +82,6 @@
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        $(".academySelect").append(options).val('${curAcademyId}').select2({theme: 'bootstrap4',width:"200px"});
+        $(".academySelect").append(options).val('${curAcademyId}').select2({theme: 'bootstrap4', width: "200px"});
     });
 </script>

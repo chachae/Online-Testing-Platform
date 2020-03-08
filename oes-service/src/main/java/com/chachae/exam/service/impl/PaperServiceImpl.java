@@ -5,16 +5,18 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.*;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.*;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.*;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.NumberUtil;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.PaperMarkUtil;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
@@ -28,10 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -115,16 +116,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     paper.setQuestionId(ids.substring(0, ids.length() - 1));
     // 将试卷信息插入 paper 表中
     this.save(paper);
-  }
-
-  @Override
-  public List<Paper> selectPracticePapersByMajorId(Integer majorId) {
-    // 构造条件询条件
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getMajorId, majorId);
-    // 只查询模拟考试
-    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_PRACTICE);
-    return paperDAO.selectList(qw);
   }
 
   @Override
@@ -252,15 +243,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       paper.setEndTime(null);
     }
     return super.updateById(paper);
-  }
-
-  @Override
-  public void updateStateById(Integer id) {
-    // 更新试卷的状态
-    Paper paper = paperDAO.selectById(id);
-    // 更新状态为 [结束状态]
-    paper.setPaperState(SysConsts.Paper.PAPER_STATE_END);
-    paperDAO.updateById(paper);
   }
 
   @Override
@@ -527,6 +509,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     QueryWrapper<Paper> qw = new QueryWrapper<>();
     qw.lambda().eq(Paper::getPaperFormId, paperFormId);
     return this.paperDAO.selectCount(qw);
+  }
+
+  @Override
+  public Map<String, Object> pageByMajorId(Page<Paper> page, Integer majorId, String type) {
+    QueryWrapper<Paper> qw = new QueryWrapper<>();
+    qw.lambda().eq(Paper::getMajorId, majorId);
+    qw.lambda().eq(Paper::getPaperType, type);
+    Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

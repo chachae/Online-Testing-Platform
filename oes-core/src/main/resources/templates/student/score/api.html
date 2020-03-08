@@ -1,7 +1,39 @@
 <script>
 
-    // 成绩详情
-    function getDetail(id) {
-        window.location.href = "/student/score/detail/" + id;
+
+    //表格操作
+    window.handle = {
+        "click .scoreDetail": function (e, value, row, index) {
+            window.location.href = "/student/score/detail/" + row.id;
+        },
+    };
+
+    function operateFormatter(value, row, index) {
+        return [
+            '<button class="btn btn-outline-info btn-sm scoreDetail">成绩详情</button>'
+        ].join('');
     }
+
+    // 初始化表单
+    const columns = [{
+        title: '考试',
+        field: 'paperName',
+        sortable: false
+    }, {
+        title: '成绩',
+        field: 'score',
+        sortable: false
+    }, {
+        title: '错题集',
+        field: 'wrongIds',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        events: handle,//事件
+        formatter: operateFormatter//html
+    }];
+
+    OesUtil.initNormalTable('#scoreInfo', "/api/score/list", "get", columns);
+
 </script>

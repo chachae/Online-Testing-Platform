@@ -1,16 +1,16 @@
 package com.chachae.exam.rest;
 
 import cn.hutool.core.util.StrUtil;
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
-import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.StuAnswerRecord;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
 import com.chachae.exam.common.model.dto.ImportPaperDto;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
+import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperService;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -46,6 +47,24 @@ public class PaperController {
   @Permissions("paper:list")
   public Paper getOne(@PathVariable Integer id) {
     return this.paperService.getById(id);
+  }
+
+  @GetMapping("/list")
+  @Permissions("paper:list")
+  public Map<String, Object> pagePaper(Page<Paper> page) {
+    // 获取学生
+    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    return this.paperService.pageByMajorId(
+        page, student.getMajorId(), SysConsts.Paper.PAPER_TYPE_FORMAL);
+  }
+
+  @GetMapping("/practice/list")
+  @Permissions("paper:list")
+  public Map<String, Object> pagePracticePaper(Page<Paper> page) {
+    // 获取学生
+    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    return this.paperService.pageByMajorId(
+        page, student.getMajorId(), SysConsts.Paper.PAPER_TYPE_PRACTICE);
   }
 
   @PostMapping("/import/excel")

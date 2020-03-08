@@ -5,17 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 考试列表</title>
     <%include("../../include/css.html"){}%>
-    <style>
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 15px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -46,43 +35,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-info">
+                            <div class="card-header">
                                 <h3 class="card-title">正式考试</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover">
-                                    <tbody>
-                                    <%if(paperList != null){%>
-                                    <tr>
-                                        <th>序号</th>
-                                        <th>试卷名称</th>
-                                        <th>开考时间</th>
-                                        <th>结束时间</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    <%}%>
-                                    <%for(paper in paperList){%>
-                                    <tr class="rowDetail" rel="${paper.id}">
-                                        <td>${paperLP.index}</td>
-                                        <td>${paper.paperName}</td>
-                                        <td>${paper.beginTime}</td>
-                                        <td>${paper.endTime}</td>
-                                        <%if(paper.end){%>
-                                        <td><a class="btn btn-sm btn-danger disabled">考试结束</a></td>
-                                        <%}else if(paper.start){%>
-                                        <td><a href="/student/paper/${paper.id}"
-                                               class="btn btn-sm btn-success">进入考试</a></td>
-                                        <%}else{%>
-                                        <td><a id="doPaperBtn" class="btn btn-sm btn-warning disabled">等待考试</a></td>
-                                        <%}%>
-                                    </tr>
-                                    <%}elsefor{%>
-                                    <tr>
-                                        <td colspan="6">暂无正式考试</td>
-                                    </tr>
-                                    <%}%>
-                                    </tbody>
+                            <div class="card-body table-responsive">
+                                <table id="paperInfo" class="table table-bordered table-striped text-nowrap">
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -97,33 +55,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-yellow">
+                            <div class="card-header">
                                 <h3 class="card-title">模拟考试</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover">
-                                    <tbody>
-                                    <%if(practicePaperList != null){%>
-                                    <tr>
-                                        <th>序号</th>
-                                        <th>试卷名称</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    <%}%>
-                                    <%for(paper in practicePaperList){%>
-                                    <tr class="rowDetail" rel="${paper.id}">
-                                        <td>${paperLP.index}</td>
-                                        <td>${paper.paperName}</td>
-                                        <td><a class="btn btn-sm btn-outline-success" id="doPaper"
-                                               href="/student/paper/${paper.id}">进入考试</a></td>
-                                    </tr>
-                                    <%}elsefor{%>
-                                    <tr>
-                                        <td colspan="6">暂无模拟考试</td>
-                                    </tr>
-                                    <%}%>
-                                    </tbody>
+                            <div class="card-body table-responsive">
+                                <table id="practiceInfo" class="table table-bordered table-striped text-nowrap">
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -143,6 +80,10 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <% include("../../include/js.html"){} %>
+<!-- 自定义封装 -->
+<script src="/static/js/OesUtil.js"></script>
+<%include("api/paper-api.html"){}%>
+<%include("api/practice-api.html"){}%>
 </body>
 </html>
 

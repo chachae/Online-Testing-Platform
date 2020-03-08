@@ -2,15 +2,15 @@ package com.chachae.exam.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.chachae.exam.common.base.Page;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
-import com.chachae.exam.common.model.Teacher;
-import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.controller.common.QuestionModel;
-import com.chachae.exam.service.*;
+import com.chachae.exam.service.CourseService;
+import com.chachae.exam.service.MajorService;
+import com.chachae.exam.service.PaperService;
+import com.chachae.exam.service.ScoreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * 學生控制层
@@ -38,22 +37,15 @@ public class StudentModuleController {
   @Resource private PaperService paperService;
   @Resource private ScoreService scoreService;
   @Resource private CourseService courseService;
-  @Resource private StudentService studentService;
-  @Resource private AnnounceService announceService;
 
   /**
    * 学生登录后来到home页
    *
-   * @param id 学生ID
-   * @param mv ModelAndView 对象
    * @return 学生主界面
    */
-  @GetMapping("/home/{id}")
-  public ModelAndView home(@PathVariable Integer id, ModelAndView mv) {
-    // 设置学生信息 model 对象信息
-    mv.addObject("student", this.studentService.getById(id));
-    mv.setViewName("/student/self/home");
-    return mv;
+  @GetMapping("/home")
+  public String home() {
+    return "/student/self/home";
   }
 
   /**
@@ -64,6 +56,56 @@ public class StudentModuleController {
   @GetMapping("/update/password")
   public String changePass() {
     return "/student/self/update-pass";
+  }
+
+  /**
+   * 查看系统公告列表
+   *
+   * @return 公告集合
+   */
+  @GetMapping("/announce")
+  public String announceSystem() {
+    return "/student/announce/list";
+  }
+
+  /**
+   * 学生进入我的考试列表
+   *
+   * @return 学生考试信息页面
+   */
+  @GetMapping("/exam")
+  public String exam() {
+    return "/student/exam/list";
+  }
+
+  /**
+   * 查询成绩列表
+   *
+   * @return 成绩列表
+   */
+  @GetMapping("/score")
+  public String scoreList() {
+    return "/student/score/list";
+  }
+
+  /**
+   * 学生帮助中心
+   *
+   * @return 学生帮助中心页面
+   */
+  @GetMapping("/help")
+  public String help() {
+    return "/student/self/help";
+  }
+
+  /**
+   * 转发学生分数雷达页面
+   *
+   * @return 学生分数雷达页面
+   */
+  @GetMapping("/score/chart")
+  public String studentChart() {
+    return "/student/chart/list";
   }
 
   /**
@@ -80,42 +122,6 @@ public class StudentModuleController {
     session.removeAttribute(SysConsts.Session.STUDENT_ID);
     session.removeAttribute(SysConsts.Session.STUDENT);
     return "redirect:/";
-  }
-
-  /**
-   * 查看系统公告列表
-   *
-   * @param mv ModelAndView 对象
-   * @return 公告集合
-   */
-  @GetMapping("/announce")
-  public ModelAndView announceSystem(ModelAndView mv) {
-    // 设置公告集合的 model 对象信息
-    mv.addObject("announceList", this.announceService.list());
-    mv.setViewName("/student/announce/list");
-    return mv;
-  }
-
-  /**
-   * 学生进入我的考试列表
-   *
-   * @param mv ModelAndView 对象
-   * @return 学生考试信息页面
-   */
-  @GetMapping("/exam")
-  public ModelAndView exam(ModelAndView mv) {
-    // 获取学生
-    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
-
-    // 查询所有该专业的正式试卷
-    List<Paper> papers = paperService.selectByMajorId(student.getMajorId());
-    mv.addObject("paperList", papers);
-
-    // 模拟试卷 model 对象信息
-    List<Paper> pracitces = paperService.selectPracticePapersByMajorId(student.getMajorId());
-    mv.addObject("practicePaperList", pracitces);
-    mv.setViewName("/student/exam/list");
-    return mv;
   }
 
   /**
@@ -157,31 +163,6 @@ public class StudentModuleController {
   }
 
   /**
-   * 查询成绩列表
-   *
-   * @param mv ModelAndView 对象
-   * @return 成绩列表
-   */
-  @GetMapping("/score")
-  public ModelAndView scoreList(ModelAndView mv) {
-    int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT_ID);
-    // 通过学生 ID 查询成绩集合并设置其 model 对象信息
-    mv.addObject("scoreList", this.scoreService.selectByStuId(id));
-    mv.setViewName("/student/score/list");
-    return mv;
-  }
-
-  /**
-   * 学生帮助中心
-   *
-   * @return 学生帮助中心页面
-   */
-  @GetMapping("/help")
-  public String help() {
-    return "/student/self/help";
-  }
-
-  /**
    * 试卷详情
    *
    * @param id 分数id
@@ -211,32 +192,5 @@ public class StudentModuleController {
     mv.addObject("wrongList", StrUtil.split(score.getWrongIds(), StrUtil.C_COMMA));
     mv.setViewName("/student/score/detail");
     return mv;
-  }
-
-  /**
-   * 试卷分页查询
-   *
-   * @param page 分页数据
-   * @param mv ModelAndView 对象
-   * @return 分页结果集
-   */
-  @GetMapping("/paper")
-  public ModelAndView list(Page page, ModelAndView mv) {
-    // 获取教师 ID
-    Teacher teacher = (Teacher) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER);
-    // 设置分页后的数据的 model 对象
-    mv.addObject("page", paperService.pageForPaperList(teacher.getId(), page.getPageNo()));
-    mv.setViewName("/teacher/paper/list");
-    return mv;
-  }
-
-  /**
-   * 转发学生分数雷达页面
-   *
-   * @return 学生分数雷达页面
-   */
-  @GetMapping("/score/chart")
-  public String studentChart() {
-    return "/student/chart/list";
   }
 }

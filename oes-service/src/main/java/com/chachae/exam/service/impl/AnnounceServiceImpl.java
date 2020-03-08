@@ -1,16 +1,18 @@
 package com.chachae.exam.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import com.chachae.exam.common.model.Announce;
 import com.chachae.exam.common.dao.AnnounceDAO;
+import com.chachae.exam.common.model.Announce;
 import com.chachae.exam.common.util.DateUtil;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.AnnounceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * 公告业务实现类
@@ -40,5 +42,11 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceDAO, Announce>
     for (Integer id : ids) {
       this.announceDAO.deleteById(id);
     }
+  }
+
+  @Override
+  public Map<String, Object> pageForAnnounce(Page<Announce> page) {
+    Page<Announce> info = this.announceDAO.selectPage(page, null);
+    return PageUtil.toPage(info);
   }
 }

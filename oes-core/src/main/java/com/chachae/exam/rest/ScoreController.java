@@ -1,8 +1,9 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.model.Student;
+import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
@@ -10,6 +11,7 @@ import com.chachae.exam.service.ScoreService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -44,5 +46,18 @@ public class ScoreController {
     StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
     // 设置成绩分布集合的 model 对象信息
     return R.successWithData(scoreService.countByLevel(student.getId()));
+  }
+
+  /**
+   * 获取学生乘机分业数据
+   *
+   * @return 获取学生乘机分业数据
+   */
+  @GetMapping("/list")
+  @Permissions("score:list")
+  public Map<String, Object> pageScore(Page<Score> page) {
+    // 获取学生的 ID
+    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    return this.scoreService.pageByStuId(page, student.getId());
   }
 }

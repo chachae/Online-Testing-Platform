@@ -370,8 +370,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       }
     }
 
-    // 写入缓存
-    this.redisService.set(key, questions, 3 * 3600L);
+    // todo 写入缓存
+    // this.redisService.set(key, questions, 3 * 3600L);
     return questions;
   }
 }

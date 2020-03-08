@@ -4,15 +4,16 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.CourseDAO;
+import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.dao.ScoreDAO;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
-import com.chachae.exam.common.dao.CourseDAO;
-import com.chachae.exam.common.dao.PaperDAO;
-import com.chachae.exam.common.dao.ScoreDAO;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.ScoreService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -48,17 +49,13 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   }
 
   @Override
-  public List<Map<String, Object>> countByCourseId(Integer courseId) {
-    // 构造条件询条件
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getCourseId, courseId);
-    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
-    // 准备一个 Map 用来存储课程成绩信息
-    Map<String, Object> countMap = Maps.newHashMap();
-    List<Map<String, Object>> countList = Lists.newArrayList();
-    // 调用统计各个分数段人数方法
-    countPerScoreNum(paperDAO.selectList(qw), countMap, countList);
-    return countList;
+  public Map<String, Object> pageByStuId(Page<Score> page, Integer stuId) {
+    // QueryWrapper 条件构造器构造查询 Sql
+    QueryWrapper<Score> qw = new QueryWrapper<>();
+    qw.lambda().eq(Score::getStuId, stuId);
+    // 返回该学生的分数集合
+    Page<Score> pageInfo = scoreDAO.selectPage(page, qw);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

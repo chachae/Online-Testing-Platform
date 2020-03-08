@@ -66,7 +66,6 @@ public class Paper extends Model<Paper> {
    *
    * @return true 是的 试卷已经开始 false 否 试卷未开始
    */
-  @JsonIgnore
   public boolean isStart() {
     if (getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
       final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
@@ -82,7 +81,6 @@ public class Paper extends Model<Paper> {
    *
    * @return true 是的 试卷已经结束 false 否 试卷未结束
    */
-  @JsonIgnore
   public boolean isEnd() {
     if (getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
       DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");

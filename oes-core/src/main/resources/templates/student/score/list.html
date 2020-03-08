@@ -5,25 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OES | 分数列表</title>
     <%include("../../include/css.html"){}%>
-    <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
-        th {
-            font-size: 16px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 16px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -55,41 +36,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header bg-info">
+                            <div class="card-header">
                                 <h3 class="card-title">成绩详情</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover">
-                                    <tbody>
-                                    <% if(isEmpty(scoreList)){ %>
-                                    <tr>
-                                        <td colspan="6">暂无成绩</td>
-                                    </tr>
-                                    <% } %>
-                                    <% if(isNotEmpty(scoreList)){ %>
-                                    <tr>
-                                        <th style="width: 15%">序号</th>
-                                        <th style="width: 25%">试卷名称</th>
-                                        <th style="width: 10%">考试分数</th>
-                                        <th style="width: 25%">错题ID集合</th>
-                                        <th style="width: 25%">操作</th>
-                                    </tr>
-                                    <%for(score in scoreList){%>
-                                    <tr class="rowDetail" rel="${score.id}">
-                                        <td>${scoreLP.index}</td>
-                                        <td>${score.paperName}</td>
-                                        <td>${score.score} 分</td>
-                                        <td>${score.wrongIds}</td>
-                                        <td>
-                                            <button onclick="getDetail(${score.id})" class="btn btn-outline-info btn-sm">成绩详情
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    <% } %>
-                                    </tbody>
-                                </table>
+                            <div class="card-body table-responsive">
+                                <table id="scoreInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -108,6 +60,8 @@
 </div>
 <!-- 引入全局 js 脚本文件 -->
 <%include("../../include/js.html"){}%>
+<!-- 自定义封装 -->
+<script src="/static/js/OesUtil.js"></script>
 <script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
 <%include("api.html"){}%>
 </body>

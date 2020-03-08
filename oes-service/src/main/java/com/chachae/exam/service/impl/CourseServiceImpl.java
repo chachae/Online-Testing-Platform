@@ -1,5 +1,6 @@
 package com.chachae.exam.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.CourseDAO;
@@ -45,6 +46,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   }
 
   @Override
+  public List<Course> selectByCourseName(String courseName) {
+    QueryWrapper<Course> qw = new QueryWrapper<>();
+    qw.lambda().eq(Course::getCourseName, courseName);
+    return this.courseDAO.selectList(qw);
+  }
+
+  @Override
   public boolean removeById(Serializable id) {
     // 构造指定课程的试题数数量查询方法
     QueryWrapper<Question> qw = new QueryWrapper<>();
@@ -64,5 +72,16 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     // 为课程设置教师信息
     course.setTeacher(this.teacherDAO.selectById(course.getTeacherId()));
     return course;
+  }
+
+  @Override
+  public boolean save(Course entity) {
+    // 查询是否有同名课程
+    List<Course> courses = this.selectByCourseName(entity.getCourseName());
+    if (CollUtil.isEmpty(courses)) {
+      return super.save(entity);
+    } else {
+      throw new ServiceException("存在同名课程，请重新输入");
+    }
   }
 }

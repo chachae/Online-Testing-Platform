@@ -1,5 +1,6 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
@@ -24,12 +25,12 @@ public interface ScoreService extends IService<Score> {
   List<Score> selectByStuId(Integer id);
 
   /**
-   * 根据课程统计成绩信息
+   * 通过学号查询分数分页集合
    *
-   * @param courseId 课程ID
-   * @return 课程统计成绩 List 集合
+   * @param page 分页信息
+   * @return 分页信息
    */
-  List<Map<String, Object>> countByCourseId(Integer courseId);
+  Map<String, Object> pageByStuId(Page<Score> page, Integer stuId);
 
   /**
    * 统计该学生本学期所有课程的平均成绩

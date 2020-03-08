@@ -1,5 +1,7 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Announce;
 import com.chachae.exam.core.annotation.Permissions;
@@ -7,6 +9,7 @@ import com.chachae.exam.service.AnnounceService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * 公告控制层
@@ -19,6 +22,17 @@ import javax.annotation.Resource;
 public class AnnounceController {
 
   @Resource private AnnounceService announceService;
+
+  /**
+   * 分页查询公告
+   *
+   * @param page 分页信息
+   * @return 分页结果集
+   */
+  @GetMapping("/list")
+  public Map<String, Object> pageInfo(Page<Announce> page) {
+    return this.announceService.pageForAnnounce(page);
+  }
 
   /**
    * 新增一个公告
@@ -59,20 +73,6 @@ public class AnnounceController {
   public R update(Announce announce) {
     // 调用公告删除接口
     this.announceService.updateById(announce);
-    return R.success();
-  }
-
-  /**
-   * 批量删除公告
-   *
-   * @param ids 公告ID集合，<a href="http://localhost:8080/announce/del?ids=1,2,3,4"
-   * @return 成功信息
-   */
-  @PostMapping("/delete")
-  @Permissions("announce:delete")
-  public R deleteBatch(Integer[] ids) {
-    // 调用公告批量删除接口
-    this.announceService.delete(ids);
     return R.success();
   }
 
