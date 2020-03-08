@@ -4,6 +4,7 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
@@ -27,16 +28,15 @@ public class StudentController {
   /**
    * 学生登录 验证学号和密码
    *
-   * @param studentNumber 学号(stuNumber)
-   * @param password 密码
+   * @param entity 账号密码
    * @return 主界面
    */
   @PostMapping("/login")
-  public R login(String studentNumber, String password) {
+  public R login(@Valid LoginDto entity) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 执行登录接口
-    StudentVo student = studentService.login(studentNumber, password);
+    StudentVo student = studentService.login(entity.getUsername(), entity.getPassword());
     // 设置 Session 信息
     session.setAttribute(SysConsts.Session.ROLE_ID, student.getRoleId());
     session.setAttribute(SysConsts.Session.STUDENT_ID, student.getId());

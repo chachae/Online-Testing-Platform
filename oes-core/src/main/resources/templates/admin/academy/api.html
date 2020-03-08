@@ -1,11 +1,38 @@
 <script>
 
+    function operateFormatter(value, row, index) {
+        return [
+            '  <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id + ')">编辑 </button>\n' +
+            '  <button class="btn btn-sm btn-danger" onclick="deleteAcademy(' + row.id + ') ">删除</button>\n'
+        ].join('');
+    }
+
+    // 初始化表单
+    const columns = [{
+        title: '编号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+            return index + 1;
+        }
+    }, {
+        title: '学院',
+        field: 'name',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter//html
+    }];
+
+    OesUtil.initNormalTable('#academyInfo', "/api/academy/list", "get", columns);
+
     // 删除学院
     function deleteAcademy(id) {
         OesUtil.confirm("确定删除吗？", function () {
             $.post("/api/academy/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    history.go(0);
+                    OesUtil.refreshTable("#academyInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -19,7 +46,9 @@
             let data = $("#update-form").serialize();
             $.post("/api/academy/update", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#updateModal");
+                    $('#update-form')[0].reset();
+                    OesUtil.refreshTable("#academyInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -33,7 +62,9 @@
             let data = $("#save-form").serialize();
             $.post("/api/academy/save", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#saveModal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#academyInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -51,7 +82,7 @@
 
     // 启动模态框
     function goSave() {
-        $("#save-modal").modal({
+        $("#saveModal").modal({
             show: true,
             backdrop: 'static'
         });
@@ -61,7 +92,7 @@
     // 启动修改模态框
     function goUpdate(id) {
         getAcademy(id);
-        $("#update-modal").modal({
+        $("#updateModal").modal({
             show: true,
             backdrop: 'static'
         });

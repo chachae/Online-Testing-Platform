@@ -2,18 +2,18 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.AdminDAO;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.AdminDAO;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.AdminService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * 管理员业务实现
@@ -86,12 +86,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   }
 
   @Override
-  public PageInfo<Admin> pageForAdminList(Integer pageNo) {
-    // 分页信息设置，默认每页 12 条数据
-    PageHelper.startPage(pageNo, 12);
-    // 调用管理员查询集合接口
-    List<Admin> admins = this.adminDAO.selectList(null);
-    return new PageInfo<>(admins);
+  public Map<String, Object> listPage(Page<Admin> page) {
+    Page<Admin> pageInfo = this.adminDAO.selectPage(page, null);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

@@ -1,9 +1,11 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.TeacherService;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -25,16 +29,15 @@ public class TeacherController {
   /**
    * 教师登录
    *
-   * @param teacherNumber 教师ID
-   * @param password 教师密码
+   * @param entity 账号密码
    * @return 教师主页
    */
   @PostMapping("/login")
-  public R login(String teacherNumber, String password) {
+  public R login(@Valid LoginDto entity) {
     // 获取 session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 执行登录
-    Teacher teacher = teacherService.login(teacherNumber, password);
+    Teacher teacher = teacherService.login(entity.getUsername(), entity.getPassword());
     // 设置 session 信息
     session.setAttribute(SysConsts.Session.ROLE_ID, teacher.getRoleId());
     session.setAttribute(SysConsts.Session.TEACHER_ID, teacher.getId());
@@ -108,5 +111,17 @@ public class TeacherController {
   public R deleteTeacher(@PathVariable Integer id) {
     this.teacherService.removeById(id);
     return R.success();
+  }
+
+  /**
+   * 分页获取教师信息
+   *
+   * @param page 分页结果集
+   * @return 分页信息结果集
+   */
+  @GetMapping("/list")
+  @Permissions("teacher:list")
+  public Map<String, Object> page(Page<Teacher> page) {
+    return this.teacherService.listPage(page);
   }
 }

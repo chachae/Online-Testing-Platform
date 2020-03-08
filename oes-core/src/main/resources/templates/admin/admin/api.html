@@ -1,11 +1,46 @@
 <script>
 
+    function operateFormatter(value, row, index) {
+        return [
+            '  <button class="btn btn-sm btn-danger" onclick="deleteAdmin(' + row.id + ') ">删除</button>\n'
+        ].join('');
+    }
+
+    // 初始化表单
+    const columns = [{
+        title: '编号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+            return index + 1;
+        }
+    }, {
+        title: '姓名',
+        field: 'name',
+        sortable: false
+    }, {
+        title: '用户名',
+        field: 'number',
+        sortable: false
+    }, {
+        title: '上次登陆时间',
+        field: 'lastLoginTime',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter//html
+    }];
+
+    OesUtil.initNormalTable('#adminInfo', "/api/admin/list", "get", columns);
+
+
     // 删除管理员
     function deleteAdmin(id) {
         OesUtil.confirm("确定删除管理员吗?", function () {
             $.post("/api/admin/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.refreshTable("#adminInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -15,7 +50,7 @@
 
     // 打开模态框
     function goSave() {
-        $("#save-modal").modal({
+        $("#saveModal").modal({
             show: true,
             backdrop: 'static'
         });
@@ -27,8 +62,9 @@
             let data = $('#save-form').serialize();
             $.post("/api/admin/save", data).done(function (data) {
                 if (data.state === "success") {
-                    layer.msg("增加成功!");
-                    window.location.reload();
+                    OesUtil.closeModal("#saveModal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#adminInfo");
                 } else {
                     toastr.error(data.message);
                 }

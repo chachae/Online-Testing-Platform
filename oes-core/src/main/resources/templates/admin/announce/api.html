@@ -1,11 +1,41 @@
 <script>
 
+    function operateFormatter(value, row, index) {
+        return [
+            '  <button class="view btn btn-sm btn-success" onclick="goView(' + row.id + ')">查看公告</button>\n' +
+            '  <button class="edit btn btn-sm btn-warning" onclick="goUpdate(' + row.id + ')">编辑公告</button>\n' +
+            '  <button class="btn btn-sm btn-danger" onclick="deleteAnnounce(' + row.id + ')">删除公告</button>',
+        ].join('');
+    }
+
+    // 初始化表单
+    const columns = [{
+        title: '标题',
+        field: 'title',
+        sortable: false
+    }, {
+        title: '发布时间',
+        field: 'createTime',
+        sortable: false
+    }, {
+        title: '发布人',
+        field: 'authorName',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter//html
+    }];
+
+    OesUtil.initNormalTable('#announceInfo', "/api/announce/list", "get", columns);
+
+
     // 删除单个公告
     function deleteAnnounce(id) {
         OesUtil.confirm("确定要删除么？", function () {
             $.get("/api/announce/delete/" + id).done(function (json) {
                 if (json.state === "success") {
-                    history.go(0);
+                    OesUtil.refreshTable("#announceInfo");
                 } else {
                     toastr.error(json.message);
                 }
@@ -19,7 +49,9 @@
             let data = $('#update-form').serialize();
             $.post("/api/announce/update", data).done(function (data) {
                 if (data.state === "success") {
-                    history.go(0);
+                    OesUtil.closeModal("#updateModal");
+                    $('#update-form')[0].reset();
+                    OesUtil.refreshTable("#announceInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -33,7 +65,9 @@
             let data = $("#save-form").serialize();
             $.post("/api/announce/save", data, function (data) {
                 if (data.state === "success") {
-                    history.go(0);
+                    OesUtil.closeModal("#saveModal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#announceInfo");
                 } else {
                     toastr.error(data.message);
                 }

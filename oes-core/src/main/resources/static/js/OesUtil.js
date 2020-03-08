@@ -2,7 +2,11 @@
 function OesUtil() {
 }
 
-// 封装 confirm 弹层
+/**
+ * 封装 confirm 弹层
+ * @param content 弹层内容
+ * @param fnc 方法体
+ */
 OesUtil.confirm = function oesConfirm(content, fnc) {
     let s = "function" == typeof fnc;
     if (s) {
@@ -83,7 +87,29 @@ OesUtil.dateTimePick = function calenders(e, doubleTime, second) {
     })
 };
 
-// 封装表单
+/**
+ * 刷新表单
+ * @param e 表单元素 ID / class
+ */
+OesUtil.refreshTable = function refreshTable(e) {
+    $(e).bootstrapTable("refresh");
+};
+
+/**
+ * 关闭模态框
+ * @param e 元素 ID / class
+ */
+OesUtil.closeModal = function closeModal(e) {
+    $(e).modal('hide');
+};
+
+/**
+ * 封装简单的表单
+ * @param e ID / class
+ * @param api 请求数据接口
+ * @param method 请求方式
+ * @param columns 表单数据
+ */
 OesUtil.initNormalTable = function normalTable(e, api, method, columns) {
     $(e).bootstrapTable({
         method: method,

@@ -1,4 +1,44 @@
 <script>
+
+    function operateFormatter(value, row, index) {
+        return [
+            '  <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id + ')">编辑 </button>\n' +
+            '  <button class="btn btn-sm btn-danger" onclick="deleteTeacher(' + row.id + ') ">删除</button>\n'
+        ].join('');
+    }
+
+    // 初始化表单
+    const columns = [{
+        title: '编号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+            return index + 1;
+        }
+    }, {
+        title: '姓名',
+        field: 'name',
+        sortable: false
+    }, {
+        title: '工号',
+        field: 'workNumber',
+        sortable: false
+    }, {
+        title: '职级',
+        field: 'job',
+        sortable: false
+    }, {
+        title: '性别',
+        field: 'sex',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter
+    }];
+
+    OesUtil.initNormalTable('#teacherInfo', "/api/teacher/list", "get", columns);
+
     // 初始化下拉框 select2 样式
     $('.job-select').select2({width: "100%", theme: "bootstrap4"});
     $('.sex-select').select2({width: "100%", theme: "bootstrap4"});
@@ -6,7 +46,7 @@
     // 启动修改模态框
     function goUpdate(id) {
         getTeacher(id);
-        $("#update-modal").modal({
+        $("#updateModal").modal({
             show: true,
             backdrop: 'static'
         });
@@ -15,10 +55,12 @@
     // 执行更新请求
     function updateTeacher() {
         OesUtil.confirm("确定修改信息吗?", function () {
-            let data = $(".update-form").serialize();
+            let data = $("#update-form").serialize();
             $.post("/api/teacher/update/", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#updateModal");
+                    $('#update-form')[0].reset();
+                    OesUtil.refreshTable("#teacherInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -44,7 +86,7 @@
 
     // 启动新增模态框
     function goSave() {
-        $("#save-modal").modal({
+        $("#saveModal").modal({
             show: true,
             backdrop: 'static'
         });
@@ -53,10 +95,12 @@
     // 增加教师
     function saveTeacher() {
         OesUtil.confirm("确定增加学教师吗?", function () {
-            let data = $(".save-form").serialize();
+            let data = $("#save-form").serialize();
             $.post("/api/teacher/save/", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#saveModal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#teacherInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -69,7 +113,7 @@
         OesUtil.confirm("确定删除学教师吗?", function () {
             $.post("/api/teacher/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.refreshTable("#teacherInfo");
                 } else {
                     toastr.error(data.message);
                 }

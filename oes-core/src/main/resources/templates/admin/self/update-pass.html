@@ -46,17 +46,14 @@
                                          src="/webjars/AdminLTE/3.0.0/dist/img/avatar5.png"
                                          alt="User profile picture">
                                 </div>
-
                                 <h3 class="profile-username text-center">${session.admin.name}</h3>
-
                                 <p class="text-muted text-center">${session.admin.number}</p>
-
                                 <ul class="list-group list-group-unbordered mb-3">
                                     <li class="list-group-item">
                                         <b>编号</b> <a class="float-right">${session.admin.id}</a>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>上次登录</b> <a class="float-right">${session.admin.lastLoginTime}</a>
+                                        <b>上次登录</b> <a class="float-right">${session.admin.lastLoginTime,dateFormat="yyyy-MM-dd HH:mm:ss"}</a>
                                     </li>
                                 </ul>
                             </div>

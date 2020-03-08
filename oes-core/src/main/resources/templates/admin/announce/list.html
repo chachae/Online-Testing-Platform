@@ -6,17 +6,6 @@
     <title>OES | 公告列表</title>
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
-    <style>
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 15px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 
@@ -52,58 +41,16 @@
                                 <h3 class="card-title">公告信息</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-primary btn-sm" onclick="goSave()"><i class="fa fa-dustbin"></i> 发布公告
+                                        <button class="btn btn-primary btn-sm" onclick="goSave()"><i
+                                                class="fa fa-dustbin"></i> 发布公告
                                         </button>&nbsp;
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
-                                    <thead>
-                                    <tr>
-                                        <th style="text-align: left;width: 30%">公告标题</th>
-                                        <th style="width: 8%">发布人</th>
-                                        <th style="width: 8%">身份</th>
-                                        <th style="width: 21%">发布日期</th>
-                                        <th style="width: 29%">操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% if(isEmpty(announceList)){ %>
-                                    <tr>
-                                        <td colspan="6">暂无公告信息</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for( announce in announceList){ %>
-                                    <tr class="rowDetail" rel="${announce.id}">
-                                        <td style="text-align: left">${announce.title}</td>
-                                        <td>${announce.authorName}</td>
-                                        <td hidden="hidden">${announce.content}</td>
-                                        <td>
-                                            ${announce.roleId == 1 ? "管理员" : ''}
-                                            ${announce.roleId == 3 ? "教师" : ''}
-                                        </td>
-                                        <td>
-                                            ${announce.createTime,dateFormat="yyyy年MM月dd日 HH:mm:ss"}
-                                        </td>
-                                        <td>
-                                            <button class="view btn btn-sm btn-success"
-                                                    onclick="goView('${announce.id}')">
-                                                查看公告
-                                            </button>
-                                            <button class="edit btn btn-sm btn-warning" rel="${announce.id}"
-                                                    onclick="goUpdate('${announce.id}')">
-                                                编辑公告
-                                            </button>
-                                            <button class="btn btn-sm btn-danger"
-                                                    onclick="deleteAnnounce('${announce.id}')">删除公告
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
+                            <div class="card-body table-responsive">
+                                <!-- bootstrap table 渲染 -->
+                                <table id="announceInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
                             <!-- /.card-body -->
                         </div>

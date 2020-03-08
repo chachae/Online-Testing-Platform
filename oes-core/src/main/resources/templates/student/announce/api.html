@@ -18,7 +18,7 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<button class="btn btn-sm btn-success view">查看</button>',
+            '<button class="btn btn-sm btn-success view" onclick="goView(' + row.id + ')">查看</button>',
         ].join('');
     }
 

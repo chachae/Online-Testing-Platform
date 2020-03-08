@@ -1,5 +1,6 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Academy;
 import com.chachae.exam.core.annotation.Permissions;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 学院控制层
@@ -30,6 +32,17 @@ public class AcademyController {
   @Permissions("academy:list")
   public List<Academy> list() {
     return this.academyService.list();
+  }
+
+  /**
+   * Rest 获取学院集合
+   *
+   * @return 学院集合
+   */
+  @GetMapping("/list")
+  @Permissions("academy:list")
+  public Map<String, Object> page(Page<Academy> page) {
+    return this.academyService.listPage(page);
   }
 
   /**

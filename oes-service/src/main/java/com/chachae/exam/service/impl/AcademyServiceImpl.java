@@ -2,12 +2,14 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.model.Academy;
-import com.chachae.exam.common.model.Major;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.dao.AcademyDAO;
 import com.chachae.exam.common.dao.MajorDAO;
+import com.chachae.exam.common.exception.ServiceException;
+import com.chachae.exam.common.model.Academy;
+import com.chachae.exam.common.model.Major;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.AcademyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 学院服务实现类
@@ -24,8 +27,7 @@ import java.io.Serializable;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy>
-    implements AcademyService {
+public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> implements AcademyService {
 
   @Resource private MajorDAO majorDAO;
   @Resource private AcademyDAO academyDAO;
@@ -71,5 +73,11 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy>
     QueryWrapper<Academy> qw = new QueryWrapper<>();
     qw.lambda().eq(Academy::getName, academyName);
     return this.academyDAO.selectOne(qw);
+  }
+
+  @Override
+  public Map<String, Object> listPage(Page<Academy> page) {
+    Page<Academy> pageInfo = this.academyDAO.selectPage(page, null);
+    return PageUtil.toPage(pageInfo);
   }
 }

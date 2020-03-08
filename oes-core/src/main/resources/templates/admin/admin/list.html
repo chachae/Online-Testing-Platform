@@ -6,27 +6,8 @@
     <title>OES | 管理员列表</title>
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
-    <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 16px;
-            text-align: center;
-        }
-    </style>
 </head>
-<body class="hold-transition skin-purple sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 
 <div class="wrapper">
     <!-- 引入头部 -->
@@ -60,54 +41,9 @@
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
-                                    <tbody>
-                                    <tr>
-                                        <th style="width: 15%">序号</th>
-                                        <th style="width: 17%">姓名</th>
-                                        <th style="width: 18%">用户名</th>
-                                        <th style="width: 35%;">上次登陆时间</th>
-                                        <th style="width: 15%">操作</th>
-                                    </tr>
-                                    <% if(isEmpty(page.list)){ %>
-                                    <tr>
-                                        <td colspan="6">没有学生</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for( admin in page.list){ %>
-                                    <tr class="rowDetail" rel="${admin.id}">
-                                        <td>${adminLP.index}</td>
-                                        <td hidden="hidden">${admin.id}</td>
-                                        <td>${admin.name}</td>
-                                        <td>${admin.number}</td>
-                                        <td>
-                                            ${admin.lastLoginTime,dateFormat="yyyy-MM-dd HH:mm:ss"}
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteAdmin(${admin.id})"><i
-                                                    class="fa"></i>删除
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="card-footer clearfix">
-                                <ul class="pagination m-0 float-right">
-                                    <%for(var i=1;i<=page.pages;i++){ %>
-                                    <% if(page.pageNum == i){ %>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="?p=${i}">${i}</a>
-                                    </li>
-                                    <%}else{%>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?p=${i}">${i}</a>
-                                    </li>
-                                    <%}%>
-                                    <% }%>
-                                </ul>
+                            <div class="card-body table-responsive">
+                                <!-- bootstrap table 渲染 -->
+                                <table id="adminInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
                             <!-- /.card-body -->
                         </div>

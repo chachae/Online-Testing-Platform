@@ -26,8 +26,8 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- 首页 -->
                 <li class="nav-item">
-                    <a href="/admin/home/${session.admin.id}" class="nav-link ${name == 'home'?'active':''}">
-                        <i class="nav-icon fa fa-vcard"></i>
+                    <a href="/admin/home" class="nav-link ${name == 'home'?'active':''}">
+                        <i class="nav-icon fas fa-globe"></i>
                         <p>首页</p>
                     </a>
                 </li>
@@ -35,7 +35,7 @@
                 <!-- 系统公告 -->
                 <li class="nav-item">
                     <a href="/admin/announce" class="nav-link  ${strutil.contain(name,'announce')?'active':''}">
-                        <i class="nav-icon fa fa-paper-plane"></i>
+                        <i class="nav-icon fas fa-paper-plane"></i>
                         <p>公告管理</p>
                     </a>
                 </li>
@@ -43,7 +43,7 @@
                 <!-- 学院管理 -->
                 <li class="nav-item">
                     <a href="/admin/academy" class="nav-link  ${name == 'academy'?'active':''}">
-                        <i class="nav-icon fa fa-address-book-o"></i>
+                        <i class="nav-icon fas fa-landmark"></i>
                         <p>学院管理</p>
                     </a>
                 </li>
@@ -51,7 +51,7 @@
                 <!-- 教师管理 -->
                 <li class="nav-item">
                     <a href="/admin/teacher" class="nav-link ${name == 'teacher'?'active':''}">
-                        <i class="nav-icon fa fa-imdb"></i>
+                        <i class="nav-icon fas fa-id-badge"></i>
                         <p>教师管理</p>
                     </a>
                 </li>
@@ -59,7 +59,7 @@
                 <!-- 管理员管理 -->
                 <li class="nav-item">
                     <a href="/admin" class="nav-link ${name == 'admin'?'active':''}">
-                        <i class="nav-icon fa fa-file"></i>
+                        <i class="nav-icon fas fa-flag"></i>
                         <p>管理员管理</p>
                     </a>
                 </li>

@@ -1,19 +1,20 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AdminService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -28,16 +29,15 @@ public class AdminController {
   /**
    * 管理员登录<a href="http://localhost:8080/admin/login">管理员登录接口</a>
    *
-   * @param adminId 管理员账号
-   * @param password 管理员密码
+   * @param entity 账号密码
    * @return 管理员信息
    */
   @PostMapping("/login")
-  public R login(String adminId, String password) {
+  public R login(@Valid LoginDto entity) {
     // 获取session 对象
     HttpSession session = HttpContextUtil.getSession();
     // 登陆操作
-    Admin admin = this.adminService.login(adminId, password);
+    Admin admin = this.adminService.login(entity.getUsername(), entity.getPassword());
     // 设置session
     session.setAttribute(SysConsts.Session.ADMIN, admin);
     session.setAttribute(SysConsts.Session.ROLE_ID, admin.getRoleId());
@@ -91,5 +91,17 @@ public class AdminController {
     session.removeAttribute(SysConsts.Session.TEACHER);
     // 重定向登录页面
     return R.success();
+  }
+
+  /**
+   * 分页获取管理员信息
+   *
+   * @param page 分页信息
+   * @return 分页结果集
+   */
+  @GetMapping("/list")
+  @Permissions("admin:list")
+  public Map<String, Object> page(Page<Admin> page) {
+    return this.adminService.listPage(page);
   }
 }

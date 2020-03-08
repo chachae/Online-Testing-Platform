@@ -3,20 +3,20 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.TeacherDAO;
+import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.dao.TeacherDAO;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.TeacherService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 教师业务实现
@@ -33,8 +34,7 @@ import java.util.List;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
-public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher>
-    implements TeacherService {
+public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> implements TeacherService {
 
   @Resource private TeacherDAO teacherDAO;
   @Resource private CourseService courseService;
@@ -77,19 +77,17 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher>
   }
 
   @Override
-  public PageInfo<Teacher> pageForTeacherList(Integer pageNo) {
-    // 设置分页信息，默认每页显示 12 条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 12);
-    List<Teacher> teachers = this.teacherDAO.selectList(null);
-    return new PageInfo<>(teachers);
-  }
-
-  @Override
   public Teacher selectByWorkNumber(String workNumber) {
     // 查询改用户名的教师信息
     QueryWrapper<Teacher> qw = new QueryWrapper<>();
     qw.lambda().eq(Teacher::getWorkNumber, workNumber);
     return this.teacherDAO.selectOne(qw);
+  }
+
+  @Override
+  public Map<String, Object> listPage(Page<Teacher> page) {
+    Page<Teacher> pageInfo = this.teacherDAO.selectPage(page, null);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

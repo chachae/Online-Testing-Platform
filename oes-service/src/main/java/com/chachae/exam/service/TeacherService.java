@@ -1,9 +1,11 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.github.pagehelper.PageInfo;
+
+import java.util.Map;
 
 /**
  * 教师业务接口
@@ -30,18 +32,18 @@ public interface TeacherService extends IService<Teacher> {
   void updatePassword(ChangePassDto dto);
 
   /**
-   * 分页查询教师列表
-   *
-   * @param pageNo 当前页
-   * @return 教师数据分页结果集
-   */
-  PageInfo<Teacher> pageForTeacherList(Integer pageNo);
-
-  /**
    * 通过工号查询教师信息
    *
    * @param workNumber 工号
    * @return 教师信息
    */
   Teacher selectByWorkNumber(String workNumber);
+
+  /**
+   * 分页查询教师信息
+   *
+   * @param page 分页信息
+   * @return 分页结果集
+   */
+  Map<String, Object> listPage(Page<Teacher> page);
 }

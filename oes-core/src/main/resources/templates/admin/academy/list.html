@@ -6,28 +6,8 @@
     <title>OES | 学院列表</title>
     <!-- 引入全局 css 文件 -->
     <% include("../../include/css.html"){} %>
-    <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 16px;
-            text-align: center;
-        }
-
-    </style>
 </head>
-<body class="hold-transition skin-purple">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
     <% layout("../include/header.html"){} %>
@@ -54,43 +34,14 @@
                                 <h3 class="card-title">公告信息</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-success btn-sm" onclick="goSave()"><i class="fa fa-plus"></i> 新增学院</button>
+                                        <button class="btn btn-primary btn-sm" onclick="goSave()">新增学院</button>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
-                                    <tbody>
-                                    <tr>
-                                        <th style="width: 20%">编号</th>
-                                        <th style="width: 40%">学院名称</th>
-                                        <th style="width: 40%">操作</th>
-                                    </tr>
-                                    <% if(isEmpty(academyList)){ %>
-                                    <tr>
-                                        <td colspan="6">没有学院</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for( academy in academyList){ %>
-                                    <tr class="rowDetail" rel="${academy.id}">
-                                        <td>${academyLP.index}</td>
-                                        <td hidden="hidden">${academy.id}</td>
-                                        <td>${academy.name}</td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm goUpdate"
-                                                    onclick="goUpdate(${academy.id})"><i
-                                                    class="fa"></i>编辑
-                                            </button>
-                                            <button class="btn btn-sm btn-danger"
-                                                    onclick="deleteAcademy(${academy.id}) "><i
-                                                    class="fa"></i>删除
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
+                            <div class="card-body table-responsive">
+                                <!-- bootstrap table 渲染 -->
+                                <table id="academyInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -100,6 +51,8 @@
             </div><!-- /.row -->
         </section>
     </div>
+    <!-- 引入footer -->
+    <%include("../../include/footer.html"){}%>
     <!-- 增加模态框 -->
     <%include("save-modal.html"){} %>
     <!-- 修改学生信息模态框 -->

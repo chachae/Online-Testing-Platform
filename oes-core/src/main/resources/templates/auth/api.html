@@ -1,113 +1,14 @@
 <script>
-    // 校验表单
-    $(document).ready(function () {
-        $('#stu-form').validate({
-            rules: {
-                stuNumber: {
-                    required: true,
-                },
-                password: {
-                    required: true,
-                },
-            },
-            messages: {
-                stuNumber: {
-                    required: "请填写学号",
-                },
-                password: {
-                    required: "请填写密码",
-                },
-            },
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
-    // 校验表单
-    $(document).ready(function () {
-        $('#teacher-form').validate({
-            rules: {
-                teacherNumber: {
-                    required: true,
-                },
-                password: {
-                    required: true,
-                },
-            },
-            messages: {
-                teacherNumber: {
-                    required: "请填写工号",
-                },
-                password: {
-                    required: "请填写密码",
-                },
-            },
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
-    // 校验表单
-    $(document).ready(function () {
-        $('#admin-form').validate({
-            rules: {
-                adminId: {
-                    required: true,
-                },
-                password: {
-                    required: true,
-                },
-            },
-            messages: {
-                adminId: {
-                    required: "请填写管理员账号",
-                },
-                password: {
-                    required: "请填写密码",
-                },
-            },
-            errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
-        });
-    });
-
     // 学生登录
     $('#stuBtn').click(function () {
         // 密码加密
         let username = $("#stuNumber").val();
         let password = encryptPass($("#stuPassword").val());
-        $.post("/api/student/login", {"studentNumber": username, "password": password}).done(function (data) {
+        $.post("/api/student/login", {"username": username, "password": password}).done(function (data) {
             if (data.state === "success") {
                 toastr.success('认证成功');
                 $(this).delay(1000).queue(function () {
-                    window.location.href = "/student/home/" + data.data;
+                    window.location.href = "/student/home";
                 });
             } else {
                 toastr.error(data.message);
@@ -120,7 +21,7 @@
         // 密码加密
         let username = $("#teacherNumber").val();
         let password = encryptPass($("#teacherPassword").val());
-        $.post("/api/teacher/login", {"teacherNumber": username, "password": password}).done(function (data) {
+        $.post("/api/teacher/login", {"username": username, "password": password}).done(function (data) {
             if (data.state === "success") {
                 toastr.success('认证成功');
                 $(this).delay(1000).queue(function () {
@@ -137,11 +38,11 @@
         // 密码加密
         let username = $("#adminId").val();
         let password = encryptPass($("#adminPassword").val());
-        $.post("/api/admin/login", {"adminId": username, "password": password}).done(function (data) {
+        $.post("/api/admin/login", {"username": username, "password": password}).done(function (data) {
             if (data.state === "success") {
                 toastr.success('认证成功');
                 $(this).delay(1000).queue(function () {
-                    window.location.href = "/admin/home/" + data.data;
+                    window.location.href = "/admin/home";
                 });
             } else {
                 toastr.error(data.message);

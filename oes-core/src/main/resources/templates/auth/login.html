@@ -43,7 +43,7 @@
                         <div class="tab-pane active" id="stuLine">
                             <form id="stu-form">
                                 <div class="input-group mb-3">
-                                    <input type="text" id="stuNumber" name="stuNumber" class="form-control"
+                                    <input type="text" id="stuNumber" name="username" class="form-control"
                                            placeholder="学号" value="201601">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -74,7 +74,7 @@
                         <div class="tab-pane" id="teacherLine">
                             <form id="teacher-form">
                                 <div class="input-group mb-3">
-                                    <input type="text" id="teacherNumber" name="teacherNumber" class="form-control"
+                                    <input type="text" id="teacherNumber" name="username" class="form-control"
                                            placeholder="工号" value="123">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -106,7 +106,7 @@
                         <div class="tab-pane" id="adminLine">
                             <form id="admin-form">
                                 <div class="input-group mb-3">
-                                    <input type="text" id="adminId" name="adminId" class="form-control"
+                                    <input type="text" id="adminId" name="username" class="form-control"
                                            placeholder="管理员账号" value="admin">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
@@ -148,8 +148,6 @@
 <!-- /.login-box -->
 <!-- 引入全局公共js -->
 <% include("../include/js.html"){} %>
-<!-- 校验 -->
-<script src="/webjars/AdminLTE/3.0.0/plugins/jquery-validation/jquery.validate.min.js"></script>
 <!-- 公钥加密 -->
 <script type="text/javascript" src="/static/plugins/jsencrypt/jsencrypt.min.js"></script>
 <script type="text/javascript" src="/static/js/encrypt.js" charset="UTF-8"></script>
