@@ -1,0 +1,39 @@
+<script>
+
+    $("#home").click(function () {
+        OesUtil.ajaxPage("#home", "/student/home");
+    });
+
+    $("#exam").click(function () {
+        OesUtil.ajaxPage("#exam", "/student/exam");
+    });
+
+    $("#announce").click(function () {
+        OesUtil.ajaxPage("#announce", "/student/announce");
+    });
+
+    $("#update").click(function () {
+        OesUtil.ajaxPage("#update", "/student/update/password");
+    });
+
+    $("#help").click(function () {
+        OesUtil.ajaxPage("#help", "/student/help");
+    });
+
+    $(".score").click(function () {
+        OesUtil.ajaxPage(".score", "/student/score");
+    });
+
+    $(".chart").click(function () {
+        OesUtil.ajaxPage(".chart", "/student/score/chart");
+    });
+
+    $(window).on("popstate", function () {
+        let state = history.state;
+        if (!state || !state.selector) { // 如果不存在state,则说明是第一次进入该页,就没有必要进行前进或后退操作
+            return;
+        }
+        $(state.selector).html(state.content);
+        history.replaceState(state, null, state.url);
+    });
+</script>

@@ -11,8 +11,13 @@
     <% include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <% layout("../../student/include/sider.html",{name:"announce"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax announceTable: {
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -28,7 +33,6 @@
                 </div>
             </div>
         </section>
-
         <!-- table 部分 -->
         <section class="content">
             <div class="container-fluid">
@@ -50,23 +54,21 @@
                 </div><!-- /.row -->
             </div>
         </section>
+        <!-- 模态框 -->
+        <%include("view-modal.html"){}%>
+        <!-- 接口 -->
+        <%include("api.html"){}%>
+        <%}%>
     </div>
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
     <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- 模态框 -->
-<%include("view-modal.html"){}%>
 </body>
-<!-- 自定义封装 -->
-<script src="/static/js/OesUtil.js"></script>
-<!-- 接口 -->
-<%include("api.html"){}%>
 </html>
 
 

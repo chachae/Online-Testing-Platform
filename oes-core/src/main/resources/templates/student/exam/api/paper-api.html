@@ -22,7 +22,7 @@
     }
 
     // 初始化表单
-    const columns = [{
+    OesUtil.initNormalTable('#paperInfo', "/api/paper/list", "get", [{
         title: '考试',
         field: 'paperName',
         sortable: false
@@ -39,9 +39,7 @@
         title: '操作',
         events: handle,//事件
         formatter: operateFormatter//html
-    }];
-
-    OesUtil.initNormalTable('#paperInfo', "/api/paper/list", "get", columns);
+    }]);
 
 
 </script>

@@ -1,368 +1,330 @@
-<!DOCTYPE html>
-<html lang="zh_CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 试卷详情</title>
-    <!-- 全局 css -->
-    <%include("../../include/css.html"){}%>
-    <style>
-        th {
-            font-size: 18px;
-        }
-
-        td {
-            font-size: 17px;
-        }
-    </style>
-</head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-<div class="wrapper">
-    <!-- 顶部导航栏部分 -->
-    <%include("../../student/include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <%layout("../../student/include/sider.html",{name:"myScore-score-detail"}){}%>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>试卷信息</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">
-                                <a class="btn btn-success" href="javascript:history.go(-1)">返回列表</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>试卷信息</h1>
             </div>
-        </section>
-
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Main content -->
-                        <div class="invoice p-3 mb-3">
-                            <!-- title row -->
-                            <div class="invoice-title">
-                                <div class="col-12">
-                                    <h4>试卷信息</h4>
-                                </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- info row -->
-                            <div class="col-12 table-responsive">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>试卷名称：${paper.paperName}
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>开始时间：${paper.beginTime}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>结束时间：${paper.endTime}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>试卷总分：${paper.score} 分</td>
-                                    </tr>
-                                    <tr>
-                                        <td>我的成绩：${score.score} 分</td>
-                                    </tr>
-                                    <tr>
-                                        <td>我的错题：${score.wrongIds}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>试卷状态：
-                                            <%if(paper.end){%>
-                                            已结束
-                                            <%}else if(paper.start){%>
-                                            考试中
-                                            <%}else{%>
-                                            未开始
-                                            <%}%>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>试卷类型：${paper.paperType}考试</td>
-                                    </tr>
-                                    <tr>
-                                        <td>考试课程：《 ${course.courseName} 》</td>
-                                    </tr>
-                                    <tr>
-                                        <td>考试专业：${major.major}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <button class="btn btn-success" onclick="history.go(-1);location.replace(document.referrer);">返回列表</button>
+                    </li>
+                </ol>
             </div>
-        </section>
-
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="invoice p-3 mb-3">
-                            <!--单选题-->
-                            <%if(isNotEmpty(qChoiceList)){%>
-                            <!-- title row -->
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>单项选择题</h4>
-                                    </div>
-                                </div>
-                                <hr>
-                                <dl>
-                                    <%for(choice in qChoiceList){%>
-                                    <% if( array.contain(wrongList,trim(choice.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${choiceLP.index}. 【错题】${choice.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        A. <span>${choice.optionA} </span>
-                                    </dd>
-                                    <dd>
-                                        B. <span>${choice.optionB} </span>
-                                    </dd>
-                                    <dd>
-                                        C. <span>${choice.optionC} </span>
-                                    </dd>
-                                    <dd>
-                                        D. <span>${choice.optionD} </span>
-                                    </dd>
-                                    <dd>
-                                        <div><strong style="color: limegreen">正确答案：${choice.answer}</strong></div>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${choice.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <br>
-                            <%}%>
-
-                            <!-- 多选题 -->
-                            <%if(isNotEmpty(qMulChoiceList)){%>
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>多项选择题</h4>
-                                        <hr>
-                                    </div>
-                                </div>
-                                <dl>
-                                    <%for(qMulChoice in qMulChoiceList){%>
-                                    <% if( array.contain(wrongList,trim(qMulChoice.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${qMulChoiceLP.index}.
-                                        【错题】${qMulChoice.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        A. <span>${qMulChoice.optionA} </span>
-                                    </dd>
-                                    <dd>
-                                        B. <span>${qMulChoice.optionB}</span>
-                                    </dd>
-                                    <dd>
-                                        C. <span>${qMulChoice.optionC}</span>
-                                    </dd>
-                                    <dd>
-                                        D. <span>${qMulChoice.optionD}</span>
-                                    </dd>
-                                    <dd>
-                                        <div><strong style="color: limegreen">正确答案：${qMulChoice.answer}</strong></div>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${qMulChoice.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <br>
-                            <%}%>
-
-                            <!--判断题-->
-                            <%if(isNotEmpty(qTofList)){%>
-                            <!-- title row -->
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>判断题</h4>
-                                        <hr>
-                                    </div>
-                                </div>
-                                <dl>
-                                    <%for(question in qTofList){%>
-                                    <% if( array.contain(wrongList,trim(question.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${questionLP.index}.
-                                        【错题】${question.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        <input type="radio" name="${question.id}" required value="对">
-                                        A. 对<span></span>
-                                    </dd>
-                                    <dd>
-                                        <input type="radio" name="${question.id}" required value="错">
-                                        B. 错<span></span>
-                                    </dd>
-                                    <dd>
-                                        <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <br>
-                            <%}%>
-
-                            <!--填空题-->
-                            <%if(isNotEmpty(qFillList)){%>
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>填空题</h4>
-                                        <hr>
-                                    </div>
-                                </div>
-                                <dl>
-                                    <%for(question in qFillList){%>
-                                    <% if( array.contain(wrongList,trim(question.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${questionLP.index}.
-                                        【错题】${question.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <br>
-                            <%}%>
-
-                            <!--简答题-->
-                            <%if(isNotEmpty(qSaqList)){%>
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>简答题</h4>
-                                        <hr>
-                                    </div>
-                                </div>
-                                <dl>
-                                    <%for(question in qSaqList){%>
-                                    <% if( array.contain(wrongList,trim(question.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${questionLP.index}.
-                                        【错题】${question.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        <label><strong style="color: limegreen">正确答案：</strong></label>
-                                        <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <br>
-                            <%}%>
-
-                            <!--编程题-->
-                            <%if(isNotEmpty(qProgramList)){%>
-                            <div class="col-12 table-responsive">
-                                <div class="invoice-title">
-                                    <div class="invoice-col">
-                                        <h4>简答题</h4>
-                                        <hr>
-                                    </div>
-                                </div>
-                                <dl>
-                                    <%for(question in qProgramList){%>
-                                    <% if( array.contain(wrongList,trim(question.id)) ){ %>
-                                    <dt style="font-size: 17px;color: red">${questionLP.index}.
-                                        【错题】${question.questionName}
-                                    </dt>
-                                    <% }else{ %>
-                                    <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                                    <% } %>
-                                    <dd></dd>
-                                    <dd>
-                                        <label><strong style="color: limegreen">正确答案：</strong></label>
-                                        <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
-                                    </dd>
-                                    <dd>
-                                        <label>解析：</label>
-                                        <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
-                                    </dd>
-                                    <hr>
-                                    <%}%>
-                                </dl>
-                            </div>
-                            <%}%>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                </div><!-- /.row -->
-            </div>
-        </section>
+        </div>
     </div>
-    <!-- 引入footer -->
-    <%include("../../include/footer.html"){}%>
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-</div>
-<!-- 引入全局 js 脚本文件 -->
-<%include("../../include/js.html"){}%>
-</body>
-</html>
+</section>
+
+<!-- table 部分 -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- Main content -->
+                <div class="invoice p-3 mb-3">
+                    <!-- title row -->
+                    <div class="invoice-title">
+                        <div class="col-12">
+                            <h4>试卷信息</h4>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- info row -->
+                    <div class="col-12 table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>试卷名称：${paper.paperName}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>开始时间：${paper.beginTime}</td>
+                            </tr>
+                            <tr>
+                                <td>结束时间：${paper.endTime}</td>
+                            </tr>
+                            <tr>
+                                <td>试卷总分：${paper.score} 分</td>
+                            </tr>
+                            <tr>
+                                <td>我的成绩：${score.score} 分</td>
+                            </tr>
+                            <tr>
+                                <td>我的错题：${score.wrongIds}</td>
+                            </tr>
+                            <tr>
+                                <td>试卷状态：
+                                    <%if(paper.end){%>
+                                    已结束
+                                    <%}else if(paper.start){%>
+                                    考试中
+                                    <%}else{%>
+                                    未开始
+                                    <%}%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>试卷类型：${paper.paperType}考试</td>
+                            </tr>
+                            <tr>
+                                <td>考试课程：《 ${course.courseName} 》</td>
+                            </tr>
+                            <tr>
+                                <td>考试专业：${major.major}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- table 部分 -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="invoice p-3 mb-3">
+                    <!--单选题-->
+                    <%if(isNotEmpty(qChoiceList)){%>
+                    <!-- title row -->
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>单项选择题</h4>
+                            </div>
+                        </div>
+                        <hr>
+                        <dl>
+                            <%for(choice in qChoiceList){%>
+                            <% if( array.contain(wrongList,trim(choice.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${choiceLP.index}. 【错题】${choice.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                A. <span>${choice.optionA} </span>
+                            </dd>
+                            <dd>
+                                B. <span>${choice.optionB} </span>
+                            </dd>
+                            <dd>
+                                C. <span>${choice.optionC} </span>
+                            </dd>
+                            <dd>
+                                D. <span>${choice.optionD} </span>
+                            </dd>
+                            <dd>
+                                <div><strong style="color: limegreen">正确答案：${choice.answer}</strong></div>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${choice.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <br>
+                    <%}%>
+
+                    <!-- 多选题 -->
+                    <%if(isNotEmpty(qMulChoiceList)){%>
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>多项选择题</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <dl>
+                            <%for(qMulChoice in qMulChoiceList){%>
+                            <% if( array.contain(wrongList,trim(qMulChoice.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${qMulChoiceLP.index}.
+                                【错题】${qMulChoice.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                A. <span>${qMulChoice.optionA} </span>
+                            </dd>
+                            <dd>
+                                B. <span>${qMulChoice.optionB}</span>
+                            </dd>
+                            <dd>
+                                C. <span>${qMulChoice.optionC}</span>
+                            </dd>
+                            <dd>
+                                D. <span>${qMulChoice.optionD}</span>
+                            </dd>
+                            <dd>
+                                <div><strong style="color: limegreen">正确答案：${qMulChoice.answer}</strong></div>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${qMulChoice.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <br>
+                    <%}%>
+
+                    <!--判断题-->
+                    <%if(isNotEmpty(qTofList)){%>
+                    <!-- title row -->
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>判断题</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <dl>
+                            <%for(question in qTofList){%>
+                            <% if( array.contain(wrongList,trim(question.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${questionLP.index}.
+                                【错题】${question.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                <input type="radio" name="${question.id}" required value="对">
+                                A. 对<span></span>
+                            </dd>
+                            <dd>
+                                <input type="radio" name="${question.id}" required value="错">
+                                B. 错<span></span>
+                            </dd>
+                            <dd>
+                                <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <br>
+                    <%}%>
+
+                    <!--填空题-->
+                    <%if(isNotEmpty(qFillList)){%>
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>填空题</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <dl>
+                            <%for(question in qFillList){%>
+                            <% if( array.contain(wrongList,trim(question.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${questionLP.index}.
+                                【错题】${question.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <br>
+                    <%}%>
+
+                    <!--简答题-->
+                    <%if(isNotEmpty(qSaqList)){%>
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>简答题</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <dl>
+                            <%for(question in qSaqList){%>
+                            <% if( array.contain(wrongList,trim(question.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${questionLP.index}.
+                                【错题】${question.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                <label><strong style="color: limegreen">正确答案：</strong></label>
+                                <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <br>
+                    <%}%>
+
+                    <!--编程题-->
+                    <%if(isNotEmpty(qProgramList)){%>
+                    <div class="col-12 table-responsive">
+                        <div class="invoice-title">
+                            <div class="invoice-col">
+                                <h4>简答题</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <dl>
+                            <%for(question in qProgramList){%>
+                            <% if( array.contain(wrongList,trim(question.id)) ){ %>
+                            <dt style="font-size: 17px;color: red">${questionLP.index}.
+                                【错题】${question.questionName}
+                            </dt>
+                            <% }else{ %>
+                            <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
+                            <% } %>
+                            <dd></dd>
+                            <dd>
+                                <label><strong style="color: limegreen">正确答案：</strong></label>
+                                <textarea rows="4" class="form-control" disabled>${question.answer}</textarea>
+                            </dd>
+                            <dd>
+                                <label>解析：</label>
+                                <textarea rows="3" class="form-control" disabled>${question.remark}</textarea>
+                            </dd>
+                            <hr>
+                            <%}%>
+                        </dl>
+                    </div>
+                    <%}%>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div><!-- /.row -->
+    </div>
+</section>
 

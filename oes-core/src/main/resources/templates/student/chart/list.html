@@ -11,18 +11,18 @@
     <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <%layout("../../student/include/sider.html",{name:"myScore-chart-list"}){}%>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <div class="content-wrapper">
+        <%
+        #ajax chartTable: {
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>成绩分析</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/student/score/chart">成绩分析</a></li>
-                        </ol>
                     </div>
                 </div>
             </div>
@@ -62,18 +62,17 @@
                 </div><!-- /.row -->
             </div>
         </section>
+        <%include("api.html"){}%>
+        <%}%>
     </div>
-    <!-- 引入footer -->
-    <%include("../../include/footer.html"){}%>
-    <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
+    <!-- 引入footer -->
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-</div>
-<!-- 引入全局 js 脚本文件 -->
-<%include("../../include/js.html"){}%>
-<script src="/static/plugins/echarts/echarts.min.js"></script>
-<%include("api.html"){}%>
 </body>
 </html>
+

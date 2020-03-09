@@ -9,13 +9,16 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 顶部导航栏部分 -->
     <%include("../../student/include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%layout("../../student/include/sider.html",{name:"update-pass"}){}%>
-
-    <!-- Content Wrapper. Contains page content -->
+    <% layout("../include/sider.html",{name:"update-pass"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
+    <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax updatePassTable: {
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -104,16 +107,17 @@
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
         </section>
-        <!-- /.content -->
+        <!-- 接口 -->
+        <% include("update-pass-api.html"){} %>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <%include("../../include/footer.html"){}%>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<%include("../../include/js.html"){}%>
-<!-- 校验 -->
-<script src="/webjars/AdminLTE/3.0.0/plugins/jquery-validation/jquery.validate.min.js"></script>
-<!-- 接口 -->】
-<% include("update-pass-api.html"){} %>
 </body>
 </html>

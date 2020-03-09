@@ -16,7 +16,7 @@
                      alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">${session.student.name}</a>
+                <a href="/student/index" class="d-block">${session.student.name}</a>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- 首页 -->
                 <li class="nav-item">
-                    <a href="/student/home" class="nav-link ${name == 'home'?'active':''}">
+                    <a href="javascript:;" id="home" class="nav-link">
                         <i class="nav-icon fas fa-globe"></i>
                         <p>学生首页</p>
                     </a>
@@ -33,7 +33,7 @@
 
                 <!-- 系统公告 -->
                 <li class="nav-item">
-                    <a href="/student/announce" class="nav-link  ${name == 'announce'?'active':''}">
+                    <a href="javascript:;" id="announce" class="nav-link">
                         <i class="nav-icon fas fa-paper-plane"></i>
                         <p>系统公告</p>
                     </a>
@@ -41,15 +41,15 @@
 
                 <!-- 我的考试 -->
                 <li class="nav-item">
-                    <a href="/student/exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
+                    <a href="javascript:;" id="exam" class="nav-link">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p>我的考试</p>
                     </a>
                 </li>
 
                 <!-- 成绩分析 -->
-                <li class="nav-item has-treeview ${strutil.contain(name,'myScore')?'menu-open':''}">
-                    <a href="#" class="nav-link ${strutil.contain(name,'myScore')?'active':''}">
+                <li id="analyze" class="nav-item has-treeview">
+                    <a href="javascript:;" class="nav-link">
                         <i class="nav-icon fas fa-bookmark"></i>
                         <p>
                             我的成绩
@@ -58,7 +58,7 @@
                     </a>
                     <ul class="nav nav-treeview ">
                         <li class="nav-item">
-                            <a href="/student/score" class="nav-link  ${strutil.contain(name,'score')?'active':''}">
+                            <a href="javascript:;" class="nav-link  score">
                                 <i class="nav-icon fas fa-list-ol"></i>
                                 <p>成绩列表</p>
                             </a>
@@ -66,7 +66,7 @@
                     </ul>
                     <ul class="nav nav-treeview ">
                         <li class="nav-item">
-                            <a href="/student/score/chart" class="nav-link  ${strutil.contain(name,'chart')?'active':''}">
+                            <a href="javascript:;" class="nav-link chart">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>成绩分析</p>
                             </a>
@@ -76,7 +76,7 @@
 
                 <!-- 帮助中心 -->
                 <li class="nav-item">
-                    <a href="/student/help" class="nav-link  ${name == 'help'?'active':''}">
+                    <a href="javascript:;" id="help" class="nav-link">
                         <i class="nav-icon fas fa-user-alt"></i>
                         <p>帮助中心</p>
                     </a>

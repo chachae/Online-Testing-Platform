@@ -4,7 +4,7 @@
     //表格操作
     window.handle = {
         "click .scoreDetail": function (e, value, row, index) {
-            window.location.href = "/student/score/detail/" + row.id;
+            OesUtil.ajaxPage(null,"/student/score/detail/" + row.id)
         },
     };
 
@@ -15,7 +15,7 @@
     }
 
     // 初始化表单
-    const columns = [{
+    OesUtil.initNormalTable('#scoreInfo', "/api/score/list", "get", [{
         title: '考试',
         field: 'paperName',
         sortable: false
@@ -32,8 +32,6 @@
         title: '操作',
         events: handle,//事件
         formatter: operateFormatter//html
-    }];
-
-    OesUtil.initNormalTable('#scoreInfo', "/api/score/list", "get", columns);
+    }]);
 
 </script>
