@@ -81,7 +81,7 @@ public class AdminController {
    */
   @PostMapping("/update/pass")
   @Permissions("admin:update:password")
-  public R updatePass(ChangePassDto dto) {
+  public R updatePass(@Valid ChangePassDto dto) {
     // 调用密码修改接口
     this.adminService.updatePassword(dto);
     // 获取 session 对象后，移除 session 信息

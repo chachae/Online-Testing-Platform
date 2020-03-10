@@ -2,11 +2,10 @@ package com.chachae.exam.controller;
 
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.ServletUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -37,9 +36,8 @@ public class AdminModuleController {
    */
   @GetMapping("/home")
   public String home() {
-    return "/admin/self/home";
+    return ServletUtil.isAjax() ? "/admin/self/home#homeTable" : "/admin/self/home";
   }
-
 
   /**
    * 修改密码
@@ -48,7 +46,7 @@ public class AdminModuleController {
    */
   @GetMapping("/update/pass")
   public String toChangPass() {
-    return "/admin/self/update-pass";
+    return ServletUtil.isAjax() ? "/admin/self/update-pass#updateTable" : "/admin/self/update-pass";
   }
 
   /**
@@ -58,7 +56,7 @@ public class AdminModuleController {
    */
   @GetMapping("/announce")
   public String announceList() {
-    return "/admin/announce/list#announceTable";
+    return ServletUtil.isAjax() ? "/admin/announce/list#announceTable" : "/admin/announce/list";
   }
 
   /**
@@ -68,7 +66,7 @@ public class AdminModuleController {
    */
   @GetMapping("/teacher")
   public String list() {
-    return "/admin/teacher/list";
+    return ServletUtil.isAjax() ? "/admin/teacher/list#teacherTable" : "/admin/teacher/list";
   }
 
   /**
@@ -77,8 +75,18 @@ public class AdminModuleController {
    * @return 学院管理页面
    */
   @GetMapping("/academy")
-  public String list(ModelAndView mv) {
-    return "/admin/academy/list";
+  public String listAcademy() {
+    return ServletUtil.isAjax() ? "/admin/academy/list#academyTable" : "/admin/academy/list";
+  }
+
+  /**
+   * 获取管理员分页信息
+   *
+   * @return 分页结果集
+   */
+  @GetMapping
+  public String listAdmin() {
+    return ServletUtil.isAjax() ? "/admin/admin/list#adminTable" : "/admin/admin/list";
   }
 
   /**
@@ -94,15 +102,5 @@ public class AdminModuleController {
     session.removeAttribute(SysConsts.Session.ADMIN);
     session.removeAttribute(SysConsts.Session.ROLE_ID);
     return "redirect:/";
-  }
-
-  /**
-   * 获取管理员分页信息
-   *
-   * @return 分页结果集
-   */
-  @GetMapping
-  public String listAdmin() {
-    return "/admin/admin/list";
   }
 }

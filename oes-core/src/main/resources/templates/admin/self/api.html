@@ -1,3 +1,3 @@
 <script>
-    function updatePass(){OesUtil.confirm("确定修改密码吗?",function(){let data=$("#update-pass-form").serialize();$.post("/api/admin/update/pass",data,function(data){if(data.state==="success"){window.location.href="/admin/login"}else{toastr.error(data.message);}})})}
+    function updatePass(){OesUtil.confirm("确定修改密码吗?",function(){let data=$("#update-form").serialize();$.post("/api/admin/update/pass",data,function(data){if(data.state==="success"){window.location.href="/"}else{toastr.error(data.message);}})})}
 </script>

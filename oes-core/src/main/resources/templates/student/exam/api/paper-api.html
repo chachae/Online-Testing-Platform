@@ -1,4 +1,5 @@
 <script>
+
     //表格操作
     window.handle = {
         "click .goPaper": function (e, value, row, index) {
@@ -6,10 +7,39 @@
         },
     };
 
-    function operateFormatter(value,row,index){let btn='';if(row.end){btn='<button class="btn btn-sm btn-danger disabled">考试结束</button>'}else if(row.start){btn='<button class="btn btn-sm btn-success goPaper">进入考试</button>'}else{btn='<button class="btn btn-sm btn-warning disabled">等待考试</button>'}return[btn].join('');}
+    function operateFormatter(value, row, index) {
+        let btn = '';
+        if (row.end) {
+            btn = '<button class="btn btn-sm btn-danger disabled">考试结束</button>'
+        } else if (row.start) {
+            btn = '<button class="btn btn-sm btn-success goPaper">进入考试</button>'
+        } else {
+            btn = '<button class="btn btn-sm btn-warning disabled">等待考试</button>'
+        }
+        return [
+            btn
+        ].join('');
+    }
 
     // 初始化表单
-    OesUtil.initNormalTable('#paperInfo',"/api/paper/list","get",[{title:'考试',field:'paperName',sortable:false},{title:'开始时间',field:'beginTime',sortable:false},{title:'结束时间',field:'endTime',sortable:false},{field:'operate',title:'操作',events:handle,formatter:operateFormatter}]);
+    OesUtil.initNormalTable('#paperInfo', "/api/paper/list", "get", [{
+        title: '考试',
+        field: 'paperName',
+        sortable: false
+    }, {
+        title: '开始时间',
+        field: 'beginTime',
+        sortable: false
+    }, {
+        title: '结束时间',
+        field: 'endTime',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        events: handle,//事件
+        formatter: operateFormatter//html
+    }]);
 
 
 </script>

@@ -1,43 +1,75 @@
-<!-- Content Header (Page header) -->
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>学院管理</h1>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">学院信息</h3>
-                        <div class="card-tools">
-                            <div class="input-group input-group-sm">
-                                <button class="btn btn-primary btn-sm" onclick="goSave()">新增学院</button>
-                            </div>
-                        </div>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 管理员端</title>
+    <% include("../../include/css.html"){}%>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+    <% include("../../admin/include/header.html"){} %>
+    <!-- 左侧菜单栏 -->
+    <% layout("../../admin/include/sider.html",{name:"academy"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
+    <!-- 右侧内容部分 -->
+    <div class="content-wrapper">
+        <%
+        #ajax academyTable: {
+        %>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>学院管理</h1>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive">
-                        <!-- bootstrap table 渲染 -->
-                        <table id="academyInfo" class="table table-bordered table-striped text-nowrap"></table>
-                    </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
-            <!-- /.card -->
-        </div>
-    </div><!-- /.row -->
-</section>
-<!-- 增加模态框 -->
-<%include("save-modal.html"){} %>
-<!-- 修改学生信息模态框 -->
-<%include("update-modal.html"){} %>
-<!-- 接口 -->
-<% include("api.html"){} %>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">学院信息</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-primary btn-sm" onclick="goSave()">新增学院</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive">
+                                <!-- bootstrap table 渲染 -->
+                                <table id="academyInfo" class="table table-bordered table-striped text-nowrap"></table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div><!-- /.row -->
+        </section>
+        <!-- 增加模态框 -->
+        <%include("save-modal.html"){} %>
+        <!-- 修改学生信息模态框 -->
+        <%include("update-modal.html"){} %>
+        <!-- 接口 -->
+        <% include("api.html"){} %>
+        <%}%>
+    </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- 引入footer -->
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
+</div>
+</body>
+</html>
 
