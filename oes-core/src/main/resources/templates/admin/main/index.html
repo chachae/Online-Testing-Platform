@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 学生端</title>
+    <title>OES | 管理员端</title>
     <!-- 引入全局 css 文件 -->
     <%include("../../include/css.html"){}%>
 </head>
@@ -12,9 +12,9 @@
     <!-- 引入头部 -->
     <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"index"}){} %>
+    <% layout("../include/sider.html"){} %>
     <div class="content-wrapper">
-
+        <!-- 异步加载区域 -->
     </div>
     <!-- footer -->
     <% layout("../../include/footer.html"){} %>
@@ -22,8 +22,20 @@
 </body>
 <!-- 公共 js 脚本 -->
 <% include("../../include/js.html"){} %>
-<%include("api.html"){}%>
 <script>
-    OesUtil.ajaxPage("home", "/student/home")
+
+    $(function () {
+        $.get("/admin/home", function (data) {
+            $(".content-wrapper").empty().html(data);
+        })
+    });
+
+    OesUtil.ajaxPage("#home", "/admin/home");
+    OesUtil.ajaxPage("#admin", "/admin");
+    OesUtil.ajaxPage("#teacher", "/admin/teacher");
+    OesUtil.ajaxPage("#announce", "/admin/announce");
+    OesUtil.ajaxPage("#academy", "/admin/academy");
+    OesUtil.ajaxPage("#update", "/admin/update/pass");
 </script>
+
 </html>

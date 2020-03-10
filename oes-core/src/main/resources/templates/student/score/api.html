@@ -4,7 +4,7 @@
     //表格操作
     window.handle = {
         "click .scoreDetail": function (e, value, row, index) {
-            OesUtil.ajaxPage(null,"/student/score/detail/" + row.id)
+            OesUtil.ajaxPage(".score","/student/score/detail/" + row.id)
         },
     };
 

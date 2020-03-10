@@ -1,81 +1,51 @@
-<!DOCTYPE html>
-<html lang="zh_CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 公告列表</title>
-    <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
-</head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-
-<div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:'announce'}){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>公告管理</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/admin/announce">系统公告</a></li>
-                        </ol>
-                    </div>
-                </div>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>公告管理</h1>
             </div>
-        </section>
-
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">公告信息</h3>
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm">
-                                        <button class="btn btn-primary btn-sm" onclick="goSave()"><i
-                                                class="fa fa-dustbin"></i> 发布公告
-                                        </button>&nbsp;
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive">
-                                <!-- bootstrap table 渲染 -->
-                                <table id="announceInfo" class="table table-bordered table-striped text-nowrap"></table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div><!-- /.row -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/admin/announce">系统公告</a></li>
+                </ol>
             </div>
-        </section>
+        </div>
     </div>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
-</div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">公告信息</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm">
+                                <button class="btn btn-primary btn-sm" onclick="goSave()"><i
+                                        class="fa fa-dustbin"></i>发布公告
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive">
+                        <!-- bootstrap table 渲染 -->
+                        <table id="announceInfo" class="table table-bordered table-striped text-nowrap"></table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div><!-- /.row -->
+    </div>
+</section>
 <!-- 增加模态框 -->
 <%include("save-modal.html"){} %>
 <!-- 修改模态框 -->
 <%include("update-modal.html"){} %>
 <!-- 查看模态框 -->
 <%include("view-modal.html"){} %>
-<!-- 公共脚本 -->
-<% include("../../include/js.html"){} %>
-<!-- 自定義工具 -->
-<script src="/static/js/OesUtil.js"></script>
 <!-- 接口 -->
-<% include("api.html"){} %>
-</body>
-</html>
-
-
+<% layout("api.html"){} %>

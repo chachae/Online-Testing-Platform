@@ -25,7 +25,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- 首页 -->
                 <li class="nav-item">
-                    <a href="javascript:;" id="home" class="nav-link">
+                    <a href="javascript:;" id="home" class="nav-link ${name == 'home'?'active':''}">
                         <i class="nav-icon fas fa-globe"></i>
                         <p>学生首页</p>
                     </a>
@@ -33,7 +33,7 @@
 
                 <!-- 系统公告 -->
                 <li class="nav-item">
-                    <a href="javascript:;" id="announce" class="nav-link">
+                    <a href="javascript:;" id="announce" class="nav-link ${name == 'announce'?'active':''}">
                         <i class="nav-icon fas fa-paper-plane"></i>
                         <p>系统公告</p>
                     </a>
@@ -41,14 +41,14 @@
 
                 <!-- 我的考试 -->
                 <li class="nav-item">
-                    <a href="javascript:;" id="exam" class="nav-link">
+                    <a href="javascript:;" id="exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p>我的考试</p>
                     </a>
                 </li>
 
                 <!-- 成绩分析 -->
-                <li id="analyze" class="nav-item has-treeview">
+                <li id="analyze" class="nav-item has-treeview ${strutil.contain(name,'myScore')?'menu-open':''}">
                     <a href="javascript:;" class="nav-link">
                         <i class="nav-icon fas fa-bookmark"></i>
                         <p>
@@ -58,7 +58,7 @@
                     </a>
                     <ul class="nav nav-treeview ">
                         <li class="nav-item">
-                            <a href="javascript:;" class="nav-link  score">
+                            <a href="javascript:;" class="nav-link score ${strutil.contain(name,'score')?'active':''}">
                                 <i class="nav-icon fas fa-list-ol"></i>
                                 <p>成绩列表</p>
                             </a>
@@ -66,7 +66,7 @@
                     </ul>
                     <ul class="nav nav-treeview ">
                         <li class="nav-item">
-                            <a href="javascript:;" class="nav-link chart">
+                            <a href="javascript:;" class="nav-link chart  ${strutil.contain(name,'chart')?'active':''}">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>成绩分析</p>
                             </a>
@@ -76,7 +76,7 @@
 
                 <!-- 帮助中心 -->
                 <li class="nav-item">
-                    <a href="javascript:;" id="help" class="nav-link">
+                    <a href="javascript:;" id="help" class="nav-link  ${name == 'help'?'active':''}">
                         <i class="nav-icon fas fa-user-alt"></i>
                         <p>帮助中心</p>
                     </a>

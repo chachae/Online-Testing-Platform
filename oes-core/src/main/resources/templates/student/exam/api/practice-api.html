@@ -3,7 +3,7 @@
     //表格操作
     window.handle = {
         "click .goPaper": function (e, value, row, index) {
-            window.location.href = "/student/paper/" + row.id
+            OesUtil.ajaxPage("#exam","/student/paper/" + row.id);
         },
     };
 

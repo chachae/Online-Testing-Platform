@@ -6,8 +6,6 @@
     <title>OES | 试卷详情</title>
     <!-- 引入全局 css 文件 -->
     <%include("../../include/css.html"){} %>
-    <!-- iCheck -->
-    <link rel="stylesheet" href="/static/plugins/iCheck/square/blue.css"/>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -15,7 +13,12 @@
     <%include("../include/header.html"){}%>
     <!-- 左侧菜单栏 -->
     <%layout("../../student/include/sider.html",{name:"exam-detail"}){}%>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <div class="content-wrapper">
+        <%
+        #ajax examDetailTable: {
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -228,22 +231,17 @@
                 </div><!-- /.row -->
             </div>
         </section>
+        <%include("api/api.html"){}%>
+        <%}%>
     </div>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
-        <!-- 底部 -->
         <!-- Control sidebar content goes here -->
     </aside>
+    <!-- 引入footer -->
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- countdown -->
-<script src="/static/plugins/jquery-countdown/jquery.countdown.min.js"></script>
-<!-- iCheck -->
-<script src="/static/plugins/iCheck/icheck.min.js"></script>
-<%include("api/api.html"){}%>
 </body>
 </html>
 

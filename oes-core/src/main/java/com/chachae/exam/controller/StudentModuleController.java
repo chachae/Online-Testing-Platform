@@ -6,6 +6,7 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.ServletUtil;
 import com.chachae.exam.controller.common.QuestionModel;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.MajorService;
@@ -43,9 +44,19 @@ public class StudentModuleController {
    *
    * @return 学生主界面
    */
+  @GetMapping("/index")
+  public String index() {
+    return "/student/main/index";
+  }
+
+  /**
+   * 学生登录后来到home页
+   *
+   * @return 学生主界面
+   */
   @GetMapping("/home")
   public String home() {
-    return "/student/self/home";
+    return ServletUtil.isAjax() ? "/student/self/home#homeTable" : "/student/self/home";
   }
 
   /**
@@ -55,7 +66,9 @@ public class StudentModuleController {
    */
   @GetMapping("/update/password")
   public String changePass() {
-    return "/student/self/update-pass";
+    return ServletUtil.isAjax()
+        ? "/student/self/update-pass#updatePassTable"
+        : "/student/self/update-pass";
   }
 
   /**
@@ -65,7 +78,7 @@ public class StudentModuleController {
    */
   @GetMapping("/announce")
   public String announceSystem() {
-    return "/student/announce/list";
+    return ServletUtil.isAjax() ? "/student/announce/list#announceTable" : "/student/announce/list";
   }
 
   /**
@@ -75,7 +88,7 @@ public class StudentModuleController {
    */
   @GetMapping("/exam")
   public String exam() {
-    return "/student/exam/list";
+    return ServletUtil.isAjax() ? "/student/exam/list#examTable" : "/student/exam/list";
   }
 
   /**
@@ -85,7 +98,7 @@ public class StudentModuleController {
    */
   @GetMapping("/score")
   public String scoreList() {
-    return "/student/score/list";
+    return ServletUtil.isAjax() ? "/student/score/list#scoreTable" : "/student/score/list";
   }
 
   /**
@@ -95,7 +108,7 @@ public class StudentModuleController {
    */
   @GetMapping("/help")
   public String help() {
-    return "/student/self/help";
+    return ServletUtil.isAjax() ? "/student/self/help#helpTable" : "/student/self/help";
   }
 
   /**
@@ -105,7 +118,7 @@ public class StudentModuleController {
    */
   @GetMapping("/score/chart")
   public String studentChart() {
-    return "/student/chart/list";
+    return ServletUtil.isAjax() ? "/student/chart/list#chartTable" : "/student/chart/list";
   }
 
   /**
@@ -137,7 +150,11 @@ public class StudentModuleController {
     // 各类题型的 model 对象信息
     questionModel.setQuestionModel(mv, paperId, true);
     // 返回试卷
-    mv.setViewName("/student/exam/detail");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/student/exam/detail#examDetailTable");
+    } else {
+      mv.setViewName("/student/exam/detail");
+    }
     return mv;
   }
 
@@ -159,7 +176,7 @@ public class StudentModuleController {
       // 批改试卷
       this.paperService.markPaper(stuId, paperId, request);
     }
-    return "redirect:/student/home/" + stuId;
+    return "redirect:/student/index";
   }
 
   /**
@@ -190,7 +207,11 @@ public class StudentModuleController {
 
     // 改造后的错题id
     mv.addObject("wrongList", StrUtil.split(score.getWrongIds(), StrUtil.C_COMMA));
-    mv.setViewName("/student/score/detail");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/student/score/detail#scoreDetailTable");
+    } else {
+      mv.setViewName("/student/score/detail");
+    }
     return mv;
   }
 }

@@ -98,7 +98,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 
-
 # MyBatisPlus 配置
 mybatis-plus:
   # 全局配置
@@ -108,8 +107,8 @@ mybatis-plus:
   # 实体类别名
   type-aliases-package: com.chachae.exam.common.model
   configuration:
+    # 打开驼峰命名
     map-underscore-to-camel-case: on
-  # 打开驼峰命名
 
 # PageHelper 分页插件配置
 pagehelper:

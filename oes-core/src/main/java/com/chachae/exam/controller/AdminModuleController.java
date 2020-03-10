@@ -5,6 +5,7 @@ import com.chachae.exam.common.util.HttpContextUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -24,10 +25,21 @@ public class AdminModuleController {
    *
    * @return 管理员页面
    */
+  @GetMapping("/index")
+  public String index() {
+    return "/admin/main/index";
+  }
+
+  /**
+   * 管理员主界面
+   *
+   * @return 管理员页面
+   */
   @GetMapping("/home")
   public String home() {
     return "/admin/self/home";
   }
+
 
   /**
    * 修改密码
@@ -46,7 +58,7 @@ public class AdminModuleController {
    */
   @GetMapping("/announce")
   public String announceList() {
-    return "/admin/announce/list";
+    return "/admin/announce/list#announceTable";
   }
 
   /**
