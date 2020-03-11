@@ -3,37 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 题目列表</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
+    <%include("../../include/css.html"){} %>
 </head>
-<style>
-    .table > tbody > tr:hover {
-        cursor: pointer;
-    }
-
-    .table > tbody > tr > td {
-        vertical-align: middle;
-    }
-
-    td {
-        font-size: 14px;
-    }
-
-
-</style>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%include("../../teacher/include/header.html"){}%>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../../teacher/include/sider.html",{name:"question"}){} %>
-    <!-- 更新模态框 -->
-    <%include("update-modal.html"){} %>
-    <!-- 新增模态框 -->
-    <%include("save-modal.html"){} %>
+    <% layout("../include/sider.html",{name:"question"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax questionTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -60,105 +46,62 @@
                                 <h3 class="card-title">试题信息</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-default btn-sm" id="importBtn">
-                                            <i class="fa fa-plus-circle"></i>
-                                            导入试题
-                                        </button>
+                                        <button class="btn btn-default btn-sm" id="importBtn">导入试题</button>
                                         &nbsp;
-                                        <button class="goSave btn btn-default btn-sm"><i class="fa fa-plus-circle"></i>
-                                            新增试题
-                                        </button>
+                                        <button class="goSave btn btn-default btn-sm">新增试题</button>
+                                        &nbsp;
+                                        <button class="btn btn-default btn-sm" onclick="OesUtil.refreshTable('#questionInfo');">刷新数据</button>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- 条件查询框 -->
                             <div class="card-header">
                                 <div class="card-tools">
-                                    <div class="input-group">
-                                        <select class="typeSelect  form-control" name="typeId" id="findType"></select>&nbsp;
-                                        <select class="courseSelect  form-control" name="courseId" id="findCourse"></select>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="题目名称" id="findQuestionName" style="width: 250px">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <select class="typeSelect  form-control" name="typeId" id="findType"></select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <select class="courseSelect  form-control" name="courseId"
+                                                     id="findCourse"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-head-fixed text-nowrap table-bordered table-striped">
-                                    <tbody>
-                                    <tr>
-                                        <th style="width:55%">名称</th>
-                                        <th style="width: 10%">类型</th>
-                                        <th style="width: 35%">操作</th>
-                                    </tr>
-                                    <% if(isEmpty(page.list)){ %>
-                                    <tr>
-                                        <td colspan="3">题库中还未添加题目</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for( question in page.list ){ %>
-                                    <tr class="rowDetail" rel="${question.id}">
-                                        <td style="text-align: left">${question.questionName}</td>
-                                        <td style="width: 60px">
-                                            ${question.typeId == 1?"单选题":''}
-                                            ${question.typeId == 2?"多选题":''}
-                                            ${question.typeId == 3?"判断题":''}
-                                            ${question.typeId == 4?"填空题":''}
-                                            ${question.typeId == 5?"简答题":''}
-                                            ${question.typeId == 6?"编程题":''}
-                                        </td>
-                                        <td>
-                                            <button onclick="goView(${question.id})"
-                                                    class="btn btn-primary btn-sm">查看
-                                            </button>
-                                            <button onclick="goUpdate(${question.id})"
-                                                    class="btn btn-warning btn-sm">
-                                                编辑
-                                            </button>
-                                            <button onclick="deleteQuestion(${question.id})"
-                                                    class="btn btn-danger btn-sm">删除
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
+                            <div class="card-body">
+                                <table id="questionInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
-                            <div class="card-footer clearfix">
-                                <ul class="pagination m-0 float-right">
-                                    <%for(var i=1;i<=page.pages;i++){ %>
-                                    <% if(page.pageNum == i){ %>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="?p=${i}&courseId=${curCourseId}&typeId=${curTypeId}">${i}</a>
-                                    </li>
-                                    <%}else{%>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?p=${i}&courseId=${curCourseId}&typeId=${curTypeId}">${i}</a>
-                                    </li>
-                                    <%}%>
-                                    <% }%>
-                                </ul>
-                            </div>
-                            <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
                     </div>
                 </div><!-- /.row -->
             </div>
         </section>
+        <!-- 查看模态框 -->
+        <%include("view-modal.html"){} %>
+        <!-- 导入试题 -->
+        <%include("import-modal.html"){}%>
+        <!-- 更新试题 -->
+        <%include("update-modal.html"){}%>
+        <!-- 新增试题 -->
+        <%include("save-modal.html"){}%>
+        <!-- 接口 -->
+        <%include("api.html"){}%>
+        <%}%>
     </div>
-    <!-- 查看模态框 -->
-    <%include("view-modal.html"){} %>
-    <!-- 导入试题 -->
-    <%include("import-modal.html"){}%>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <%include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- 自定义封装 -->
-<script src="/static/js/OesUtil.js"></script>
-<!-- 接口 -->
-<%include("api.html"){}%>
 </body>
 </html>
-
-

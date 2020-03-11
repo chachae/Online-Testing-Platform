@@ -18,14 +18,14 @@
                  left join academy a on m.academy_id = a.id
     </sql>
 
-    <select id="listVo" parameterType="Major" resultMap="voResultMap">
+    <select id="pageVo" parameterType="Major" resultMap="voResultMap">
         <include refid="baseSql"/>
         <where>
-            <if test="academyId != null">
-                m.academy_id = #{academyId,jdbcType=INTEGER}
+            <if test="major.academyId != null">
+                m.academy_id = #{major.academyId,jdbcType=INTEGER}
             </if>
-            <if test="major != null and major != ''">
-                and m.major like concat('%',#{major,jdbcType=VARCHAR},'%')
+            <if test="major.major != null and major.major != ''">
+                and m.major like concat('%',#{major.major,jdbcType=VARCHAR},'%')
             </if>
         </where>
     </select>

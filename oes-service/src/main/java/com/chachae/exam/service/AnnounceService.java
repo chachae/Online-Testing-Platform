@@ -15,13 +15,6 @@ import java.util.Map;
 public interface AnnounceService extends IService<Announce> {
 
   /**
-   * 批量删除公告
-   *
-   * @param ids 公告ID集合
-   */
-  void delete(Integer[] ids);
-
-  /**
    * 分页查询公告
    *
    * @param page 当前页

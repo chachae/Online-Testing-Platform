@@ -36,15 +36,6 @@ public class AnnounceServiceImpl extends ServiceImpl<AnnounceDAO, Announce>
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
-  public void delete(Integer[] ids) {
-    // 遍历 ID 删除数据
-    for (Integer id : ids) {
-      this.announceDAO.deleteById(id);
-    }
-  }
-
-  @Override
   public Map<String, Object> pageForAnnounce(Page<Announce> page) {
     Page<Announce> info = this.announceDAO.selectPage(page, null);
     return PageUtil.toPage(info);

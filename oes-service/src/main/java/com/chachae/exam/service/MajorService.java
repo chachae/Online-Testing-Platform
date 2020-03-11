@@ -1,11 +1,11 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Major;
-import com.chachae.exam.common.model.vo.MajorVo;
-import com.github.pagehelper.PageInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -14,13 +14,13 @@ import java.util.List;
 public interface MajorService extends IService<Major> {
 
   /**
-   * 分页查询专业
+   * 分页查询专业信息
    *
-   * @param pageNo 当前页
-   * @param major 专业数据
-   * @return 专业分页结果集
+   * @param page 分页信息
+   * @param major 查询条件
+   * @return 分页信息结果集
    */
-  PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major);
+  Map<String, Object> listPage(Page<Major> page, Major major);
 
   /**
    * 通过学院 ID 获取专业集合

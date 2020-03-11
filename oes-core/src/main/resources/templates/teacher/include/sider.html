@@ -27,40 +27,40 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- 首页 -->
                 <li class="nav-item">
-                    <a href="/teacher/home/${session.teacher.id}" class="nav-link ${name == 'home'?'active':''}">
-                        <i class="nav-icon fas fa-vcard"></i>
+                    <a href="javascript:;" id="home" class="nav-link ${name == 'home'?'active':''}">
+                        <i class="nav-icon fas fa-globe"></i>
                         <p>首页</p>
                     </a>
                 </li>
 
                 <!-- 系统公告 -->
                 <li class="nav-item">
-                    <a href="/teacher/announce" class="nav-link  ${name == 'announce'?'active':''}">
-                        <i class="nav-icon fa fa-paper-plane"></i>
+                    <a href="javascript:;" id="announce" class="nav-link  ${name == 'announce'?'active':''}">
+                        <i class="nav-icon fas fa-paper-plane"></i>
                         <p>系统公告</p>
                     </a>
                 </li>
 
                 <!-- 课程管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/course" class="nav-link  ${name == 'course'?'active':''}">
-                        <i class="nav-icon fa fa-address-book-o"></i>
+                    <a href="javascript:;" id="course" class="nav-link  ${name == 'course'?'active':''}">
+                        <i class="nav-icon fas fa-cube"></i>
                         <p>课程管理</p>
                     </a>
                 </li>
 
                 <!-- 专业管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/major" class="nav-link  ${name == 'major'?'active':''}">
-                        <i class="nav-icon fa fa-imdb"></i>
+                    <a href="javascript:;" id="major" class="nav-link  ${name == 'major'?'active':''}">
+                        <i class="nav-icon fas fa-feather-alt"></i>
                         <p>专业管理</p>
                     </a>
                 </li>
 
                 <!-- 学生管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/student" class="nav-link  ${name == 'student'?'active':''}">
-                        <i class="nav-icon fa fa-users"></i>
+                    <a href="javascript:;" id="student" class="nav-link  ${name == 'student'?'active':''}">
+                        <i class="nav-icon fas fa-users"></i>
                         <p>学生管理</p>
                     </a>
                 </li>
@@ -68,7 +68,7 @@
                 <!-- 试题管理 -->
                 <li class="nav-item">
                     <a href="/teacher/question" class="nav-link  ${name == 'question'?'active':''}">
-                        <i class="nav-icon fa fa-question-circle"></i>
+                        <i class="nav-icon fas fa-question-circle"></i>
                         <p>试题管理</p>
                     </a>
                 </li>
@@ -76,7 +76,7 @@
                 <!-- 试卷管理 -->
                 <li class="nav-item">
                     <a href="/teacher/paper" class="nav-link  ${strutil.contain(name,'paper')?'active':''}">
-                        <i class="nav-icon fa fa-file"></i>
+                        <i class="nav-icon fas fa-file"></i>
                         <p>试卷管理</p>
                     </a>
                 </li>
@@ -84,7 +84,7 @@
                 <!-- 考试管理 -->
                 <li class="nav-item">
                     <a href="/teacher/exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
-                        <i class="nav-icon fa fa-clock-o"></i>
+                        <i class="nav-icon fas fa-clock-o"></i>
                         <p>考试管理</p>
                     </a>
                 </li>
@@ -92,7 +92,7 @@
                 <!-- 试卷复查 -->
                 <li class="nav-item">
                     <a href="/teacher/reviewPaper" class="nav-link ${strutil.contain(name,'review')?'active':''}">
-                        <i class="nav-icon fa fa-refresh"></i>
+                        <i class="nav-icon fas fa-refresh"></i>
                         <p>试卷复查</p>
                     </a>
                 </li>

@@ -2,6 +2,8 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.dao.StudentDAO;
@@ -10,20 +12,18 @@ import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.StudentQueryDto;
 import com.chachae.exam.common.model.vo.StudentVo;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import com.chachae.exam.service.StudentService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * 学生业务实现
@@ -87,13 +87,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   }
 
   @Override
-  public PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto) {
-    // 设置分页信息，默认每页显示8条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 10);
-    List<StudentVo> students = this.studentDAO.listVo(dto);
-    // 按照学院 id 从小到大排序
-    students.sort(Comparator.comparingInt(e -> e.getAcademy().getId()));
-    return new PageInfo<>(students);
+  public Map<String, Object> listPage(Page<Student> page, StudentQueryDto entity) {
+    IPage<StudentVo> pageInfo = this.studentDAO.pageVo(page, entity);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

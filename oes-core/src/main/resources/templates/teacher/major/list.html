@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 专业管理</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){}%>
+    <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -13,8 +13,13 @@
     <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
     <% layout("../include/sider.html",{name:"major"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax majorTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -38,70 +43,34 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">课程内容</h3>
+                                <h3 class="card-title">专业管理</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <button onclick="goSave()" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i>&nbsp;新增课程 </button>
+                                        <button onclick="goSave()" class="btn btn-default btn-sm">&nbsp;新增专业</button>&nbsp;
+                                        <button class="btn btn-default btn-sm" onclick="OesUtil.refreshTable('#majorInfo');">刷新数据</button>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- 条件查询框 -->
                             <div class="card-header">
                                 <div class="card-tools">
-                                    <div class="input-group">
-                                        <select class="form-control academySelect" name="findAcademy" id="findAcademy">
-                                            <!-- 填入数据 -->
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <select class="form-control academySelect"
+                                                    name="findAcademy" id="findAcademy"></select>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input id="findMajor" class="form-control "
+                                                   style="width: 200px" placeholder="专业名称">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-bordered table-striped dataTable table-head-fixed text-nowrap">
-                                    <tbody>
-                                    <tr>
-                                        <th style="width:17%">序号</th>
-                                        <th style="width: 33%">所属学院</th>
-                                        <th style="width: 30%">专业名称</th>
-                                        <th style="width: 20%">操作</th>
-                                    </tr>
-                                    <% if(isEmpty(page.list)){ %>
-                                    <tr>
-                                        <td colspan="6">没有专业</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for(major in page.list){ %>
-                                    <tr rel="${major.id}">
-                                        <td>${majorLP.index}</td>
-                                        <td hidden="hidden">${major.id}</td>
-                                        <td rel="${major.academy.id}">${major.academy.name}</td>
-                                        <td>${major.major}</td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm"
-                                                    onclick="goUpdate(${major.id})">编辑
-                                            </button>
-                                            <button class="btn btn-danger btn-sm delMajor"
-                                                    onclick="deleteMajor(${major.id})">删除
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="card-footer clearfix">
-                                <ul class="pagination m-0 float-right">
-                                    <%for(var i=1;i<=page.pages;i++){ %>
-                                    <% if(page.pageNum == i){ %>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="/teacher/major?p=${i}&academyId=${curAcademyId}">${i}</a>
-                                    </li>
-                                    <%}else{%>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/teacher/major?p=${i}&academyId=${curAcademyId}">${i}</a>
-                                    </li>
-                                    <%}%>
-                                    <% }%>
-                                </ul>
+                            <div class="card-body">
+                                <table id="majorInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -110,21 +79,21 @@
                 </div><!-- /.row -->
             </div>
         </section>
+        <!-- 接口 -->
+        <%include("api.html"){}%>
+        <!-- 新增课程模态框 -->
+        <% include("save-modal.html"){} %>
+        <!-- 更新模态框 -->
+        <% include("update-modal.html"){} %>
+        <%}%>
     </div>
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
     <!-- 引入footer -->
     <% include("../../include/footer.html"){}%>
-    <!-- 新增课程模态框 -->
-    <% include("save-modal.html"){} %>
-    <!-- 更新模态框 -->
-    <% include("update-modal.html"){} %>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
 </body>
-
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<script src="/static/js/OesUtil.js"></script>
-<% include("api.html"){} %>
 </html>

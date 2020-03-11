@@ -1,0 +1,39 @@
+<script>
+
+    $("#home").click(function () {
+        OesUtil.ajaxPage("#home", "/teacher/home");
+    });
+
+    $("#announce").click(function () {
+        OesUtil.ajaxPage("#announce", "/teacher/announce");
+    });
+
+    $("#course").click(function () {
+        OesUtil.ajaxPage("#course", "/teacher/course");
+    });
+
+    $("#major").click(function () {
+        OesUtil.ajaxPage("#major", "/teacher/major");
+    });
+
+    $("#student").click(function () {
+        OesUtil.ajaxPage("#student", "/teacher/student");
+    });
+
+    $("#help").click(function () {
+        OesUtil.ajaxPage("#help", "/admin/help");
+    });
+
+    $("#update").click(function () {
+        OesUtil.ajaxPage("#update", "/admin/update/pass");
+    });
+
+    $(window).on("popstate", function () {
+        let state = history.state;
+        if (state === null) {
+            return;
+        }
+        OesUtil.ajaxPage(state.active, state.url);
+        history.replaceState(state, null, state.url);
+    });
+</script>

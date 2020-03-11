@@ -1,11 +1,13 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.StudentQueryDto;
 import com.chachae.exam.common.model.vo.StudentVo;
-import com.github.pagehelper.PageInfo;
+
+import java.util.Map;
 
 /**
  * 学生业务接口
@@ -42,11 +44,11 @@ public interface StudentService extends IService<Student> {
   /**
    * 分页查询学生
    *
-   * @param pageNo 当前页
-   * @param dto 学生查询 bean
+   * @param page 分页信息
+   * @param entity 模糊条件
    * @return 学生分页结果集
    */
-  PageInfo<StudentVo> pageForStudentList(Integer pageNo, StudentQueryDto dto);
+  Map<String, Object> listPage(Page<Student> page, StudentQueryDto entity);
 
   /**
    * 通过 ID 查询学生详细信息

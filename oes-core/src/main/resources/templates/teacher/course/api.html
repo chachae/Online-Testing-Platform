@@ -1,4 +1,31 @@
 <script>
+
+    function operateFormatter(value, row, index) {
+        return [' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(' + row.id + ')">&nbsp;删除</button>'].join('');
+    }
+
+    // 初始化表单
+    OesUtil.initNormalTable('#courseInfo', "/api/course/list?teacherId=" + '${session.teacherId}', "get", [{
+        title: '序号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+            return index + 1;
+        }
+    }, {
+        title: '课程统一代码',
+        field: 'id',
+        sortable: false
+    }, {
+        title: '课程名称',
+        field: 'courseName',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter//html
+    }]);
+
     // 删除课程
     function deleteCourse(id) {
         OesUtil.confirm("确定删除该课程吗？", function () {

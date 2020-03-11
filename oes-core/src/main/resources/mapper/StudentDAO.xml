@@ -35,17 +35,15 @@
     </sql>
 
     <!-- 通过条件查询学生 List 集合 -->
-    <select id="listVo" parameterType="StudentQueryDto" resultMap="voResultMap">
+    <select id="pageVo" parameterType="StudentQueryDto" resultMap="voResultMap">
         <include refid="baseSql"/>
         <where>
-            <if test="majorId != null">
-                 m.id = #{majorId,jdbcType=INTEGER}
+            <if test="entity.academyId != null">
+                a.id = #{entity.academyId,jdbcType=VARCHAR}
             </if>
-            <if test="name != null and name != ''">
-                and s.name like concat('%',#{name,jdbcType=VARCHAR},'%')
-            </if>
-            <if test="academyId != null">
-                and a.id = #{academyId,jdbcType=INTEGER}
+            <if test="entity.key != null and entity.key != ''">
+                and (s.name like concat('%',#{entity.key,jdbcType=VARCHAR},'%')
+                or s.stu_number like concat('%',#{entity.key,jdbcType=VARCHAR},'%'))
             </if>
         </where>
     </select>

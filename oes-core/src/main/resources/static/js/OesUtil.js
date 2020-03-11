@@ -34,6 +34,21 @@ OesUtil.closeModal = function closeModal(e) {
 };
 
 /**
+ * input 框监听发请求
+ * @param bindElement 绑定input 框元素
+ * @param tableElement 渲染表格元素
+ * @param timeout 请求延时
+ */
+OesUtil.bindRequest = function bindRequest(bindElement,tableElement,timeout){
+    $(bindElement).bind("input propertychange",function(event){
+        setTimeout(function(){
+            OesUtil.refreshTable(tableElement);
+        },timeout);
+    });
+};
+
+
+/**
  * 封装简单的表单
  * @param e ID / class
  * @param api 请求数据接口
@@ -41,6 +56,34 @@ OesUtil.closeModal = function closeModal(e) {
  * @param columns 表单数据
  */
 OesUtil.initNormalTable=function normalTable(e,api,method,columns){$(e).bootstrapTable({method:method,url:api,queryParamsType:'',queryParams:function(params){return{current:params.pageNumber,size:params.pageSize}},responseHandler:function(res){const nres=[];nres.push({total:res.total,rows:res.list});return nres[0];},buttonsClass:'primary',pageNumber:1,pageSize:10,pageList:[5,10,20,30,50],pagination:true,sidePagination:'server',columns:columns})};
+
+/**
+ * 封装简单的表单
+ * @param e ID / class
+ * @param api 请求数据接口
+ * @param method 请求方式
+ * @param columns 表单数据
+ * @param params 模糊条件参数
+ */
+OesUtil.initQueryTable = function queryTable(e, api, method, columns,params) {
+    $(e).bootstrapTable({method: method,
+        url: api,
+        queryParamsType: '',
+        queryParams:params,
+        responseHandler: function (res) {
+            const nres = [];
+            nres.push({total: res.total, rows: res.list});
+            return nres[0];
+        },
+        buttonsClass: 'primary',
+        pageNumber: 1,
+        pageSize: 10,
+        pageList: [5, 10, 20, 30, 50],
+        pagination: true,
+        sidePagination: 'server',
+        columns: columns
+    })
+};
 
 /**
  * 封装 ajax 异步页面

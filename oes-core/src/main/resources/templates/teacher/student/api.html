@@ -1,31 +1,84 @@
 <script>
 
+
+    // 操作按钮行为
+    function operateFormatter(value, row, index) {
+        return ['<button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id + ')">编辑</button>&nbsp;' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteStudent(' + row.id + ')">删除</button>' +
+        '']
+            .join('');
+    }
+
+    // 模糊搜索参数
+    function params(params) {
+        return {
+            current: params.pageNumber,
+            size: params.pageSize,
+            academyId: $('#findAcademy').val(),
+            key: $("#findKey").val()
+        };
+    }
+
+    // 初始化表单
+    OesUtil.initQueryTable('#studentInfo', "/api/student/list", "get", [{
+            title: '序号',
+            field: 'id',
+            sortable: false,
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+        }, {
+            title: '姓名',
+            field: 'name',
+            sortable: false
+        }, {
+            title: '学号',
+            field: 'stuNumber',
+            sortable: false
+        }, {
+            title: '年级',
+            field: 'level',
+            sortable: false
+        }, {
+            title: '所属学院',
+            field: 'academy.name',
+            sortable: false
+        }, {
+            title: '专业',
+            field: 'major.major',
+            sortable: false
+        }, {
+            title: '性别',
+            field: 'sex',
+            sortable: false
+        }, {
+            field: 'operate',
+            title: '操作',
+            formatter: operateFormatter
+        }],
+        params
+    );
+
+    // 分学院搜索
+    $("#findAcademy").change(function () {
+        OesUtil.refreshTable('#studentInfo');
+    });
+
+    // 专业名称模糊搜索
+    OesUtil.bindRequest('#findKey', '#studentInfo', 200);
+
     // 删除学生
     function deleteStudent(id) {
         OesUtil.confirm("确定删除学生吗?", function () {
             $.post("/api/student/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.refreshTable('#studentInfo');
                 } else {
                     toastr.error(data.message);
                 }
             })
         })
     }
-
-    // 触发项目模糊筛选
-    $('#findNameBtn').click(function () {
-        let id = $('#findAcademy').val();
-        let name = $('#findName').val();
-        window.location.href = "/teacher/student?academyId=" + id + "&name=" + name
-    });
-
-    // 触发搜索学院筛选
-    $('#findAcademy').select2({theme: 'bootstrap4'}).change(function () {
-        let id = $('#findAcademy').val();
-        let name = $('#findName').val();
-        window.location.href = "/teacher/student?academyId=" + id + "&name=" + name
-    });
 
     // 获取学院集合
     $.get("/api/academy").done(function (data) {
@@ -35,8 +88,7 @@
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.name + "</option>";
         });
-        let curAcademyId = "${curAcademyId}";
-        $(".academySelect").append(options).val(curAcademyId).select2({theme: 'bootstrap4'});
+        $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
     });
 
     // 获取学生信息
@@ -79,7 +131,9 @@
             let data = $('#update-form').serialize();
             $.post("/api/student/update", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#update-modal");
+                    $('#update-form')[0].reset();
+                    OesUtil.refreshTable("#studentInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -88,7 +142,7 @@
     });
 
     // 启动新增模态框
-    $("#goSave").click(function () {
+    function goSave() {
         $("#save-modal").modal({
             show: true,
             backdrop: 'static'
@@ -96,7 +150,7 @@
         // select2 选择框
         $('.save-sex').select2({theme: 'bootstrap4'});
         $('.save-level').select2({theme: 'bootstrap4'});
-    });
+    }
 
     // 新增学生信息请求
     $("#saveBtn").click(function () {
@@ -104,7 +158,9 @@
             let data = $('#save-form').serialize();
             $.post("/api/student/save", data).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#save-modal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#studentInfo");
                 } else {
                     toastr.error(data.message);
                 }

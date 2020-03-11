@@ -3,13 +3,12 @@ package com.chachae.exam.controller;
 import com.chachae.exam.common.base.Page;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.model.*;
+import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
-import com.chachae.exam.common.model.dto.StudentQueryDto;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.ServletUtil;
 import com.chachae.exam.controller.common.QuestionModel;
 import com.chachae.exam.service.*;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,42 +30,13 @@ import java.util.List;
 @RequestMapping("/teacher")
 public class TeacherModuleController {
 
-  @Resource private TypeService typeService;
   @Resource private PaperService paperService;
   @Resource private MajorService majorService;
   @Resource private QuestionModel questionModel;
   @Resource private CourseService courseService;
-  @Resource private TeacherService teacherService;
-  @Resource private StudentService studentService;
-  @Resource private AnnounceService announceService;
   @Resource private QuestionService questionService;
   @Resource private PaperFormService paperFormService;
   @Resource private StuAnswerRecordService stuAnswerRecordService;
-
-  /**
-   * 教师修改密码页面
-   *
-   * @return 页面
-   */
-  @GetMapping("/update/pass")
-  public String updatePass() {
-    return "/teacher/self/update-pass";
-  }
-
-  /**
-   * 教师个人主页
-   *
-   * @param mv ModelAndView 对象
-   * @param id 教师ID
-   * @return 教师主页
-   */
-  @GetMapping("/home/{id}")
-  public ModelAndView home(ModelAndView mv, @PathVariable Integer id) {
-    // 调用通过 ID 查询教师信息接口
-    mv.addObject("teacher", teacherService.getById(id));
-    mv.setViewName("/teacher/self/home");
-    return mv;
-  }
 
   /**
    * 教师账号退出
@@ -86,30 +56,51 @@ public class TeacherModuleController {
   /**
    * 展示该教师所教课程
    *
-   * @param mv ModelAndView 对象
    * @return 课程信息
    */
   @GetMapping("/course")
-  public ModelAndView courseList(ModelAndView mv) {
-    Object id = HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
-    // 设置 model 信息
-    mv.addObject("courseList", courseService.listByTeacherId((int) id));
-    mv.setViewName("/teacher/course/list");
-    return mv;
+  public String courseList() {
+    return ServletUtil.isAjax() ? "/teacher/course/list#courseTable" : "/teacher/course/list";
+  }
+
+  /**
+   * 教师修改密码页面
+   *
+   * @return 页面
+   */
+  @GetMapping("/update/pass")
+  public String updatePass() {
+    return "/teacher/self/update-pass";
+  }
+
+  /**
+   * 教师个人主页
+   *
+   * @return 教师主页
+   */
+  @GetMapping("/index")
+  public String index() {
+    return "/teacher/main/index";
+  }
+
+  /**
+   * 教师个人主页
+   *
+   * @return 教师主页
+   */
+  @GetMapping("/home")
+  public String home() {
+    return ServletUtil.isAjax() ? "/teacher/self/home#homeTable" : "/teacher/self/home";
   }
 
   /**
    * 查看系统公告列表
    *
-   * @param mv ModelAndView 对象
    * @return 公告集合
    */
   @GetMapping("/announce")
-  public ModelAndView announceSystem(ModelAndView mv) {
-    // 设置 model 对象信息
-    mv.addObject("announceList", this.announceService.list());
-    mv.setViewName("/teacher/announce/list");
-    return mv;
+  public String announceSystem() {
+    return ServletUtil.isAjax() ? "/teacher/announce/list#announceTable" : "/teacher/announce/list";
   }
 
   /**
@@ -182,28 +173,11 @@ public class TeacherModuleController {
   /**
    * 学生分页查询
    *
-   * @param page 分页数据
-   * @param mv ModelAndView 对象
    * @return 分页结果集
    */
   @GetMapping("/student")
-  public ModelAndView listStudent(Page page, ModelAndView mv, StudentQueryDto dto) {
-    // 设置分页后的数据的 model 对象
-    mv.addObject("page", this.studentService.pageForStudentList(page.getPageNo(), dto));
-    // 当前查询的学院 ID
-    if (dto.getAcademyId() != null) {
-      mv.addObject("curAcademyId", dto.getAcademyId());
-    } else {
-      mv.addObject("curAcademyId", null);
-    }
-    // 当前查询的姓名
-    if (dto.getName() != null) {
-      mv.addObject("curName", dto.getName());
-    } else {
-      mv.addObject("curName", null);
-    }
-    mv.setViewName("/teacher/student/list");
-    return mv;
+  public String listStudent() {
+    return ServletUtil.isAjax() ? "/teacher/student/list#studentTable" : "/teacher/student/list";
   }
 
   /**
@@ -212,17 +186,8 @@ public class TeacherModuleController {
    * @return 专业管理页面
    */
   @GetMapping("/major")
-  public ModelAndView listMajor(Page page, ModelAndView mv, Major major) {
-    // 设置数据 model 对象
-    mv.addObject("page", this.majorService.pageForMajorList(page.getPageNo(), major));
-    // 设置当前选中的学院id
-    if (major.getAcademyId() != null) {
-      mv.addObject("curAcademyId", major.getAcademyId());
-    } else {
-      mv.addObject("curAcademyId", null);
-    }
-    mv.setViewName("/teacher/major/list");
-    return mv;
+  public String listMajor() {
+    return ServletUtil.isAjax() ? "/teacher/major/list#majorTable" : "/teacher/major/list";
   }
 
   /**
@@ -315,27 +280,10 @@ public class TeacherModuleController {
   /**
    * 试题 List 集合
    *
-   * @param page 当前页
    * @return 试题集合页面
    */
   @GetMapping("/question")
-  public ModelAndView list(Page page, ModelAndView mv, Integer courseId, Integer typeId) {
-    // 分页查询试题接口
-    PageInfo<Question> pageInfo =
-        questionService.pageForQuestionList(page.getPageNo(), courseId, typeId);
-    // 设置 model 对象信息
-    mv.addObject("page", pageInfo);
-    // 课程集合
-    int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
-    List<Course> courses = this.courseService.listByTeacherId(id);
-    mv.addObject("courseList", courses);
-    // 当前选中课程
-    mv.addObject("curCourseId", courseId);
-    mv.addObject("curTypeId", typeId);
-    // 调用试题类型集合
-    List<Type> typeList = this.typeService.list();
-    mv.addObject("typeList", typeList);
-    mv.setViewName("/teacher/question/list");
-    return mv;
+  public String list() {
+    return ServletUtil.isAjax() ? "/teacher/question/list#questionTable" : "/teacher/question/list";
   }
 }

@@ -2,17 +2,16 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.model.Paper;
-import com.chachae.exam.common.model.vo.MajorVo;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.StudentService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 专业表服务实现类
@@ -36,11 +36,8 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
   @Resource private StudentService studentService;
 
   @Override
-  public PageInfo<MajorVo> pageForMajorList(Integer pageNo, Major major) {
-    // 设置分页信息，默认每页显示 10 条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 10);
-    List<MajorVo> majors = this.majorDAO.listVo(major);
-    return new PageInfo<>(majors);
+  public Map<String, Object> listPage(Page<Major> page, Major major) {
+    return PageUtil.toPage(this.majorDAO.pageVo(page, major));
   }
 
   @Override

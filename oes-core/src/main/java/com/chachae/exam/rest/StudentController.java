@@ -1,12 +1,15 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
+import com.chachae.exam.common.model.dto.StudentQueryDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -43,6 +47,13 @@ public class StudentController {
     session.setAttribute(SysConsts.Session.STUDENT, student);
     // 重定向到学生主界面
     return R.successWithData(student.getId());
+  }
+
+  @GetMapping("/list")
+  @Permissions("student:list")
+  @Limit(key = "majorList", period = 5, count = 15, name = "学生查询接口", prefix = "limit")
+  public Map<String,Object> listPage(Page<Student> page, StudentQueryDto entity){
+    return this.studentService.listPage(page,entity);
   }
 
   /**

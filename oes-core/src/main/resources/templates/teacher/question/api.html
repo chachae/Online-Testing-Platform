@@ -1,4 +1,81 @@
 <script>
+
+    // 操作按钮行为
+    function operateFormatter(value, row, index) {
+        return [' <button onclick="goView(' + row.id + ')" class="btn btn-primary btn-sm">查看 </button>&nbsp;' +
+        '<button onclick="goUpdate(' + row.id + ')" class="btn btn-warning btn-sm"> 编辑 </button>&nbsp;' +
+        '<button onclick="deleteQuestion(' + row.id + ')" class="btn btn-danger btn-sm">删除</button>']
+            .join('');
+    }
+
+    function typeFormatter(value, row, index) {
+        switch (row.typeId) {
+            case (1) :
+                return "单选题";
+            case (2) :
+                return "多选题";
+            case (3) :
+                return "判断题";
+            case (4) :
+                return "填空题";
+            case (5) :
+                return "简答题";
+            case (6) :
+                return "编程题";
+        }
+    }
+
+    // 模糊搜索参数
+    function params(params) {
+        return {
+            current: params.pageNumber,
+            size: params.pageSize,
+            typeId: $('#findType').val(),
+            courseId: $("#findCourse").val(),
+            questionName: $("#findQuestionName").val()
+        };
+    }
+
+    // 初始化表单
+    OesUtil.initQueryTable('#questionInfo', "/api/question/list", "get", [{
+            title: '序号',
+            field: 'id',
+            sortable: false,
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+        }, {
+            title: '題目名称',
+            field: 'questionName',
+            sortable: false
+        }, {
+            title: '类型',
+            field: 'type',
+            sortable: false,
+            formatter: typeFormatter
+        }, {
+            field: 'operate',
+            title: '操作',
+            formatter: operateFormatter
+        }],
+        params
+    );
+
+    // 分类型搜索
+    $("#findType").change(function () {
+        OesUtil.refreshTable('#questionInfo');
+    });
+
+    // 分课程
+    $("#findCourse").change(function () {
+        OesUtil.refreshTable('#questionInfo');
+    });
+
+    // 题目名称模糊搜索
+    OesUtil.bindRequest('#findQuestionName', '#questionInfo', 200);
+
+
+
     // 启动查看模态框
     function goView(id) {
         $("#view-modal").modal({
@@ -20,7 +97,6 @@
             // 填充基本信息
             $("#questionName").val(data.questionName);
             $("#answer").val(data.answer);
-            $("#course").val(data.course.courseName);
             $("#difficulty").val(data.difficulty).select2({width: "100%", theme: 'bootstrap4'});
             $("#optionA").val(data.optionA);
             $("#optionB").val(data.optionB);
@@ -29,6 +105,7 @@
             $("#remark").val(data.remark);
             $("#id").val(data.id);
             $("#typeId").val(data.type.id).select2({width: "100%", theme: 'bootstrap4'});
+            $("#courseName").val(data.course.courseName);
         });
 
         // 打开模态框
@@ -43,11 +120,11 @@
         let options = "";
         //回填的二级类别值
         $('.typeSelect').empty();
-        options += "<option value=''>全部</option>";
+        options += "<option value=''>选择题型</option>";
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.typeName + "</option>";
         });
-        $(".typeSelect").append(options).val('${curTypeId}').select2({theme: 'bootstrap4', width: "250px"});
+        $(".typeSelect").append(options).val('').select2({theme: 'bootstrap4', width: "250px"});
     });
 
     // 教师课程下拉框信息
@@ -55,11 +132,11 @@
         let options = "";
         //回填的二级类别值
         $('.courseSelect').empty();
-        options += "<option value=''>全部</option>";
+        options += "<option value=''>选择课程</option>";
         $.each(data, function (index, e) {
             options += "<option value=" + e.id + ">" + e.courseName + "</option>";
         });
-        $(".courseSelect").append(options).val('${curCourseId}').select2({theme: 'bootstrap4', width: "250px"});
+        $(".courseSelect").append(options).val('').select2({theme: 'bootstrap4', width: "250px"});
     });
 
     // 启动新增模态框
@@ -79,7 +156,9 @@
             let data = $("#update-form").serialize();
             $.post("/api/question/update", data, function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#update-modal");
+                    $('#update-form')[0].reset();
+                    OesUtil.refreshTable("#questionInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -93,7 +172,9 @@
             let data = $("#save-form").serialize();
             $.post("/api/question/save", data, function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.closeModal("#save-modal");
+                    $('#save-form')[0].reset();
+                    OesUtil.refreshTable("#questionInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -101,13 +182,12 @@
         })
     }
 
-
     // 删除题目
     function deleteQuestion(id) {
         OesUtil.confirm("确定要删除么？", function () {
             $.post("/api/question/delete/" + id, function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.refreshTable("#questionInfo");
                 } else {
                     toastr.error(data.message);
                 }
@@ -139,26 +219,14 @@
                 if (res.state === "success") {
                     toastr.success('题目解析成功，完成导入');
                     $(this).delay(800).queue(function () {
-                        window.location.reload();
+                        OesUtil.closeModal("#importModal");
+                        $('#importPaper')[0].reset();
+                        OesUtil.refreshTable("#questionInfo");
                     })
                 } else {
                     toastr.error(res.message);
                 }
             }
         });
-    });
-
-    // 进入试题详细信息
-    $(function () {
-        // 问题类型筛选
-        $("#findType").change(function () {
-            window.location.href = "/teacher/question?p=1&courseId=" + "${curCourseId}" + "&typeId=" + $(this).val()
-        })
-
-        // 课程筛选
-        $("#findCourse").change(function () {
-            window.location.href = "/teacher/question?p=1&courseId=" + $(this).val() + "&typeId=" + "${curTypeId}";
-        });
-
     });
 </script>

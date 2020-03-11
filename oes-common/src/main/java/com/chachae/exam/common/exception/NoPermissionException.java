@@ -8,17 +8,7 @@ package com.chachae.exam.common.exception;
  */
 public class NoPermissionException extends RuntimeException {
 
-  public NoPermissionException() {}
-
   public NoPermissionException(String message) {
     super(message);
-  }
-
-  public NoPermissionException(Throwable th) {
-    super(th);
-  }
-
-  public NoPermissionException(String message, Throwable th) {
-    super(message, th);
   }
 }

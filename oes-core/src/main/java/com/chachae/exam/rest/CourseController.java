@@ -1,5 +1,6 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.core.annotation.Permissions;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -24,6 +26,12 @@ public class CourseController {
   @Permissions("course:list")
   public List<Course> listByTeacherId(@PathVariable Integer teacherId) {
     return this.courseService.listByTeacherId(teacherId);
+  }
+
+  @GetMapping("/list")
+  @Permissions("course:list")
+  public Map<String, Object> pageCourse(Page<Course> page, Integer teacherId) {
+    return this.courseService.listPage(page, teacherId);
   }
 
   /**

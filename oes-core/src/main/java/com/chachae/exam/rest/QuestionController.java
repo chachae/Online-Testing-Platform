@@ -1,14 +1,18 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.dto.QuestionQueryDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * The type Question controller.
@@ -22,6 +26,13 @@ public class QuestionController {
 
   /** The Question service. */
   @Resource private QuestionService questionService;
+
+  @GetMapping("/list")
+  @Permissions("course:list")
+  @Limit(key = "courseList", period = 3, count = 18, name = "试题查询接口", prefix = "limit")
+  public Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity) {
+    return this.questionService.listPage(page, entity);
+  }
 
   /**
    * Gets one.

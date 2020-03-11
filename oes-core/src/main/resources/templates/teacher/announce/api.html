@@ -1,0 +1,45 @@
+<script>
+    //表格操作
+    window.handle = {
+        "click .view": function (e, value, row, index) {
+            // 赋值
+            $("#title").val(row.title);
+            $("#content").val(row.content);
+            $("#authorName").val(row.authorName);
+            $("#createTime").val(row.createTime);
+            // 打开模态框
+            $("#view-modal").modal({
+                show: true,
+                backdrop: 'static'
+            });
+        },
+    };
+
+    function operateFormatter(value, row, index) {
+        return [
+            '<button class="btn btn-sm btn-success view">查看</button>',
+        ].join('');
+    }
+
+    // 初始化表单
+    OesUtil.initNormalTable('#pageInfo', "/api/announce/list", "get", [{
+        title: '标题',
+        field: 'title',
+        sortable: false
+    }, {
+        title: '发布时间',
+        field: 'createTime',
+        sortable: false
+    }, {
+        title: '发布人',
+        field: 'authorName',
+        sortable: false
+    }, {
+        field: 'operate',
+        title: '操作',
+        events: handle,//事件
+        formatter: operateFormatter//html
+    }]);
+
+</script>
+

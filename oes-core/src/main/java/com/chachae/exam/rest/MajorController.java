@@ -1,7 +1,9 @@
 package com.chachae.exam.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Major;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.MajorService;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chachae
@@ -24,6 +27,20 @@ public class MajorController {
   @Permissions("major:list")
   public List<Major> majorList() {
     return this.majorService.list();
+  }
+
+  /**
+   * 根据学院 ID 分页所属的专业集合信息<br>
+   * 接口限流，5秒内允许请求20次
+   *
+   * @param major 模糊查询条件
+   * @return 专业集合信息
+   */
+  @GetMapping("/list")
+  @Permissions("major:list")
+  @Limit(key = "majorList", period = 5, count = 20, name = "专业查询接口", prefix = "limit")
+  public Map<String, Object> pageList(Page<Major> page, Major major) {
+    return this.majorService.listPage(page, major);
   }
 
   /**

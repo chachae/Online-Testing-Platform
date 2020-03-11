@@ -2,6 +2,7 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.CourseDAO;
 import com.chachae.exam.common.dao.QuestionDAO;
@@ -9,7 +10,9 @@ import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 课程服务实现类
@@ -31,6 +35,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   @Resource private QuestionDAO questionDAO;
   @Resource private CourseDAO courseDAO;
   @Resource private TeacherDAO teacherDAO;
+
+  @Override
+  public List<Integer> listIdByTeacherId(Integer teacherId) {
+    QueryWrapper<Course> qw = new QueryWrapper<>();
+    qw.lambda().eq(Course::getTeacherId, teacherId).select(Course::getId);
+    List<Course> courses = this.courseDAO.selectList(qw);
+    // 将课程集合转为 ID 集合
+    return Lists.transform(courses, Course::getId);
+  }
 
   @Override
   public List<Course> listByTeacherId(Integer teacherId) {
@@ -50,6 +63,16 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     QueryWrapper<Course> qw = new QueryWrapper<>();
     qw.lambda().eq(Course::getCourseName, courseName);
     return this.courseDAO.selectList(qw);
+  }
+
+  @Override
+  public Map<String, Object> listPage(Page<Course> page, Integer teacherId) {
+    QueryWrapper<Course> qw = new QueryWrapper<>();
+    if (teacherId != null) {
+      qw.lambda().eq(Course::getTeacherId, teacherId);
+    }
+    Page<Course> pageInfo = this.courseDAO.selectPage(page, qw);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override

@@ -1,16 +1,16 @@
 package com.chachae.exam.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.dto.ImportPaperDto;
+import com.chachae.exam.common.model.dto.QuestionQueryDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
-import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * 试题接口
@@ -23,12 +23,11 @@ public interface QuestionService extends IService<Question> {
   /**
    * 显示试题库并分页
    *
-   * @param pageNo 当前页
-   * @param courseId 课程ID
-   * @param typeId 类型ID
+   * @param page 分页信息
+   * @param entity 模糊条件
    * @return 分页信息结果集
    */
-  PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId, Integer typeId);
+  Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity);
 
   /**
    * 根据paperId和试题类型查找该类型题目集合
@@ -38,13 +37,6 @@ public interface QuestionService extends IService<Question> {
    * @return 问题 List 集合
    */
   List<Question> selectByPaperIdAndType(Integer paperId, Integer typeId);
-
-  /**
-   * 根据教师id查找他教的所有课程ID（可以出题的课程）
-   *
-   * @return 课程 ID 集合
-   */
-  List<Integer> selectIdsFilterByTeacherId();
 
   /**
    * 通过题目类型 ID 和课程 ID 获取问题 List 集合

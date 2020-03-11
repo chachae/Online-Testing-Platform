@@ -8,30 +8,26 @@ import cn.hutool.log.Log;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.dao.PaperDAO;
 import com.chachae.exam.common.dao.PaperFormDAO;
 import com.chachae.exam.common.dao.QuestionDAO;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.model.Question;
-import com.chachae.exam.common.model.dto.ImportPaperDto;
-import com.chachae.exam.common.model.dto.QuestionDto;
-import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
-import com.chachae.exam.common.model.dto.StudentAnswerDto;
+import com.chachae.exam.common.model.dto.*;
 import com.chachae.exam.common.model.vo.QuestionVo;
 import com.chachae.exam.common.service.RedisService;
 import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.common.util.FileUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.TypeService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,41 +67,38 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   private Log log = Log.get();
 
   @Override
-  public PageInfo<Question> pageForQuestionList(Integer pageNo, Integer courseId, Integer typeId) {
+  public Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity) {
     // 只查询本人的试题，获取教师本人的课程id，并构造条件
-    List<Integer> ids = this.selectIdsFilterByTeacherId();
+    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    List<Integer> courseIds = this.courseService.listIdByTeacherId(teacherId);
+
+    // 没有课程，直接返回一个空的数据集合
+    if (CollUtil.isEmpty(courseIds)) {
+      return PageUtil.toPage(Lists.newArrayList(), 0);
+    }
+
     QueryWrapper<Question> qw = new QueryWrapper<>();
-    qw.lambda().in(Question::getCourseId, ids);
+    qw.lambda().in(Question::getCourseId, courseIds);
     // 条件情况判断
     // 课程 ID 不为空，加入判断条件
-    if (courseId != null) {
-      qw.lambda().eq(Question::getCourseId, courseId);
+    if (entity.getCourseId() != null) {
+      qw.lambda().eq(Question::getCourseId, entity.getCourseId());
     }
     // 题型 ID 不为空，加入判断条件
-    if (typeId != null) {
-      qw.lambda().eq(Question::getTypeId, typeId);
+    if (entity.getTypeId() != null) {
+      qw.lambda().eq(Question::getTypeId, entity.getTypeId());
     }
-    // 设置分页信息，默认每页显示12条数据，此处采用 PageHelper 物理分页插件实现数据分页
-    PageHelper.startPage(pageNo, 10);
+    if (entity.getQuestionName() != null) {
+      qw.lambda().like(Question::getQuestionName, entity.getQuestionName());
+    }
     // 查询试题集合信息
-    List<Question> questionList = questionDAO.selectList(qw);
-    return new PageInfo<>(questionList);
+    Page<Question> pageInfo = questionDAO.selectPage(page, qw);
+    return PageUtil.toPage(pageInfo);
   }
 
   @Override
   public List<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
     return this.paperCacheManager(paperId, typeId);
-  }
-
-  @Override
-  public List<Integer> selectIdsFilterByTeacherId() {
-    // 获取 session
-    int id = (int) HttpContextUtil.getSession().getAttribute(SysConsts.Session.TEACHER_ID);
-    List<Course> courses = this.courseService.listByTeacherId(id);
-    List<Integer> ids = Lists.newArrayList();
-    // 遍历课程对象，封装 ID 集合
-    courses.forEach(c -> ids.add(c.getId()));
-    return ids;
   }
 
   @Override
@@ -300,8 +293,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
         file.deleteOnExit();
       }
 
-      // 通过 lambda 循环的方式将题目数据一次插入 Question 表中
-      List<Integer> ids = this.selectIdsFilterByTeacherId();
+      // 获取教师本人的课程 ID 集合
+      int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+      List<Integer> ids = this.courseService.listIdByTeacherId(teacherId);
 
       for (Question question : questions) {
         // 正确答案、难度、所属课程、类型 ID 检测
