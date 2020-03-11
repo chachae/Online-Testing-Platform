@@ -304,7 +304,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
         boolean isAnsIdNull = question.getDifficulty() == null;
         boolean isDefIdNull = question.getAnswer() == null;
         if (isTypeIdNull || isCourseIdNull || isAnsIdNull || isDefIdNull) {
-          throw new ServiceException();
+          throw new ServiceException("检测到试题信息异常");
         }
         // 过滤同名、同课程、同类型题目
         // 题目名称

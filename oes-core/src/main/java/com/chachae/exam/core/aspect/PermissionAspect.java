@@ -1,8 +1,7 @@
 package com.chachae.exam.core.aspect;
 
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.exception.ApiException;
-import com.chachae.exam.common.exception.RestApiException;
+import com.chachae.exam.common.exception.NoPermissionException;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PermissionService;
@@ -11,7 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,8 +25,9 @@ import java.util.Set;
  */
 @Slf4j
 @Aspect
+@Order(0)
 @Component
-public class PermissionAspect {
+public class PermissionAspect extends BaseAspectSupport {
 
   @Resource private PermissionService permissionService;
 
@@ -47,24 +47,13 @@ public class PermissionAspect {
     int roleId = (int) HttpContextUtil.getAttribute(SysConsts.Session.ROLE_ID);
     Set<String> permissions = this.permissionService.selectExpressionByRoleId(roleId);
 
-    // 强转MethodSignature
-    MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-    Method method = signature.getMethod();
-
     // 获取注解信息
+    Method method = resolveMethod(joinPoint);
     Permissions annotation = method.getAnnotation(Permissions.class);
-    String permission = annotation.value();
+    String expression = annotation.value();
     // 不包含权限，抛出异常
-    if (!permissions.contains(permission)) {
-      // 检查接口类型（rest 或者 model）
-      final String uriStart = "/api";
-      // 获取请求接口
-      String uri = HttpContextUtil.getRequestUri();
-      if (uri.contains(uriStart)) {
-        throw new RestApiException("用户不存在 [ " + permission + " ] 权限，无权操作");
-      } else {
-        throw new ApiException("用户不存在 [ " + permission + " ] 权限，无权操作");
-      }
+    if (!permissions.contains(expression)) {
+      throw new NoPermissionException("用户不存在 [ " + expression + " ] 权限，无权操作");
     }
     return joinPoint.proceed();
   }

@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 接口权限校验注解
+ *
  * @author chachae
  * @since 2020/3/1 17:30
  */
