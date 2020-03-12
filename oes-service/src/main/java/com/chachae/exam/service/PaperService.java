@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
-import com.github.pagehelper.PageInfo;
+import com.chachae.exam.common.model.dto.QueryPaperDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -18,15 +18,6 @@ import java.util.Map;
  * @date 2020/1/13
  */
 public interface PaperService extends IService<Paper> {
-
-  /**
-   * 查找该老师所有试卷并分页
-   *
-   * @param teacherId 教师ID
-   * @param pageNo 当前页
-   * @return 分页信息结果集
-   */
-  PageInfo<Paper> pageForPaperList(Integer teacherId, Integer pageNo);
 
   /**
    * 随机组卷
@@ -51,14 +42,6 @@ public interface PaperService extends IService<Paper> {
    * @param request request 对象.
    */
   void markPaper(Integer stuId, Integer paperId, HttpServletRequest request);
-
-  /**
-   * 根据教师id查找未开始考试的试卷
-   *
-   * @param id 教师ID
-   * @return 试卷信息
-   */
-  List<Paper> listUnDoByTeacherId(Integer id);
 
   /**
    * 根据老师Id查找已结束试卷
@@ -115,10 +98,19 @@ public interface PaperService extends IService<Paper> {
   int countPaperByPaperFormId(Integer paperFormId);
 
   /**
-   * 分页查询考试信息
+   * 分页查询试卷信息
    *
-   * @param majorId 专业 ID
-   * @return 分页信息
+   * @param page 分页信息
+   * @param entity 模糊搜索条件
+   * @return 分页结果集
    */
-  Map<String, Object> pageByMajorId(Page<Paper> page, Integer majorId, String type);
+  Map<String, Object> pagePaper(Page<Paper> page, QueryPaperDto entity);
+
+  /**
+   * 根据教师id查找未开始考试的试卷
+   *
+   * @param page 分页信息
+   * @return 试卷信息
+   */
+  Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity);
 }

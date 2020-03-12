@@ -1,8 +1,6 @@
 package com.chachae.exam.controller;
 
-import com.chachae.exam.common.base.Page;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.util.HttpContextUtil;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -106,17 +103,11 @@ public class TeacherModuleController {
   /**
    * 考试管理 可以修改考试时间
    *
-   * @param mv ModelAndView 对象
    * @return 考试信息
    */
   @GetMapping("/exam")
-  public ModelAndView exam(ModelAndView mv) {
-    // 获取教师 ID
-    int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
-    // 设置 model 对象信息
-    mv.addObject("paperList", paperService.listUnDoByTeacherId(id));
-    mv.setViewName("/teacher/exam/list");
-    return mv;
+  public String exam() {
+    return ServletUtil.isAjax() ? "/teacher/exam/list#examTable" : "/teacher/exam/list";
   }
 
   /**
@@ -131,7 +122,11 @@ public class TeacherModuleController {
     int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 返回 Model 对象
     mv.addObject("paperList", paperService.listDoneByTeacherId(id));
-    mv.setViewName("/teacher/review/list");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/review/list#reviewTable");
+    } else {
+      mv.setViewName("/teacher/review/list");
+    }
     return mv;
   }
 
@@ -143,21 +138,18 @@ public class TeacherModuleController {
    * @return 待复查试卷信息
    */
   @GetMapping("/reviewRes")
-  public ModelAndView reviewPaper(Integer paperId, ModelAndView mv, RedirectAttributes r) {
-    try {
-      // 答题记录传输对象 List 集合
-      List<StuAnswerRecordDto> records =
-          this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
-      mv.addObject("stuAnswer", records);
-      mv.addObject("paper", this.paperService.getById(paperId));
-      mv.addObject("questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
+  public ModelAndView reviewPaper(Integer paperId, ModelAndView mv) {
+    // 答题记录传输对象 List 集合
+    List<StuAnswerRecordDto> records = this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
+    mv.addObject("stuAnswer", records);
+    mv.addObject("paper", this.paperService.getById(paperId));
+    mv.addObject("questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/review/record-list#reviewListTable");
+    } else {
       mv.setViewName("/teacher/review/record-list");
-      return mv;
-    } catch (ServiceException e) {
-      r.addFlashAttribute("message", e.getMessage());
-      mv.setViewName("redirect:/teacher/reviewPaper");
-      return mv;
     }
+    return mv;
   }
 
   /**
@@ -193,18 +185,11 @@ public class TeacherModuleController {
   /**
    * 试卷分页查询
    *
-   * @param page 分页数据
-   * @param mv ModelAndView 对象
    * @return 分页结果集
    */
   @GetMapping("/paper")
-  public ModelAndView list(Page page, ModelAndView mv) {
-    // 获取教师 ID
-    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
-    // 设置分页后的数据的 model 对象
-    mv.addObject("page", paperService.pageForPaperList(teacherId, page.getPageNo()));
-    mv.setViewName("/teacher/paper/list");
-    return mv;
+  public String pagePaper() {
+    return ServletUtil.isAjax() ? "/teacher/paper/list#paperTable" : "/teacher/paper/list";
   }
 
   /**
@@ -224,7 +209,11 @@ public class TeacherModuleController {
     mv.addObject("major", majorService.getById(paper.getMajorId()));
     // 设置题目 model 对象信息
     questionModel.setQuestionModel(mv, id, false);
-    mv.setViewName("/teacher/paper/show");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/paper/show#paperShowTable");
+    } else {
+      mv.setViewName("/teacher/paper/show");
+    }
     return mv;
   }
 
@@ -235,7 +224,9 @@ public class TeacherModuleController {
    */
   @GetMapping("/paperForm/save")
   public String savePaperForm() {
-    return "/teacher/paper/save-paper-form";
+    return ServletUtil.isAjax()
+        ? "/teacher/paper/save-paper-form#paperFormTable"
+        : "/teacher/paper/save-paper-form";
   }
 
   /**
@@ -245,7 +236,9 @@ public class TeacherModuleController {
    */
   @GetMapping("/paper/import")
   public String importNewPaper() {
-    return "/teacher/paper/import-paper";
+    return ServletUtil.isAjax()
+        ? "/teacher/paper/import-paper#importTable"
+        : "/teacher/paper/import-paper";
   }
 
   /**
@@ -259,7 +252,11 @@ public class TeacherModuleController {
   public ModelAndView add(@PathVariable Integer id, ModelAndView mv) {
     // 封装 model 参数
     mv.addObject("paperFormId", id);
-    mv.setViewName("/teacher/paper/save-paper");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/paper/save-paper#savePaperTable");
+    } else {
+      mv.setViewName("/teacher/paper/save-paper");
+    }
     return mv;
   }
 
@@ -273,7 +270,11 @@ public class TeacherModuleController {
   public ModelAndView showPaperForm(ModelAndView mv) {
     // 调用获取试卷模板集合接口
     mv.addObject("formList", this.paperFormService.list());
-    mv.setViewName("/teacher/paper/paper-form-list");
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/paper/paper-form-list#paperFormTable");
+    } else {
+      mv.setViewName("/teacher/paper/paper-form-list");
+    }
     return mv;
   }
 

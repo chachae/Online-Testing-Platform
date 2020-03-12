@@ -3,18 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 试卷详情</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
+    <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% include("../../teacher/include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../../teacher/include/sider.html",{name:"show-paper"}){} %>
+    <% layout("../include/sider.html",{name:"show-paper"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax paperShowTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -24,7 +29,9 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/teacher/paper">返回列表</a></li>
+                            <li class="breadcrumb-item">
+                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -357,15 +364,17 @@
         <%include("update-answer-modal.html"){}%>
         <!-- 修改题目模态框（已知） -->
         <%include("update-question-modal.html"){}%>
+        <!-- 接口 -->
+        <%include("api/show-api.html"){} %>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<script src="/static/js/OesUtil.js"></script>
-<!-- 接口 -->
-<%include("api/show-api.html"){} %>
 </body>
 </html>
-

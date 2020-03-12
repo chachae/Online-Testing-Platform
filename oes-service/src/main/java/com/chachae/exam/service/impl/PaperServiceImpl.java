@@ -14,14 +14,13 @@ import com.chachae.exam.common.model.*;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
+import com.chachae.exam.common.model.dto.QueryPaperDto;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.NumberUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.PaperMarkUtil;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
@@ -51,17 +50,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   @Resource private StuAnswerRecordDAO stuAnswerRecordDAO;
   @Resource private ScoreDAO scoreDAO;
   @Resource private TypeDAO typeDAO;
-
-  @Override
-  public PageInfo<Paper> pageForPaperList(Integer teacherId, Integer pageNo) {
-    // 构造条件询条件
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getTeacherId, teacherId);
-    // 分页查询，默认每页 12 条数据
-    PageHelper.startPage(pageNo, 12);
-    List<Paper> paperList = paperDAO.selectList(qw);
-    return new PageInfo<>(paperList);
-  }
 
   @Override
   public void randomNewPaper(Paper paper) {
@@ -209,19 +197,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     Score scoreResult = new Score(stuId, paperId, paperName, String.valueOf(score), wstr);
     // 此处调用插入接口
     this.scoreDAO.insert(scoreResult);
-  }
-
-  @Override
-  public List<Paper> listUnDoByTeacherId(Integer id) {
-    // 获取当前时间
-    String now = DateUtil.getFormatLocalDateTimeStr();
-    // 构造条件查询语句
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getTeacherId, id);
-    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
-    // 开始时间大于当前时间
-    qw.lambda().gt(Paper::getBeginTime, now);
-    return paperDAO.selectList(qw);
   }
 
   @Override
@@ -512,10 +487,50 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   }
 
   @Override
-  public Map<String, Object> pageByMajorId(Page<Paper> page, Integer majorId, String type) {
+  public Map<String, Object> pagePaper(Page<Paper> page, QueryPaperDto entity) {
     QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getMajorId, majorId);
-    qw.lambda().eq(Paper::getPaperType, type);
+
+    // 试卷类型
+    if (StrUtil.isNotBlank(entity.getPaperType())) {
+      qw.lambda().eq(Paper::getPaperType, entity.getPaperType());
+    }
+
+    // 所属专业
+    if (entity.getMajorId() != null) {
+      qw.lambda().eq(Paper::getMajorId, entity.getMajorId());
+    }
+
+    // 出卷老师
+    if (entity.getTeacherId() != null) {
+      qw.lambda().eq(Paper::getTeacherId, entity.getTeacherId());
+    }
+
+    // 所属课程
+    if (entity.getCourseId() != null) {
+      qw.lambda().eq(Paper::getCourseId, entity.getCourseId());
+    }
+
+    // 试卷名称
+    if (StrUtil.isNotBlank(entity.getPaperName())) {
+      qw.lambda().like(Paper::getPaperName, entity.getPaperName());
+    }
+
+    Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
+    return PageUtil.toPage(pageInfo);
+  }
+
+  @Override
+  public Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity) {
+    QueryWrapper<Paper> qw = new QueryWrapper<>();
+    // 教师 ID
+    if (entity.getTeacherId() != null) {
+      qw.lambda().eq(Paper::getTeacherId, entity.getTeacherId());
+    }
+    // 获取当前时间
+    String now = DateUtil.getFormatLocalDateTimeStr();
+    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
+    // 开始时间大于当前时间
+    qw.lambda().gt(Paper::getBeginTime, now);
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }

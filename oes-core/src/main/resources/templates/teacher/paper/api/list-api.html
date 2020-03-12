@@ -1,41 +1,130 @@
 <script>
 
-    // 查看试卷信息
-    function viewPaper(id) {
-        window.location.href = "/teacher/paper/show/" + id;
+    // 操作按钮行为
+    function operateFormatter(value, row, index) {
+        return ['<button class="btn btn-info btn-sm viewBtn" onclick="viewPaper(' + row.id + ')">查看试卷</button>']
+            .join('');
     }
 
+    // 试卷状态
+    function stateFormatter(value, row, index) {
+        if (row.end) {
+            return "已结束";
+        } else if (row.start) {
+            return "考试中";
+        } else {
+            return "未开始";
+        }
+    }
+
+    // 模糊搜索参数
+    function params(params) {
+        return {
+            current: params.pageNumber,
+            size: params.pageSize,
+            paperName: $("#findPaperName").val(),
+            courseId: $("#findCourse").val()
+        };
+    }
+
+    // 初始化表单
+    OesUtil.initQueryTable('#paperInfo', "/api/paper/list?teacherId=${session.teacherId}", "get", [{
+            title: '序号',
+            field: 'id',
+            sortable: false,
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+        }, {
+            title: '试卷编号',
+            field: 'id',
+            sortable: false
+        }, {
+            title: '名称',
+            field: 'paperName',
+            sortable: false
+        }, {
+            title: '状态',
+            field: 'major',
+            sortable: false,
+            formatter: stateFormatter
+        }, {
+            title: '类型',
+            field: 'paperType',
+            sortable: false
+        }, {
+            field: 'operate',
+            title: '操作',
+            formatter: operateFormatter
+        }],
+        params
+    );
+
+    // 分课程
+    $("#findCourse").change(function () {
+        OesUtil.refreshTable('#paperInfo');
+    });
+
+    // 专业名称模糊搜索
+    OesUtil.bindRequest('#findPaperName', '#paperInfo', 200);
+
+    // 查看试卷信息
+    function viewPaper(id) {
+        OesUtil.ajaxPage("#paper", "/teacher/paper/show/" + id);
+    }
+
+    // 教师课程下拉框信息
+    $.get("/api/course/teacher/" + "${session.teacher.id}", function (data) {
+        let options = "";
+        //回填的二级类别值
+        $('.courseSelect').empty();
+        options += "<option value=''>选择课程</option>";
+        $.each(data, function (index, e) {
+            options += "<option value=" + e.id + ">" + e.courseName + "</option>";
+        });
+        $(".courseSelect").append(options).val('').select2({theme: 'bootstrap4', width: "250px"});
+    });
+
     // 随机增加试卷按钮
-    $(function () {
-        // 新增随机试卷
-        $("#goSave").click(function () {
-            $.confirm({
-                title: '确认框',
-                content: '是否使用默认试卷模版',
-                buttons: {
-                    confirm: {
-                        text: '是的',
-                        btnClass: 'btn btn-default',
-                        action: function () {
-                            window.location.href = "/teacher/paper/save/1";
-                        }
-                    },
-                    cancel: {
-                        text: '不是',
-                        btnClass: 'btn btn-default',
-                        action: function () {
-                            window.location.href = "/teacher/paperForm/save";
-                        }
-                    },
-                    other: {
-                        text: '取消',
-                        btnClass: 'btn btn-danger',
-                        action: function () {
-                            toastr.success("取消操作");
-                        }
+    // 新增随机试卷
+    function goRandom() {
+        $.confirm({
+            title: '确认框',
+            content: '是否使用默认试卷模版',
+            buttons: {
+                confirm: {
+                    text: '是的',
+                    btnClass: 'btn btn-default',
+                    action: function () {
+                        OesUtil.ajaxPage("#paper", "/teacher/paper/save/1");
+                    }
+                },
+                cancel: {
+                    text: '不是',
+                    btnClass: 'btn btn-default',
+                    action: function () {
+                        OesUtil.ajaxPage("#paper", "/teacher/paperForm/save");
+                    }
+                },
+                other: {
+                    text: '取消',
+                    btnClass: 'btn btn-danger',
+                    action: function () {
+                        toastr.success("取消操作");
                     }
                 }
-            })
-        });
-    });
+            }
+        })
+    }
+
+    // 去导入试卷页面
+    function goImport() {
+        OesUtil.ajaxPage("#paper", "/teacher/paper/import");
+    }
+
+    // 去試卷模板页面
+    function goPaperForm() {
+        OesUtil.ajaxPage("#paper", "/teacher/paperForm");
+    }
+
 </script>

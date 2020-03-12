@@ -1,5 +1,54 @@
 <script>
 
+    // 操作按钮行为
+    function operateFormatter(value, row, index) {
+        return ['<button onclick="goUpdate(' + row.id + ')" class="btn btn-sm btn-warning">编辑</button>']
+            .join('');
+    }
+
+    // 模糊搜索参数
+    function params(params) {
+        return {
+            current: params.pageNumber,
+            size: params.pageSize,
+            paperName: $("#findPaperName").val(),
+            courseId: $("#findCourse").val()
+        };
+    }
+
+    // 初始化表单
+    OesUtil.initQueryTable('#examInfo', "/api/paper/undo/list?teacherId=${session.teacherId}", "get", [{
+            title: '序号',
+            field: 'id',
+            sortable: false,
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+        }, {
+            title: '名称',
+            field: 'paperName',
+            sortable: false
+        }, {
+            title: '开考时间',
+            field: 'beginTime',
+            sortable: false
+        }, {
+            title: '结束时间',
+            field: 'endTime',
+            sortable: false
+        }, {
+            title: '考试时长',
+            field: 'allowTime',
+            sortable: false
+        }, {
+            field: 'operate',
+            title: '操作',
+            formatter: operateFormatter
+        }],
+        params
+    );
+
+
     //修改考试时间
     function goUpdate(id) {
         $.get("/api/paper/" + id, function (data) {

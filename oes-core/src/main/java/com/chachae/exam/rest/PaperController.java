@@ -6,12 +6,9 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.StuAnswerRecord;
-import com.chachae.exam.common.model.dto.AnswerEditDto;
-import com.chachae.exam.common.model.dto.ImportPaperDto;
-import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
-import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
-import com.chachae.exam.common.model.vo.StudentVo;
+import com.chachae.exam.common.model.dto.*;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
@@ -51,20 +48,16 @@ public class PaperController {
 
   @GetMapping("/list")
   @Permissions("paper:list")
-  public Map<String, Object> pagePaper(Page<Paper> page) {
-    // 获取学生
-    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
-    return this.paperService.pageByMajorId(
-        page, student.getMajorId(), SysConsts.Paper.PAPER_TYPE_FORMAL);
+  @Limit(key = "paperList", period = 5, count = 15, name = "试卷查询接口", prefix = "limit")
+  public Map<String, Object> pagePaper(Page<Paper> page, QueryPaperDto entity) {
+    return this.paperService.pagePaper(page, entity);
   }
 
-  @GetMapping("/practice/list")
+  @GetMapping("/undo/list")
   @Permissions("paper:list")
-  public Map<String, Object> pagePracticePaper(Page<Paper> page) {
-    // 获取学生
-    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
-    return this.paperService.pageByMajorId(
-        page, student.getMajorId(), SysConsts.Paper.PAPER_TYPE_PRACTICE);
+  @Limit(key = "examList", period = 5, count = 15, name = "考试管理查询接口", prefix = "limit")
+  public Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity) {
+    return this.paperService.pageUndoPaper(page, entity);
   }
 
   @PostMapping("/import/excel")

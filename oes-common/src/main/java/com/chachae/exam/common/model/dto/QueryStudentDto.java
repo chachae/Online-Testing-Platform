@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
+ * 学生查询 bean
+ *
  * @author chachae
- * @since 2020/3/11 20:47
+ * @since 2020/2/9 21:29
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
-public class QuestionQueryDto extends BaseEntity {
+public class QueryStudentDto extends BaseEntity {
 
-  private Integer courseId;
+  // 查询关键词
+  private String key;
 
-  private Integer typeId;
-
-  private String questionName;
+  private Integer academyId;
 }

@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <title>OES | 试卷复核</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){}%>
+    <%include("../../include/css.html"){} %>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%include("../include/header.html"){}%>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%include("../include/sider.html",{name:"review"}){}%>
+    <% layout("../include/sider.html",{name:"review"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax reviewTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -36,7 +43,7 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" method="get" action="/teacher/reviewRes">
+                            <form id="review-form" class="form-horizontal">
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="paperId" class="col-sm-2 control-label">场次</label>
@@ -47,19 +54,10 @@
                                             <% } %>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="form-check">
-                                                <% if(isNotEmpty(message)){ %>
-                                                <h4 style="color: red;text-align: center"><b>${message}</b></h4>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button id="search" class="form-control btn btn-success">查找</button>
+                                    <button onclick="goSearch()" type="button" class="form-control btn btn-success">查找</button>
                                 </div>
                                 <!-- /.card-footer -->
                             </form>
@@ -69,15 +67,16 @@
                 </div><!-- /.row -->
             </div>
         </section>
+        <%include("api/list-api.html"){}%>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <%include("../../include/footer.html"){}%>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
 </body>
-<script>
-    // select2
-    $('#paperId').select2({width: "100%", theme: "bootstrap4"});
-</script>
 </html>

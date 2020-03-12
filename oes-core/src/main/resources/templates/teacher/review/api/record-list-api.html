@@ -17,6 +17,7 @@
             let data = $("#update-form").serialize();
             $.post("/api/paper/update/score", data).done(function (data) {
                 if (data.state === "success") {
+                    OesUtil.closeModal("#update-modal");
                     window.location.reload();
                 } else {
                     toastr.error(data.message);

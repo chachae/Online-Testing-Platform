@@ -58,7 +58,7 @@ OesUtil.bindRequest = function bindRequest(bindElement,tableElement,timeout){
 OesUtil.initNormalTable=function normalTable(e,api,method,columns){$(e).bootstrapTable({method:method,url:api,queryParamsType:'',queryParams:function(params){return{current:params.pageNumber,size:params.pageSize}},responseHandler:function(res){const nres=[];nres.push({total:res.total,rows:res.list});return nres[0];},buttonsClass:'primary',pageNumber:1,pageSize:10,pageList:[5,10,20,30,50],pagination:true,sidePagination:'server',columns:columns})};
 
 /**
- * 封装简单的表单
+ * 封装自定义参数的表单
  * @param e ID / class
  * @param api 请求数据接口
  * @param method 请求方式
@@ -92,6 +92,10 @@ OesUtil.initQueryTable = function queryTable(e, api, method, columns,params) {
  */
 OesUtil.ajaxPage = function ajaxContent(e,api) {
             $.get(api, function (data) {
+                if(data.message != null){
+                    toastr.error(data.message );
+                    return false;
+                }
                 $(".content-wrapper").empty().html(data);
                 $('.main-sidebar').find('a').each(function () {
                     $(this).removeClass('active');

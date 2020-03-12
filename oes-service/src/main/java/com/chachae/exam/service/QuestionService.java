@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.dto.ImportPaperDto;
-import com.chachae.exam.common.model.dto.QuestionQueryDto;
+import com.chachae.exam.common.model.dto.QueryQuestionDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +27,7 @@ public interface QuestionService extends IService<Question> {
    * @param entity 模糊条件
    * @return 分页信息结果集
    */
-  Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity);
+  Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity);
 
   /**
    * 根据paperId和试题类型查找该类型题目集合

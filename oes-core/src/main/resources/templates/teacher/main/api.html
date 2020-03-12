@@ -20,12 +20,20 @@
         OesUtil.ajaxPage("#student", "/teacher/student");
     });
 
-    $("#help").click(function () {
-        OesUtil.ajaxPage("#help", "/admin/help");
+    $("#paper").click(function () {
+        OesUtil.ajaxPage("#paper", "/teacher/paper");
     });
 
-    $("#update").click(function () {
-        OesUtil.ajaxPage("#update", "/admin/update/pass");
+    $("#question").click(function () {
+        OesUtil.ajaxPage("#question", "/teacher/question");
+    });
+
+    $("#exam").click(function () {
+        OesUtil.ajaxPage("#exam", "/teacher/exam");
+    });
+
+    $("#review").click(function () {
+        OesUtil.ajaxPage("#review", "/teacher/reviewPaper");
     });
 
     $(window).on("popstate", function () {

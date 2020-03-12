@@ -10,7 +10,7 @@ import com.chachae.exam.common.dao.StudentDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.chachae.exam.common.model.dto.StudentQueryDto;
+import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
@@ -87,7 +87,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   }
 
   @Override
-  public Map<String, Object> listPage(Page<Student> page, StudentQueryDto entity) {
+  public Map<String, Object> listPage(Page<Student> page, QueryStudentDto entity) {
     IPage<StudentVo> pageInfo = this.studentDAO.pageVo(page, entity);
     return PageUtil.toPage(pageInfo);
   }

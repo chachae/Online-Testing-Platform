@@ -5,11 +5,16 @@
         OesUtil.confirm("确定删除该模版么?", function () {
             $.get("/api/paperForm/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.reload();
+                    OesUtil.ajaxPage("#paper", "/teacher/paperForm");
                 } else {
                     toastr.error(data.message);
                 }
             })
         })
+    }
+
+    // 使用模板
+    function goUser(id) {
+        OesUtil.ajaxPage("#paper", "/teacher/paper/save/" + id);
     }
 </script>

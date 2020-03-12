@@ -42,8 +42,8 @@
 
     // 自动上传
     $('#upload').change(function () {
-        var formData = new FormData();
-        var files = $($(this))[0].files[0];
+        let formData = new FormData();
+        let files = $($(this))[0].files[0];
         formData.append("file", files);
         toastr.info("正在上传......");
         $.ajax({
@@ -77,16 +77,16 @@
     // 提交组卷
     $('#saveImportBtn').click(function () {
         if ($('.paperName').val() === '') {
-            toastr.info("请填写试卷名称");
+            toastr.error("请填写试卷名称");
             return false;
         } else if ($('.courseId').val() === '') {
-            toastr.info("请选择课程");
+            toastr.error("请选择课程");
             return false;
         } else if ($('.majorId').val() === '') {
-            toastr.info("请选择专业");
+            toastr.error("请选择专业");
             return false;
         } else if ($('.paperType').val() === '') {
-            toastr.info("请选择试卷类型");
+            toastr.error("请选择试卷类型");
             return false;
         } else {
             $.ajax({

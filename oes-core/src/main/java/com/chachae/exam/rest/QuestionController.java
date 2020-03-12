@@ -3,7 +3,7 @@ package com.chachae.exam.rest;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Question;
-import com.chachae.exam.common.model.dto.QuestionQueryDto;
+import com.chachae.exam.common.model.dto.QueryQuestionDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
@@ -30,7 +30,7 @@ public class QuestionController {
   @GetMapping("/list")
   @Permissions("course:list")
   @Limit(key = "courseList", period = 3, count = 18, name = "试题查询接口", prefix = "limit")
-  public Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity) {
+  public Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity) {
     return this.questionService.listPage(page, entity);
   }
 

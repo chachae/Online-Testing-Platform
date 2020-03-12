@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.chachae.exam.common.model.dto.StudentQueryDto;
+import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 
 import java.util.Map;
@@ -48,7 +48,7 @@ public interface StudentService extends IService<Student> {
    * @param entity 模糊条件
    * @return 学生分页结果集
    */
-  Map<String, Object> listPage(Page<Student> page, StudentQueryDto entity);
+  Map<String, Object> listPage(Page<Student> page, QueryStudentDto entity);
 
   /**
    * 通过 ID 查询学生详细信息

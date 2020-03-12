@@ -5,7 +5,6 @@ server:
   # 最大文件
   max-http-header-size: 5MB
 
-
 # SpringMvc 配置
 spring:
   # 数据源配置

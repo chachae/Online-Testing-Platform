@@ -6,7 +6,7 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
-import com.chachae.exam.common.model.dto.StudentQueryDto;
+import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Limit;
@@ -52,7 +52,7 @@ public class StudentController {
   @GetMapping("/list")
   @Permissions("student:list")
   @Limit(key = "majorList", period = 5, count = 15, name = "学生查询接口", prefix = "limit")
-  public Map<String,Object> listPage(Page<Student> page, StudentQueryDto entity){
+  public Map<String,Object> listPage(Page<Student> page, QueryStudentDto entity){
     return this.studentService.listPage(page,entity);
   }
 

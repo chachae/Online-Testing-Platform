@@ -3,39 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 试卷模板列表</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <%
-    include("../../include/css.html"){}
-    %>
+    <%include("../../include/css.html"){} %>
 </head>
-<style>
-    .table > tbody > tr:hover {
-        cursor: pointer;
-    }
-
-    .table > tbody > tr > td {
-        vertical-align: middle;
-    }
-
-    th {
-        font-size: 15px;
-        text-align: center;
-    }
-
-    td {
-        font-size: 15px;
-        text-align: center;
-    }
-</style>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% include("../../teacher/include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../../teacher/include/sider.html",{name:"paper"}){} %>
+    <% layout("../include/sider.html",{name:"paper"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax paperFormTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -45,7 +29,9 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/teacher/paper">试卷列表</a></li>
+                            <li class="breadcrumb-item">
+                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -111,8 +97,9 @@
                                         <td> ${form.QProgramNum}</td>
                                         <td> ${form.QProgramScore}</td>
                                         <td>
-                                            <a class="btn btn-sm btn-success" href="/teacher/paper/save/${form.id}">使用</a>
-                                            <a class="rowDel btn btn-sm btn-danger" onclick="deletePaperForm(${form.id})">删除</a>
+                                            <button class="btn btn-sm btn-success" onclick="goUser(${form.id})">使用</button>
+                                            <button class="rowDel btn btn-sm btn-danger"
+                                               onclick="deletePaperForm(${form.id})">删除</button>
                                         </td>
                                     </tr>
                                     <% } %>
@@ -125,15 +112,17 @@
                 </div>
             </div><!-- /.row -->
         </section>
+        <!-- 接口 -->
+        <%include("api/paper-form-list-api.html"){}%>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
-</div><!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- 接口 -->
-<%include("api/paper-form-list-api.html"){}%>
-<!-- 自定义工具 -->
-<script src="/static/js/OesUtil.js"></script>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
+</div>
 </body>
 </html>
-

@@ -3,18 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 学生作答记录</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){}%>
+    <%include("../../include/css.html"){} %>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <%include("../include/header.html"){}%>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <%layout("../include/sider.html",{name:"review-list"}){}%>
+    <% layout("../include/sider.html",{name:"review-list"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax reviewListTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -24,7 +29,9 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/teacher/reviewPaper">返回列表</a></li>
+                            <li class="breadcrumb-item">
+                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -147,18 +154,21 @@
 
                 </div><!-- /.row -->
             </div>
-
         </section>
+        <!-- 修改成绩模态框 -->
+        <%include("update-modal.html"){}%>
+        <!-- 接口 -->
+        <%include("api/record-list-api.html"){}%>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 修改成绩模态框 -->
-<%include("update-modal.html"){}%>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<script src="/static/js/OesUtil.js"></script>
-<%include("api.html"){}%>
 </body>
 </html>
 

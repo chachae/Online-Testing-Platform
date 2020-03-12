@@ -3,21 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 新增试卷</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
-    <link rel="stylesheet" href="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.css">
+    <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-
 <div class="wrapper">
-    <!-- 顶部导航栏部分 -->
     <!-- 引入头部 -->
-    <% include("../../teacher/include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../../teacher/include/sider.html",{name:"save-paper"}){} %>
+    <% layout("../include/sider.html",{name:"save-paper"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax savePaperTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -27,7 +29,9 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/teacher/paper">返回列表</a></li>
+                            <li class="breadcrumb-item">
+                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -109,11 +113,13 @@
                                     <div class="form-group row">
                                         <div class="col-sm-6">
                                             <label for="beginTIme">开始时间</label>
-                                            <input type="text" name="beginTime" class="form-control" id="beginTime"  autocomplete="off">
+                                            <input type="text" name="beginTime" class="form-control" id="beginTime"
+                                                   autocomplete="off">
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="endTime">结束时间</label>
-                                            <input type="text" name="endTime" class="form-control" id="endTime"  autocomplete="off">
+                                            <input type="text" name="endTime" class="form-control" id="endTime"
+                                                   autocomplete="off">
                                         </div>
                                     </div>
                                 </form>
@@ -131,19 +137,17 @@
                 </div>
             </div><!-- /.row -->
         </section>
+        <!-- 接口 -->
+        <%include("api/save-paper-api.html"){} %>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- 时间选择器 js -->
-<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/webjars/AdminLTE/3.0.0/plugins/daterangepicker/moment.min.js"></script>
-<!-- 自定义工具 -->
-<script src="/static/js/OesUtil.js"></script>
-<!-- 接口 -->
-<%include("api/save-paper-api.html"){} %>
 </body>
 </html>
-

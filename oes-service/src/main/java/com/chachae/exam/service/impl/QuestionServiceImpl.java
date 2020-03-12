@@ -67,7 +67,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   private Log log = Log.get();
 
   @Override
-  public Map<String, Object> listPage(Page<Question> page, QuestionQueryDto entity) {
+  public Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity) {
     // 只查询本人的试题，获取教师本人的课程id，并构造条件
     int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     List<Integer> courseIds = this.courseService.listIdByTeacherId(teacherId);

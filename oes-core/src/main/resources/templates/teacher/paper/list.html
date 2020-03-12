@@ -3,37 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 试卷列表</title>
+    <title>OES | 教师端</title>
     <!-- 引入全局 css 文件 -->
-    <% include("../../include/css.html"){} %>
-    <style>
-        .table > tbody > tr:hover {
-            cursor: pointer;
-        }
-
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
-
-        th {
-            font-size: 15px;
-            text-align: center;
-        }
-
-        td {
-            font-size: 15px;
-            text-align: center;
-        }
-    </style>
+    <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
     <!-- 引入头部 -->
-    <% include("../../teacher/include/header.html"){} %>
+    <% include("../include/header.html"){} %>
     <!-- 左侧菜单栏 -->
-    <% layout("../../teacher/include/sider.html",{name:"paper"}){} %>
+    <% layout("../include/sider.html",{name:"paper"}){} %>
+    <!-- 引入全局 js 脚本文件 -->
+    <% include("../../include/js.html"){} %>
     <!-- 右侧内容部分 -->
     <div class="content-wrapper">
+        <%
+        #ajax paperTable:{
+        %>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -60,85 +46,51 @@
                                 <h3 class="card-title">试卷列表</h3>
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm">
-                                        <a href="/teacher/paper/import" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> 导入试题</a>&nbsp;
-                                        <a id="goSave" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> 随机组卷</a>&nbsp;
-                                        <a href="/teacher/paperForm" class="btn btn-default btn-sm"><i class="fa fa-search"></i> 查看模版</a>
+                                        <button onclick="goImport()" class="btn btn-default btn-sm">导入试题</button>&nbsp;
+                                        <button onclick="goRandom()" class="btn btn-default btn-sm">随机组卷</button>&nbsp;
+                                        <button onclick="goPaperForm()" class="btn btn-default btn-sm">查看模版</button>&nbsp;
+                                        <button class="btn btn-default btn-sm" onclick="OesUtil.refreshTable('#paperInfo');">刷新数据</button>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- 条件查询框 -->
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <input id="findPaperName" class="form-control "
+                                                   style="width: 250px" placeholder="试卷名称">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <select class="courseSelect  form-control" name="courseId"
+                                                    id="findCourse"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-bordered table-striped table-head-fixed text-nowrap">
-                                    <tbody>
-                                    <tr>
-                                        <th>序号</th>
-                                        <th>试卷编号</th>
-                                        <th>试卷名称</th>
-                                        <th>试卷状态</th>
-                                        <th>试卷类型</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    <% if( isEmpty(page.list) ){ %>
-                                    <tr>
-                                        <td colspan="6">试卷库中还未添加试卷</td>
-                                    </tr>
-                                    <% } %>
-                                    <% for( paper in page.list ){ %>
-                                    <tr class="rowDetail" rel="${paper.id}">
-                                        <td>${paperLP.index}</td>
-                                        <td>No. ${paper.id}</td>
-                                        <td>${paper.paperName}</td>
-                                        <td>
-                                            <% if(paper.end){ %>
-                                            已结束
-                                            <% }else if(paper.start){ %>
-                                            考试中
-                                            <% }else{ %>
-                                            未开始
-                                            <% } %>
-                                        </td>
-                                        <td>${paper.paperType}考试</td>
-                                        <td>
-                                            <button class="btn btn-info btn-sm viewBtn" onclick="viewPaper(${paper.id})">查看试卷 </button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
+                            <div class="card-body">
+                                <table id="paperInfo" class="table table-bordered table-striped text-nowrap"></table>
                             </div>
-                            <div class="card-footer clearfix">
-                                <ul class="pagination m-0 float-right">
-                                    <%for(var i=1;i<=page.pages;i++){ %>
-                                    <% if(page.pageNum == i){ %>
-                                    <li class="page-item active">
-                                        <a class="page-link"
-                                           href="?p={{i}}">${i}</a>
-                                    </li>
-                                    <%}else{%>
-                                    <li class="page-item">
-                                        <a class="page-link"
-                                           href="?p={{i}}">${i}</a>
-                                    </li>
-                                    <%}%>
-                                    <% }%>
-                                </ul>
-                            </div>
-                            <!-- /.card-body -->
                         </div>
                     </div>
                     <!-- /.card -->
                 </div>
             </div><!-- /.row -->
         </section>
+        <%include("api/list-api.html"){} %>
+        <%}%>
     </div>
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
     <!-- 引入footer -->
-    <% include("../../include/footer.html"){} %>
+    <% include("../../include/footer.html"){}%>
+    <%include("../main/api.html"){}%>
+    <!-- Control Sidebar -->
 </div>
-<!-- 引入全局 js 脚本文件 -->
-<% include("../../include/js.html"){} %>
-<!-- 自定义工具 -->
-<script src="/static/js/OesUtil.js"></script>
-<%include("api/list-api.html"){} %>
 </body>
 </html>
 

@@ -67,7 +67,7 @@
 
                 <!-- 试题管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/question" class="nav-link  ${name == 'question'?'active':''}">
+                    <a href="javascript:;" id="question" class="nav-link  ${name == 'question'?'active':''}">
                         <i class="nav-icon fas fa-question-circle"></i>
                         <p>试题管理</p>
                     </a>
@@ -75,24 +75,24 @@
 
                 <!-- 试卷管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/paper" class="nav-link  ${strutil.contain(name,'paper')?'active':''}">
-                        <i class="nav-icon fas fa-file"></i>
+                    <a href="javascript:;" id="paper" class="nav-link  ${strutil.contain(name,'paper')?'active':''}">
+                        <i class="nav-icon fas fa-file-alt"></i>
                         <p>试卷管理</p>
                     </a>
                 </li>
 
                 <!-- 考试管理 -->
                 <li class="nav-item">
-                    <a href="/teacher/exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
-                        <i class="nav-icon fas fa-clock-o"></i>
+                    <a href="javascript:;" id="exam" class="nav-link  ${strutil.contain(name,'exam')?'active':''}">
+                        <i class="nav-icon fas fa-clock"></i>
                         <p>考试管理</p>
                     </a>
                 </li>
 
                 <!-- 试卷复查 -->
                 <li class="nav-item">
-                    <a href="/teacher/reviewPaper" class="nav-link ${strutil.contain(name,'review')?'active':''}">
-                        <i class="nav-icon fas fa-refresh"></i>
+                    <a href="javascript:;" id="review" class="nav-link ${strutil.contain(name,'review')?'active':''}">
+                        <i class="nav-icon fas fa-clipboard-check"></i>
                         <p>试卷复查</p>
                     </a>
                 </li>
@@ -100,7 +100,7 @@
                 <!-- 帮助中心 -->
                 <li class="nav-item">
                     <a href="/teacher/help" class="nav-link  ${name == 'help'?'active':''}">
-                        <i class="nav-icon fa fa-user-circle"></i>
+                        <i class="nav-icon fas fa-user-circle"></i>
                         <p>帮助中心</p>
                     </a>
                 </li>
