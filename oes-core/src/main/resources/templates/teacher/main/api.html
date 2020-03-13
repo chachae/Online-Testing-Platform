@@ -36,6 +36,14 @@
         OesUtil.ajaxPage("#review", "/teacher/reviewPaper");
     });
 
+    $("#help").click(function () {
+        OesUtil.ajaxPage("#help", "/teacher/help");
+    });
+
+    $("#update-pass").click(function () {
+        OesUtil.ajaxPage("#update-pass", "/teacher/update/pass");
+    });
+
     $(window).on("popstate", function () {
         let state = history.state;
         if (state === null) {

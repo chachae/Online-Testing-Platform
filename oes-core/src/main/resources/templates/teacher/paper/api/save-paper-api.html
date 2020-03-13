@@ -55,7 +55,7 @@
             let data = $("#addForm").serialize();
             $.post("/api/paper/save/random", data, function (data) {
                 if (data.state === "success") {
-                    window.location.href = "/teacher/paper/show/" + res.data;
+                    OesUtil.ajaxPage("paper", "/teacher/paper/show/" + data.data);
                 } else {
                     toastr.error(data.message);
                 }

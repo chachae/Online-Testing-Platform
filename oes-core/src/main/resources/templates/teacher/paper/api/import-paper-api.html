@@ -38,7 +38,7 @@
             });
             $("#majorId").append(options).val('').select2({theme: 'bootstrap4',width:'100%'});
         });
-    };
+    }
 
     // 自动上传
     $('#upload').change(function () {
@@ -95,8 +95,7 @@
                 data: $('#addForm').serialize(),
                 success: function (res) {
                     if (res.state === "success") {
-                        toastr.success("添加成功");
-                        window.location.href = "/teacher/paper/show/" + res.data;
+                        OesUtil.ajaxPage("paper","/teacher/paper/show/" + res.data);
                     } else {
                         toastr.error(res.message);
                     }

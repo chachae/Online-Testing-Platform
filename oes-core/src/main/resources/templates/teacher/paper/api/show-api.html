@@ -4,7 +4,7 @@
         OesUtil.confirm("确定要删除试卷吗？", function () {
             $.post("/api/paper/delete/" + id).done(function (data) {
                 if (data.state === "success") {
-                    window.location.href = "/teacher/paper";
+                    OesUtil.ajaxPage("#paper", "/teacher/paper");
                 } else {
                     toastr.error(data.message);
                 }
