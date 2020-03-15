@@ -67,7 +67,9 @@ public class TeacherModuleController {
    */
   @GetMapping("/update/pass")
   public String updatePass() {
-    return "/teacher/self/update-pass";
+    return ServletUtil.isAjax()
+        ? "/teacher/self/update-pass#updateTable"
+        : "/teacher/self/update-pass";
   }
 
   /**
@@ -159,7 +161,7 @@ public class TeacherModuleController {
    */
   @GetMapping("/help")
   public String help() {
-    return "/teacher/self/help";
+    return ServletUtil.isAjax() ? "/teacher/self/help#helpTable" : "/teacher/self/help";
   }
 
   /**

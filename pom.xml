@@ -8,6 +8,7 @@
         <module>oes-common</module>
         <module>oes-service</module>
         <module>oes-core</module>
+        <module>oes-util</module>
     </modules>
 
     <!-- SpringBoot 父工程 -->
@@ -66,6 +67,13 @@
             <dependency>
                 <groupId>com.chachae.exam</groupId>
                 <artifactId>oes-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 工具模块 -->
+            <dependency>
+                <groupId>com.chachae.exam</groupId>
+                <artifactId>oes-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -158,6 +166,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

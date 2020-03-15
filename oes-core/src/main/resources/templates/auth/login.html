@@ -60,6 +60,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" class="key">
+                                <div class="input-group mb-3">
+                                    <input type="text" placeholder="请输入验证码"
+                                           class="form-control" id="stuText">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
+                                                 alt="验证码">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <!-- /.col -->
                                     <div class="col-12">
@@ -91,6 +102,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <input type="hidden" class="key">
+                                <div class="input-group mb-3">
+                                    <input type="text" placeholder="请输入验证码"
+                                           class="form-control" id="teacherText">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha" alt="验证码">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <!-- /.col -->
                                     <div class="col-12">
@@ -115,11 +136,22 @@
                                     </div>
                                 </div>
                                 <div class="input-group mb-3">
-                                    <input type="password" id="adminPassword" name="password" class="form-control"
+                                    <input type="password" id="adminPassword" class="form-control"
                                            placeholder="密码" value="123">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fa fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" class="key">
+                                <div class="input-group mb-3">
+                                    <input type="text" placeholder="请输入验证码"
+                                           class="form-control" id="adminText">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
+                                                 alt="验证码">
                                         </div>
                                     </div>
                                 </div>

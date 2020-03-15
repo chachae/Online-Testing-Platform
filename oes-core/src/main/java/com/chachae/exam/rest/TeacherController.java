@@ -7,8 +7,11 @@ import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.TeacherService;
+import com.chachae.exam.util.model.Captcha;
+import com.chachae.exam.util.service.CaptchaService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,6 +28,7 @@ import java.util.Map;
 public class TeacherController {
 
   @Resource private TeacherService teacherService;
+  @Resource private CaptchaService captchaService;
 
   /**
    * 教师登录
@@ -33,12 +37,14 @@ public class TeacherController {
    * @return 教师主页
    */
   @PostMapping("/login")
-  public R login(@Valid LoginDto entity) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
+  @Limit(key = "teacherLogin", period = 60, count = 8, name = "教师登录接口", prefix = "limit")
+  public R login(@Valid LoginDto entity, @Valid Captcha captcha) {
+    // 验证码验证
+    this.captchaService.validate(captcha);
     // 执行登录
     Teacher teacher = teacherService.login(entity.getUsername(), entity.getPassword());
     // 设置 session 信息
+    HttpSession session = HttpContextUtil.getSession();
     session.setAttribute(SysConsts.Session.ROLE_ID, teacher.getRoleId());
     session.setAttribute(SysConsts.Session.TEACHER_ID, teacher.getId());
     session.setAttribute(SysConsts.Session.TEACHER, teacher);

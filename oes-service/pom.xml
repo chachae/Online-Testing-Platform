@@ -16,13 +16,7 @@
         <!-- 通用模块 -->
         <dependency>
             <groupId>com.chachae.exam</groupId>
-            <artifactId>oes-common</artifactId>
-        </dependency>
-
-        <!-- PageHelper -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <artifactId>oes-util</artifactId>
         </dependency>
 
     </dependencies>

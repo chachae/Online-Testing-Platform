@@ -12,6 +12,8 @@ import com.chachae.exam.common.util.HttpContextUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.StudentService;
+import com.chachae.exam.util.model.Captcha;
+import com.chachae.exam.util.service.CaptchaService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class StudentController {
 
   @Resource private StudentService studentService;
+  @Resource private CaptchaService captchaService;
 
   /**
    * 学生登录 验证学号和密码
@@ -36,12 +39,14 @@ public class StudentController {
    * @return 主界面
    */
   @PostMapping("/login")
-  public R login(@Valid LoginDto entity) {
-    // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
+  @Limit(key = "studentLogin", period = 60, count = 8, name = "学生登录接口", prefix = "limit")
+  public R login(@Valid LoginDto entity, @Valid Captcha captcha) {
+    // 验证码验证
+    this.captchaService.validate(captcha);
     // 执行登录接口
     StudentVo student = studentService.login(entity.getUsername(), entity.getPassword());
     // 设置 Session 信息
+    HttpSession session = HttpContextUtil.getSession();
     session.setAttribute(SysConsts.Session.ROLE_ID, student.getRoleId());
     session.setAttribute(SysConsts.Session.STUDENT_ID, student.getId());
     session.setAttribute(SysConsts.Session.STUDENT, student);
@@ -52,8 +57,8 @@ public class StudentController {
   @GetMapping("/list")
   @Permissions("student:list")
   @Limit(key = "majorList", period = 5, count = 15, name = "学生查询接口", prefix = "limit")
-  public Map<String,Object> listPage(Page<Student> page, QueryStudentDto entity){
-    return this.studentService.listPage(page,entity);
+  public Map<String, Object> listPage(Page<Student> page, QueryStudentDto entity) {
+    return this.studentService.listPage(page, entity);
   }
 
   /**

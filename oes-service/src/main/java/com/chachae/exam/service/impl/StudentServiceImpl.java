@@ -40,7 +40,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   @Resource private ScoreService scoreService;
 
   @Override
-  public StudentVo login(String stuNumber, String password) throws ServiceException {
+  public StudentVo login(String stuNumber, String password) {
     // 调用通过学号查询学生查询接口
     Student student = this.selectByStuNumber(stuNumber);
 

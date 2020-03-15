@@ -116,8 +116,7 @@ public class PaperMarkUtil {
     // 主观题/编程题答题记录
     List<StuAnswerRecord> stuAnswerRecords = Lists.newArrayList();
     JaccardSimilarity jaccardSimilarity = new JaccardSimilarity();
-    // 是NumberFormat的一个具体子类，用于格式化十进制数字，此处用于将数字转化为String
-    // #表示整数
+    // 是NumberFormat的一个具体子类，用于格式化十进制数字
     DecimalFormat df = new DecimalFormat("#");
     // 简答题批改
     if (CollUtil.isNotEmpty(list)) {

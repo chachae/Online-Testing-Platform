@@ -1,4 +1,4 @@
-package com.chachae.exam.controller.common;
+package com.chachae.exam.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @since 2020 /2/26 15:14
  */
 @Controller
-public class IndexController {
+public class LoginModuleController {
 
   /**
    * Login string.

@@ -20,7 +20,6 @@ import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.dto.*;
 import com.chachae.exam.common.model.vo.QuestionVo;
-import com.chachae.exam.common.service.RedisService;
 import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.common.util.FileUtil;
 import com.chachae.exam.common.util.HttpContextUtil;
@@ -31,6 +30,7 @@ import com.chachae.exam.service.TypeService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +53,7 @@ import java.util.Map;
 public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
-  @Resource private RedisService redisService;
+  @Resource private RedisTemplate<String, Object> redisService;
   @Resource private TypeService typeService;
   @Resource private QuestionDAO questionDAO;
   @Resource private PaperDAO paperDAO;
@@ -343,7 +343,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
 
     // 从缓存中获取试题信息
     String key = prefix + paperId + StrUtil.DOT + typeId;
-    Object obj = this.redisService.get(key);
+    Object obj = this.redisService.opsForValue().get(key);
     if (ObjectUtil.isNotEmpty(obj)) {
       return (List<Question>) obj;
     }

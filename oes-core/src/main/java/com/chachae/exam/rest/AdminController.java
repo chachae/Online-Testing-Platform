@@ -7,8 +7,11 @@ import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AdminService;
+import com.chachae.exam.util.model.Captcha;
+import com.chachae.exam.util.service.CaptchaService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,20 +28,23 @@ import java.util.Map;
 public class AdminController {
 
   @Resource private AdminService adminService;
+  @Resource private CaptchaService captchaService;
 
   /**
-   * 管理员登录<a href="http://localhost:8080/admin/login">管理员登录接口</a>
+   * 管理员登录<a href="http://localhost:8080/login>管理员登录接口</a>
    *
    * @param entity 账号密码
    * @return 管理员信息
    */
   @PostMapping("/login")
-  public R login(@Valid LoginDto entity) {
-    // 获取session 对象
-    HttpSession session = HttpContextUtil.getSession();
+  @Limit(key = "adminLogin", period = 60, count = 8, name = "管理员登录接口", prefix = "limit")
+  public R login(@Valid LoginDto entity, @Valid Captcha captcha) {
+    // 验证码验证
+    this.captchaService.validate(captcha);
     // 登陆操作
     Admin admin = this.adminService.login(entity.getUsername(), entity.getPassword());
     // 设置session
+    HttpSession session = HttpContextUtil.getSession();
     session.setAttribute(SysConsts.Session.ADMIN, admin);
     session.setAttribute(SysConsts.Session.ROLE_ID, admin.getRoleId());
     // 重定向到管理员主页

@@ -1,3 +1,89 @@
 <script>
-    $('#stuBtn').click(function(){let username=$("#stuNumber").val();let password=encryptPass($("#stuPassword").val());$.post("/api/student/login",{"username":username,"password":password}).done(function(data){if(data.state==="success"){toastr.success('认证成功');$(this).delay(1000).queue(function(){window.location.href="/student/index";});}else{toastr.error(data.message);}})});$('#teacherBtn').click(function(){let username=$("#teacherNumber").val();let password=encryptPass($("#teacherPassword").val());$.post("/api/teacher/login",{"username":username,"password":password}).done(function(data){if(data.state==="success"){toastr.success('认证成功');$(this).delay(1000).queue(function(){window.location.href="/teacher/index"});}else{toastr.error(data.message);}})});$('#adminBtn').click(function(){let username=$("#adminId").val();let password=encryptPass($("#adminPassword").val());$.post("/api/admin/login",{"username":username,"password":password}).done(function(data){if(data.state==="success"){toastr.success('认证成功');$(this).delay(1000).queue(function(){window.location.href="/admin/index";});}else{toastr.error(data.message);}})});
+
+    // 自动写入验证码
+    $(function () {
+        $.get("/api/captcha", function (data) {
+            if (data.state === "success") {
+                $('.key').val(data.data.key);
+                $('.captcha').attr("src", data.data.base64);
+            } else {
+                toastr.error(data.message);
+            }
+        })
+    });
+
+    // 获取验证码
+    function getCaptcha() {
+        $.get("/api/captcha", function (data) {
+            if (data.state === "success") {
+                $('.key').val(data.data.key);
+                $('.captcha').attr("src", data.data.base64);
+            } else {
+                toastr.error(data.message);
+            }
+        })
+    }
+
+    $('#stuBtn').click(function () {
+        let username = $("#stuNumber").val();
+        let password = encryptPass($("#stuPassword").val());
+        $.post("/api/student/login", {
+            "username": username,
+            "password": password,
+            "key": $(".key").val(),
+            "text": $("#stuText").val()
+        }).done(function (data) {
+            if (data.state === "success") {
+                toastr.success('认证成功');
+                $(this).delay(1000).queue(function () {
+                    window.location.href = "/student/index";
+                });
+            } else {
+                getCaptcha();
+                toastr.error(data.message);
+            }
+        })
+    });
+
+    $('#teacherBtn').click(function () {
+        let username = $("#teacherNumber").val();
+        let password = encryptPass($("#teacherPassword").val());
+        $.post("/api/teacher/login", {
+            "username": username,
+            "password": password,
+            "key": $(".key").val(),
+            "text": $("#teacherText").val()
+        }).done(function (data) {
+            if (data.state === "success") {
+                toastr.success('认证成功');
+                $(this).delay(1000).queue(function () {
+                    window.location.href = "/teacher/index"
+                });
+            } else {
+                getCaptcha();
+                toastr.error(data.message);
+            }
+        })
+    });
+
+    $('#adminBtn').click(function () {
+        let username = $("#adminId").val();
+        let password = encryptPass($("#adminPassword").val());
+        $.post("/api/admin/login", {
+            "username": username,
+            "password": password,
+            "key": $(".key").val(),
+            "text": $("#adminText").val()
+        }).done(function (data) {
+            if (data.state === "success") {
+                toastr.success('认证成功');
+                $(this).delay(1000).queue(function () {
+                    window.location.href = "/admin/index";
+                });
+            } else {
+                getCaptcha();
+                toastr.error(data.message);
+            }
+        })
+    });
 </script>
