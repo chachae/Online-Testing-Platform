@@ -39,27 +39,17 @@
 
 ## 四、系统主要实现功能
 
-### 登录模块
-
-![](.\data\screenshot\login.png)
-
 ### 教师端
 
 1. 个人设置：更换密码
 
-   ![](.\data\screenshot\update-password.png)
-
 2. 课程管理：教师添加自己的任课课程信息，默认一个课程只能有一个老师
-
-   ![](.\data\screenshot\course-manager.png)
 
 3. 试题管理：教师可以通过添加试题丰富题库，也可以对已存在的题目进行修改和删除操作
 
    - Excel 批量导入试题
 
    - 手动录入试题
-
-     ![](.\data\screenshot\question-manager.png)
 
 4. 试卷管理：教师可学则导入试卷或自动随机组合试卷来生成试卷
 
@@ -69,27 +59,16 @@
 
    - 局部题型随机
 
-     ![](.\data\screenshot\paper-mamager.png)
-
 5. 考试管理：试卷产生后会自动出现在学生考试系统中，若需要取消考试，可以在此处设置
-
-   ![](D:\git\onlince-exam-system\data\screenshot\exam-manager.png)
 
 6. 试卷复查：考生的主观题答案会被保存到数据库中，教师可以对其进行复查
 
-   ![](.\data\screenshot\review-manager.png)
-
 7. 专业管理：对学院专业进行统一管理
 
-   ![](.\data\screenshot\major-manager.png)
-
-8. 学生管理：对学生信息进行统一管理
-
-   ![](.\data\screenshot\student-manager.png)
+   学生管理：对学生信息进行统一管理
 
 9. 查看公告：查看管理员发布的公告信息
 
-   ![](.\data\screenshot\announce-manager.png)
 
 ### 学生端
 
@@ -97,11 +76,7 @@
 
 2. 我的考试：学生进入后会看到试卷信息，当有需要参加的考试时，点击进入即可来到考试界面。 考试结束系统会自动提交考卷并完成自动改卷任务
 
-   ![](.\data\screenshot\exam-manager2.png)
-
-   ![](.\data\screenshot\examing.png)
-
-3. 我的成绩：展示每门考试的成绩列表
+   
 
 4. 成绩分析：系统会统计出该生本学期参加每门考试的成绩，以及该门课程的平均成绩，使用雷达图进行对比
 
@@ -111,17 +86,30 @@
 
 1. 系统公告管理：在必要时发布系统公告
 
-   ![](.\data\screenshot\announce-edit.png)
-
 2. 教师管理：教师信息统一管理
-
-   ![](.\data\screenshot\teacher-manager.png)
 
 3. 学院管理：对学院进行统一管理
 
-   ![](.\data\screenshot\academy-manager.png)
-
 4. 管理员管理：对管理员信息进行统一管理
 
-   ![](.\data\screenshot\admin-manager.png)
+## 五、部分功能展示
 
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/login.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/academy-manager.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/admin-manager.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/announce-edit.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/examing.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/review-manager.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/update-password.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/exam-manager.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/exam-manager2.png)
+
+![](https://github.com/chachae/OES/raw/master/templates/screenshot/question-manager.png)
