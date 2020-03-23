@@ -42,11 +42,11 @@ public class CaptchaServiceImpl implements CaptchaService {
   @Override
   public void validate(Captcha captcha) {
     Object value = redisTemplate.opsForValue().get(captcha.getKey());
-    // 移除redis 中的验证码
-    redisTemplate.delete(captcha.getKey());
     if (ObjectUtil.isEmpty(value)) {
       throw new ServiceException("验证码过期");
     }
+    // 移除redis 中的验证码
+    redisTemplate.delete(captcha.getKey());
     if (!String.valueOf(value).equals(captcha.getText())) {
       throw new ServiceException("验证码错误");
     }

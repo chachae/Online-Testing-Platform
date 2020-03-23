@@ -29,17 +29,18 @@
     <!-- 相关依赖统一版本管理 -->
     <properties>
         <java.version>1.8</java.version>
-        <hutool.version>5.1.5</hutool.version>
+        <hutool.version>5.2.3</hutool.version>
         <mybatis-plus.version>3.3.1</mybatis-plus.version>
         <guava.version>28.2-jre</guava.version>
         <joda-time.version>2.10.5</joda-time.version>
         <pageHelper.version>1.2.13</pageHelper.version>
         <commons-text.version>1.8</commons-text.version>
-        <webjars-admin-lte.version>2.3.11</webjars-admin-lte.version>
-        <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
+        <webjars-admin-lte.version>3.0.2</webjars-admin-lte.version>
+        <webjars-font-awesome.version>5.12.0</webjars-font-awesome.version>
+        <webjars-bootstrap.version>4.4.1-1</webjars-bootstrap.version>
+        <webjars-bootstrap-table.version>1.16.0</webjars-bootstrap-table.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
         <beetl.version>3.0.19.RELEASE</beetl.version>
-        <shiro.version>1.5.1</shiro.version>
     </properties>
 
     <!-- 依赖版本管理 -->
@@ -93,13 +94,6 @@
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
-            <!-- PageHelper -->
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pageHelper.version}</version>
-            </dependency>
-
             <!-- HuTool -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -137,8 +131,8 @@
 
             <!-- AdminLTE -->
             <dependency>
-                <groupId>org.webjars.bower</groupId>
-                <artifactId>adminlte</artifactId>
+                <groupId>org.webjars</groupId>
+                <artifactId>AdminLTE</artifactId>
                 <version>${webjars-admin-lte.version}</version>
             </dependency>
 
@@ -147,6 +141,20 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>font-awesome</artifactId>
                 <version>${webjars-font-awesome.version}</version>
+            </dependency>
+
+            <!-- bootstrap -->
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${webjars-bootstrap.version}</version>
+            </dependency>
+
+            <!-- bootstrap-table -->
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>bootstrap-table</artifactId>
+                <version>${webjars-bootstrap-table.version}</version>
             </dependency>
 
         </dependencies>
@@ -168,11 +176,13 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!-- dev-tools -->
+        <!-- 调试可开启 -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-devtools</artifactId>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
 
     </dependencies>
 

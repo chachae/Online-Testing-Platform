@@ -55,31 +55,25 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>AdminLTE</artifactId>
-            <version>3.0.0</version>
         </dependency>
 
         <!-- bootstrap -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>4.4.1-1</version>
         </dependency>
 
         <!-- bootstrap-table -->
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>bootstrap-table</artifactId>
-            <version>1.16.0</version>
         </dependency>
-
 
         <!-- font-awesome -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>5.12.0</version>
         </dependency>
-
 
     </dependencies>
 

@@ -1,11 +1,11 @@
 package com.chachae.exam.core.init;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.service.PaperService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -63,14 +63,13 @@ public class ProgramInitialization implements ApplicationRunner {
       String localhost = NetUtil.getLocalhostStr();
       // 格式化地址字符串
       String url = String.format("http://%s:%s", localhost, port);
-      if (StringUtils.isNotBlank(contextPath)) {
+      if (StrUtil.isNotBlank(contextPath)) {
         url += contextPath;
       }
       // 信息提示
       log.info("成功加载 [{}] 级别的项目配置文件", active);
       log.info("[基于 spring-boot 的在线考试系统] 完成启动");
-      log.info("教师 | 学生访问地址：{}", url);
-      log.info("管理员访问地址：{}", url + "/admin/login");
+      log.info("访问地址：{}", url);
     }
   }
 }
