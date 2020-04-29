@@ -4,7 +4,7 @@ OES，一个基于 spring-boot 2.X 的校园在线考试系统
 
 [![https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square)](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square) [![https://img.shields.io/badge/mybatis-plus-3.3.1-blueviolet.svg?style=flat-square](https://img.shields.io/badge/MyBatisPlus-3.3.1-blueviolet.svg?style=flat-square)](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square) [![https://img.shields.io/badge/SpringBoot-2.2.6.RELEASE-brightgreen.svg?style=flat-square](https://img.shields.io/badge/SpringBoot-2.2.6.RELEASE-brightgreen.svg?style=flat-square)](https://img.shields.io/badge/SpringBoot-2.2.6.RELEASE-brightgreen.svg?style=flat-square) 
 
-本项目为个人项目，以校园层级为背景构建的一款在线考试系统。该在线考试系统的用户类型有三类，分别为教师、学生和管理员。本系统的实现包括试题和试卷的多样化定制和 导入 Excel 的批处理能力，试卷的发布与信息修改，学生考试，自动化评分，批量复查试卷，信息化等功能。实现了 AOP 权限检测机制，对外暴露接口统一管理，分布式 session，基于注解的接口限流策略，可插拔的缓存接口，前端页面无感刷新机制，RSA 非对称文本加密传输，定时任务等，功能丰富，采用模块化开发，对各类资源进行了较为合理的区分，以阿里规范为编码基准，详尽的源代码注释。项目源码均为本人截止今日一年多的 spring 框架学习与实践所得，适合作为同课题的毕设参考和 spring-boot 框架学习的参考，欢迎 start ！
+本项目为个人项目，以校园层级为背景构建的一款在线考试系统。该在线考试系统的用户类型有三类，分别为教师、学生和管理员。本系统的实现包括试题和试卷的多样化定制和导入 Excel 的批处理能力，试卷的发布与信息修改，学生考试，自动化评分，批量复查试卷，信息化等功能。实现了 AOP 权限检测机制，对外暴露接口统一管理，分布式 session，基于注解的接口限流策略，可插拔的缓存接口，前端页面无感刷新机制，RSA 非对称文本加密传输，定时任务等，功能丰富，采用模块化开发，对各类资源进行了较为合理的区分，以阿里规范为编码基准，详尽的源代码注释。项目源码均为本人截止今日一年多的 spring 框架学习与实践所得，适合作为同课题的毕设参考和 spring-boot 框架学习的参考，欢迎星标 ！
 
 ## 三方依赖
 
@@ -89,7 +89,7 @@ oes-util：系统的工具模块，已包含一个系统验证码服务模块，
 
 ## 留言
 
-目前作者大三在读，除开发阶段外更多的是利用课余时间维护本项目，精力有限，有任何问题可通过 issues 提出，无格式限定，只要有留意到就会给予答复，并且会在时间精力允许的情况进行解决。
+目前作者大三在读，除开发初期阶段外更多的是利用课余时间维护本项目，精力有限，有任何问题可通过 issues 提出，无格式限定，只要有留意到就会给予答复，并且会在时间精力允许的情况下解决问题。
 
 ## License
 
