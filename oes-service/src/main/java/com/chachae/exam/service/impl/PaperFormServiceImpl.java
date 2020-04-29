@@ -1,6 +1,5 @@
 package com.chachae.exam.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.dao.PaperFormDAO;
@@ -8,14 +7,13 @@ import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.service.PaperFormService;
 import com.chachae.exam.service.PaperService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 试卷模板服务实现类
@@ -28,16 +26,18 @@ import java.util.stream.Collectors;
 public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
     implements PaperFormService {
 
-  @Resource private PaperService paperService;
-  @Resource private PaperFormDAO paperFormDAO;
+  @Resource
+  private PaperService paperService;
+  @Resource
+  private PaperFormDAO paperFormDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 调用通过ID查询试卷模板信息接口
     PaperForm form = this.paperFormDAO.selectById(id);
-    // 如果 from 对象为空，说明模板不存在
-    if (ObjectUtil.isEmpty(form)) {
+    // 如果 form 对象为空，说明模板不存在
+    if (form == null) {
       throw new ServiceException("试卷模版不存在!");
     }
     // 查找是否有正在使用该模版的试卷，如果有，则不允许删除模版

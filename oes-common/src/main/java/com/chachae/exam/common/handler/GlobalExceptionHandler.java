@@ -4,15 +4,11 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.exception.LimitAccessException;
 import com.chachae.exam.common.exception.NoPermissionException;
 import com.chachae.exam.common.exception.ServiceException;
-import org.springframework.http.HttpStatus;
+import java.util.Objects;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Objects;
 
 /**
  * @author chachae
@@ -33,14 +29,15 @@ public class GlobalExceptionHandler {
     return R.error(e.getMessage());
   }
 
-
   @ResponseBody
   @ExceptionHandler(ServiceException.class)
   public R handleServiceException(ServiceException e) {
     return R.error(e.getMessage());
   }
 
-  /** 处理所有接口数据验证异常 */
+  /**
+   * 处理所有接口数据验证异常
+   */
   @ResponseBody
   @ExceptionHandler(BindException.class)
   public R handleBindException(BindException e) {

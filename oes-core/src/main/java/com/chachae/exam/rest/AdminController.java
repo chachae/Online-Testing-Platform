@@ -6,7 +6,7 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AdminService;
@@ -44,7 +44,7 @@ public class AdminController {
     // 登陆操作
     Admin admin = this.adminService.login(entity.getUsername(), entity.getPassword());
     // 设置session
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     session.setAttribute(SysConsts.Session.ADMIN, admin);
     session.setAttribute(SysConsts.Session.ROLE_ID, admin.getRoleId());
     // 重定向到管理员主页
@@ -91,7 +91,7 @@ public class AdminController {
     // 调用密码修改接口
     this.adminService.updatePassword(dto);
     // 获取 session 对象后，移除 session 信息
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     session.removeAttribute(SysConsts.Session.TEACHER_ID);
     session.removeAttribute(SysConsts.Session.ROLE_ID);
     session.removeAttribute(SysConsts.Session.TEACHER);

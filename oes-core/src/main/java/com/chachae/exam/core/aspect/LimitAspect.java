@@ -2,10 +2,12 @@ package com.chachae.exam.core.aspect;
 
 import com.chachae.exam.common.base.LimitType;
 import com.chachae.exam.common.exception.LimitAccessException;
-import com.chachae.exam.common.util.HttpContextUtil;
-import com.chachae.exam.common.util.IPUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.google.common.collect.ImmutableList;
+import java.lang.reflect.Method;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,10 +20,6 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-
 /**
  * 接口限流切面
  *
@@ -33,19 +31,21 @@ import java.lang.reflect.Method;
 @Component
 public class LimitAspect extends BaseAspectSupport {
 
-  @Resource private RedisTemplate<String, Object> redisTemplate;
+  @Resource
+  private RedisTemplate<String, Object> redisTemplate;
 
   @Pointcut("@annotation(com.chachae.exam.core.annotation.Limit)")
-  public void pointcut() {}
+  public void pointcut() {
+  }
 
   @Around("pointcut()")
   public Object around(ProceedingJoinPoint point) throws Throwable {
-    HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
+    HttpServletRequest request = HttpUtil.getHttpServletRequest();
     Method method = resolveMethod(point);
     Limit limitAnnotation = method.getAnnotation(Limit.class);
     LimitType limitType = limitAnnotation.limitType();
     String key;
-    String ip = IPUtil.getIpAddr(request);
+    String ip = HttpUtil.getIpAddr(request);
     int limitPeriod = limitAnnotation.period();
     int limitCount = limitAnnotation.count();
     switch (limitType) {

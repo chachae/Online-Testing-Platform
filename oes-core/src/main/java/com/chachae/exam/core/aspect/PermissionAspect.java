@@ -2,7 +2,7 @@ package com.chachae.exam.core.aspect;
 
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.exception.NoPermissionException;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class PermissionAspect extends BaseAspectSupport {
   public Object permissionCheckAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
     // 获取用户角色信息（session 情况交给拦截器处理，此处不用管）
-    int roleId = (int) HttpContextUtil.getAttribute(SysConsts.Session.ROLE_ID);
+    int roleId = (int) HttpUtil.getAttribute(SysConsts.Session.ROLE_ID);
     Set<String> permissions = this.permissionService.selectExpressionByRoleId(roleId);
 
     // 获取注解信息

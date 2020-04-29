@@ -4,14 +4,14 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.core.properties.Props;
-import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * 登录拦截器
@@ -22,10 +22,13 @@ import javax.servlet.http.HttpSession;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-  @Resource private Props props;
+  @Resource
+  private Props props;
 
-  /** 路径匹配器 */
-  private AntPathMatcher pathMatcher = new AntPathMatcher();
+  /**
+   * 路径匹配器
+   */
+  private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
   // 页面路径匹配
   private static final String ADMIN_PATTERN = "/admin/**";
@@ -34,7 +37,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
   private static final String REST_PATTERN = "/api/**";
 
   @Override
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+  public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response,
+      @NonNull Object handler)
       throws Exception {
 
     // 当前请求路径

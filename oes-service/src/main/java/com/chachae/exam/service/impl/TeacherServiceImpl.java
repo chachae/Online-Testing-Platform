@@ -1,8 +1,7 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
@@ -17,14 +16,13 @@ import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.TeacherService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 教师业务实现
@@ -36,16 +34,19 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> implements TeacherService {
 
-  @Resource private TeacherDAO teacherDAO;
-  @Resource private CourseService courseService;
-  @Resource private PaperService paperService;
+  @Resource
+  private TeacherDAO teacherDAO;
+  @Resource
+  private CourseService courseService;
+  @Resource
+  private PaperService paperService;
 
   @Override
   public Teacher login(String teaNumber, String password) {
     // 查询改用户名的教师信息
     Teacher teacher = this.selectByWorkNumber(teaNumber);
     // 判断对象的情况
-    if (ObjectUtil.isEmpty(teacher)) {
+    if (teacher == null) {
       throw new ServiceException("该职工号不存在，请重新输入");
     }
 
@@ -62,7 +63,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   public void updatePassword(ChangePassDto dto) {
     // 查询该 ID 的教师信息
     Teacher teacher = this.getById(dto.getId());
-    if (ObjectUtil.isEmpty(teacher)) {
+    if (teacher == null) {
       throw new ServiceException("用户不存在");
     }
 
@@ -79,8 +80,8 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   @Override
   public Teacher selectByWorkNumber(String workNumber) {
     // 查询改用户名的教师信息
-    QueryWrapper<Teacher> qw = new QueryWrapper<>();
-    qw.lambda().eq(Teacher::getWorkNumber, workNumber);
+    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
+    qw.eq(Teacher::getWorkNumber, workNumber);
     return this.teacherDAO.selectOne(qw);
   }
 
@@ -94,7 +95,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   public boolean save(Teacher entity) {
     // 查询是否已经存在该工号
     Teacher teacher = this.selectByWorkNumber(entity.getWorkNumber());
-    if (ObjectUtil.isNotEmpty(teacher)) {
+    if (teacher != null) {
       throw new ServiceException("工号已存在");
     } else {
       // 不存在则设置默认的角色ID和对密码进行加密存储

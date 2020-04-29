@@ -21,7 +21,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-  /** RedisTemplate 配置 */
+  /**
+   * RedisTemplate 配置
+   */
   @Bean
   @ConditionalOnClass(RedisOperations.class)
   public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory factory) {

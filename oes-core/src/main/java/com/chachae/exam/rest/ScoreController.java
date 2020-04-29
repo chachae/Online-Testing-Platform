@@ -5,7 +5,7 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.vo.StudentVo;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.ScoreService;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +43,7 @@ public class ScoreController {
   @Permissions("score:chart")
   public R stuSelfChart() {
     // 获取学生的 ID
-    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    StudentVo student = (StudentVo) HttpUtil.getAttribute(SysConsts.Session.STUDENT);
     // 设置成绩分布集合的 model 对象信息
     return R.successWithData(scoreService.countByLevel(student.getId()));
   }
@@ -57,7 +57,7 @@ public class ScoreController {
   @Permissions("score:list")
   public Map<String, Object> pageScore(Page<Score> page) {
     // 获取学生的 ID
-    StudentVo student = (StudentVo) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT);
+    StudentVo student = (StudentVo) HttpUtil.getAttribute(SysConsts.Session.STUDENT);
     return this.scoreService.pageByStuId(page, student.getId());
   }
 }

@@ -1,7 +1,7 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.MajorDAO;
@@ -12,14 +12,13 @@ import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.StudentService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 专业表服务实现类
@@ -31,9 +30,12 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements MajorService {
 
-  @Resource private MajorDAO majorDAO;
-  @Resource private PaperService paperService;
-  @Resource private StudentService studentService;
+  @Resource
+  private MajorDAO majorDAO;
+  @Resource
+  private PaperService paperService;
+  @Resource
+  private StudentService studentService;
 
   @Override
   public Map<String, Object> listPage(Page<Major> page, Major major) {
@@ -42,15 +44,15 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
 
   @Override
   public List<Major> listByAcademyId(Integer academyId) {
-    QueryWrapper<Major> qw = new QueryWrapper<>();
-    qw.lambda().eq(Major::getAcademyId, academyId);
+    LambdaQueryWrapper<Major> qw = new LambdaQueryWrapper<>();
+    qw.eq(Major::getAcademyId, academyId);
     return this.majorDAO.selectList(qw);
   }
 
   @Override
   public List<Major> listByMajorName(String majorName) {
-    QueryWrapper<Major> qw = new QueryWrapper<>();
-    qw.lambda().eq(Major::getMajor, majorName);
+    LambdaQueryWrapper<Major> qw = new LambdaQueryWrapper<>();
+    qw.eq(Major::getMajor, majorName);
     return this.majorDAO.selectList(qw);
   }
 

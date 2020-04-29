@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
@@ -18,29 +18,32 @@ import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.model.Question;
-import com.chachae.exam.common.model.dto.*;
+import com.chachae.exam.common.model.dto.ImportPaperDto;
+import com.chachae.exam.common.model.dto.QueryQuestionDto;
+import com.chachae.exam.common.model.dto.QuestionDto;
+import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
+import com.chachae.exam.common.model.dto.StudentAnswerDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
 import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.common.util.FileUtil;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.TypeService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.File;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import java.io.File;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 试题业务实现
@@ -53,23 +56,31 @@ import java.util.Map;
 public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
-  @Resource private RedisTemplate<String, Object> redisService;
-  @Resource private TypeService typeService;
-  @Resource private QuestionDAO questionDAO;
-  @Resource private PaperDAO paperDAO;
-  @Resource private PaperFormDAO paperFormDAO;
-  @Resource private CourseService courseService;
+  @Resource
+  private RedisTemplate<String, Object> redisService;
+  @Resource
+  private TypeService typeService;
+  @Resource
+  private QuestionDAO questionDAO;
+  @Resource
+  private PaperDAO paperDAO;
+  @Resource
+  private PaperFormDAO paperFormDAO;
+  @Resource
+  private CourseService courseService;
 
   @Value("${oes.cache.paper_prefix}")
   private String prefix;
 
-  /** 日志接口 */
-  private Log log = Log.get();
+  /**
+   * 日志接口
+   */
+  private final Log log = Log.get();
 
   @Override
   public Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity) {
     // 只查询本人的试题，获取教师本人的课程id，并构造条件
-    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    int teacherId = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     List<Integer> courseIds = this.courseService.listIdByTeacherId(teacherId);
 
     // 没有课程，直接返回一个空的数据集合
@@ -77,19 +88,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       return PageUtil.toPage(Lists.newArrayList(), 0);
     }
 
-    QueryWrapper<Question> qw = new QueryWrapper<>();
-    qw.lambda().in(Question::getCourseId, courseIds);
+    LambdaQueryWrapper<Question> qw = new LambdaQueryWrapper<>();
+    qw.in(Question::getCourseId, courseIds);
     // 条件情况判断
     // 课程 ID 不为空，加入判断条件
     if (entity.getCourseId() != null) {
-      qw.lambda().eq(Question::getCourseId, entity.getCourseId());
+      qw.eq(Question::getCourseId, entity.getCourseId());
     }
     // 题型 ID 不为空，加入判断条件
     if (entity.getTypeId() != null) {
-      qw.lambda().eq(Question::getTypeId, entity.getTypeId());
+      qw.eq(Question::getTypeId, entity.getTypeId());
     }
     if (entity.getQuestionName() != null) {
-      qw.lambda().like(Question::getQuestionName, entity.getQuestionName());
+      qw.like(Question::getQuestionName, entity.getQuestionName());
     }
     // 查询试题集合信息
     Page<Question> pageInfo = questionDAO.selectPage(page, qw);
@@ -104,8 +115,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   @Override
   public List<Question> listByTypeIdAndCourseId(Integer typeId, Integer courseId) {
     // 使用 QueryWrapper 条件构造器构造 Sql 条件
-    QueryWrapper<Question> qw = new QueryWrapper<>();
-    qw.lambda().eq(Question::getTypeId, typeId).eq(Question::getCourseId, courseId);
+    LambdaQueryWrapper<Question> qw = new LambdaQueryWrapper<>();
+    qw.eq(Question::getTypeId, typeId).eq(Question::getCourseId, courseId);
     // 获取所有对应条件的问题集合
     return questionDAO.selectList(qw);
   }
@@ -134,11 +145,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   @Override
   public List<Question> listByQuestionNameAndCourseIdAndTypeId(
       String questionName, Integer courseId, Integer typeId) {
-    QueryWrapper<Question> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Question> qw = new LambdaQueryWrapper<>();
     // 构造查询条件
-    qw.lambda().eq(Question::getQuestionName, questionName);
-    qw.lambda().eq(Question::getCourseId, courseId);
-    qw.lambda().eq(Question::getTypeId, typeId);
+    qw.eq(Question::getQuestionName, questionName);
+    qw.eq(Question::getCourseId, courseId);
+    qw.eq(Question::getTypeId, typeId);
     return this.questionDAO.selectList(qw);
   }
 
@@ -294,7 +305,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       }
 
       // 获取教师本人的课程 ID 集合
-      int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+      int teacherId = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
       List<Integer> ids = this.courseService.listIdByTeacherId(teacherId);
 
       for (Question question : questions) {
@@ -335,7 +346,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
    * 试题缓存管理器
    *
    * @param paperId 试卷 ID
-   * @param typeId 题目类型 ID
+   * @param typeId  题目类型 ID
    * @return 试题集合
    */
   @SuppressWarnings("unchecked")
@@ -364,7 +375,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       }
     }
 
-    // todo 写入缓存
+    // todo bug 写入缓存
     // this.redisService.set(key, questions, 3 * 3600L);
     return questions;
   }

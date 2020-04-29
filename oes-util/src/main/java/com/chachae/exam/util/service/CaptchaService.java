@@ -19,8 +19,6 @@ public interface CaptchaService {
 
   /**
    * 验证码校验
-   *
-   * @param captcha 验证码信息
    */
   void validate(Captcha captcha);
 }

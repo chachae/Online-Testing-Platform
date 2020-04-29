@@ -1,7 +1,7 @@
 package com.chachae.exam.controller;
 
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,7 +97,7 @@ public class AdminModuleController {
   @GetMapping("/logout")
   public String logout() {
     // 获取session 对象
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     // 删除当前用户的session
     session.removeAttribute(SysConsts.Session.ADMIN);
     session.removeAttribute(SysConsts.Session.ROLE_ID);

@@ -1,7 +1,7 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,13 +17,12 @@ import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import com.chachae.exam.service.StudentService;
+import java.io.Serializable;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * 学生业务实现
@@ -35,9 +34,12 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> implements StudentService {
 
-  @Resource private StudentDAO studentDAO;
-  @Resource private StuAnswerRecordService stuAnswerRecordService;
-  @Resource private ScoreService scoreService;
+  @Resource
+  private StudentDAO studentDAO;
+  @Resource
+  private StuAnswerRecordService stuAnswerRecordService;
+  @Resource
+  private ScoreService scoreService;
 
   @Override
   public StudentVo login(String stuNumber, String password) {
@@ -45,7 +47,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
     Student student = this.selectByStuNumber(stuNumber);
 
     // 如果学生对象为空说明不存在该用户，抛出异常信息
-    if (ObjectUtil.isEmpty(student)) {
+    if (student == null) {
       throw new ServiceException("该学号不存在");
     }
 
@@ -80,8 +82,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   @Override
   public Student selectByStuNumber(String stuNumber) {
     // 使用 QueryWrapper 构造通过学号查询条件
-    QueryWrapper<Student> qw = new QueryWrapper<>();
-    qw.lambda().eq(Student::getStuNumber, stuNumber);
+    LambdaQueryWrapper<Student> qw = new LambdaQueryWrapper<>();
+    qw.eq(Student::getStuNumber, stuNumber);
     // 通过学号查询学生信息
     return studentDAO.selectOne(qw);
   }
@@ -99,8 +101,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
 
   @Override
   public Integer selectCountByMajorId(Integer majorId) {
-    QueryWrapper<Student> qw = new QueryWrapper<>();
-    qw.lambda().eq(Student::getMajorId, majorId);
+    LambdaQueryWrapper<Student> qw = new LambdaQueryWrapper<>();
+    qw.eq(Student::getMajorId, majorId);
     return this.studentDAO.selectCount(qw);
   }
 
@@ -109,7 +111,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   public boolean save(Student entity) {
     // 检测学号是否存在
     Student student = this.selectByStuNumber(entity.getStuNumber());
-    if (ObjectUtil.isNotEmpty(student)) {
+    if (student != null) {
       throw new ServiceException("学号已存在");
     } else {
       // 默认角色值2

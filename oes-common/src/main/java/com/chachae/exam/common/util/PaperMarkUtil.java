@@ -6,12 +6,11 @@ import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.StuAnswerRecord;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.google.common.collect.Lists;
-import org.apache.commons.text.similarity.JaccardSimilarity;
-
-import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.text.similarity.JaccardSimilarity;
 
 /**
  * 评分工具
@@ -21,13 +20,14 @@ import java.util.stream.Stream;
  */
 public class PaperMarkUtil {
 
-  private PaperMarkUtil() {}
+  private PaperMarkUtil() {
+  }
 
   /**
    * 基本评分方法
    *
-   * @param list 问题集合
-   * @param score 题目分值
+   * @param list    问题集合
+   * @param score   题目分值
    * @param request request 对象
    * @return 题型所得分值
    */
@@ -57,8 +57,8 @@ public class PaperMarkUtil {
   /**
    * 多选题批改
    *
-   * @param list 问题集合
-   * @param score 题目分值
+   * @param list    问题集合
+   * @param score   题目分值
    * @param request request 对象
    * @return 题型所得分值
    */
@@ -103,8 +103,8 @@ public class PaperMarkUtil {
   /**
    * 主观题评分
    *
-   * @param list 问题集合
-   * @param score 题目分值
+   * @param list    问题集合
+   * @param score   题目分值
    * @param request request 对象
    * @return 题型所得分值
    */

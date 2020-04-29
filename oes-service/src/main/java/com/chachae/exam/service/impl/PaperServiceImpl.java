@@ -1,16 +1,23 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.dao.*;
+import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.dao.PaperFormDAO;
+import com.chachae.exam.common.dao.ScoreDAO;
+import com.chachae.exam.common.dao.StuAnswerRecordDAO;
+import com.chachae.exam.common.dao.TypeDAO;
 import com.chachae.exam.common.exception.ServiceException;
-import com.chachae.exam.common.model.*;
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.PaperForm;
+import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.Score;
+import com.chachae.exam.common.model.StuAnswerRecord;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
@@ -22,17 +29,16 @@ import com.chachae.exam.common.util.PaperMarkUtil;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.google.common.collect.Lists;
-import org.joda.time.DateTime;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 试卷批改业务实现
@@ -44,31 +50,18 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements PaperService {
 
-  @Resource private PaperDAO paperDAO;
-  @Resource private PaperFormDAO paperFormDAO;
-  @Resource private QuestionService questionService;
-  @Resource private StuAnswerRecordDAO stuAnswerRecordDAO;
-  @Resource private ScoreDAO scoreDAO;
-  @Resource private TypeDAO typeDAO;
-
-  @Override
-  public void randomNewPaper(Paper paper) {
-    // 获取试卷模板信息
-    PaperForm form = paperFormDAO.selectById(paper.getPaperFormId());
-    // 获取试卷归属的课程 ID
-    Integer cid = paper.getCourseId();
-    // 预先准备试卷问题集合
-    List<Integer> qs = Lists.newArrayList();
-    // 为每种题型进行随机组题
-    this.randomQuestions(form.getQChoiceNum(), qs, 1, cid);
-    this.randomQuestions(form.getQMulChoiceNum(), qs, 2, cid);
-    this.randomQuestions(form.getQTofNum(), qs, 3, cid);
-    this.randomQuestions(form.getQFillNum(), qs, 4, cid);
-    this.randomQuestions(form.getQSaqNum(), qs, 5, cid);
-    this.randomQuestions(form.getQProgramNum(), qs, 6, cid);
-    // 生成试卷题目序列，Example：（1,2,3,4,5,6,7,8）
-    this.savePaper(paper, qs);
-  }
+  @Resource
+  private PaperDAO paperDAO;
+  @Resource
+  private PaperFormDAO paperFormDAO;
+  @Resource
+  private QuestionService questionService;
+  @Resource
+  private StuAnswerRecordDAO stuAnswerRecordDAO;
+  @Resource
+  private ScoreDAO scoreDAO;
+  @Resource
+  private TypeDAO typeDAO;
 
   @Override
   public void randomNewPaper(Paper paper, String diff) {
@@ -93,7 +86,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
    * 试卷保存行为
    *
    * @param paper 试卷
-   * @param qs 问题ID集合
+   * @param qs    问题ID集合
    */
   private void savePaper(Paper paper, List<Integer> qs) {
     StringBuilder sb = new StringBuilder();
@@ -202,9 +195,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   @Override
   public List<Paper> listDoneByTeacherId(Integer teacherId) {
     // 构造通过教师ID查询已经完成的试卷信息
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getPaperState, SysConsts.Paper.PAPER_STATE_END);
-    qw.lambda().eq(Paper::getTeacherId, teacherId);
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
+    qw.eq(Paper::getPaperState, SysConsts.Paper.PAPER_STATE_END);
+    qw.eq(Paper::getTeacherId, teacherId);
     return paperDAO.selectList(qw);
   }
 
@@ -225,7 +218,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   public void deletePaperById(Integer id) {
     // 查询试卷是否存在
     Paper paper = this.paperDAO.selectById(id);
-    if (ObjectUtil.isNotEmpty(paper)) {
+    if (paper != null) {
       // 检查试卷是否在考试时间范围内，是的话不允许被删除（结束的话可以被删除/模拟考可以直接删除）
       if (paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)
           // 已经开始
@@ -236,16 +229,16 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       }
 
       // 删除score表中paperId为传入参数的对象
-      QueryWrapper<Score> scoreQw = new QueryWrapper<>();
-      scoreQw.lambda().eq(Score::getPaperId, id);
+      LambdaQueryWrapper<Score> scoreQw = new LambdaQueryWrapper<>();
+      scoreQw.eq(Score::getPaperId, id);
       List<Score> scores = this.scoreDAO.selectList(scoreQw);
       // 遍历成绩集合，并逐一删除对应试卷的成绩数据
       scores.forEach(score -> scoreDAO.deleteById(score.getId()));
 
       // 删除学生与该试卷关联的答题记录
-      QueryWrapper<StuAnswerRecord> ansQw = new QueryWrapper<>();
+      LambdaQueryWrapper<StuAnswerRecord> ansQw = new LambdaQueryWrapper<>();
       // 构造查询条件
-      ansQw.lambda().eq(StuAnswerRecord::getPaperId, id);
+      ansQw.eq(StuAnswerRecord::getPaperId, id);
       List<StuAnswerRecord> ans = this.stuAnswerRecordDAO.selectList(ansQw);
       // 遍历删除答题记录
       ans.forEach(an -> stuAnswerRecordDAO.deleteById(an.getId()));
@@ -267,10 +260,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
   @Override
   public List<Paper> selectByMajorId(Integer majorId) {
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getMajorId, majorId);
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
+    qw.eq(Paper::getMajorId, majorId);
     // 只查询正式考试
-    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
+    qw.eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
     return this.paperDAO.selectList(qw);
   }
 
@@ -279,13 +272,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   public void updateQuestionId(PaperQuestionUpdateDto dto) {
     // 查询试卷信息
     Paper paper = this.paperDAO.selectById(dto.getPaperId());
-    if (ObjectUtil.isEmpty(paper)) {
+    if (paper == null) {
       throw new ServiceException("试卷不存在");
     }
 
     // 查询新题目信息
     Question newQuestion = this.questionService.getById(dto.getNewId());
-    if (ObjectUtil.isEmpty(newQuestion)) {
+    if (newQuestion == null) {
       throw new ServiceException("新题目不存在");
     }
 
@@ -330,49 +323,28 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
   @Override
   public List<Paper> listByTeacherId(Integer teacherId) {
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getTeacherId, teacherId);
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
+    qw.eq(Paper::getTeacherId, teacherId);
     return this.paperDAO.selectList(qw);
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
   public void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity) {
     // 获取试卷模板信息
     Integer paperFormId = paper.getPaperFormId();
     PaperForm form = this.paperFormDAO.selectById(paperFormId);
-
-    // 预备随机开启值
-    // 开启单选题
-    boolean isChoiceOn = entity.getA() == 1,
-        // 开启多选题
-        isMulChoiceOn = entity.getB() == 1,
-        // 开启判断题
-        isTofOn = entity.getC() == 1,
-        // 开启填空题
-        isFillOn = entity.getD() == 1,
-        // 开启主观题
-        isSaqOn = entity.getE() == 1,
-        // 开启编程题
-        isProgramOn = entity.getF() == 1;
-
     // 判断是否存在已存在提醒仍进行随机抽题的情况
-    if (Integer.parseInt(form.getQChoiceNum()) > 0 && isChoiceOn) {
+    if (Integer.parseInt(form.getQChoiceNum()) > 0 && entity.getA() == 1) {
       throw new ServiceException("试卷中已存在 [ 单项选择题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQMulChoiceNum()) > 0 && isMulChoiceOn) {
+    } else if (Integer.parseInt(form.getQMulChoiceNum()) > 0 && entity.getB() == 1) {
       throw new ServiceException("试卷中已存在 [ 多项选择题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQTofNum()) > 0 && isTofOn) {
+    } else if (Integer.parseInt(form.getQTofNum()) > 0 && entity.getC() == 1) {
       throw new ServiceException("试卷中已存在 [ 判断题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQFillNum()) > 0 && isFillOn) {
+    } else if (Integer.parseInt(form.getQFillNum()) > 0 && entity.getD() == 1) {
       throw new ServiceException("试卷中已存在 [ 填空题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQSaqNum()) > 0 && isSaqOn) {
+    } else if (Integer.parseInt(form.getQSaqNum()) > 0 && entity.getE() == 1) {
       throw new ServiceException("试卷中已存在 [ 主观题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQProgramNum()) > 0 && isProgramOn) {
+    } else if (Integer.parseInt(form.getQProgramNum()) > 0 && entity.getF() == 1) {
       throw new ServiceException("试卷中已存在 [ 编程题 ]，请取消随机抽题后重试！");
     }
 
@@ -383,79 +355,79 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
     // 至此，随机抽题请求合法，进行分布随机
     // 单项选择
-    if (isChoiceOn) {
+    if (entity.getA() == 1) {
       // 设置模板信息
       form.setQChoiceNum(entity.getANum());
       form.setQChoiceScore(entity.getAScore());
       // 判断试题难度
       if (entity.getADif().equals(SysConsts.Diff.AVG)) {
         // 不需要过滤难度
-        this.randomQuestions(entity.getANum(), idList, 1, courseId);
+        this.randomQuestions(entity.getANum(), idList, 1, courseId, null);
       } else {
         this.randomQuestions(entity.getANum(), idList, 1, courseId, entity.getADif());
       }
     }
 
     // 多项选择
-    if (isMulChoiceOn) {
+    if (entity.getB() == 1) {
       // 设置模板信息
       form.setQMulChoiceNum(entity.getBNum());
       form.setQMulChoiceScore(entity.getBScore());
       // 判断试题难度
       if (entity.getBDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getBNum(), idList, 2, courseId);
+        this.randomQuestions(entity.getBNum(), idList, 2, courseId, null);
       } else {
         this.randomQuestions(entity.getBNum(), idList, 2, courseId, entity.getBDif());
       }
     }
 
     // 判断题
-    if (isTofOn) {
+    if (entity.getC() == 1) {
       // 设置模板信息
       form.setQTofNum(entity.getCNum());
       form.setQTofScore(entity.getCScore());
       // 判断试题难度
       if (entity.getCDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getCNum(), idList, 3, courseId);
+        this.randomQuestions(entity.getCNum(), idList, 3, courseId, null);
       } else {
         this.randomQuestions(entity.getCNum(), idList, 3, courseId, entity.getCDif());
       }
     }
 
     // 填空题
-    if (isFillOn) {
+    if (entity.getD() == 1) {
       // 设置模板信息
       form.setQFillNum(entity.getDNum());
       form.setQFillScore(entity.getDScore());
       // 判断试题难度
       if (entity.getDDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getDNum(), idList, 4, courseId);
+        this.randomQuestions(entity.getDNum(), idList, 4, courseId, null);
       } else {
         this.randomQuestions(entity.getDNum(), idList, 4, courseId, entity.getDDif());
       }
     }
 
     // 主观题
-    if (isSaqOn) {
+    if (entity.getE() == 1) {
       // 设置模板信息
       form.setQSaqNum(entity.getENum());
       form.setQSaqScore(entity.getEScore());
       // 判断试题难度
       if (entity.getEDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getENum(), idList, 5, courseId);
+        this.randomQuestions(entity.getENum(), idList, 5, courseId, null);
       } else {
         this.randomQuestions(entity.getENum(), idList, 5, courseId, entity.getEDif());
       }
     }
 
     // 编程题
-    if (isProgramOn) {
+    if (entity.getF() == 1) {
       // 设置模板信息
       form.setQProgramNum(entity.getFNum());
       form.setQProgramScore(entity.getFScore());
       // 判断试题难度
       if (entity.getFDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getFNum(), idList, 6, courseId);
+        this.randomQuestions(entity.getFNum(), idList, 6, courseId, null);
       } else {
         this.randomQuestions(entity.getFNum(), idList, 6, courseId, entity.getFDif());
       }
@@ -481,38 +453,38 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   @Override
   public int countPaperByPaperFormId(Integer paperFormId) {
     // 构造通过试卷模板查询试卷数量条件
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
-    qw.lambda().eq(Paper::getPaperFormId, paperFormId);
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
+    qw.eq(Paper::getPaperFormId, paperFormId);
     return this.paperDAO.selectCount(qw);
   }
 
   @Override
   public Map<String, Object> pagePaper(Page<Paper> page, QueryPaperDto entity) {
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
 
     // 试卷类型
     if (StrUtil.isNotBlank(entity.getPaperType())) {
-      qw.lambda().eq(Paper::getPaperType, entity.getPaperType());
+      qw.eq(Paper::getPaperType, entity.getPaperType());
     }
 
     // 所属专业
     if (entity.getMajorId() != null) {
-      qw.lambda().eq(Paper::getMajorId, entity.getMajorId());
+      qw.eq(Paper::getMajorId, entity.getMajorId());
     }
 
     // 出卷老师
     if (entity.getTeacherId() != null) {
-      qw.lambda().eq(Paper::getTeacherId, entity.getTeacherId());
+      qw.eq(Paper::getTeacherId, entity.getTeacherId());
     }
 
     // 所属课程
     if (entity.getCourseId() != null) {
-      qw.lambda().eq(Paper::getCourseId, entity.getCourseId());
+      qw.eq(Paper::getCourseId, entity.getCourseId());
     }
 
     // 试卷名称
     if (StrUtil.isNotBlank(entity.getPaperName())) {
-      qw.lambda().like(Paper::getPaperName, entity.getPaperName());
+      qw.like(Paper::getPaperName, entity.getPaperName());
     }
 
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
@@ -521,16 +493,16 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
   @Override
   public Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity) {
-    QueryWrapper<Paper> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
     // 教师 ID
     if (entity.getTeacherId() != null) {
-      qw.lambda().eq(Paper::getTeacherId, entity.getTeacherId());
+      qw.eq(Paper::getTeacherId, entity.getTeacherId());
     }
     // 获取当前时间
     String now = DateUtil.getFormatLocalDateTimeStr();
-    qw.lambda().eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
+    qw.eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
     // 开始时间大于当前时间
-    qw.lambda().gt(Paper::getBeginTime, now);
+    qw.gt(Paper::getBeginTime, now);
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }
@@ -556,40 +528,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   }
 
   /**
-   * 计算所属课程+所属试题类型的试题数量
-   *
-   * @param typeNum 该类型问题的数量
-   * @param qIds 试卷问题的 ID 集合
-   * @param tid 问题类型
-   * @param cid 课程 ID
-   */
-  private void randomQuestions(String typeNum, List<Integer> qIds, Integer tid, Integer cid) {
-    // 初始值
-    int num;
-    // 类型题存在才进行随机抽题
-    if (StrUtil.isNotEmpty(typeNum)) {
-      // 转整型
-      num = Integer.parseInt(typeNum);
-      // 获取类型题的 ID 集合
-      List<Question> qs = questionService.listByTypeIdAndCourseId(tid, cid);
-      List<Integer> idList = Lists.newArrayList();
-      // 遍历问题集合获取问题 ID，将 ID 加入idList 中
-      qs.forEach(question -> idList.add(question.getId()));
-      // 随机抽题
-      List<Integer> randomIds = getRandomIdList(idList, num);
-      // 封装 ID
-      qIds.addAll(randomIds);
-    }
-  }
-
-  /**
    * 指定难度的随机抽题方法
    *
    * @param typeNum 试题数量
-   * @param qIds 试题的 ID 集合
-   * @param tid 试题类型
-   * @param cid 课程 ID
-   * @param dif 难度
+   * @param qIds    试题的 ID 集合
+   * @param tid     试题类型
+   * @param cid     课程 ID
+   * @param dif     难度（传入null代表难度不限定）
    */
   private void randomQuestions(
       String typeNum, List<Integer> qIds, Integer tid, Integer cid, String dif) {
@@ -601,8 +546,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       num = Integer.parseInt(typeNum);
       // 获取类型题的 ID 集合
       List<Question> qs = questionService.listByTypeIdAndCourseId(tid, cid);
-      // 过滤难度
-      qs = qs.stream().filter(q -> q.getDifficulty().equals(dif)).collect(Collectors.toList());
+      // 过滤难度（diff为null 说明不需要过滤难度）
+      if (StrUtil.isNotBlank(dif)) {
+        qs = qs.stream().filter(q -> q.getDifficulty().equals(dif)).collect(Collectors.toList());
+      }
       List<Integer> idList = Lists.newArrayList();
       // 遍历问题集合获取问题 ID，将 ID 加入idList 中
       for (Question question : qs) {
@@ -630,11 +577,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       try {
         // 利用题序集合长度-1（集合索引范围）作为随机因子，随机取索引值
         int bound = ids.size();
-        if (bound <= 1) {
-          index = 0;
-        } else {
-          index = random.nextInt(bound - 1);
-        }
+        index = bound <= 1 ? 0 : random.nextInt(bound - 1);
         // 从题序集合中获取该索引的题
         result.add(ids.get(index));
         // 移除该题序防止题目重复同时保证题序集合长度在安全范围内进行随机取值
@@ -660,7 +603,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
    * 计算考试起止时间
    *
    * @param beginTime 开始时间
-   * @param endTime 结束时间
+   * @param endTime   结束时间
    * @return 时间长度
    */
   private String calAllowTime(String beginTime, String endTime) {
@@ -684,8 +627,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 判断起止时间是否符合要求
     if (d1.isBeforeNow()) {
       throw new ServiceException("请设置一个未来的时间");
-    }
-    if (d1.isAfter(d2)) {
+    } else if (d1.isAfter(d2)) {
       throw new ServiceException("开始时间不能晚于结束时间！");
     }
 
@@ -695,7 +637,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     }
 
     // 封装时间
-    StringBuilder build = StrUtil.builder();
+    StringBuilder build = new StringBuilder();
     return build.append(d2.getMinuteOfDay() - d1.getMinuteOfDay()).append("分钟").toString();
   }
 }

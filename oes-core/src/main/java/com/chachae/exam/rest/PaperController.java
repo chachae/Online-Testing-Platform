@@ -1,24 +1,31 @@
 package com.chachae.exam.rest;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.StuAnswerRecord;
-import com.chachae.exam.common.model.dto.*;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.model.dto.AnswerEditDto;
+import com.chachae.exam.common.model.dto.ImportPaperDto;
+import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
+import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
+import com.chachae.exam.common.model.dto.QueryPaperDto;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author chachae
@@ -28,10 +35,14 @@ import java.util.Map;
 @RequestMapping("/api/paper")
 public class PaperController {
 
-  @Resource private ScoreService scoreService;
-  @Resource private StuAnswerRecordService stuAnswerRecordService;
-  @Resource private QuestionService questionService;
-  @Resource private PaperService paperService;
+  @Resource
+  private ScoreService scoreService;
+  @Resource
+  private StuAnswerRecordService stuAnswerRecordService;
+  @Resource
+  private QuestionService questionService;
+  @Resource
+  private PaperService paperService;
 
   @PostMapping("/update")
   @Permissions("paper:update")
@@ -72,7 +83,7 @@ public class PaperController {
   @Permissions("paper:save")
   public R newPaperByExcel(Paper paper, ImportPaperRandomQuestionDto entity) {
     // 获取教师 ID
-    Integer teacherId = (Integer) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    int teacherId = (Integer) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 设置出卷老师
     paper.setTeacherId(teacherId);
     // 局部随机参数判断，没有局部随机参数则调用普通的插入接口
@@ -93,7 +104,7 @@ public class PaperController {
   /**
    * 提交组卷信息
    *
-   * @param paper 试卷信息
+   * @param paper       试卷信息
    * @param paperFormId 试卷模板ID
    * @return 组卷页面
    */
@@ -103,16 +114,11 @@ public class PaperController {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     // 获取教师 ID
-    int teacherId = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    int teacherId = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 调用组卷接口
     paper.setTeacherId(teacherId);
-    // 判断是否指定难度
-    if (StrUtil.isBlank(difficulty)) {
-      paperService.randomNewPaper(paper);
-    } else {
-      // 带指定难度的接口
-      paperService.randomNewPaper(paper, difficulty);
-    }
+    // 带指定难度的接口
+    paperService.randomNewPaper(paper, difficulty);
     return R.successWithData(paper.getId());
   }
 

@@ -6,10 +6,9 @@ import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
 import com.chachae.exam.common.model.dto.QueryPaperDto;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 试卷业务接口
@@ -22,22 +21,15 @@ public interface PaperService extends IService<Paper> {
   /**
    * 随机组卷
    *
-   * @param paper 试卷信息
-   */
-  void randomNewPaper(Paper paper);
-
-  /**
-   * 随机组卷
-   *
    * @param difficulty 指定难度
-   * @param paper 试卷信息
+   * @param paper      试卷信息
    */
   void randomNewPaper(Paper paper, String difficulty);
 
   /**
    * 教师批改试卷
    *
-   * @param stuId 学生ID
+   * @param stuId   学生ID
    * @param paperId 试卷ID
    * @param request request 对象.
    */
@@ -84,7 +76,7 @@ public interface PaperService extends IService<Paper> {
   /**
    * 导入试卷局部随机
    *
-   * @param paper 试卷参数
+   * @param paper  试卷参数
    * @param entity 局部随机数据传输对象
    */
   void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity);
@@ -100,7 +92,7 @@ public interface PaperService extends IService<Paper> {
   /**
    * 分页查询试卷信息
    *
-   * @param page 分页信息
+   * @param page   分页信息
    * @param entity 模糊搜索条件
    * @return 分页结果集
    */

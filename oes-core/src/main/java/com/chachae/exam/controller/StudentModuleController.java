@@ -5,9 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
-import com.chachae.exam.controller.common.QuestionModel;
+import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/student")
 public class StudentModuleController {
 
-  @Resource private QuestionModel questionModel;
+  @Resource private QuestionSortService questionSortService;
   @Resource private MajorService majorService;
   @Resource private PaperService paperService;
   @Resource private ScoreService scoreService;
@@ -129,7 +129,7 @@ public class StudentModuleController {
   @GetMapping("/logout")
   public String logout() {
     // 通过 SpringContext 上下文获取 Session 对象
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     // 移除学生 session 信息
     session.removeAttribute(SysConsts.Session.ROLE_ID);
     session.removeAttribute(SysConsts.Session.STUDENT_ID);
@@ -148,7 +148,7 @@ public class StudentModuleController {
     // 设置试卷信息的 model 对象信息
     mv.addObject("paper", paperService.getById(paperId));
     // 各类题型的 model 对象信息
-    questionModel.setQuestionModel(mv, paperId, true);
+    questionSortService.setQuestionModel(mv, paperId, true);
     // 返回试卷
     if (ServletUtil.isAjax()) {
       mv.setViewName("/student/exam/detail#examDetailTable");
@@ -167,12 +167,12 @@ public class StudentModuleController {
   @PostMapping("/paper/{paperId}")
   public String doPaper(@PathVariable Integer paperId) {
     // 判断学生是否提交过试卷
-    int stuId = (int) HttpContextUtil.getAttribute(SysConsts.Session.STUDENT_ID);
+    int stuId = (int) HttpUtil.getAttribute(SysConsts.Session.STUDENT_ID);
     Score result = this.scoreService.selectByStuIdAndPaperId(stuId, paperId);
     // 集合为空说明没有提交过试卷，可以提交
     if (ObjectUtil.isEmpty(result)) {
       // 获取 request 对象
-      HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
+      HttpServletRequest request = HttpUtil.getHttpServletRequest();
       // 批改试卷
       this.paperService.markPaper(stuId, paperId, request);
     }
@@ -194,7 +194,7 @@ public class StudentModuleController {
     Integer paperId = score.getPaperId();
 
     // 设置题目的 model 对象信息
-    questionModel.setQuestionModel(mv, paperId, false);
+    questionSortService.setQuestionModel(mv, paperId, false);
 
     // 设置分数和试卷 model 信息
     Paper paper = this.paperService.getById(paperId);

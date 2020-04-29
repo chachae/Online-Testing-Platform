@@ -6,7 +6,7 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.TeacherService;
@@ -44,7 +44,7 @@ public class TeacherController {
     // 执行登录
     Teacher teacher = teacherService.login(entity.getUsername(), entity.getPassword());
     // 设置 session 信息
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     session.setAttribute(SysConsts.Session.ROLE_ID, teacher.getRoleId());
     session.setAttribute(SysConsts.Session.TEACHER_ID, teacher.getId());
     session.setAttribute(SysConsts.Session.TEACHER, teacher);
@@ -62,7 +62,7 @@ public class TeacherController {
   @Permissions("teacher:update:password")
   public R updatePassword(ChangePassDto dto) {
     // 获取 session 对象
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     // 调用密码修改接口
     teacherService.updatePassword(dto);
     // 移除 session 信息

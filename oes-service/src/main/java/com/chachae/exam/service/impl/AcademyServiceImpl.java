@@ -1,7 +1,6 @@
 package com.chachae.exam.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.AcademyDAO;
@@ -11,13 +10,12 @@ import com.chachae.exam.common.model.Academy;
 import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.AcademyService;
+import java.io.Serializable;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * 学院服务实现类
@@ -29,16 +27,18 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> implements AcademyService {
 
-  @Resource private MajorDAO majorDAO;
-  @Resource private AcademyDAO academyDAO;
+  @Resource
+  private MajorDAO majorDAO;
+  @Resource
+  private AcademyDAO academyDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 查询是否有专业于该ID的学院关联，存在的话不允许被删除
     // 这里使用 QueryWrapper 构造器构造查询条件
-    QueryWrapper<Major> qw = new QueryWrapper<>();
-    qw.lambda().eq(Major::getAcademyId, id);
+    LambdaQueryWrapper<Major> qw = new LambdaQueryWrapper<>();
+    qw.eq(Major::getAcademyId, id);
     // 查询数量，如果为 0 说明不存在关联
     int count = this.majorDAO.selectCount(qw);
     if (count > 0) {
@@ -52,7 +52,7 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
   @Transactional(rollbackFor = Exception.class)
   public boolean updateById(Academy entity) {
     // 检测学院名称
-    if (ObjectUtil.isNotEmpty(this.selectByName(entity.getName()))) {
+    if (this.selectByName(entity.getName()) != null) {
       throw new ServiceException("学院名称已存在");
     }
     return super.updateById(entity);
@@ -62,7 +62,7 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
   @Transactional(rollbackFor = Exception.class)
   public boolean save(Academy entity) {
     // 检测学院名称
-    if (ObjectUtil.isNotEmpty(this.selectByName(entity.getName()))) {
+    if (this.selectByName(entity.getName()) != null) {
       throw new ServiceException("学院名称已存在");
     }
     return super.save(entity);
@@ -70,8 +70,8 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
 
   @Override
   public Academy selectByName(String academyName) {
-    QueryWrapper<Academy> qw = new QueryWrapper<>();
-    qw.lambda().eq(Academy::getName, academyName);
+    LambdaQueryWrapper<Academy> qw = new LambdaQueryWrapper<>();
+    qw.eq(Academy::getName, academyName);
     return this.academyDAO.selectOne(qw);
   }
 

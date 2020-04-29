@@ -15,9 +15,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class RsaCipherUtil {
 
-  private RsaCipherUtil() {}
+  private RsaCipherUtil() {
+  }
 
-  /** 后端解密私钥 [application.properties] */
+  /**
+   * 后端解密私钥 [application.properties]
+   */
   private static String rsaPrivateKey;
 
   @Value("${rsa.private.key}")
@@ -25,18 +28,24 @@ public class RsaCipherUtil {
     RsaCipherUtil.rsaPrivateKey = rsaPrivateKey;
   }
 
-  /** 密码加密 */
+  /**
+   * 密码加密
+   */
   public static String hash(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
   }
 
-  /** 密码解密 */
+  /**
+   * 密码解密
+   */
   public static String decrypt(String crypt) {
     RSA rsa = new RSA(rsaPrivateKey, null);
     return new String(rsa.decrypt(crypt, KeyType.PrivateKey));
   }
 
-  /** 验证密码 */
+  /**
+   * 验证密码
+   */
   public static boolean verify(String password, String crypt) {
     return BCrypt.checkpw(password, crypt);
   }

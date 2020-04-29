@@ -4,10 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import com.chachae.exam.common.exception.ServiceException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.springframework.cglib.beans.BeanCopier;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.cglib.beans.BeanCopier;
 
 /**
  * Cglib 实体拷贝工具类
@@ -17,13 +16,15 @@ import java.util.Map;
  */
 public class BeanUtil {
 
-  private BeanUtil() {}
+  private BeanUtil() {
+  }
 
-  private static Map<String, BeanCopier> map = Maps.newHashMap();
+  private static final Map<String, BeanCopier> MAP = Maps.newHashMap();
+
   /**
    * 对象复制
    *
-   * @param obj 被复制对象，为空会抛出异常
+   * @param obj   被复制对象，为空会抛出异常
    * @param clazz 复制类型
    * @return T
    */
@@ -36,11 +37,11 @@ public class BeanUtil {
     }
     String name = getClassName(obj.getClass(), clazz);
     BeanCopier beanCopier;
-    if (map.containsKey(name)) {
-      beanCopier = map.get(name);
+    if (MAP.containsKey(name)) {
+      beanCopier = MAP.get(name);
     } else {
       beanCopier = BeanCopier.create(obj.getClass(), clazz, false);
-      map.put(name, beanCopier);
+      MAP.put(name, beanCopier);
     }
     beanCopier.copy(obj, obj2, null);
     return obj2;
@@ -50,7 +51,7 @@ public class BeanUtil {
    * 复制队列
    *
    * @param list 被复制队列
-   * @param <T> 复制类型
+   * @param <T>  复制类型
    * @return T
    */
   public static <T> List<T> copyList(List<?> list, Class<T> clazz) {

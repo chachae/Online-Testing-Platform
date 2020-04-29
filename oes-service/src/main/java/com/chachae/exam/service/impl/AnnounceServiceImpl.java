@@ -7,12 +7,11 @@ import com.chachae.exam.common.model.Announce;
 import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.AnnounceService;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * 公告业务实现类
@@ -25,7 +24,8 @@ import java.util.Map;
 public class AnnounceServiceImpl extends ServiceImpl<AnnounceDAO, Announce>
     implements AnnounceService {
 
-  @Resource private AnnounceDAO announceDAO;
+  @Resource
+  private AnnounceDAO announceDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)

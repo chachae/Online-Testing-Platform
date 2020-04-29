@@ -1,7 +1,7 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.QuestionDAO;
 import com.chachae.exam.common.dao.StuAnswerRecordDAO;
@@ -17,15 +17,14 @@ import com.chachae.exam.common.util.BeanUtil;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import com.google.common.collect.Lists;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 学生主观题答题记录业务实现类
@@ -38,16 +37,20 @@ import java.util.stream.Collectors;
 public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordDAO, StuAnswerRecord>
     implements StuAnswerRecordService {
 
-  @Resource private StudentDAO studentDAO;
-  @Resource private ScoreService scoreService;
-  @Resource private QuestionDAO questionDAO;
-  @Resource private StuAnswerRecordDAO stuAnswerRecordDAO;
+  @Resource
+  private StudentDAO studentDAO;
+  @Resource
+  private ScoreService scoreService;
+  @Resource
+  private QuestionDAO questionDAO;
+  @Resource
+  private StuAnswerRecordDAO stuAnswerRecordDAO;
 
   @Override
   public List<StuAnswerRecord> selectByPaperId(Integer paperId) {
     // 构造通过试卷 ID 查詢答题记录的条件
-    QueryWrapper<StuAnswerRecord> qw = new QueryWrapper<>();
-    qw.lambda().eq(StuAnswerRecord::getPaperId, paperId);
+    LambdaQueryWrapper<StuAnswerRecord> qw = new LambdaQueryWrapper<>();
+    qw.eq(StuAnswerRecord::getPaperId, paperId);
     List<StuAnswerRecord> result = this.stuAnswerRecordDAO.selectList(qw);
     // 检查集合对象的情况
     if (CollUtil.isEmpty(result)) {
@@ -60,8 +63,8 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordDAO, 
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void deleteByStuId(Integer stuId) {
-    QueryWrapper<StuAnswerRecord> qw = new QueryWrapper<>();
-    qw.lambda().eq(StuAnswerRecord::getStuId, stuId);
+    LambdaQueryWrapper<StuAnswerRecord> qw = new LambdaQueryWrapper<>();
+    qw.eq(StuAnswerRecord::getStuId, stuId);
     this.stuAnswerRecordDAO.delete(qw);
   }
 
@@ -106,7 +109,6 @@ public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordDAO, 
       stuAnswerRecordDtoList.add(dto);
     }
 
-    // 返回集合数据
     return stuAnswerRecordDtoList;
   }
 }

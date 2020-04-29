@@ -1,9 +1,9 @@
 package com.chachae.exam.core.job;
 
-import cn.hutool.log.Log;
 import com.chachae.exam.common.constant.SysConsts;
-import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.dao.PaperDAO;
+import com.chachae.exam.common.model.Paper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +16,11 @@ import java.util.List;
  * @author chachae
  * @date 2020/2/3
  */
+@Slf4j
 @Component
 public class PaperStateChangeJob {
 
   @Resource private PaperDAO paperDAO;
-
-  private Log log = Log.get();
 
   /* 执行情况如下
   2020-02-16 21:45:00

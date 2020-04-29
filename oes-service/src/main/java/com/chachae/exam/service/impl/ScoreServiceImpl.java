@@ -2,8 +2,8 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.dao.CourseDAO;
@@ -17,13 +17,12 @@ import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.ScoreService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 分数业务实现
@@ -35,15 +34,18 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements ScoreService {
 
-  @Resource private ScoreDAO scoreDAO;
-  @Resource private PaperDAO paperDAO;
-  @Resource private CourseDAO courseDAO;
+  @Resource
+  private ScoreDAO scoreDAO;
+  @Resource
+  private PaperDAO paperDAO;
+  @Resource
+  private CourseDAO courseDAO;
 
   @Override
   public List<Score> selectByStuId(Integer id) {
     // QueryWrapper 条件构造器构造查询 Sql
-    QueryWrapper<Score> qw = new QueryWrapper<>();
-    qw.lambda().eq(Score::getStuId, id);
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getStuId, id);
     // 返回该学生的分数集合
     return scoreDAO.selectList(qw);
   }
@@ -51,8 +53,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   @Override
   public Map<String, Object> pageByStuId(Page<Score> page, Integer stuId) {
     // QueryWrapper 条件构造器构造查询 Sql
-    QueryWrapper<Score> qw = new QueryWrapper<>();
-    qw.lambda().eq(Score::getStuId, stuId);
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getStuId, stuId);
     // 返回该学生的分数集合
     Page<Score> pageInfo = scoreDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
@@ -179,25 +181,25 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   @Transactional(rollbackFor = Exception.class)
   public void updateScoreByStuIdAndPaperId(AnswerEditDto dto) {
     // 获取改门成绩的信息
-    QueryWrapper<Score> qw = new QueryWrapper<>();
-    qw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
     Score res = this.scoreDAO.selectOne(qw);
     // 更新成绩
-    UpdateWrapper<Score> uw = new UpdateWrapper<>();
-    uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
+    LambdaUpdateWrapper<Score> uw = new LambdaUpdateWrapper<>();
+    uw.eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
     // 新的总成绩
     int score = Integer.parseInt(res.getScore()) - dto.getOldScore() + dto.getNewScore();
     // 构造条件（学生ID+试卷ID）更新 SQL
-    uw.lambda().set(Score::getScore, score);
-    uw.lambda().eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
+    uw.set(Score::getScore, score);
+    uw.eq(Score::getStuId, dto.getStuId()).eq(Score::getPaperId, dto.getPaperId());
     this.scoreDAO.update(null, uw);
   }
 
   @Override
   public Score selectByStuIdAndPaperId(Integer stuId, Integer paperId) {
     // 构造学生id和试卷id查询的查询条件
-    QueryWrapper<Score> qw = new QueryWrapper<>();
-    qw.lambda().eq(Score::getStuId, stuId).eq(Score::getPaperId, paperId);
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getStuId, stuId).eq(Score::getPaperId, paperId);
     // 返回查询到的数据
     return this.scoreDAO.selectOne(qw);
   }
@@ -205,8 +207,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void deleteByStuId(Integer stuId) {
-    QueryWrapper<Score> qw = new QueryWrapper<>();
-    qw.lambda().eq(Score::getStuId, stuId);
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getStuId, stuId);
     this.scoreDAO.delete(qw);
   }
 
@@ -214,7 +216,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
    * 统计各个分数段人数
    *
    * @param paperList 试卷及合
-   * @param countMap 分数 Map 集合
+   * @param countMap  分数 Map 集合
    * @param countList 各个分数段 List 集合
    */
   private void countPerScoreNum(
@@ -258,9 +260,9 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
    */
   private int countGt(String score) {
     // 使用 QueryWrapper 构造查询条件，下面的三个方法同理
-    QueryWrapper<Score> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
     // gt（GreatThan） 大于
-    qw.lambda().gt(Score::getScore, score);
+    qw.gt(Score::getScore, score);
     return this.scoreDAO.selectCount(qw);
   }
 
@@ -271,9 +273,9 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
    * @return 数量
    */
   private int countLe(String score) {
-    QueryWrapper<Score> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
     // le（lessThan）小于
-    qw.lambda().le(Score::getScore, score);
+    qw.le(Score::getScore, score);
     return this.scoreDAO.selectCount(qw);
   }
 
@@ -281,13 +283,13 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
    * 统计成绩介于两者之间的数量
    *
    * @param start 开始分数
-   * @param end 结束分数
+   * @param end   结束分数
    * @return 数量
    */
   private int count(String start, String end) {
-    QueryWrapper<Score> qw = new QueryWrapper<>();
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
     // between 介于两者之间
-    qw.lambda().between(Score::getScore, start, end);
+    qw.between(Score::getScore, start, end);
     return this.scoreDAO.selectCount(qw);
   }
 }

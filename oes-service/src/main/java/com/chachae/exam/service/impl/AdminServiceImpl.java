@@ -1,7 +1,6 @@
 package com.chachae.exam.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
@@ -10,18 +9,17 @@ import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.util.DateUtil;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.AdminService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 管理员业务实现
@@ -33,12 +31,13 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements AdminService {
 
-  @Resource private AdminDAO adminDAO;
+  @Resource
+  private AdminDAO adminDAO;
 
   /**
    * 管理员登录
    *
-   * @param number 管理员账号
+   * @param number   管理员账号
    * @param password 管理员密码
    * @return 管理员信息
    */
@@ -47,7 +46,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
     // 调用通过账号查询信息的方法
     Admin admin = this.selectByNumber(number);
     // 判断管理员对象是否为空对象
-    if (ObjectUtil.isEmpty(admin)) {
+    if (admin == null) {
       throw new ServiceException("管理员帐号不存在");
     }
     // 私钥解密，并比较加密后的密码是否一致
@@ -56,7 +55,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
       throw new ServiceException("密码错误");
     }
     // 更新登陆时间
-    Date time = cn.hutool.core.date.DateUtil.date();
+    Date time = DateUtil.date();
     this.adminDAO.updateById(Admin.builder().id(admin.getId()).lastLoginTime(time).build());
     return admin;
   }
@@ -64,8 +63,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   @Override
   public Admin selectByNumber(String number) {
     // 通过学号获取学生信息
-    QueryWrapper<Admin> qw = new QueryWrapper<>();
-    qw.lambda().eq(Admin::getNumber, number);
+    LambdaQueryWrapper<Admin> qw = new LambdaQueryWrapper<>();
+    qw.eq(Admin::getNumber, number);
     return this.adminDAO.selectOne(qw);
   }
 
@@ -95,7 +94,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 获取当前的管理员ID是否和被删除的相同（一样则不能刪除）
-    Admin cur = (Admin) HttpContextUtil.getAttribute(SysConsts.Session.ADMIN);
+    Admin cur = (Admin) HttpUtil.getAttribute(SysConsts.Session.ADMIN);
     // 当前 session 的 管理员 ID 和被删除的管理员ID一直，不能被删除
     if (cur.getId().equals(id)) {
       throw new ServiceException("不可以删除自己");
@@ -109,7 +108,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   public boolean save(Admin entity) {
     // 检测是否存在相同的用户名，存在在不允许增加，抛出异常，给控制层捕捉
     Admin admin = this.selectByNumber(entity.getNumber());
-    if (ObjectUtil.isNotEmpty(admin)) {
+    if (admin != null) {
       throw new ServiceException("用户名已存在");
     }
     // 封装管理员默认角色ID，同时加密密码

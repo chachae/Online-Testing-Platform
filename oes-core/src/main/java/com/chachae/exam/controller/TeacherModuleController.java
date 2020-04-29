@@ -3,9 +3,9 @@ package com.chachae.exam.controller;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
-import com.chachae.exam.common.util.HttpContextUtil;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
-import com.chachae.exam.controller.common.QuestionModel;
+import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ public class TeacherModuleController {
 
   @Resource private PaperService paperService;
   @Resource private MajorService majorService;
-  @Resource private QuestionModel questionModel;
+  @Resource private QuestionSortService questionSortService;
   @Resource private CourseService courseService;
   @Resource private QuestionService questionService;
   @Resource private PaperFormService paperFormService;
@@ -42,7 +42,7 @@ public class TeacherModuleController {
    */
   @GetMapping("/logout")
   public String logout() {
-    HttpSession session = HttpContextUtil.getSession();
+    HttpSession session = HttpUtil.getSession();
     // 移除session
     session.removeAttribute(SysConsts.Session.TEACHER_ID);
     session.removeAttribute(SysConsts.Session.TEACHER);
@@ -121,7 +121,7 @@ public class TeacherModuleController {
   @GetMapping("/reviewPaper")
   public ModelAndView reviewPaper(ModelAndView mv) {
     // 获取教师id
-    int id = (int) HttpContextUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    int id = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
     // 返回 Model 对象
     mv.addObject("paperList", paperService.listDoneByTeacherId(id));
     if (ServletUtil.isAjax()) {
@@ -210,7 +210,7 @@ public class TeacherModuleController {
     mv.addObject("course", courseService.getById(paper.getCourseId()));
     mv.addObject("major", majorService.getById(paper.getMajorId()));
     // 设置题目 model 对象信息
-    questionModel.setQuestionModel(mv, id, false);
+    questionSortService.setQuestionModel(mv, id, false);
     if (ServletUtil.isAjax()) {
       mv.setViewName("/teacher/paper/show#paperShowTable");
     } else {
