@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"exam"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax examTable:{
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>考试管理</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"exam"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax examTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>考试管理</h1>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">试卷列表</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="examInfo" class="table table-bordered table-striped text-nowrap"></table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card -->
-                </div>
-            </div><!-- /.row -->
-        </section>
-        <!-- 修改时间模态框 -->
-        <% include("update-modal.html"){} %>
-        <!-- 接口 -->
-        <% include("api.html"){} %>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">试卷列表</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="examInfo" class="table table-bordered table-striped text-nowrap"></table>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+      </div><!-- /.row -->
+    </section>
+    <!-- 修改时间模态框 -->
+    <% include("update-modal.html"){} %>
+    <!-- 接口 -->
+    <% include("api.html"){} %>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
 </div>
 </body>
 </html>

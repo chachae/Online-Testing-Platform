@@ -1,20 +1,20 @@
 <script>
 
-    // 删除卷模板
-    function deletePaperForm(id) {
-        OesUtil.confirm("确定删除该模版么?", function () {
-            $.get("/api/paperForm/delete/" + id).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.ajaxPage("#paper", "/teacher/paperForm");
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
+  // 删除卷模板
+  function deletePaperForm(id) {
+    OesUtil.confirm("确定删除该模版么?", function () {
+      $.get("/api/paperForm/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.ajaxPage("#paper", "/teacher/paperForm");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 
-    // 使用模板
-    function goUser(id) {
-        OesUtil.ajaxPage("#paper", "/teacher/paper/save/" + id);
-    }
+  // 使用模板
+  function goUser(id) {
+    OesUtil.ajaxPage("#paper", "/teacher/paper/save/" + id);
+  }
 </script>

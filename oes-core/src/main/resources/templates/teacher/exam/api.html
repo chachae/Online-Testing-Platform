@@ -1,90 +1,90 @@
 <script>
 
-    // 操作按钮行为
-    function operateFormatter(value, row, index) {
-        return ['<button onclick="goUpdate(' + row.id + ')" class="btn btn-sm btn-warning">编辑</button>']
-            .join('');
-    }
+  // 操作按钮行为
+  function operateFormatter(value, row, index) {
+    return ['<button onclick="goUpdate(' + row.id + ')" class="btn btn-sm btn-warning">编辑</button>']
+    .join('');
+  }
 
-    // 模糊搜索参数
-    function params(params) {
-        return {
-            current: params.pageNumber,
-            size: params.pageSize,
-            paperName: $("#findPaperName").val(),
-            courseId: $("#findCourse").val()
-        };
-    }
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      paperName: $("#findPaperName").val(),
+      courseId: $("#findCourse").val()
+    };
+  }
 
-    // 初始化表单
-    OesUtil.initQueryTable('#examInfo', "/api/paper/undo/list?teacherId=${session.teacherId}", "get", [{
-            title: '序号',
-            field: 'id',
-            sortable: false,
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            title: '名称',
-            field: 'paperName',
-            sortable: false
-        }, {
-            title: '开考时间',
-            field: 'beginTime',
-            sortable: false
-        }, {
-            title: '结束时间',
-            field: 'endTime',
-            sortable: false
-        }, {
-            title: '考试时长',
-            field: 'allowTime',
-            sortable: false
-        }, {
-            field: 'operate',
-            title: '操作',
-            formatter: operateFormatter
-        }],
-        params
-    );
+  // 初始化表单
+  OesUtil.initQueryTable('#examInfo', "/api/paper/undo/list?teacherId=${session.teacherId}", "get",
+      [{
+        title: '序号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+          return index + 1;
+        }
+      }, {
+        title: '名称',
+        field: 'paperName',
+        sortable: false
+      }, {
+        title: '开考时间',
+        field: 'beginTime',
+        sortable: false
+      }, {
+        title: '结束时间',
+        field: 'endTime',
+        sortable: false
+      }, {
+        title: '考试时长',
+        field: 'allowTime',
+        sortable: false
+      }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter
+      }],
+      params
+  );
 
-
-    //修改考试时间
-    function goUpdate(id) {
-        $.get("/api/paper/" + id, function (data) {
-            // 模态框赋值
-            $('#id').val(data.id);
-            $('#paperName').val(data.paperName);
-            $('#paperType').val(data.paperType);
-            $('#beginTime').val(data.beginTime);
-            $('#endTime').val(data.endTime);
-        });
-        // 打开模态框
-        $("#update-modal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
-
-    // 起止时间选择器
-    $(function () {
-        // 起止时间
-        OesUtil.dateTimePick("#beginTime", false, false);
-        OesUtil.dateTimePick("#endTime", false, false);
+  //修改考试时间
+  function goUpdate(id) {
+    $.get("/api/paper/" + id, function (data) {
+      // 模态框赋值
+      $('#id').val(data.id);
+      $('#paperName').val(data.paperName);
+      $('#paperType').val(data.paperType);
+      $('#beginTime').val(data.beginTime);
+      $('#endTime').val(data.endTime);
     });
+    // 打开模态框
+    $("#update-modal").modal({
+      show: true,
+      backdrop: 'static'
+    });
+  }
 
-    // 修改试卷信息请求
-    function updatePaperInfo() {
-        OesUtil.confirm("确定修改考试时间么?", function () {
-            let data = $("#update-form").serialize();
-            $.post("/api/paper/update", data).done(function (data) {
-                if (data.state === "success") {
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
+  // 起止时间选择器
+  $(function () {
+    // 起止时间
+    OesUtil.dateTimePick("#beginTime", false, false);
+    OesUtil.dateTimePick("#endTime", false, false);
+  });
+
+  // 修改试卷信息请求
+  function updatePaperInfo() {
+    OesUtil.confirm("确定修改考试时间么?", function () {
+      let data = $("#update-form").serialize();
+      $.post("/api/paper/update", data).done(function (data) {
+        if (data.state === "success") {
+          window.location.reload();
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 
 </script>

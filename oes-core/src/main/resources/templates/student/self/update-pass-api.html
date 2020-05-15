@@ -1,23 +1,23 @@
 <script>
-    // 提交密码
-    $(function () {
-        $("#editBtn").click(function () {
-            let data = $("#change").serialize();
-            $.ajax({
-                type: "POST",
-                data: data,
-                url: '/api/student/update/password',
-                success: function (res) {
-                    if (res.state === 'success') {
-                        toastr.info('修改成功');
-                        $(this).delay(1500).queue(function () {
-                            window.location.href = "/";
-                        });
-                    } else {
-                        toastr.error(res.message);
-                    }
-                }
-            })
-        });
+  // 提交密码
+  $(function () {
+    $("#editBtn").click(function () {
+      let data = $("#change").serialize();
+      $.ajax({
+        type: "POST",
+        data: data,
+        url: '/api/student/update/password',
+        success: function (res) {
+          if (res.state === 'success') {
+            toastr.info('修改成功');
+            $(this).delay(1500).queue(function () {
+              window.location.href = "/";
+            });
+          } else {
+            toastr.error(res.message);
+          }
+        }
+      })
     });
+  });
 </script>

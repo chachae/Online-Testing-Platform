@@ -1,246 +1,248 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 试卷详情</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 试卷详情</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <%include("../include/header.html"){}%>
-    <!-- 左侧菜单栏 -->
-    <%layout("../../student/include/sider.html",{name:"exam-detail"}){}%>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <div class="content-wrapper">
-        <%
-        #ajax examDetailTable: {
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row col-md-12">
-                    <div class="col-sm-6">
-                        <h1>考试中</h1>
-                    </div>
+  <!-- 引入头部 -->
+  <%include("../include/header.html"){}%>
+  <!-- 左侧菜单栏 -->
+  <%layout("../../student/include/sider.html",{name:"exam-detail"}){}%>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <div class="content-wrapper">
+    <%
+    #ajax examDetailTable: {
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row col-md-12">
+          <div class="col-sm-6">
+            <h1>考试中</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- content-head -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3 bg-gradient-warning">
+              <div class="col-12 table-responsive">
+                <div>
+                  <strong>
+                    考试：${paper.paperName}
+                  </strong>
                 </div>
-            </div>
-        </section>
-
-        <!-- content-head -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Main content -->
-                        <div class="invoice p-3 mb-3 bg-gradient-warning">
-                            <div class="col-12 table-responsive">
-                                <div>
-                                    <strong>
-                                        考试：${paper.paperName}
-                                    </strong>
-                                </div>
-                                <div>
-                                    <strong>
-                                        注意:
-                                        <span style="color: #af0000">重复提交无效，考试成绩以第一次为准</span>
-                                    </strong>
-                                </div>
-                                <div>
-                                    <strong>
-                                        注意:
-                                        <span style="color: #af0000">考试时间结束系统将自动交卷，请同学们把握好时间</span>
-                                    </strong>
-                                </div>
-                                <div>
-                                    <strong>
-                                        距离考试结束:
-                                        <span class="clock" style="color: #af0000" id="clock">xx分xx秒</span>
-                                    </strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                  <strong>
+                    注意:
+                    <span style="color: #af0000">重复提交无效，考试成绩以第一次为准</span>
+                  </strong>
                 </div>
+                <div>
+                  <strong>
+                    注意:
+                    <span style="color: #af0000">考试时间结束系统将自动交卷，请同学们把握好时间</span>
+                  </strong>
+                </div>
+                <div>
+                  <strong>
+                    距离考试结束:
+                    <span class="clock" style="color: #af0000" id="clock">xx分xx秒</span>
+                  </strong>
+                </div>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="invoice p-3 mb-3">
-                            <!-- /.card-header -->
-                            <form id="paper" method="post">
-                                <!--单选题-->
-                                <%if(isNotEmpty(qChoiceList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">单项选择题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(choice in qChoiceList){%>
-                                        <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
-                                            <input class="minimal" type="radio" name="${choice.id}" required
-                                                   value="A">&nbsp;
-                                            A. <span>${choice.optionA} </span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="radio" name="${choice.id}" required
-                                                   value="B">&nbsp;
-                                            B. <span>${choice.optionB} </span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="radio" name="${choice.id}" required
-                                                   value="C">&nbsp;
-                                            C. <span>${choice.optionC} </span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="radio" name="${choice.id}" required
-                                                   value="D">&nbsp;
-                                            D. <span>${choice.optionD} </span>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="invoice p-3 mb-3">
+              <!-- /.card-header -->
+              <form id="paper" method="post">
+                <!--单选题-->
+                <%if(isNotEmpty(qChoiceList)){%>
+                <div class="card-header">
+                  <div class="card-title">单项选择题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(choice in qChoiceList){%>
+                    <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
+                    <dd></dd>
+                    <dd>
+                      <input class="minimal" type="radio" name="${choice.id}" required
+                             value="A">&nbsp;
+                      A. <span>${choice.optionA} </span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="radio" name="${choice.id}" required
+                             value="B">&nbsp;
+                      B. <span>${choice.optionB} </span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="radio" name="${choice.id}" required
+                             value="C">&nbsp;
+                      C. <span>${choice.optionC} </span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="radio" name="${choice.id}" required
+                             value="D">&nbsp;
+                      D. <span>${choice.optionD} </span>
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
 
-                                <!-- 多选题 -->
-                                <%if(isNotEmpty(qMulChoiceList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">多项选择题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(qMulChoice in qMulChoiceList){%>
-                                        <dt>${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
-                                            <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
-                                            A. <span>${qMulChoice.optionA} </span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
-                                            B. <span>${qMulChoice.optionB}</span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
-                                            C. <span>${qMulChoice.optionC}</span>
-                                        </dd>
-                                        <dd>
-                                            <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
-                                            D. <span>${qMulChoice.optionD}</span>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
+                <!-- 多选题 -->
+                <%if(isNotEmpty(qMulChoiceList)){%>
+                <div class="card-header">
+                  <div class="card-title">多项选择题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(qMulChoice in qMulChoiceList){%>
+                    <dt>${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
+                    <dd></dd>
+                    <dd>
+                      <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
+                      A. <span>${qMulChoice.optionA} </span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
+                      B. <span>${qMulChoice.optionB}</span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
+                      C. <span>${qMulChoice.optionC}</span>
+                    </dd>
+                    <dd>
+                      <input class="minimal" type="checkbox" name="${qMulChoice.id}">&nbsp;
+                      D. <span>${qMulChoice.optionD}</span>
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
 
-                                <!--判断题-->
-                                <%if(isNotEmpty(qTofList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">判断题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(question in qTofList){%>
-                                        <dt>${questionLP.index}. ${question.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
-                                            <input type="radio" name="${question.id}" required value="对">
-                                            A. 对<span></span>
-                                        </dd>
-                                        <dd>
-                                            <input type="radio" name="${question.id}" required value="错">
-                                            B. 错<span></span>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
+                <!--判断题-->
+                <%if(isNotEmpty(qTofList)){%>
+                <div class="card-header">
+                  <div class="card-title">判断题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(question in qTofList){%>
+                    <dt>${questionLP.index}. ${question.questionName}</dt>
+                    <dd></dd>
+                    <dd>
+                      <input type="radio" name="${question.id}" required value="对">
+                      A. 对<span></span>
+                    </dd>
+                    <dd>
+                      <input type="radio" name="${question.id}" required value="错">
+                      B. 错<span></span>
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
 
-                                <!--填空题-->
-                                <%if(isNotEmpty(qFillList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">填空题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(question in qFillList){%>
-                                        <dt>${questionLP.index}. ${question.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
+                <!--填空题-->
+                <%if(isNotEmpty(qFillList)){%>
+                <div class="card-header">
+                  <div class="card-title">填空题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(question in qFillList){%>
+                    <dt>${questionLP.index}. ${question.questionName}</dt>
+                    <dd></dd>
+                    <dd>
                                             <textarea name="${question.id}" class="form-control"
                                                       placeholder="请输入答案"></textarea>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
 
-                                <!--简答题-->
-                                <%if(isNotEmpty(qSaqList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">简答题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(question in qSaqList){%>
-                                        <dt>${questionLP.index}. ${question.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
-                                            <textarea rows="4" name="${question.id}" class="form-control"
+                <!--简答题-->
+                <%if(isNotEmpty(qSaqList)){%>
+                <div class="card-header">
+                  <div class="card-title">简答题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(question in qSaqList){%>
+                    <dt>${questionLP.index}. ${question.questionName}</dt>
+                    <dd></dd>
+                    <dd>
+                                            <textarea rows="4" name="${question.id}"
+                                                      class="form-control"
                                                       placeholder="请输入答案"></textarea>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
 
-                                <!--编程题-->
-                                <%if(isNotEmpty(qProgramList)){%>
-                                <div class="card-header">
-                                    <div class="card-title">简答题</div>
-                                </div>
-                                <div class="card-body">
-                                    <dl>
-                                        <%for(question in qProgramList){%>
-                                        <dt>${questionLP.index}. ${question.questionName}</dt>
-                                        <dd></dd>
-                                        <dd>
-                                            <textarea rows="4" name="${question.id}" class="form-control"
+                <!--编程题-->
+                <%if(isNotEmpty(qProgramList)){%>
+                <div class="card-header">
+                  <div class="card-title">简答题</div>
+                </div>
+                <div class="card-body">
+                  <dl>
+                    <%for(question in qProgramList){%>
+                    <dt>${questionLP.index}. ${question.questionName}</dt>
+                    <dd></dd>
+                    <dd>
+                                            <textarea rows="4" name="${question.id}"
+                                                      class="form-control"
                                                       placeholder="请输入答案"></textarea>
-                                        </dd>
-                                        <%}%>
-                                    </dl>
-                                </div>
-                                <%}%>
-                                <div class="card-body">
-                                    <button id="submitBtn" class="btn btn-success pull-right">提交答案</button>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                </div><!-- /.row -->
+                    </dd>
+                    <%}%>
+                  </dl>
+                </div>
+                <%}%>
+                <div class="card-body">
+                  <button id="submitBtn" class="btn btn-success pull-right">提交答案</button>
+                </div>
+              </form>
             </div>
-        </section>
-        <%include("api/api.html"){}%>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+            <!-- /.card-body -->
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </section>
+    <%include("api/api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

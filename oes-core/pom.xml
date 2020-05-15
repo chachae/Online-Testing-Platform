@@ -37,17 +37,28 @@
       <groupId>org.springframework.session</groupId>
       <artifactId>spring-session-data-redis</artifactId>
     </dependency>
+    <!-- actuator -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <!-- spring-admin-client -->
+    <dependency>
+      <groupId>de.codecentric</groupId>
+      <artifactId>spring-boot-admin-starter-client</artifactId>
+      <version>${spring-admin.version}</version>
+    </dependency>
+    <!-- logstash-logback-encoder -->
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+    </dependency>
     <!-- beetl -->
     <dependency>
       <groupId>com.ibeetl</groupId>
       <artifactId>beetl</artifactId>
     </dependency>
-    <!-- lombok -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!-- webjars START -->
     <!-- AdminLTE -->
     <dependency>
       <groupId>org.webjars</groupId>
@@ -68,22 +79,7 @@
       <groupId>org.webjars</groupId>
       <artifactId>font-awesome</artifactId>
     </dependency>
-    <!-- actuator -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <!-- spring-admin-client -->
-    <dependency>
-      <groupId>de.codecentric</groupId>
-      <artifactId>spring-boot-admin-starter-client</artifactId>
-      <version>${spring-admin.version}</version>
-    </dependency>
-    <!-- logstash-logback-encoder -->
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-    </dependency>
+    <!-- webjars END -->
   </dependencies>
 
   <build>

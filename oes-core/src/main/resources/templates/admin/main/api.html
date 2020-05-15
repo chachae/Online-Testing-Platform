@@ -1,33 +1,33 @@
 <script>
 
-    $("#home").click(function () {
-        OesUtil.ajaxPage("#home", "/admin/home");
-    });
-    $("#announce").click(function () {
-        OesUtil.ajaxPage("#announce", "/admin/announce");
-    });
-    $("#admin").click(function () {
-        OesUtil.ajaxPage("#admin", "/admin");
-    });
-    $("#teacher").click(function () {
-        OesUtil.ajaxPage("#teacher", "/admin/teacher");
-    });
-    $("#academy").click(function () {
-        OesUtil.ajaxPage("#academy", "/admin/academy");
-    });
-    $("#help").click(function () {
-        OesUtil.ajaxPage("#help", "/admin/help");
-    });
-    $("#update").click(function () {
-        OesUtil.ajaxPage("#update", "/admin/update/pass");
-    });
+  $("#home").click(function () {
+    OesUtil.ajaxPage("#home", "/admin/home");
+  });
+  $("#announce").click(function () {
+    OesUtil.ajaxPage("#announce", "/admin/announce");
+  });
+  $("#admin").click(function () {
+    OesUtil.ajaxPage("#admin", "/admin");
+  });
+  $("#teacher").click(function () {
+    OesUtil.ajaxPage("#teacher", "/admin/teacher");
+  });
+  $("#academy").click(function () {
+    OesUtil.ajaxPage("#academy", "/admin/academy");
+  });
+  $("#help").click(function () {
+    OesUtil.ajaxPage("#help", "/admin/help");
+  });
+  $("#update").click(function () {
+    OesUtil.ajaxPage("#update", "/admin/update/pass");
+  });
 
-    $(window).on("popstate", function () {
-        let state = history.state;
-        if (state === null) {
-            return;
-        }
-        OesUtil.ajaxPage(state.active, state.url);
-        history.replaceState(state, null, state.url);
-    });
+  $(window).on("popstate", function () {
+    let state = history.state;
+    if (state === null) {
+      return;
+    }
+    OesUtil.ajaxPage(state.active, state.url);
+    history.replaceState(state, null, state.url);
+  });
 </script>

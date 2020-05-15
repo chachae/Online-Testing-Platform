@@ -1,50 +1,50 @@
 <nav class="main-header navbar navbar-expand border-bottom navbar-dark bg-info">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="/teacher/home" class="nav-link">首页</a>
-        </li>
-    </ul>
+  <!-- Left navbar links -->
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="/teacher/home" class="nav-link">首页</a>
+    </li>
+  </ul>
 
-    <ul class="navbar-nav ml-auto">
-        <!-- User Account: style can be found in dropdown.less -->
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fas fa-tools"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                <!-- Message Start -->
-                <div class="text-body">
-                    <div class="text-center">
+  <ul class="navbar-nav ml-auto">
+    <!-- User Account: style can be found in dropdown.less -->
+    <li class="nav-item dropdown">
+      <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="fas fa-tools"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+        <!-- Message Start -->
+        <div class="text-body">
+          <div class="text-center">
                             <span class="dropdown-item-title">
                                 教师：${session.teacher.name}
                             </span>
-                    </div>
-                </div>
-                <!-- Message End -->
-                <div class="dropdown-divider"></div>
-                <a href="#" id="update-pass" class="dropdown-item">
-                    <!-- Message Start -->
-                    <div class="media">
-                        <div class="media-body text-center">
-                            个人设置
-                        </div>
-                    </div>
-                    <!-- Message End -->
-                </a>
-                <a href="/student/logout" class="dropdown-item">
-                    <!-- Message Start -->
-                    <div class="media">
-                        <div class="media-body text-center">
-                            安全退出
-                        </div>
-                    </div>
-                    <!-- Message End -->
-                </a>
+          </div>
+        </div>
+        <!-- Message End -->
+        <div class="dropdown-divider"></div>
+        <a href="#" id="update-pass" class="dropdown-item">
+          <!-- Message Start -->
+          <div class="media">
+            <div class="media-body text-center">
+              个人设置
             </div>
-        </li>
-    </ul>
+          </div>
+          <!-- Message End -->
+        </a>
+        <a href="/student/logout" class="dropdown-item">
+          <!-- Message Start -->
+          <div class="media">
+            <div class="media-body text-center">
+              安全退出
+            </div>
+          </div>
+          <!-- Message End -->
+        </a>
+      </div>
+    </li>
+  </ul>
 </nav>

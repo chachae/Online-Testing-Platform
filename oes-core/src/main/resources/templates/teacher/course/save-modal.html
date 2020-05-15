@@ -1,29 +1,30 @@
 <div class="modal fade" id="save-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">新增课程</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="save-form">
-                    <input type="hidden" name="teacherId" value="${session.teacher.id}">
-                    <div class="table">
-                        <label for="courseName"></label>
-                        <input type="text" placeholder="请输入课程名称（长度不能超过20个字）" class="form-control" name="courseName"
-                               id="courseName">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-end">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">新增课程</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="save-form">
+          <input type="hidden" name="teacherId" value="${session.teacher.id}">
+          <div class="table">
+            <label for="courseName"></label>
+            <input type="text" placeholder="请输入课程名称（长度不能超过20个字）" class="form-control"
+                   name="courseName"
+                   id="courseName">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+      </div>
     </div>
-    <!-- /.modal-dialog -->
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->

@@ -1,55 +1,55 @@
 <script>
 
-    $("#home").click(function () {
-        OesUtil.ajaxPage("#home", "/teacher/home");
-    });
+  $("#home").click(function () {
+    OesUtil.ajaxPage("#home", "/teacher/home");
+  });
 
-    $("#announce").click(function () {
-        OesUtil.ajaxPage("#announce", "/teacher/announce");
-    });
+  $("#announce").click(function () {
+    OesUtil.ajaxPage("#announce", "/teacher/announce");
+  });
 
-    $("#course").click(function () {
-        OesUtil.ajaxPage("#course", "/teacher/course");
-    });
+  $("#course").click(function () {
+    OesUtil.ajaxPage("#course", "/teacher/course");
+  });
 
-    $("#major").click(function () {
-        OesUtil.ajaxPage("#major", "/teacher/major");
-    });
+  $("#major").click(function () {
+    OesUtil.ajaxPage("#major", "/teacher/major");
+  });
 
-    $("#student").click(function () {
-        OesUtil.ajaxPage("#student", "/teacher/student");
-    });
+  $("#student").click(function () {
+    OesUtil.ajaxPage("#student", "/teacher/student");
+  });
 
-    $("#paper").click(function () {
-        OesUtil.ajaxPage("#paper", "/teacher/paper");
-    });
+  $("#paper").click(function () {
+    OesUtil.ajaxPage("#paper", "/teacher/paper");
+  });
 
-    $("#question").click(function () {
-        OesUtil.ajaxPage("#question", "/teacher/question");
-    });
+  $("#question").click(function () {
+    OesUtil.ajaxPage("#question", "/teacher/question");
+  });
 
-    $("#exam").click(function () {
-        OesUtil.ajaxPage("#exam", "/teacher/exam");
-    });
+  $("#exam").click(function () {
+    OesUtil.ajaxPage("#exam", "/teacher/exam");
+  });
 
-    $("#review").click(function () {
-        OesUtil.ajaxPage("#review", "/teacher/reviewPaper");
-    });
+  $("#review").click(function () {
+    OesUtil.ajaxPage("#review", "/teacher/reviewPaper");
+  });
 
-    $("#help").click(function () {
-        OesUtil.ajaxPage("#help", "/teacher/help");
-    });
+  $("#help").click(function () {
+    OesUtil.ajaxPage("#help", "/teacher/help");
+  });
 
-    $("#update-pass").click(function () {
-        OesUtil.ajaxPage("#update-pass", "/teacher/update/pass");
-    });
+  $("#update-pass").click(function () {
+    OesUtil.ajaxPage("#update-pass", "/teacher/update/pass");
+  });
 
-    $(window).on("popstate", function () {
-        let state = history.state;
-        if (state === null) {
-            return;
-        }
-        OesUtil.ajaxPage(state.active, state.url);
-        history.replaceState(state, null, state.url);
-    });
+  $(window).on("popstate", function () {
+    let state = history.state;
+    if (state === null) {
+      return;
+    }
+    OesUtil.ajaxPage(state.active, state.url);
+    history.replaceState(state, null, state.url);
+  });
 </script>

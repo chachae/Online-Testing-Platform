@@ -1,65 +1,65 @@
 <!-- 增加学生信息模态框 -->
 <div class="modal fade" id="save-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">增加学生</h4>
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="save-form">
-                    <div class="form-group">
-                        <label>姓名</label>
-                        <input type="text" name="name" class="form-control">
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>学号</label>
-                        <input type="text" name="stuNumber" class="form-control">
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>学院</label>
-                        <select class="form-control academySelect" name="academy" style="width: 100%"
-                                onchange="getMajor(this.value,null)">
-                            <!-- 填入数据 -->
-                        </select>
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>专业</label>
-                        <select name="majorId" class="form-control majorSelect" style="width: 100%">
-                            <!-- 填入数据 -->
-                        </select>
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>年级</label>
-                        <select name="level" class="form-control save-level" style="width: 100%">
-                            <option value="">请选择</option>
-                            <option value="16">16级</option>
-                            <option value="17">17级</option>
-                            <option value="18">18级</option>
-                            <option value="19">19级</option>
-                            <option value="20">20级</option>
-                            <option value="21">21级</option>
-                        </select>
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>密码</label>
-                        <input type="password" name="password" class="form-control">
-                    </div>
-                    <div class="form-group form_datetime">
-                        <label>性别</label>
-                        <select name="sex" class="form-control save-sex" style="width: 100%">
-                            <option value="男">男</option>
-                            <option value="女">女</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">增加学生</h4>
+        <button type="button" class="close" data-dismiss="modal"><span
+            aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="save-form">
+          <div class="form-group">
+            <label>姓名</label>
+            <input type="text" name="name" class="form-control">
+          </div>
+          <div class="form-group form_datetime">
+            <label>学号</label>
+            <input type="text" name="stuNumber" class="form-control">
+          </div>
+          <div class="form-group form_datetime">
+            <label>学院</label>
+            <select class="form-control academySelect" name="academy" style="width: 100%"
+                    onchange="getMajor(this.value,null)">
+              <!-- 填入数据 -->
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>专业</label>
+            <select name="majorId" class="form-control majorSelect" style="width: 100%">
+              <!-- 填入数据 -->
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>年级</label>
+            <select name="level" class="form-control save-level" style="width: 100%">
+              <option value="">请选择</option>
+              <option value="16">16级</option>
+              <option value="17">17级</option>
+              <option value="18">18级</option>
+              <option value="19">19级</option>
+              <option value="20">20级</option>
+              <option value="21">21级</option>
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>密码</label>
+            <input type="password" name="password" class="form-control">
+          </div>
+          <div class="form-group form_datetime">
+            <label>性别</label>
+            <select name="sex" class="form-control save-sex" style="width: 100%">
+              <option value="男">男</option>
+              <option value="女">女</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+      </div>
     </div>
+  </div>
 </div>

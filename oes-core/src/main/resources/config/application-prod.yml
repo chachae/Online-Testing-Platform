@@ -31,9 +31,9 @@ spring:
         max-size: 30
         keep-alive: 60s
         queue-capacity: 50
-      thread-name-prefix: OES-pool-task-
+      thread-name-prefix: OES-POOL-TASK-
     scheduling:
-      thread-name-prefix: OES-scheduling-
+      thread-name-prefix: OES-SCHEDULE-
       pool:
         size: 2
 
@@ -90,6 +90,7 @@ mybatis-plus:
   type-aliases-package: com.chachae.exam.common.model
   configuration:
     map-underscore-to-camel-case: on
+
 # Actuator
 management:
   endpoints:

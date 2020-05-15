@@ -1,3 +1,84 @@
 <script>
-    function operateFormatter(value,row,index){return['  <button class="btn btn-success btn-sm" onclick="goUpdate('+row.id+')">编辑 </button>\n'+'  <button class="btn btn-sm btn-danger" onclick="deleteTeacher('+row.id+') ">删除</button>\n'].join('');}OesUtil.initNormalTable('#teacherInfo',"/api/teacher/list","get",[{title:'编号',field:'id',sortable:false,formatter:function(value,row,index){return index+1;}},{title:'姓名',field:'name',sortable:false},{title:'工号',field:'workNumber',sortable:false},{title:'职级',field:'job',sortable:false},{title:'性别',field:'sex',sortable:false},{field:'operate',title:'操作',formatter:operateFormatter}]);$('.job-select').select2({width:"100%",theme:"bootstrap4"});$('.sex-select').select2({width:"100%",theme:"bootstrap4"});function goUpdate(id){getTeacher(id);$("#updateModal").modal({show:true,backdrop:'static'});}function updateTeacher(){OesUtil.confirm("确定修改信息吗?",function(){let data=$("#update-form").serialize();$.post("/api/teacher/update/",data).done(function(data){if(data.state==="success"){OesUtil.closeModal("#updateModal");$('#update-form')[0].reset();OesUtil.refreshTable("#teacherInfo");}else{toastr.error(data.message);}})})}function getTeacher(id){$.get("/api/teacher/"+id,function(data){$('#id').val(data.id);$('#name').val(data.name);$('#workNumber').val(data.workNumber);$('#job').val(data.job).select2({width:"100%",theme:"bootstrap4"});$('#sex').val(data.sex).select2({width:"100%",theme:"bootstrap4"});$("#sex option").each(function(){if($(this).val()===data.sex){$(this).attr('selected',true);}})})}function goSave(){$("#saveModal").modal({show:true,backdrop:'static'});}function saveTeacher(){OesUtil.confirm("确定增加学教师吗?",function(){let data=$("#save-form").serialize();$.post("/api/teacher/save/",data).done(function(data){if(data.state==="success"){OesUtil.closeModal("#saveModal");$('#save-form')[0].reset();OesUtil.refreshTable("#teacherInfo");}else{toastr.error(data.message);}})})}function deleteTeacher(id){OesUtil.confirm("确定删除学教师吗?",function(){$.post("/api/teacher/delete/"+id).done(function(data){if(data.state==="success"){OesUtil.refreshTable("#teacherInfo");}else{toastr.error(data.message);}})})}
+  function operateFormatter(value, row, index) {
+    return ['  <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
+    + ')">编辑 </button>\n' + '  <button class="btn btn-sm btn-danger" onclick="deleteTeacher('
+    + row.id + ') ">删除</button>\n'].join('');
+  }
+
+  OesUtil.initNormalTable('#teacherInfo', "/api/teacher/list", "get", [{
+    title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
+      return index + 1;
+    }
+  }, {title: '姓名', field: 'name', sortable: false},
+    {title: '工号', field: 'workNumber', sortable: false},
+    {title: '职级', field: 'job', sortable: false}, {title: '性别', field: 'sex', sortable: false},
+    {field: 'operate', title: '操作', formatter: operateFormatter}]);
+  $('.job-select').select2({width: "100%", theme: "bootstrap4"});
+  $('.sex-select').select2({width: "100%", theme: "bootstrap4"});
+
+  function goUpdate(id) {
+    getTeacher(id);
+    $("#updateModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function updateTeacher() {
+    OesUtil.confirm("确定修改信息吗?", function () {
+      let data = $("#update-form").serialize();
+      $.post("/api/teacher/update/", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#updateModal");
+          $('#update-form')[0].reset();
+          OesUtil.refreshTable("#teacherInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  function getTeacher(id) {
+    $.get("/api/teacher/" + id, function (data) {
+      $('#id').val(data.id);
+      $('#name').val(data.name);
+      $('#workNumber').val(data.workNumber);
+      $('#job').val(data.job).select2({width: "100%", theme: "bootstrap4"});
+      $('#sex').val(data.sex).select2({width: "100%", theme: "bootstrap4"});
+      $("#sex option").each(function () {
+        if ($(this).val() === data.sex) {
+          $(this).attr('selected', true);
+        }
+      })
+    })
+  }
+
+  function goSave() {
+    $("#saveModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function saveTeacher() {
+    OesUtil.confirm("确定增加学教师吗?", function () {
+      let data = $("#save-form").serialize();
+      $.post("/api/teacher/save/", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#saveModal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#teacherInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  function deleteTeacher(id) {
+    OesUtil.confirm("确定删除学教师吗?", function () {
+      $.post("/api/teacher/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#teacherInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 </script>

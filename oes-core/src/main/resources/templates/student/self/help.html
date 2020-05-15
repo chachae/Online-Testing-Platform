@@ -1,99 +1,99 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 学生端</title>
-    <%include("../../include/css.html"){}%>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 学生端</title>
+  <%include("../../include/css.html"){}%>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <%include("../../student/include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <%layout("../include/sider.html",{name:"help"}){}%>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax helpTable: {
-        %>
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>帮助中心</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">帮助中心</a></li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <%include("../../student/include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <%layout("../include/sider.html",{name:"help"}){}%>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax helpTable: {
+    %>
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>帮助中心</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">帮助中心</a></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="callout callout-info">
-                            <h5><i class="fa fa-info"></i>&nbsp;${session.student.name}同学，你好：</h5>
-                            这里是 OES - 学生端帮助中心
-                        </div>
-                        <!-- Main content -->
-                        <div class="invoice p-3 mb-3">
-                            <!-- title row -->
-                            <div class="row">
-                                <div class="col-12">
-                                    <h4>
-                                        <i class="fa fa-sticky-note-o"></i> 帮助说明
-                                    </h4>
-                                </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- info row -->
-                            <div class="col-12 table-responsive">
-                                <table class="table table-light">
-                                    <thead>
-                                    <tr>
-                                        <th>学生端包含如下功能：</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>一、查询系统公告</td>
-                                    </tr>
-                                    <tr>
-                                        <td>二、查看考试信息</td>
-                                    </tr>
-                                    <tr>
-                                        <td>三、在线考试</td>
-                                    </tr>
-                                    <tr>
-                                        <td>四、查看成绩</td>
-                                    </tr>
-                                    <tr>
-                                        <td>五、成绩分析查询</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="callout callout-info">
+              <h5><i class="fa fa-info"></i>&nbsp;${session.student.name}同学，你好：</h5>
+              这里是 OES - 学生端帮助中心
             </div>
-        </section>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fa fa-sticky-note-o"></i> 帮助说明
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="col-12 table-responsive">
+                <table class="table table-light">
+                  <thead>
+                  <tr>
+                    <th>学生端包含如下功能：</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>一、查询系统公告</td>
+                  </tr>
+                  <tr>
+                    <td>二、查看考试信息</td>
+                  </tr>
+                  <tr>
+                    <td>三、在线考试</td>
+                  </tr>
+                  <tr>
+                    <td>四、查看成绩</td>
+                  </tr>
+                  <tr>
+                    <td>五、成绩分析查询</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

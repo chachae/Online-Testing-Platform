@@ -1,29 +1,32 @@
 <div class="modal fade" id="updateQuestionIdModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">修改题目</h4>
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span>
-                </button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">修改题目</h4>
+        <button type="button" class="close" data-dismiss="modal"><span
+            aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group form_datetime">
+          <form id="update-question-form">
+            <input type="hidden" readonly="readonly" name="paperId" value="${paper.id}"
+                   placeholder="试卷编号">
+            <div class="form-group">
+              <input type="text" readonly="readonly" name="oldId" class="form-control"
+                     id="oldQuestionId" placeholder="旧的题目 ID">
             </div>
-            <div class="modal-body">
-                <div class="form-group form_datetime">
-                    <form id="update-question-form">
-                        <input type="hidden" readonly="readonly" name="paperId" value="${paper.id}" placeholder="试卷编号">
-                        <div class="form-group">
-                            <input type="text" readonly="readonly" name="oldId" class="form-control" id="oldQuestionId" placeholder="旧的题目 ID">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="newId" class="form-control" id="newQuestionId" placeholder="新的题目 ID">
-                        </div>
-                    </form>
-                </div>
+            <div class="form-group">
+              <input type="text" name="newId" class="form-control" id="newQuestionId"
+                     placeholder="新的题目 ID">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="updateQuestionIdBtn">确定</button>
-            </div>
+          </form>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="updateQuestionIdBtn">确定</button>
+      </div>
     </div>
+  </div>
 </div>

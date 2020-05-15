@@ -1,3 +1,80 @@
 <script>
-    function operateFormatter(value,row,index){return['  <button class="view btn btn-sm btn-success" onclick="goView('+row.id+')">查看公告</button>\n'+'  <button class="edit btn btn-sm btn-warning" onclick="goUpdate('+row.id+')">编辑公告</button>\n'+'  <button class="btn btn-sm btn-danger" onclick="deleteAnnounce('+row.id+')">删除公告</button>',].join('');}OesUtil.initNormalTable('#announceInfo',"/api/announce/list","get",[{title:'标题',field:'title',sortable:false},{title:'发布时间',field:'createTime',sortable:false},{title:'发布人',field:'authorName',sortable:false},{field:'operate',title:'操作',formatter:operateFormatter}]);function deleteAnnounce(id){OesUtil.confirm("确定要删除么？",function(){$.get("/api/announce/delete/"+id).done(function(json){if(json.state==="success"){OesUtil.refreshTable("#announceInfo");}else{toastr.error(json.message);}})})}function updateAnnounce(){OesUtil.confirm("确定修改公告吗？",function(){let data=$('#update-form').serialize();$.post("/api/announce/update",data).done(function(data){if(data.state==="success"){OesUtil.closeModal("#updateModal");$('#update-form')[0].reset();OesUtil.refreshTable("#announceInfo");}else{toastr.error(data.message);}})})}function saveAnnounce(){OesUtil.confirm("确定新增公告吗？",function(){let data=$("#save-form").serialize();$.post("/api/announce/save",data,function(data){if(data.state==="success"){OesUtil.closeModal("#saveModal");$('#save-form')[0].reset();OesUtil.refreshTable("#announceInfo");}else{toastr.error(data.message);}})})}function goUpdate(id){getAnnounce(id);$("#updateModal").modal({show:true,backdrop:'static'});}function goView(id){getAnnounce(id);$("#viewModal").modal({show:true,backdrop:'static'});}function goSave(){$("#saveModal").modal({show:true,backdrop:'static'});}function getAnnounce(id){$.get("/api/announce/"+id,function(data){$(".id").val(data.id);$(".title").val(data.title);$(".author").val(data.authorName);$(".content").val(data.content);})}
+  function operateFormatter(value, row, index) {
+    return ['  <button class="view btn btn-sm btn-success" onclick="goView(' + row.id
+    + ')">查看公告</button>\n' + '  <button class="edit btn btn-sm btn-warning" onclick="goUpdate('
+    + row.id + ')">编辑公告</button>\n'
+    + '  <button class="btn btn-sm btn-danger" onclick="deleteAnnounce(' + row.id
+    + ')">删除公告</button>',].join('');
+  }
+
+  OesUtil.initNormalTable('#announceInfo', "/api/announce/list", "get",
+      [{title: '标题', field: 'title', sortable: false},
+        {title: '发布时间', field: 'createTime', sortable: false},
+        {title: '发布人', field: 'authorName', sortable: false},
+        {field: 'operate', title: '操作', formatter: operateFormatter}]);
+
+  function deleteAnnounce(id) {
+    OesUtil.confirm("确定要删除么？", function () {
+      $.get("/api/announce/delete/" + id).done(function (json) {
+        if (json.state === "success") {
+          OesUtil.refreshTable("#announceInfo");
+        } else {
+          toastr.error(json.message);
+        }
+      })
+    })
+  }
+
+  function updateAnnounce() {
+    OesUtil.confirm("确定修改公告吗？", function () {
+      let data = $('#update-form').serialize();
+      $.post("/api/announce/update", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#updateModal");
+          $('#update-form')[0].reset();
+          OesUtil.refreshTable("#announceInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  function saveAnnounce() {
+    OesUtil.confirm("确定新增公告吗？", function () {
+      let data = $("#save-form").serialize();
+      $.post("/api/announce/save", data, function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#saveModal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#announceInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  function goUpdate(id) {
+    getAnnounce(id);
+    $("#updateModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function goView(id) {
+    getAnnounce(id);
+    $("#viewModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function goSave() {
+    $("#saveModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function getAnnounce(id) {
+    $.get("/api/announce/" + id, function (data) {
+      $(".id").val(data.id);
+      $(".title").val(data.title);
+      $(".author").val(data.authorName);
+      $(".content").val(data.content);
+    })
+  }
 </script>

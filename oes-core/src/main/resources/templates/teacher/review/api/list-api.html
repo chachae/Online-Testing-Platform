@@ -1,8 +1,8 @@
 <script>
-    // select2
-    $('#paperId').select2({width: "100%", theme: "bootstrap4"});
+  // select2
+  $('#paperId').select2({width: "100%", theme: "bootstrap4"});
 
-    function goSearch() {
-        OesUtil.ajaxPage("#review", "/teacher/reviewRes?paperId="+$("#paperId").val());
-    }
+  function goSearch() {
+    OesUtil.ajaxPage("#review", "/teacher/reviewRes?paperId=" + $("#paperId").val());
+  }
 </script>

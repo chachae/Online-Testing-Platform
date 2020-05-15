@@ -1,63 +1,65 @@
 <script>
 
-    function operateFormatter(value, row, index) {
-        return [' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(' + row.id + ')">&nbsp;删除</button>'].join('');
-    }
+  function operateFormatter(value, row, index) {
+    return [' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(' + row.id
+    + ')">&nbsp;删除</button>'].join('');
+  }
 
-    // 初始化表单
-    OesUtil.initNormalTable('#courseInfo', "/api/course/list?teacherId=" + '${session.teacherId}', "get", [{
+  // 初始化表单
+  OesUtil.initNormalTable('#courseInfo', "/api/course/list?teacherId=" + '${session.teacherId}',
+      "get", [{
         title: '序号',
         field: 'id',
         sortable: false,
         formatter: function (value, row, index) {
-            return index + 1;
+          return index + 1;
         }
-    }, {
+      }, {
         title: '课程统一代码',
         field: 'id',
         sortable: false
-    }, {
+      }, {
         title: '课程名称',
         field: 'courseName',
         sortable: false
-    }, {
+      }, {
         field: 'operate',
         title: '操作',
         formatter: operateFormatter//html
-    }]);
+      }]);
 
-    // 删除课程
-    function deleteCourse(id) {
-        OesUtil.confirm("确定删除该课程吗？", function () {
-            $.post("/api/course/delete/" + id).done(function (data) {
-                if (data.state === "success") {
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
+  // 删除课程
+  function deleteCourse(id) {
+    OesUtil.confirm("确定删除该课程吗？", function () {
+      $.post("/api/course/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          window.location.reload();
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 
-    //添加课程模态框打开
-    $("#goSave").click(function () {
-        $("#save-modal").modal({
-            show: true,
-            backdrop: 'static'
-        });
+  //添加课程模态框打开
+  $("#goSave").click(function () {
+    $("#save-modal").modal({
+      show: true,
+      backdrop: 'static'
     });
+  });
 
-    // 增加课程
-    $("#saveBtn").click(function () {
-        OesUtil.confirm('确定添加课程吗？', function () {
-            let data = $('#save-form').serialize();
-            $.post("/api/course/save", data).done(function (data) {
-                if (data.state === "success") {
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    });
+  // 增加课程
+  $("#saveBtn").click(function () {
+    OesUtil.confirm('确定添加课程吗？', function () {
+      let data = $('#save-form').serialize();
+      $.post("/api/course/save", data).done(function (data) {
+        if (data.state === "success") {
+          window.location.reload();
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  });
 </script>

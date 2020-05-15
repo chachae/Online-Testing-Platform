@@ -34,7 +34,6 @@
     <hutool.version>5.3.2</hutool.version>
     <mybatis-plus.version>3.3.1</mybatis-plus.version>
     <guava.version>29.0-jre</guava.version>
-    <joda-time.version>2.10.6</joda-time.version>
     <commons-text.version>1.8</commons-text.version>
     <webjars-admin-lte.version>3.0.2</webjars-admin-lte.version>
     <webjars-font-awesome.version>5.12.0</webjars-font-awesome.version>
@@ -99,12 +98,6 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
-      </dependency>
-      <!-- Joda-time -->
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>${joda-time.version}</version>
       </dependency>
       <!-- poi-ooxml -->
       <dependency>

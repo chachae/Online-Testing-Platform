@@ -1,61 +1,68 @@
 <!-- 题目查看模态框 -->
 <div class="modal fade" id="save-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">新增题目</h4>
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <form id="save-form">
-                        <div class="form-group">
-                            <textarea class="form-control" name="questionName" rows="2" placeholder="题目名称"
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">新增题目</h4>
+        <button type="button" class="close" data-dismiss="modal"><span
+            aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <form id="save-form">
+            <div class="form-group">
+                            <textarea class="form-control" name="questionName" rows="2"
+                                      placeholder="题目名称"
                                       autocomplete="off"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="optionA" placeholder="选项A (非选择题不用填写)" autocomplete="off"/>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="optionB" placeholder="选项B (非选择题不用填写)" autocomplete="off"/>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="optionC" placeholder="选项C (非选择题不用填写)" autocomplete="off"/>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control" name="optionD" placeholder="选项D (非选择题不用填写)" autocomplete="off"/>
-                        </div>
-                        <div class="form-group">
+            </div>
+            <div class="form-group">
+              <input class="form-control" name="optionA" placeholder="选项A (非选择题不用填写)"
+                     autocomplete="off"/>
+            </div>
+            <div class="form-group">
+              <input class="form-control" name="optionB" placeholder="选项B (非选择题不用填写)"
+                     autocomplete="off"/>
+            </div>
+            <div class="form-group">
+              <input class="form-control" name="optionC" placeholder="选项C (非选择题不用填写)"
+                     autocomplete="off"/>
+            </div>
+            <div class="form-group">
+              <input class="form-control" name="optionD" placeholder="选项D (非选择题不用填写)"
+                     autocomplete="off"/>
+            </div>
+            <div class="form-group">
                             <textarea class="form-control" name="answer" rows="2" placeholder="答案"
                                       autocomplete="off"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <select class="courseSelect" id="save-course" name="courseId" autocomplete="off"></select>
-                            <!-- 动态获取数据 -->
-                        </div>
-                        <div class="form-group">
-                            <select class="typeSelect" id="save-type" name="typeId"></select>
-                            <!-- 动态获取数据 -->
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control difficulty" name="difficulty">
-                                <option value="1">简单</option>
-                                <option value="2">一般</option>
-                                <option value="3">困难</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input class="form-control remark" name="remark" placeholder="题目解析" autocomplete="off"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="saveQuestion()">增加</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
             </div>
+            <div class="form-group">
+              <select class="courseSelect" id="save-course" name="courseId"
+                      autocomplete="off"></select>
+              <!-- 动态获取数据 -->
+            </div>
+            <div class="form-group">
+              <select class="typeSelect" id="save-type" name="typeId"></select>
+              <!-- 动态获取数据 -->
+            </div>
+            <div class="form-group">
+              <select class="form-control difficulty" name="difficulty">
+                <option value="1">简单</option>
+                <option value="2">一般</option>
+                <option value="3">困难</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <input class="form-control remark" name="remark" placeholder="题目解析"
+                     autocomplete="off"/>
+            </div>
+          </form>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="saveQuestion()">增加</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

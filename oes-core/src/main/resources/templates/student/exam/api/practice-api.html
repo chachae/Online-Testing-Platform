@@ -1,29 +1,30 @@
 <script>
 
-    //表格操作
-    window.handle = {
-        "click .goPaper": function (e, value, row, index) {
-            OesUtil.ajaxPage("#exam", "/student/paper/" + row.id);
-        },
-    };
+  //表格操作
+  window.handle = {
+    "click .goPaper": function (e, value, row, index) {
+      OesUtil.ajaxPage("#exam", "/student/paper/" + row.id);
+    },
+  };
 
-    function operateFormatter(value, row, index) {
-        return [
-            '<button class="btn btn-sm btn-success goPaper">进入考试</button>'
-        ].join('');
-    }
+  function operateFormatter(value, row, index) {
+    return [
+      '<button class="btn btn-sm btn-success goPaper">进入考试</button>'
+    ].join('');
+  }
 
-    // 初始化表单
-    OesUtil.initNormalTable('#practiceInfo', "/api/paper/list?paperType=模拟&majorId=${session.student.majorId}", "get", [{
+  // 初始化表单
+  OesUtil.initNormalTable('#practiceInfo',
+      "/api/paper/list?paperType=模拟&majorId=${session.student.majorId}", "get", [{
         title: '考试',
         field: 'paperName',
         sortable: false
-    }, {
+      }, {
         field: 'operate',
         title: '操作',
         events: handle,//事件
         formatter: operateFormatter//html
-    }]);
+      }]);
 
 
 </script>

@@ -1,135 +1,137 @@
 <script>
 
-    // 操作按钮行为
-    function operateFormatter(value, row, index) {
-        return [' <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id + ')">编辑 </button> ' +
-        '<button class="btn btn-danger btn-sm delMajor" onclick="deleteMajor(' + row.id + ')">删除 </button>']
-            .join('');
-    }
+  // 操作按钮行为
+  function operateFormatter(value, row, index) {
+    return [' <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
+    + ')">编辑 </button> ' +
+    '<button class="btn btn-danger btn-sm delMajor" onclick="deleteMajor(' + row.id
+    + ')">删除 </button>']
+    .join('');
+  }
 
-    // 模糊搜索参数
-    function params(params) {
-        return {
-            current: params.pageNumber,
-            size: params.pageSize,
-            academyId: $('#findAcademy').val(),
-            major: $("#findMajor").val(),
-            questionName:$("#findQuestionName").val(),
-        };
-    }
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      academyId: $('#findAcademy').val(),
+      major: $("#findMajor").val(),
+      questionName: $("#findQuestionName").val(),
+    };
+  }
 
-    // 初始化表单
-    OesUtil.initQueryTable('#majorInfo', "/api/major/list", "get", [{
-            title: '序号',
-            field: 'id',
-            sortable: false,
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            title: '课程统一代码',
-            field: 'id',
-            sortable: false
-        }, {
-            title: '所属学院',
-            field: 'academy.name',
-            sortable: false
-        }, {
-            title: '专业名称',
-            field: 'major',
-            sortable: false
-        }, {
-            field: 'operate',
-            title: '操作',
-            formatter: operateFormatter
-        }],
-        params
-    );
+  // 初始化表单
+  OesUtil.initQueryTable('#majorInfo', "/api/major/list", "get", [{
+        title: '序号',
+        field: 'id',
+        sortable: false,
+        formatter: function (value, row, index) {
+          return index + 1;
+        }
+      }, {
+        title: '课程统一代码',
+        field: 'id',
+        sortable: false
+      }, {
+        title: '所属学院',
+        field: 'academy.name',
+        sortable: false
+      }, {
+        title: '专业名称',
+        field: 'major',
+        sortable: false
+      }, {
+        field: 'operate',
+        title: '操作',
+        formatter: operateFormatter
+      }],
+      params
+  );
 
-    // 分学院搜索
-    $("#findAcademy").change(function () {
-        OesUtil.refreshTable('#majorInfo');
+  // 分学院搜索
+  $("#findAcademy").change(function () {
+    OesUtil.refreshTable('#majorInfo');
+  });
+
+  // 专业名称模糊搜索
+  OesUtil.bindRequest('#findMajor', '#majorInfo', 200);
+
+  // 删除专业信息
+  function deleteMajor(id) {
+    OesUtil.confirm('确定删除专业吗?', function () {
+      $.post("/api/major/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable('#majorInfo');
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  // 获取专业信息并启动修改模态框
+  function goUpdate(id) {
+    $.get("/api/major/" + id, function (data) {
+      $('.id').val(data.id);
+      $('.major').val(data.major);
+      $('.academyId').val(data.academyId).select2({theme: 'bootstrap4'});
+      $("#update-modal").modal({
+        show: true,
+        backdrop: 'static'
+      });
+    })
+  }
+
+  // 更新专业信息
+  function updateMajor() {
+    OesUtil.confirm('确定修改信息吗?', function () {
+      let data = $('#update-form').serialize();
+      $.post("/api/major/update/", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#update-modal");
+          $('#update-form')[0].reset();
+          OesUtil.refreshTable("#majorInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
+
+  // 启动新增模态框
+  function goSave() {
+    $("#academyId").select2({theme: "bootstrap4"});
+    $("#save-modal").modal({
+      show: true,
+      backdrop: 'static'
     });
+  }
 
-    // 专业名称模糊搜索
-    OesUtil.bindRequest('#findMajor', '#majorInfo', 200);
+  // 增加专业信息
+  function saveMajor() {
+    OesUtil.confirm('确定增加专业吗?', function () {
+      let data = $('#save-form').serialize();
+      $.post("/api/major/save/", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#save-modal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#majorInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 
-    // 删除专业信息
-    function deleteMajor(id) {
-        OesUtil.confirm('确定删除专业吗?', function () {
-            $.post("/api/major/delete/" + id).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.refreshTable('#majorInfo');
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
-
-    // 获取专业信息并启动修改模态框
-    function goUpdate(id) {
-        $.get("/api/major/" + id, function (data) {
-            $('.id').val(data.id);
-            $('.major').val(data.major);
-            $('.academyId').val(data.academyId).select2({theme: 'bootstrap4'});
-            $("#update-modal").modal({
-                show: true,
-                backdrop: 'static'
-            });
-        })
-    }
-
-    // 更新专业信息
-    function updateMajor() {
-        OesUtil.confirm('确定修改信息吗?', function () {
-            let data = $('#update-form').serialize();
-            $.post("/api/major/update/", data).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.closeModal("#update-modal");
-                    $('#update-form')[0].reset();
-                    OesUtil.refreshTable("#majorInfo");
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
-
-    // 启动新增模态框
-    function goSave() {
-        $("#academyId").select2({theme: "bootstrap4"});
-        $("#save-modal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-    }
-
-    // 增加专业信息
-    function saveMajor() {
-        OesUtil.confirm('确定增加专业吗?', function () {
-            let data = $('#save-form').serialize();
-            $.post("/api/major/save/", data).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.closeModal("#save-modal");
-                    $('#save-form')[0].reset();
-                    OesUtil.refreshTable("#majorInfo");
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
-
-    // 填充学院信息
-    $.get("/api/academy").done(function (data) {
-        let options = "";
-        $('.academySelect').empty();
-        options += "<option value=''>全部</option>";
-        $.each(data, function (index, e) {
-            options += "<option value=" + e.id + ">" + e.name + "</option>";
-        });
-        $(".academySelect").append(options).val('').select2({theme: 'bootstrap4', width: "200px"});
+  // 填充学院信息
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('.academySelect').empty();
+    options += "<option value=''>全部</option>";
+    $.each(data, function (index, e) {
+      options += "<option value=" + e.id + ">" + e.name + "</option>";
     });
+    $(".academySelect").append(options).val('').select2({theme: 'bootstrap4', width: "200px"});
+  });
 
 </script>

@@ -1,107 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"question"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax questionTable:{
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>试题管理</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/teacher/question">试题管理</a></li>
-                        </ol>
-                    </div>
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"question"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax questionTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>试题管理</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/teacher/question">试题管理</a></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">试题信息</h3>
+                <div class="card-tools">
+                  <div class="input-group input-group-sm">
+                    <button class="btn btn-default btn-sm" id="importBtn">导入试题</button>
+                    &nbsp;
+                    <button class="goSave btn btn-default btn-sm">新增试题</button>
+                    &nbsp;
+                    <button class="btn btn-default btn-sm"
+                            onclick="OesUtil.refreshTable('#questionInfo');">刷新数据
+                    </button>
+                  </div>
                 </div>
-            </div>
-        </section>
+              </div>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">试题信息</h3>
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm">
-                                        <button class="btn btn-default btn-sm" id="importBtn">导入试题</button>
-                                        &nbsp;
-                                        <button class="goSave btn btn-default btn-sm">新增试题</button>
-                                        &nbsp;
-                                        <button class="btn btn-default btn-sm" onclick="OesUtil.refreshTable('#questionInfo');">刷新数据</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 条件查询框 -->
-                            <div class="card-header">
-                                <div class="card-tools">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" placeholder="题目名称" id="findQuestionName" style="width: 250px">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <select class="typeSelect  form-control" name="typeId" id="findType"></select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <select class="courseSelect  form-control" name="courseId"
-                                                     id="findCourse"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="questionInfo" class="table table-bordered table-striped text-nowrap"></table>
-                            </div>
-                        </div>
-                        <!-- /.card -->
+              <!-- 条件查询框 -->
+              <div class="card-header">
+                <div class="card-tools">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <input type="text" class="form-control" placeholder="题目名称"
+                             id="findQuestionName" style="width: 250px">
                     </div>
-                </div><!-- /.row -->
+                    <div class="col-sm-4">
+                      <select class="typeSelect  form-control" name="typeId" id="findType"></select>
+                    </div>
+                    <div class="col-sm-4">
+                      <select class="courseSelect  form-control" name="courseId"
+                              id="findCourse"></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="questionInfo"
+                       class="table table-bordered table-striped text-nowrap"></table>
+              </div>
             </div>
-        </section>
-        <!-- 查看模态框 -->
-        <%include("view-modal.html"){} %>
-        <!-- 导入试题 -->
-        <%include("import-modal.html"){}%>
-        <!-- 更新试题 -->
-        <%include("update-modal.html"){}%>
-        <!-- 新增试题 -->
-        <%include("save-modal.html"){}%>
-        <!-- 接口 -->
-        <%include("api.html"){}%>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+            <!-- /.card -->
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </section>
+    <!-- 查看模态框 -->
+    <%include("view-modal.html"){} %>
+    <!-- 导入试题 -->
+    <%include("import-modal.html"){}%>
+    <!-- 更新试题 -->
+    <%include("update-modal.html"){}%>
+    <!-- 新增试题 -->
+    <%include("save-modal.html"){}%>
+    <!-- 接口 -->
+    <%include("api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

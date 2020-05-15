@@ -1,52 +1,52 @@
 <script>
 
-    // 计时答题核心代码（通过JQuery实现）
-    $(function () {
-        // countdown 用于减少时间，一旦检测到时间为00:00：:00则自动提交试卷
-        $("#clock").countdown("${paper.endTime}", function (event) {
-            $(this).html(event.strftime('%H小时 %M分钟 %S秒'));
-        }).on("finish.countdown", function () {
-            $("#submitBtn").text("考试结束").attr("disabled", "disabled");
-            layer.msg('试卷将在2s后自动提交', {icon: 4});
-            $(this).delay(2000).queue(function () {
-                $("#paper").submit();
-            });
-        });
+  // 计时答题核心代码（通过JQuery实现）
+  $(function () {
+    // countdown 用于减少时间，一旦检测到时间为00:00：:00则自动提交试卷
+    $("#clock").countdown("${paper.endTime}", function (event) {
+      $(this).html(event.strftime('%H小时 %M分钟 %S秒'));
+    }).on("finish.countdown", function () {
+      $("#submitBtn").text("考试结束").attr("disabled", "disabled");
+      layer.msg('试卷将在2s后自动提交', {icon: 4});
+      $(this).delay(2000).queue(function () {
+        $("#paper").submit();
+      });
     });
+  });
 
-    //Flat red color scheme for iCheck
-    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue'
-    });
+  //Flat red color scheme for iCheck
+  $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+    checkboxClass: 'icheckbox_square-blue',
+    radioClass: 'iradio_square-blue'
+  });
 
-    // // 禁止复制
-    // document.oncontextmenu = function () {
-    //     return false;
-    // };
-    //
-    // // 禁止粘贴
-    // document.onpaste = function () {
-    //     return false;
-    // };
-    //
-    // document.ondragstart = function () {
-    //     return false;
-    // };
-    //
-    // document.onselectstart = function () {
-    //     return false;
-    // };
-    //
-    // document.onselect = function () {
-    //     return false;
-    // };
-    //
-    // document.oncopy = function () {
-    //     return false;
-    // };
-    //
-    // document.onmouseup = function () {
-    //     return false;
-    // };
+  // // 禁止复制
+  // document.oncontextmenu = function () {
+  //     return false;
+  // };
+  //
+  // // 禁止粘贴
+  // document.onpaste = function () {
+  //     return false;
+  // };
+  //
+  // document.ondragstart = function () {
+  //     return false;
+  // };
+  //
+  // document.onselectstart = function () {
+  //     return false;
+  // };
+  //
+  // document.onselect = function () {
+  //     return false;
+  // };
+  //
+  // document.oncopy = function () {
+  //     return false;
+  // };
+  //
+  // document.onmouseup = function () {
+  //     return false;
+  // };
 </script>

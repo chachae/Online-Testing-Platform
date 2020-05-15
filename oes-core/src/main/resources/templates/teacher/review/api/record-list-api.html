@@ -1,28 +1,28 @@
 <script>
 
-    // 启动模态框
-    function goUpdate(id, score) {
-        $("#update-modal").modal({
-            show: true,
-            backdrop: 'static'
-        });
-        // 赋值
-        $('#oldScore').val(score);
-        $('#id').val(id);
-    }
+  // 启动模态框
+  function goUpdate(id, score) {
+    $("#update-modal").modal({
+      show: true,
+      backdrop: 'static'
+    });
+    // 赋值
+    $('#oldScore').val(score);
+    $('#id').val(id);
+  }
 
-    // 更新请求
-    function updateScore() {
-        OesUtil.confirm("确定修改分数么", function () {
-            let data = $("#update-form").serialize();
-            $.post("/api/paper/update/score", data).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.closeModal("#update-modal");
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        });
-    }
+  // 更新请求
+  function updateScore() {
+    OesUtil.confirm("确定修改分数么", function () {
+      let data = $("#update-form").serialize();
+      $.post("/api/paper/update/score", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#update-modal");
+          window.location.reload();
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    });
+  }
 </script>

@@ -1,82 +1,84 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"review"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax reviewTable:{
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>试卷复查</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"review"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax reviewTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>试卷复查</h1>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- Horizontal Form -->
-                        <div class="card card-info">
-                            <div class="card-header">
-                                <h3 class="card-title">请选择试卷名称</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
-                            <form id="review-form" class="form-horizontal">
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="paperId" class="col-sm-2 control-label">场次</label>
-                                        <select class="form-control " id="paperId" name="paperId">
-                                            <option value="">请选择</option>
-                                            <% for( paper in paperList ){ %>
-                                            <option value="${paper.id}">${paper.paperName}</option>
-                                            <% } %>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer">
-                                    <button onclick="goSearch()" type="button" class="form-control btn btn-success">查找</button>
-                                </div>
-                                <!-- /.card-footer -->
-                            </form>
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div><!-- /.row -->
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">请选择试卷名称</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="review-form" class="form-horizontal">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="paperId" class="col-sm-2 control-label">场次</label>
+                    <select class="form-control " id="paperId" name="paperId">
+                      <option value="">请选择</option>
+                      <% for( paper in paperList ){ %>
+                      <option value="${paper.id}">${paper.paperName}</option>
+                      <% } %>
+                    </select>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button onclick="goSearch()" type="button" class="form-control btn btn-success">
+                    查找
+                  </button>
+                </div>
+                <!-- /.card-footer -->
+              </form>
             </div>
-        </section>
-        <%include("api/list-api.html"){}%>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+            <!-- /.card -->
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </section>
+    <%include("api/list-api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

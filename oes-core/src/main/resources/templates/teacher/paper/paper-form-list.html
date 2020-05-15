@@ -1,128 +1,130 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"paper"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax paperFormTable:{
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>模版列表</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">
-                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"paper"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax paperFormTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>模版列表</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">
+                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">试卷列表</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>题型</th>
-                                        <th>数量</th>
-                                        <th>分数</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% for( form in formList ){ %>
-                                    <tr>
-                                        <th scope="row">模版 ${formLP.index}</th>
-                                        <td>单选题</td>
-                                        <td> ${form.QChoiceNum}</td>
-                                        <td> ${form.QChoiceScore}</td>
-                                        <td>多选题</td>
-                                        <td> ${form.QMulChoiceNum}</td>
-                                        <td> ${form.QMulChoiceScore}</td>
-                                        <td>判断题</td>
-                                        <td> ${form.QTofNum}</td>
-                                        <td> ${form.QTofScore}</td>
-                                        <td>填空题</td>
-                                        <td> ${form.QFillNum}</td>
-                                        <td> ${form.QFillScore}</td>
-                                        <td>简答题</td>
-                                        <td> ${form.QSaqNum}</td>
-                                        <td> ${form.QSaqScore}</td>
-                                        <td>编程题</td>
-                                        <td> ${form.QProgramNum}</td>
-                                        <td> ${form.QProgramScore}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-success" onclick="goUser(${form.id})">使用</button>
-                                            <button class="rowDel btn btn-sm btn-danger"
-                                               onclick="deletePaperForm(${form.id})">删除</button>
-                                        </td>
-                                    </tr>
-                                    <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card -->
-                </div>
-            </div><!-- /.row -->
-        </section>
-        <!-- 接口 -->
-        <%include("api/paper-form-list-api.html"){}%>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">试卷列表</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>题型</th>
+                    <th>数量</th>
+                    <th>分数</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% for( form in formList ){ %>
+                  <tr>
+                    <th scope="row">模版 ${formLP.index}</th>
+                    <td>单选题</td>
+                    <td> ${form.QChoiceNum}</td>
+                    <td> ${form.QChoiceScore}</td>
+                    <td>多选题</td>
+                    <td> ${form.QMulChoiceNum}</td>
+                    <td> ${form.QMulChoiceScore}</td>
+                    <td>判断题</td>
+                    <td> ${form.QTofNum}</td>
+                    <td> ${form.QTofScore}</td>
+                    <td>填空题</td>
+                    <td> ${form.QFillNum}</td>
+                    <td> ${form.QFillScore}</td>
+                    <td>简答题</td>
+                    <td> ${form.QSaqNum}</td>
+                    <td> ${form.QSaqScore}</td>
+                    <td>编程题</td>
+                    <td> ${form.QProgramNum}</td>
+                    <td> ${form.QProgramScore}</td>
+                    <td>
+                      <button class="btn btn-sm btn-success" onclick="goUser(${form.id})">使用
+                      </button>
+                      <button class="rowDel btn btn-sm btn-danger"
+                              onclick="deletePaperForm(${form.id})">删除
+                      </button>
+                    </td>
+                  </tr>
+                  <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+      </div><!-- /.row -->
+    </section>
+    <!-- 接口 -->
+    <%include("api/paper-form-list-api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

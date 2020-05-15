@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){}%>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){}%>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"index"}){} %>
-    <div class="content-wrapper">
-        <!-- 异步加载区域 -->
-    </div>
-    <!-- footer -->
-    <% layout("../../include/footer.html"){} %>
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"index"}){} %>
+  <div class="content-wrapper">
+    <!-- 异步加载区域 -->
+  </div>
+  <!-- footer -->
+  <% layout("../../include/footer.html"){} %>
 </div>
 </body>
 <!-- 公共 js 脚本 -->
 <% include("../../include/js.html"){} %>
 <%include("api.html"){}%>
 <script>
-    OesUtil.ajaxPage("home", "/teacher/home")
+  OesUtil.ajaxPage("home", "/teacher/home")
 </script>
 </html>

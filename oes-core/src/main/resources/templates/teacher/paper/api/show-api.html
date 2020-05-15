@@ -1,79 +1,78 @@
 <script>
-    // 删除试卷
-    function deletePaper(id) {
-        OesUtil.confirm("确定要删除试卷吗？", function () {
-            $.post("/api/paper/delete/" + id).done(function (data) {
-                if (data.state === "success") {
-                    OesUtil.ajaxPage("#paper", "/teacher/paper");
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        });
-    }
-
-    // 打开修改答案模态框
-    function goUpdateAnswer(id, answer) {
-        let x = "${paper.paperType == '模拟'}";
-        let y = "!${paper.start}";
-        if (x || y) {
-            // 符合条件，打开模态框
-            $("#updateAnswerModal").modal({
-                show: true,
-                backdrop: 'static'
-            });
-            $('#update-answer-id').val(id);
-            $('#update-answer-answer').val(answer);
+  // 删除试卷
+  function deletePaper(id) {
+    OesUtil.confirm("确定要删除试卷吗？", function () {
+      $.post("/api/paper/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.ajaxPage("#paper", "/teacher/paper");
         } else {
-
+          toastr.error(data.message);
         }
+      })
+    });
+  }
+
+  // 打开修改答案模态框
+  function goUpdateAnswer(id, answer) {
+    let x = "${paper.paperType == '模拟'}";
+    let y = "!${paper.start}";
+    if (x || y) {
+      // 符合条件，打开模态框
+      $("#updateAnswerModal").modal({
+        show: true,
+        backdrop: 'static'
+      });
+      $('#update-answer-id').val(id);
+      $('#update-answer-answer').val(answer);
+    } else {
 
     }
 
-    //提交答案修改
-    $('#updateAnswerBtn').click(function () {
-        OesUtil.confirm("确定修改题目答案吗?", function () {
-            let data = $("#update-answer-form").serialize();
-            $.post("/api/question/update/answer", data).done(function (data) {
-                if (data.state === "success") {
-                    window.location.reload();
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    });
+  }
 
-
-    // 打开修改题目模态框
-    function goUpdateQuestion(id) {
-        let x = "${paper.paperType == '模拟'}";
-        let y = "!${paper.start}";
-        // 获取考试时间
-        if (x || y) {
-            // 题目id
-            $('#oldQuestionId').val(id);
-            $("#updateQuestionIdModal").modal({
-                show: true,
-                backdrop: 'static'
-            });
+  //提交答案修改
+  $('#updateAnswerBtn').click(function () {
+    OesUtil.confirm("确定修改题目答案吗?", function () {
+      let data = $("#update-answer-form").serialize();
+      $.post("/api/question/update/answer", data).done(function (data) {
+        if (data.state === "success") {
+          window.location.reload();
         } else {
-            toastr.error("只允许修改未开始的考试和模拟考试！")
+          toastr.error(data.message);
         }
-    }
+      })
+    })
+  });
 
-    //提交答案修改
-    $('#updateQuestionIdBtn').click(function () {
-        OesUtil.confirm("确定修改题目吗?", function () {
-            let data = $("#update-question-form").serialize();
-            $.post("/api/paper/update/question", data).done(function (data) {
-                if (data.state === "success") {
-                    window.location.reload();
-                } else {
-                    $('#newQuestionId').val("");
-                    toastr.error(data.message);
-                }
-            })
-        })
-    });
+  // 打开修改题目模态框
+  function goUpdateQuestion(id) {
+    let x = "${paper.paperType == '模拟'}";
+    let y = "!${paper.start}";
+    // 获取考试时间
+    if (x || y) {
+      // 题目id
+      $('#oldQuestionId').val(id);
+      $("#updateQuestionIdModal").modal({
+        show: true,
+        backdrop: 'static'
+      });
+    } else {
+      toastr.error("只允许修改未开始的考试和模拟考试！")
+    }
+  }
+
+  //提交答案修改
+  $('#updateQuestionIdBtn').click(function () {
+    OesUtil.confirm("确定修改题目吗?", function () {
+      let data = $("#update-question-form").serialize();
+      $.post("/api/paper/update/question", data).done(function (data) {
+        if (data.state === "success") {
+          window.location.reload();
+        } else {
+          $('#newQuestionId').val("");
+          toastr.error(data.message);
+        }
+      })
+    })
+  });
 </script>

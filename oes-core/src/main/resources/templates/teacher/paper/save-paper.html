@@ -1,153 +1,153 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 教师端</title>
-    <!-- 引入全局 css 文件 -->
-    <%include("../../include/css.html"){} %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- 引入头部 -->
-    <% include("../include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../include/sider.html",{name:"save-paper"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax savePaperTable:{
-        %>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"save-paper"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax savePaperTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>新增试卷</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">
+                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="invoice p-3 mb-3">
+              <div class="card-header">
+                <h3 class="card-title">试卷信息</h3>
+              </div>
+              <br>
+              <!-- /.card-header -->
+              <div class="invoice-col">
+                <form method="post" id="addForm">
+                  <div class="form-group">
+                    <input type="hidden" class="form-control" id="teacherId" name="teacherId"
+                           value="${session.teacher.id}">
+                    <input type="hidden" class="form-control" name="paperState" value="未开始">
+                    <input type="hidden" class="form-control" name="paperFormId"
+                           value="${paperFormId}">
+                    <label>试卷名称</label>
+                    <input type="text" class="form-control" name="paperName" autocomplete="off">
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-4">
+                      <label for="courseId">所属课程</label>
+                      <select class="form-control" id="courseId" name="courseId">
+                        <option value="">请选择</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="paperType">试卷类型 </label>
+                      <select class="form-control" name="paperType" id="paperType">
+                        <option value="">请选择</option>
+                        <option value="正式">正式</option>
+                        <option value="模拟">模拟</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="difficulty">难度</label>
+                      <select class="form-control" name="difficulty" id="difficulty">
+                        <option value="">难度均摊</option>
+                        <option value="1">容易</option>
+                        <option value="2">中等</option>
+                        <option value="3">困难</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-4">
+                      <label for="academy">学院</label>
+                      <select id="academy" onchange="getAcademy(this.value)" name="academy"
+                              class="form-control">
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="majorId">考试专业</label>
+                      <select id="majorId" name="majorId" class="form-control">
+                        <option value="">请先择学院</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4">
+                      <label for="score">试卷总分 (默认模版为100分)</label>
+                      <input type="text" id="score" name="score" value="100" class="form-control"
+                             autocomplete="off">
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="form-group">
+                    <label style="color: red">注意: 正式试卷必选，模拟试卷无需选择时间</label>
+                  </div>
+                  <div class="form-group row">
                     <div class="col-sm-6">
-                        <h1>新增试卷</h1>
+                      <label for="beginTIme">开始时间</label>
+                      <input type="text" name="beginTime" class="form-control" id="beginTime"
+                             autocomplete="off">
                     </div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">
-                                <button class="btn btn-sm btn-success" onclick="history.go(-1);">返回列表</button>
-                            </li>
-                        </ol>
+                      <label for="endTime">结束时间</label>
+                      <input type="text" name="endTime" class="form-control" id="endTime"
+                             autocomplete="off">
                     </div>
+                  </div>
+                </form>
+              </div>
+              <div class="card-footer clearfix bg-white">
+                <div class="form-group float-right">
+                  <a href="javascript:history.go(0)" class="btn btn-warning"
+                     id="reset">重置</a>&nbsp;
+                  <button class="btn btn-primary" onclick="saveRandomPaper()">保存</button>
                 </div>
+              </div>
             </div>
-        </section>
-
-        <!-- table 部分 -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="invoice p-3 mb-3">
-                            <div class="card-header">
-                                <h3 class="card-title">试卷信息</h3>
-                            </div>
-                            <br>
-                            <!-- /.card-header -->
-                            <div class="invoice-col">
-                                <form method="post" id="addForm">
-                                    <div class="form-group">
-                                        <input type="hidden" class="form-control" id="teacherId" name="teacherId"
-                                               value="${session.teacher.id}">
-                                        <input type="hidden" class="form-control" name="paperState" value="未开始">
-                                        <input type="hidden" class="form-control" name="paperFormId"
-                                               value="${paperFormId}">
-                                        <label>试卷名称</label>
-                                        <input type="text" class="form-control" name="paperName" autocomplete="off">
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-sm-4">
-                                            <label for="courseId">所属课程</label>
-                                            <select class="form-control" id="courseId" name="courseId">
-                                                <option value="">请选择</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="paperType">试卷类型 </label>
-                                            <select class="form-control" name="paperType" id="paperType">
-                                                <option value="">请选择</option>
-                                                <option value="正式">正式</option>
-                                                <option value="模拟">模拟</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="difficulty">难度</label>
-                                            <select class="form-control" name="difficulty" id="difficulty">
-                                                <option value="">难度均摊</option>
-                                                <option value="1">容易</option>
-                                                <option value="2">中等</option>
-                                                <option value="3">困难</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-sm-4">
-                                            <label for="academy">学院</label>
-                                            <select id="academy" onchange="getAcademy(this.value)" name="academy"
-                                                    class="form-control">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="majorId">考试专业</label>
-                                            <select id="majorId" name="majorId" class="form-control">
-                                                <option value="">请先择学院</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="score">试卷总分 (默认模版为100分)</label>
-                                            <input type="text" id="score" name="score" value="100" class="form-control"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <hr/>
-                                    <div class="form-group">
-                                        <label style="color: red">注意: 正式试卷必选，模拟试卷无需选择时间</label>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-6">
-                                            <label for="beginTIme">开始时间</label>
-                                            <input type="text" name="beginTime" class="form-control" id="beginTime"
-                                                   autocomplete="off">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="endTime">结束时间</label>
-                                            <input type="text" name="endTime" class="form-control" id="endTime"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="card-footer clearfix bg-white">
-                                <div class="form-group float-right">
-                                    <a href="javascript:history.go(0)" class="btn btn-warning"
-                                       id="reset">重置</a>&nbsp;
-                                    <button class="btn btn-primary" onclick="saveRandomPaper()">保存</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card -->
-                </div>
-            </div><!-- /.row -->
-        </section>
-        <!-- 接口 -->
-        <%include("api/save-paper-api.html"){} %>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+          </div>
+          <!-- /.card -->
+        </div>
+      </div><!-- /.row -->
+    </section>
+    <!-- 接口 -->
+    <%include("api/save-paper-api.html"){} %>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

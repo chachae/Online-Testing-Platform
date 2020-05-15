@@ -1,27 +1,29 @@
 <!-- 修改答案模态框 -->
 <div class="modal fade" id="updateAnswerModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">修改答案</h4>
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-               <form id="update-answer-form">
-                   <div class="form-group">
-                       <input type="text" readonly="readonly" name="id" class="form-control" placeholder="题目编号" id="update-answer-id">
-                   </div>
-                   <div class="form-group">
-                       <textarea type="text" name="answer" rows="6" class="form-control" id="update-answer-answer" placeholder="题目答案"></textarea>
-                   </div>
-               </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="updateAnswerBtn">确定</button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">修改答案</h4>
+        <button type="button" class="close" data-dismiss="modal"><span
+            aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="update-answer-form">
+          <div class="form-group">
+            <input type="text" readonly="readonly" name="id" class="form-control" placeholder="题目编号"
+                   id="update-answer-id">
+          </div>
+          <div class="form-group">
+            <textarea type="text" name="answer" rows="6" class="form-control"
+                      id="update-answer-answer" placeholder="题目答案"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="updateAnswerBtn">确定</button>
+      </div>
     </div>
+  </div>
 </div>

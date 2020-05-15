@@ -1,37 +1,37 @@
 <script>
 
 
-    //表格操作
-    window.handle = {
-        "click .scoreDetail": function (e, value, row, index) {
-            OesUtil.ajaxPage(".score","/student/score/detail/" + row.id)
-        },
-    };
+  //表格操作
+  window.handle = {
+    "click .scoreDetail": function (e, value, row, index) {
+      OesUtil.ajaxPage(".score", "/student/score/detail/" + row.id)
+    },
+  };
 
-    function operateFormatter(value, row, index) {
-        return [
-            '<button class="btn btn-outline-info btn-sm scoreDetail">成绩详情</button>'
-        ].join('');
-    }
+  function operateFormatter(value, row, index) {
+    return [
+      '<button class="btn btn-outline-info btn-sm scoreDetail">成绩详情</button>'
+    ].join('');
+  }
 
-    // 初始化表单
-    OesUtil.initNormalTable('#scoreInfo', "/api/score/list", "get", [{
-        title: '考试',
-        field: 'paperName',
-        sortable: false
-    }, {
-        title: '成绩',
-        field: 'score',
-        sortable: false
-    }, {
-        title: '错题集',
-        field: 'wrongIds',
-        sortable: false
-    }, {
-        field: 'operate',
-        title: '操作',
-        events: handle,//事件
-        formatter: operateFormatter//html
-    }]);
+  // 初始化表单
+  OesUtil.initNormalTable('#scoreInfo', "/api/score/list", "get", [{
+    title: '考试',
+    field: 'paperName',
+    sortable: false
+  }, {
+    title: '成绩',
+    field: 'score',
+    sortable: false
+  }, {
+    title: '错题集',
+    field: 'wrongIds',
+    sortable: false
+  }, {
+    field: 'operate',
+    title: '操作',
+    events: handle,//事件
+    formatter: operateFormatter//html
+  }]);
 
 </script>

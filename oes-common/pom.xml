@@ -52,11 +52,6 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
     </dependency>
-    <!-- Joda-time -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
     <!-- commons-text -->
     <dependency>
       <groupId>org.apache.commons</groupId>

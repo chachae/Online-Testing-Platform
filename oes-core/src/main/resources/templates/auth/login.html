@@ -1,181 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 身份认证</title>
-    <!-- 引入全局公共js / css -->
-    <%include("../include/css.html"){}%>
-    <style>
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #B3B8C4;
-            font-size: 13px;
-        }
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 身份认证</title>
+  <!-- 引入全局公共js / css -->
+  <%include("../include/css.html"){}%>
+  <style>
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #B3B8C4;
+      font-size: 13px;
+    }
 
-    </style>
+  </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-    <div class="login-logo">
-        <a href="#"><b>OES</b>在线考试软件</a>
-    </div>
-    <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#stuLine" data-toggle="tab">学生</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#teacherLine" data-toggle="tab">教师</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#adminLine" data-toggle="tab">管理员</a>
-                    </li>
-                </ul>
+  <div class="login-logo">
+    <a href="#"><b>OES</b>在线考试软件</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <div class="col-md-12">
+        <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" href="#stuLine" data-toggle="tab">学生</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#teacherLine" data-toggle="tab">教师</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#adminLine" data-toggle="tab">管理员</a>
+          </li>
+        </ul>
 
-                <div class="card-body">
-                    <div class="tab-content">
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane active" id="stuLine">
-                            <form id="stu-form">
-                                <div class="input-group mb-3">
-                                    <input type="text" id="stuNumber" name="username" class="form-control"
-                                           placeholder="学号" value="201601">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-user-circle"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group mb-3">
-                                    <input type="password" id="stuPassword" name="password" class="form-control"
-                                           placeholder="密码" value="123">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-lock"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" class="key">
-                                <div class="input-group mb-3">
-                                    <input type="text" placeholder="请输入验证码"
-                                           class="form-control" id="stuText">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
-                                                 alt="验证码">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- /.col -->
-                                    <div class="col-12">
-                                        <button type="button" id="stuBtn" class="btn btn-primary btn-block">登录</button>
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
-                            </form>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="teacherLine">
-                            <form id="teacher-form">
-                                <div class="input-group mb-3">
-                                    <input type="text" id="teacherNumber" name="username" class="form-control"
-                                           placeholder="工号" value="123">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-user-circle"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group mb-3">
-                                    <input type="password" id="teacherPassword" name="password" class="form-control"
-                                           placeholder="密码" value="123">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-lock"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" class="key">
-                                <div class="input-group mb-3">
-                                    <input type="text" placeholder="请输入验证码"
-                                           class="form-control" id="teacherText">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha" alt="验证码">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- /.col -->
-                                    <div class="col-12">
-                                        <button type="button" id="teacherBtn" class="btn btn-primary btn-block">登录
-                                        </button>
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
-                            </form>
-                        </div>
-
-                        <div class="tab-pane" id="adminLine">
-                            <form id="admin-form">
-                                <div class="input-group mb-3">
-                                    <input type="text" id="adminId" name="username" class="form-control"
-                                           placeholder="管理员账号" value="admin">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-user-circle"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group mb-3">
-                                    <input type="password" id="adminPassword" class="form-control"
-                                           placeholder="密码" value="123">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <span class="fa fa-lock"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" class="key">
-                                <div class="input-group mb-3">
-                                    <input type="text" placeholder="请输入验证码"
-                                           class="form-control" id="adminText">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
-                                                 alt="验证码">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- /.col -->
-                                    <div class="col-12">
-                                        <button type="button" id="adminBtn" class="btn btn-primary btn-block">登录
-                                        </button>
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
-                            </form>
-                        </div>
-                        <!-- /.tab-pane -->
+        <div class="card-body">
+          <div class="tab-content">
+            <!-- /.tab-pane -->
+            <div class="tab-pane active" id="stuLine">
+              <form id="stu-form">
+                <div class="input-group mb-3">
+                  <input type="text" id="stuNumber" name="username" class="form-control"
+                         placeholder="学号" value="201601">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-user-circle"></span>
                     </div>
-                    <!-- /.tab-content -->
-                </div><!-- /.card-body -->
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <input type="password" id="stuPassword" name="password" class="form-control"
+                         placeholder="密码" value="123">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-lock"></span>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" class="key">
+                <div class="input-group mb-3">
+                  <input type="text" placeholder="请输入验证码"
+                         class="form-control" id="stuText">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
+                           alt="验证码">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- /.col -->
+                  <div class="col-12">
+                    <button type="button" id="stuBtn" class="btn btn-primary btn-block">登录</button>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
+              </form>
             </div>
-            <!-- /.nav-tabs-custom -->
-        </div>
-        <!-- /.social-auth-links -->
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="teacherLine">
+              <form id="teacher-form">
+                <div class="input-group mb-3">
+                  <input type="text" id="teacherNumber" name="username" class="form-control"
+                         placeholder="工号" value="123">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-user-circle"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <input type="password" id="teacherPassword" name="password" class="form-control"
+                         placeholder="密码" value="123">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-lock"></span>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" class="key">
+                <div class="input-group mb-3">
+                  <input type="text" placeholder="请输入验证码"
+                         class="form-control" id="teacherText">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
+                           alt="验证码">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- /.col -->
+                  <div class="col-12">
+                    <button type="button" id="teacherBtn" class="btn btn-primary btn-block">登录
+                    </button>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
+              </form>
+            </div>
+
+            <div class="tab-pane" id="adminLine">
+              <form id="admin-form">
+                <div class="input-group mb-3">
+                  <input type="text" id="adminId" name="username" class="form-control"
+                         placeholder="管理员账号" value="admin">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-user-circle"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <input type="password" id="adminPassword" class="form-control"
+                         placeholder="密码" value="123">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fa fa-lock"></span>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" class="key">
+                <div class="input-group mb-3">
+                  <input type="text" placeholder="请输入验证码"
+                         class="form-control" id="adminText">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <img style="CURSOR: pointer;" onclick="getCaptcha()" class="captcha"
+                           alt="验证码">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- /.col -->
+                  <div class="col-12">
+                    <button type="button" id="adminBtn" class="btn btn-primary btn-block">登录
+                    </button>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div class="footer">*推荐使用IE 10 或以上版本 IE 浏览器或 Chrome 内核浏览器访问本站</div>
+              </form>
+            </div>
+            <!-- /.tab-pane -->
+          </div>
+          <!-- /.tab-content -->
+        </div><!-- /.card-body -->
+      </div>
+      <!-- /.nav-tabs-custom -->
     </div>
-    <!-- /.login-card-body -->
+    <!-- /.social-auth-links -->
+  </div>
+  <!-- /.login-card-body -->
 </div>
 <!-- /.login-box -->
 <!-- 引入全局公共js -->

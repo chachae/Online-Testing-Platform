@@ -1,113 +1,113 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OES | 管理员端</title>
-    <% include("../../include/css.html"){}%>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 管理员端</title>
+  <% include("../../include/css.html"){}%>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <% include("../../admin/include/header.html"){} %>
-    <!-- 左侧菜单栏 -->
-    <% layout("../../admin/include/sider.html",{name:"update"}){} %>
-    <!-- 引入全局 js 脚本文件 -->
-    <% include("../../include/js.html"){} %>
-    <!-- 右侧内容部分 -->
-    <div class="content-wrapper">
-        <%
-        #ajax updateTable: {
-        %>
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>个人设置</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">个人设置</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+  <% include("../../admin/include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../../admin/include/sider.html",{name:"update"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax updateTable: {
+    %>
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>个人设置</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">个人设置</a>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Profile Image -->
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                         src="/webjars/AdminLTE/3.0.2/dist/img/avatar5.png"
-                                         alt="User profile picture">
-                                </div>
-                                <h3 class="profile-username text-center">${session.admin.name}</h3>
-                                <p class="text-muted text-center">${session.admin.number}</p>
-                                <ul class="list-group list-group-unbordered mb-3">
-                                    <li class="list-group-item">
-                                        <b>编号</b> <a class="float-right">${session.admin.id}</a>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <b>上次登录</b> <a class="float-right">${session.admin.lastLoginTime}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">修改密码</h3>
-                            </div>
-                            <!-- form start -->
-                            <form role="form" id="update-form">
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="oldPassword">旧密码</label>
-                                        <input type="hidden" name="id" value="${session.admin.id}">
-                                        <input type="password" name="oldPassword" class="form-control" id="oldPassword"
-                                               placeholder="旧密码">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">新密码</label>
-                                        <input type="password" name="password" class="form-control" id="password"
-                                               placeholder="新密码">
-                                    </div>
-                                </div>
-                                <!-- /.card-body -->
-                                <div class="card-footer">
-                                    <button type="button" onclick="updatePass()" class="btn btn-primary pull-right">修改
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- /.nav-tabs-custom -->
-                    </div>
-                    <!-- /.col -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle"
+                       src="/webjars/AdminLTE/3.0.2/dist/img/avatar5.png"
+                       alt="User profile picture">
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- 接口 -->
-        <% include("api.html"){} %>
-        <%}%>
-    </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- 引入footer -->
-    <% include("../../include/footer.html"){}%>
-    <%include("../main/api.html"){}%>
-    <!-- Control Sidebar -->
+                <h3 class="profile-username text-center">${session.admin.name}</h3>
+                <p class="text-muted text-center">${session.admin.number}</p>
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b>编号</b> <a class="float-right">${session.admin.id}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>上次登录</b> <a class="float-right">${session.admin.lastLoginTime}</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">修改密码</h3>
+              </div>
+              <!-- form start -->
+              <form role="form" id="update-form">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="oldPassword">旧密码</label>
+                    <input type="hidden" name="id" value="${session.admin.id}">
+                    <input type="password" name="oldPassword" class="form-control" id="oldPassword"
+                           placeholder="旧密码">
+                  </div>
+                  <div class="form-group">
+                    <label for="password">新密码</label>
+                    <input type="password" name="password" class="form-control" id="password"
+                           placeholder="新密码">
+                  </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="button" onclick="updatePass()" class="btn btn-primary pull-right">修改
+                  </button>
+                </div>
+              </form>
+            </div>
+            <!-- /.nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- 接口 -->
+    <% include("api.html"){} %>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
 </div>
 </body>
 </html>

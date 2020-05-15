@@ -1,3 +1,46 @@
 <script>
-    function operateFormatter(value,row,index){return['<button class="btn btn-sm btn-danger" onclick="deleteAdmin('+row.id+') ">删除</button>\n'].join('');}OesUtil.initNormalTable('#adminInfo',"/api/admin/list","get",[{title:'编号',field:'id',sortable:false,formatter:function(value,row,index){return index+1;}},{title:'姓名',field:'name',sortable:false},{title:'用户名',field:'number',sortable:false},{title:'上次登陆时间',field:'lastLoginTime',sortable:false},{field:'operate',title:'操作',formatter:operateFormatter}]);function deleteAdmin(id){OesUtil.confirm("确定删除管理员吗?",function(){$.post("/api/admin/delete/"+id).done(function(data){if(data.state==="success"){OesUtil.refreshTable("#adminInfo");}else{toastr.error(data.message);}})});}function goSave(){$("#saveModal").modal({show:true,backdrop:'static'});}function saveAdmin(){OesUtil.confirm("确定新增管理员吗?",function(){let data=$('#save-form').serialize();$.post("/api/admin/save",data).done(function(data){if(data.state==="success"){OesUtil.closeModal("#saveModal");$('#save-form')[0].reset();OesUtil.refreshTable("#adminInfo");}else{toastr.error(data.message);}})})}
+  function operateFormatter(value, row, index) {
+    return ['<button class="btn btn-sm btn-danger" onclick="deleteAdmin(' + row.id
+    + ') ">删除</button>\n'].join('');
+  }
+
+  OesUtil.initNormalTable('#adminInfo', "/api/admin/list", "get", [{
+    title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
+      return index + 1;
+    }
+  }, {title: '姓名', field: 'name', sortable: false},
+    {title: '用户名', field: 'number', sortable: false},
+    {title: '上次登陆时间', field: 'lastLoginTime', sortable: false},
+    {field: 'operate', title: '操作', formatter: operateFormatter}]);
+
+  function deleteAdmin(id) {
+    OesUtil.confirm("确定删除管理员吗?", function () {
+      $.post("/api/admin/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#adminInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    });
+  }
+
+  function goSave() {
+    $("#saveModal").modal({show: true, backdrop: 'static'});
+  }
+
+  function saveAdmin() {
+    OesUtil.confirm("确定新增管理员吗?", function () {
+      let data = $('#save-form').serialize();
+      $.post("/api/admin/save", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#saveModal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#adminInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 </script>

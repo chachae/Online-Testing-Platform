@@ -1,66 +1,65 @@
 <script>
 
-    // 获取课程集合
-    $.get("/api/course/teacher/" + "${session.teacher.id}").done(function (data) {
-        let options = "";
-        //回填的二级类别值
-        $('#courseId').empty();
-        options += "<option value=''>请选择</option>";
-        $.each(data, function (index, e) {
-            options += "<option selected='true' value=" + e.id + ">" + e.courseName + "</option>";
-        });
-        $("#courseId").append(options).select2({theme: 'bootstrap4', width: '100%'});
+  // 获取课程集合
+  $.get("/api/course/teacher/" + "${session.teacher.id}").done(function (data) {
+    let options = "";
+    //回填的二级类别值
+    $('#courseId').empty();
+    options += "<option value=''>请选择</option>";
+    $.each(data, function (index, e) {
+      options += "<option selected='true' value=" + e.id + ">" + e.courseName + "</option>";
     });
+    $("#courseId").append(options).select2({theme: 'bootstrap4', width: '100%'});
+  });
 
+  // 获取学院集合
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('#academy').empty();
+    options += "<option value=''>请选择</option>";
+    $.each(data, function (index, e) {
+      options += "<option value=" + e.id + ">" + e.name + "</option>";
+    });
+    $("#academy").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
+  });
+
+  // 专选择框框回填
+  function getAcademy(id) {
     // 获取学院集合
-    $.get("/api/academy").done(function (data) {
-        let options = "";
-        $('#academy').empty();
-        options += "<option value=''>请选择</option>";
-        $.each(data, function (index, e) {
-            options += "<option value=" + e.id + ">" + e.name + "</option>";
-        });
-        $("#academy").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
+    $.get("/api/major/academy/" + id).done(function (data) {
+      let options = "";
+      //回填的二级类别值
+      $('#majorId').empty();
+      options += "<option value=''>请选择</option>";
+      $.each(data, function (index, e) {
+        options += "<option value=" + e.id + ">" + e.major + "</option>";
+      });
+      $("#majorId").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
     });
+  }
 
-    // 专选择框框回填
-    function getAcademy(id) {
-        // 获取学院集合
-        $.get("/api/major/academy/" + id).done(function (data) {
-            let options = "";
-            //回填的二级类别值
-            $('#majorId').empty();
-            options += "<option value=''>请选择</option>";
-            $.each(data, function (index, e) {
-                options += "<option value=" + e.id + ">" + e.major + "</option>";
-            });
-            $("#majorId").append(options).val('').select2({theme: 'bootstrap4', width: '100%'});
-        });
-    }
+  // 试卷类型下拉框
+  $('#paperType').select2({theme: 'bootstrap4', width: "100%"});
 
-    // 试卷类型下拉框
-    $('#paperType').select2({theme: 'bootstrap4', width: "100%"});
+  // 起止时间选择器
+  $(function () {
+    // 起止时间
+    OesUtil.dateTimePick("#beginTime", false, false);
+    OesUtil.dateTimePick("#endTime", false, false);
+  });
 
-    // 起止时间选择器
-    $(function () {
-        // 起止时间
-        OesUtil.dateTimePick("#beginTime", false, false);
-        OesUtil.dateTimePick("#endTime", false, false);
-    });
-
-
-    // 提交随机组卷
-    function saveRandomPaper() {
-        OesUtil.confirm("确定添加试卷吗？", function () {
-            let data = $("#addForm").serialize();
-            $.post("/api/paper/save/random", data, function (data) {
-                if (data.state === "success") {
-                    OesUtil.ajaxPage("paper", "/teacher/paper/show/" + data.data);
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-        })
-    }
+  // 提交随机组卷
+  function saveRandomPaper() {
+    OesUtil.confirm("确定添加试卷吗？", function () {
+      let data = $("#addForm").serialize();
+      $.post("/api/paper/save/random", data, function (data) {
+        if (data.state === "success") {
+          OesUtil.ajaxPage("paper", "/teacher/paper/show/" + data.data);
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  }
 
 </script>

@@ -1,71 +1,72 @@
 <!-- 左侧菜单栏 -->
 <aside class="main-sidebar elevation-4 sidebar-dark-olive">
-    <!-- Brand Logo -->
-    <a href="#" class="brand-link navbar-olive">
-        <img src="/webjars/AdminLTE/3.0.2/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-             class="brand-image img-circle elevation-3"
-             style="opacity: .8">
-        <span class="brand-text font-weight-light">OES 管理员端</span>
-    </a>
+  <!-- Brand Logo -->
+  <a href="#" class="brand-link navbar-olive">
+    <img src="/webjars/AdminLTE/3.0.2/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+         class="brand-image img-circle elevation-3"
+         style="opacity: .8">
+    <span class="brand-text font-weight-light">OES 管理员端</span>
+  </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="/webjars/AdminLTE/3.0.2/dist/img/avatar5.png" class="img-circle elevation-2"
-                     alt="User Image">
-            </div>
-            <div class="info">
-                <a href="#" class="d-block">${session.admin.name}</a>
-            </div>
-        </div>
-
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- 首页 -->
-                <li class="nav-item">
-                    <a href="javascript:;" id="home" class="nav-link ${name == 'home'?'active':''}">
-                        <i class="nav-icon fas fa-globe"></i>
-                        <p>首页</p>
-                    </a>
-                </li>
-
-                <!-- 系统公告 -->
-                <li class="nav-item">
-                    <a href="javascript:;" id="announce" class="nav-link ${name == 'announce'?'active':''}">
-                        <i class="nav-icon fas fa-paper-plane"></i>
-                        <p>公告管理</p>
-                    </a>
-                </li>
-
-                <!-- 学院管理 -->
-                <li class="nav-item">
-                    <a href="javascript:;" id="academy" class="nav-link ${name == 'academy'?'active':''}">
-                        <i class="nav-icon fas fa-landmark"></i>
-                        <p>学院管理</p>
-                    </a>
-                </li>
-
-                <!-- 教师管理 -->
-                <li class="nav-item">
-                    <a href="javascript:;" id="teacher" class="nav-link ${name == 'teacher'?'active':''}">
-                        <i class="nav-icon fas fa-id-badge"></i>
-                        <p>教师管理</p>
-                    </a>
-                </li>
-
-                <!-- 管理员管理 -->
-                <li class="nav-item">
-                    <a href="javascript:;" id="admin" class="nav-link  ${name == 'admin'?'active':''}">
-                        <i class="nav-icon fas fa-flag"></i>
-                        <p>管理员管理</p>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.sidebar-menu -->
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="/webjars/AdminLTE/3.0.2/dist/img/avatar5.png" class="img-circle elevation-2"
+             alt="User Image">
+      </div>
+      <div class="info">
+        <a href="#" class="d-block">${session.admin.name}</a>
+      </div>
     </div>
-    <!-- /.sidebar -->
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+          data-accordion="false">
+        <!-- 首页 -->
+        <li class="nav-item">
+          <a href="javascript:;" id="home" class="nav-link ${name == 'home'?'active':''}">
+            <i class="nav-icon fas fa-globe"></i>
+            <p>首页</p>
+          </a>
+        </li>
+
+        <!-- 系统公告 -->
+        <li class="nav-item">
+          <a href="javascript:;" id="announce" class="nav-link ${name == 'announce'?'active':''}">
+            <i class="nav-icon fas fa-paper-plane"></i>
+            <p>公告管理</p>
+          </a>
+        </li>
+
+        <!-- 学院管理 -->
+        <li class="nav-item">
+          <a href="javascript:;" id="academy" class="nav-link ${name == 'academy'?'active':''}">
+            <i class="nav-icon fas fa-landmark"></i>
+            <p>学院管理</p>
+          </a>
+        </li>
+
+        <!-- 教师管理 -->
+        <li class="nav-item">
+          <a href="javascript:;" id="teacher" class="nav-link ${name == 'teacher'?'active':''}">
+            <i class="nav-icon fas fa-id-badge"></i>
+            <p>教师管理</p>
+          </a>
+        </li>
+
+        <!-- 管理员管理 -->
+        <li class="nav-item">
+          <a href="javascript:;" id="admin" class="nav-link  ${name == 'admin'?'active':''}">
+            <i class="nav-icon fas fa-flag"></i>
+            <p>管理员管理</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
 </aside>
