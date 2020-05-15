@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,18 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-02-07 21:49:52
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class StuAnswerRecordServiceImpl extends ServiceImpl<StuAnswerRecordDAO, StuAnswerRecord>
     implements StuAnswerRecordService {
 
-  @Resource
-  private StudentDAO studentDAO;
-  @Resource
-  private ScoreService scoreService;
-  @Resource
-  private QuestionDAO questionDAO;
-  @Resource
-  private StuAnswerRecordDAO stuAnswerRecordDAO;
+  private final StudentDAO studentDAO;
+  private final ScoreService scoreService;
+  private final QuestionDAO questionDAO;
+  private final StuAnswerRecordDAO stuAnswerRecordDAO;
 
   @Override
   public List<StuAnswerRecord> selectByPaperId(Integer paperId) {

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * @author chachae
  * @since 2020/2/11 21:32
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

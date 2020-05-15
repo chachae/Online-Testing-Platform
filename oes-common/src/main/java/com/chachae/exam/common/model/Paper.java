@@ -1,14 +1,15 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.chachae.exam.common.constant.SysConsts;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 
 /**
  * 试卷实体类
@@ -21,44 +22,69 @@ import org.joda.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Paper extends Model<Paper> {
-  @TableId(type = IdType.AUTO)
+public class Paper {
+
+  @TableId
   private Integer id;
 
-  /** 试卷名称 */
+  /**
+   * 试卷名称
+   */
   private String paperName;
 
-  /** 课程id */
+  /**
+   * 课程id
+   */
   private Integer courseId;
 
-  /** 问题id组合 */
+  /**
+   * 问题id组合
+   */
   private String questionId;
 
-  /** 试卷开始时间 */
+  /**
+   * 试卷开始时间
+   */
   private String beginTime;
 
-  /** 试卷结束时间 */
+  /**
+   * 试卷结束时间
+   */
   private String endTime;
 
-  /** 考试时长 */
+  /**
+   * 考试时长
+   */
   private String allowTime;
 
-  /** 试卷总分 */
+  /**
+   * 试卷总分
+   */
   private String score;
 
-  /** 考试状态：未开始，已结束 */
+  /**
+   * 考试状态：未开始，已结束
+   */
   private String paperState;
 
-  /** 试卷类型：正式，模拟 */
+  /**
+   * 试卷类型：正式，模拟
+   */
   private String paperType;
 
-  /** 专业班级id */
+  /**
+   * 专业班级id
+   */
   private Integer majorId;
 
-  /** 试卷组成id */
+  /**
+   * 试卷组成id
+   */
   private Integer paperFormId;
 
-  /** 出卷老师id */
+  /**
+   * 出卷老师id
+   */
   private Integer teacherId;
 
   /**
@@ -68,9 +94,9 @@ public class Paper extends Model<Paper> {
    */
   public boolean isStart() {
     if (getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
-      final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-      DateTime beginTime = fmt.parseDateTime(getBeginTime());
-      return beginTime.isBeforeNow();
+      LocalDateTime ldt = LocalDateTime
+          .parse(getBeginTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+      return ldt.isBefore(LocalDateTime.now());
     } else {
       return true;
     }
@@ -83,9 +109,9 @@ public class Paper extends Model<Paper> {
    */
   public boolean isEnd() {
     if (getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
-      DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-      DateTime endTime = formatter.parseDateTime(getEndTime());
-      return endTime.isBeforeNow();
+      LocalDateTime ldt = LocalDateTime
+          .parse(getEndTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+      return ldt.isBefore(LocalDateTime.now());
     } else {
       return true;
     }

@@ -6,7 +6,7 @@ import com.chachae.exam.common.dao.RolePermissionDAO;
 import com.chachae.exam.common.model.RolePermission;
 import com.chachae.exam.service.RolePermissionService;
 import java.util.List;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
  * @since 2020-03-01 16:02:05
  */
 @Service
+@RequiredArgsConstructor
 public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionDAO, RolePermission>
     implements RolePermissionService {
 
-  @Resource
-  private RolePermissionDAO rolePermissionDAO;
+  private final RolePermissionDAO rolePermissionDAO;
 
   @Override
   public List<RolePermission> selectByRoleId(Integer roleId) {

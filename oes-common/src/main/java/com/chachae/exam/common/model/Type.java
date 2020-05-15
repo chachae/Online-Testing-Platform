@@ -1,8 +1,6 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,16 +16,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Type extends Model<Type> {
-  @TableId(type = IdType.AUTO)
+public class Type {
+
+  @TableId
   private Integer id;
 
-  /** 题目类型 */
+  /**
+   * 题目类型
+   */
   private String typeName;
 
-  /** 各个类型题目的分数 */
+  /**
+   * 各个类型题目的分数
+   */
   private String score;
 
-  /** 该类型题目说明 */
+  /**
+   * 该类型题目说明
+   */
   private String remark;
 }

@@ -8,7 +8,6 @@ import com.chachae.exam.common.dao.AdminDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
-import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
@@ -16,7 +15,7 @@ import com.chachae.exam.service.AdminService;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020/2/10
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements AdminService {
 
-  @Resource
-  private AdminDAO adminDAO;
+  private final AdminDAO adminDAO;
 
   /**
    * 管理员登录
@@ -55,8 +54,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
       throw new ServiceException("密码错误");
     }
     // 更新登陆时间
-    Date time = DateUtil.date();
-    this.adminDAO.updateById(Admin.builder().id(admin.getId()).lastLoginTime(time).build());
+    this.adminDAO.updateById(Admin.builder().id(admin.getId()).lastLoginTime(new Date()).build());
     return admin;
   }
 
@@ -100,7 +98,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
       throw new ServiceException("不可以删除自己");
     }
     // ID 不相同，允许删除
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 
   @Override
@@ -114,7 +113,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
     // 封装管理员默认角色ID，同时加密密码
     entity.setRoleId(SysConsts.Role.ADMIN);
     entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-    entity.setLastLoginTime(DateUtil.date());
-    return super.save(entity);
+    entity.setLastLoginTime(new Date());
+    baseMapper.insert(entity);
+    return true;
   }
 }

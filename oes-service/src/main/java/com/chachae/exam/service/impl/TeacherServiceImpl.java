@@ -19,7 +19,7 @@ import com.chachae.exam.service.TeacherService;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020/2/20
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> implements TeacherService {
 
-  @Resource
-  private TeacherDAO teacherDAO;
-  @Resource
-  private CourseService courseService;
-  @Resource
-  private PaperService paperService;
+  private final TeacherDAO teacherDAO;
+  private final CourseService courseService;
+  private final PaperService paperService;
 
   @Override
   public Teacher login(String teaNumber, String password) {
@@ -101,12 +99,12 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
       // 不存在则设置默认的角色ID和对密码进行加密存储
       entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
       entity.setRoleId(SysConsts.Role.TEACHER);
-      return super.save(entity);
+      baseMapper.insert(entity);
+      return true;
     }
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 判断关联关系，（试卷和课程，不存在关联再进行删除）
     List<Course> courses = this.courseService.listByTeacherId((int) id);
@@ -118,6 +116,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
       throw new ServiceException("该教师存在试卷关联，不允许删除");
     }
     // 支持，允许被执行删除
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 }

@@ -11,14 +11,13 @@ import com.chachae.exam.service.PermissionService;
 import com.chachae.exam.service.RolePermissionService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
 /**
  * (Permission)表服务实现类
@@ -27,15 +26,16 @@ import java.util.concurrent.TimeUnit;
  * @since 2020-03-01 16:01:52
  */
 @Service
+@RequiredArgsConstructor
 public class PermissionServiceImpl extends ServiceImpl<PermissionDAO, Permission>
     implements PermissionService {
 
   @Value("${oes.cache.permission_prefix}")
   private String prefix;
 
-  @Resource private PermissionDAO permissionDAO;
-  @Resource private RedisTemplate<String, Object> redisService;
-  @Resource private RolePermissionService rolePermissionService;
+  private final PermissionDAO permissionDAO;
+  private final RedisTemplate<String, Object> redisService;
+  private final RolePermissionService rolePermissionService;
 
   @Override
   public Set<String> selectExpressionByRoleId(Integer roleId) {
@@ -77,7 +77,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionDAO, Permission
     }
 
     // 缓存到 redis 中
-    this.redisService.opsForValue().set(key, result, 3 * 3600L, TimeUnit.SECONDS);
+    this.redisService.opsForValue().set(key, result, 3, TimeUnit.HOURS);
     return result;
   }
 }

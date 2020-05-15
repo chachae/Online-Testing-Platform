@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chachae.exam.common.dao.StudentDAO">
+
+  <!-- studentVo result Map -->
+  <resultMap id="voResultMap" type="StudentVo">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="stu_number" property="stuNumber"/>
+    <result column="role_id" property="roleId"/>
+    <result column="sex" property="sex"/>
+    <result column="major_id" property="majorId"/>
+    <result column="level" property="level"/>
+    <association javaType="Major" property="major" columnPrefix="m_">
+      <id property="id" column="id"/>
+      <result property="major" column="major"/>
+      <result property="academyId" column="academy_id"/>
+    </association>
+    <association javaType="Role" property="role" columnPrefix="r_">
+      <id property="id" column="id"/>
+      <result property="roleName" column="role_name"/>
+    </association>
+    <association property="academy" javaType="Academy" columnPrefix="a_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+  </resultMap>
+
+  <sql id="baseSql">
+    SELECT s.id,s.name,s.password,s.stu_number,s.role_id,s.sex,s.major_id,s.level,r.id AS r_id,
+           r.role_name AS r_role_name,m.id AS m_id,m.academy_id AS m_academy_id,m.major AS m_major,
+           a.id AS a_id,a.name AS a_name FROM student s
+    LEFT JOIN role r ON r.id = s.role_id
+    LEFT JOIN major m ON s.major_id = m.id
+    LEFT JOIN academy a ON m.academy_id = a.id
+  </sql>
+
+  <!-- 通过条件查询学生 List 集合 -->
+  <select id="pageVo" parameterType="QueryStudentDto" resultMap="voResultMap">
+    <include refid="baseSql"/>
+    <where>
+      <if test="entity.academyId != null">
+        a.id = #{entity.academyId,jdbcType=VARCHAR}
+      </if>
+      <if test="entity.key != null and entity.key != ''">
+        and (s.name like concat('%',#{entity.key,jdbcType=VARCHAR},'%')
+        or s.stu_number like concat('%',#{entity.key,jdbcType=VARCHAR},'%'))
+      </if>
+    </where>
+  </select>
+
+  <!-- 通过条件查询学生 List 集合 -->
+  <select id="selectVoById" parameterType="integer" resultMap="voResultMap">
+    <include refid="baseSql"/>
+    where s.id = #{id,jdbcType=INTEGER}
+  </select>
+
+</mapper>

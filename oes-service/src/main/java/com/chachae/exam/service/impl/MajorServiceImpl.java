@@ -15,7 +15,7 @@ import com.chachae.exam.service.StudentService;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-02-08 14:26:53
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements MajorService {
 
-  @Resource
-  private MajorDAO majorDAO;
-  @Resource
-  private PaperService paperService;
-  @Resource
-  private StudentService studentService;
+  private final MajorDAO majorDAO;
+  private final PaperService paperService;
+  private final StudentService studentService;
 
   @Override
   public Map<String, Object> listPage(Page<Major> page, Major major) {
@@ -57,7 +55,6 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     List<Paper> papers = this.paperService.selectByMajorId((int) id);
     if (CollUtil.isNotEmpty(papers)) {
@@ -67,13 +64,15 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
     if (studentCount > 0) {
       throw new ServiceException("专业存在学生关联，请删除相关学生后重试");
     }
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 
   @Override
   public boolean save(Major entity) {
     if (CollUtil.isEmpty(this.listByMajorName(entity.getMajor()))) {
-      return super.save(entity);
+      baseMapper.insert(entity);
+      return true;
     } else {
       throw new ServiceException("专业已存在，请重重新输入");
     }
@@ -82,7 +81,8 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
   @Override
   public boolean updateById(Major entity) {
     if (CollUtil.isEmpty(this.listByMajorName(entity.getMajor()))) {
-      return super.updateById(entity);
+      baseMapper.updateById(entity);
+      return true;
     } else {
       throw new ServiceException("专业已存在，请重重新输入");
     }

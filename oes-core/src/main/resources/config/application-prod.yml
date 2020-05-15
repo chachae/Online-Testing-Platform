@@ -21,6 +21,7 @@ spring:
       maximum-pool-size: 25
       minimum-idle: 10
       read-only: off
+      pool-name: OESHikariPool
 
   # Task
   task:
@@ -84,10 +85,11 @@ spring:
 mybatis-plus:
   global-config:
     banner: off
+    db-config:
+      id-type: auto
   type-aliases-package: com.chachae.exam.common.model
   configuration:
     map-underscore-to-camel-case: on
-
 # Actuator
 management:
   endpoints:

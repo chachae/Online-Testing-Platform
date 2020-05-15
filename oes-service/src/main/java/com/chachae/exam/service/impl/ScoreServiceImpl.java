@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020/1/7
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements ScoreService {
 
-  @Resource
-  private ScoreDAO scoreDAO;
-  @Resource
-  private PaperDAO paperDAO;
-  @Resource
-  private CourseDAO courseDAO;
+  private final ScoreDAO scoreDAO;
+  private final PaperDAO paperDAO;
+  private final CourseDAO courseDAO;
 
   @Override
   public List<Score> selectByStuId(Integer id) {

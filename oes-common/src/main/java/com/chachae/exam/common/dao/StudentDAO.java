@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 学生 Mapper 接口
@@ -18,11 +19,11 @@ public interface StudentDAO extends BaseMapper<Student> {
   /**
    * 通过条件查询学生 List 集合
    *
-   * @param page 分页信息
+   * @param page   分页信息
    * @param entity 学生模糊信息
    * @return 学生 List 集合
    */
-  IPage<StudentVo> pageVo(Page<Student> page, QueryStudentDto entity);
+  IPage<StudentVo> pageVo(Page<Student> page, @Param("entity") QueryStudentDto entity);
 
   /**
    * 通过 ID 查询学生详细信息

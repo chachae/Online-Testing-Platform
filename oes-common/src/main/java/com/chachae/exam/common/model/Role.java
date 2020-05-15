@@ -1,8 +1,6 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,9 +16,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role extends Model<Role> {
+public class Role {
+
   // 角色id:管理员_1，学生_2，老师_3
-  @TableId(type = IdType.AUTO)
+  @TableId
   private Integer id;
   // 角色姓名
   private String roleName;

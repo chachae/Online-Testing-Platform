@@ -16,7 +16,7 @@ import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,15 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-02-14 17:48:48
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements CourseService {
 
-  @Resource
-  private QuestionDAO questionDAO;
-  @Resource
-  private CourseDAO courseDAO;
-  @Resource
-  private TeacherDAO teacherDAO;
+  private final QuestionDAO questionDAO;
+  private final CourseDAO courseDAO;
+  private final TeacherDAO teacherDAO;
 
   @Override
   public List<Integer> listIdByTeacherId(Integer teacherId) {
@@ -87,7 +85,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     if (count > 0) {
       throw new ServiceException("课程存在试题关联，请删除后再尝试。");
     } else {
-      return super.removeById(id);
+      baseMapper.deleteById(id);
+      return true;
     }
   }
 
@@ -104,7 +103,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     // 查询是否有同名课程
     List<Course> courses = this.selectByCourseName(entity.getCourseName());
     if (CollUtil.isEmpty(courses)) {
-      return super.save(entity);
+      baseMapper.insert(entity);
+      return true;
     } else {
       throw new ServiceException("存在同名课程，请重新输入");
     }

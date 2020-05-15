@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.Log;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -37,7 +36,8 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -51,31 +51,22 @@ import org.springframework.web.multipart.MultipartFile;
  * @author chachae
  * @date 2020/2/1
  */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
-  @Resource
-  private RedisTemplate<String, Object> redisService;
-  @Resource
-  private TypeService typeService;
-  @Resource
-  private QuestionDAO questionDAO;
-  @Resource
-  private PaperDAO paperDAO;
-  @Resource
-  private PaperFormDAO paperFormDAO;
-  @Resource
-  private CourseService courseService;
+  private final RedisTemplate<String, Object> redisService;
+  private final TypeService typeService;
+  private final QuestionDAO questionDAO;
+  private final PaperDAO paperDAO;
+  private final PaperFormDAO paperFormDAO;
+  private final CourseService courseService;
 
   @Value("${oes.cache.paper_prefix}")
   private String prefix;
-
-  /**
-   * 日志接口
-   */
-  private final Log log = Log.get();
 
   @Override
   public Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity) {
@@ -375,7 +366,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       }
     }
 
-    // todo bug 写入缓存
+    // FIXME 写入缓存更新后数据为旧数据
     // this.redisService.set(key, questions, 3 * 3600L);
     return questions;
   }

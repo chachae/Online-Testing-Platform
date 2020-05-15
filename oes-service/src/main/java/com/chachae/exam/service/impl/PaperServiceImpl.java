@@ -22,20 +22,21 @@ import com.chachae.exam.common.model.dto.ImportPaperRandomQuestionDto;
 import com.chachae.exam.common.model.dto.MarkInfoDto;
 import com.chachae.exam.common.model.dto.PaperQuestionUpdateDto;
 import com.chachae.exam.common.model.dto.QueryPaperDto;
-import com.chachae.exam.common.util.DateUtil;
 import com.chachae.exam.common.util.NumberUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.PaperMarkUtil;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.google.common.collect.Lists;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import org.joda.time.DateTime;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,21 +48,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020/2/2
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements PaperService {
 
-  @Resource
-  private PaperDAO paperDAO;
-  @Resource
-  private PaperFormDAO paperFormDAO;
-  @Resource
-  private QuestionService questionService;
-  @Resource
-  private StuAnswerRecordDAO stuAnswerRecordDAO;
-  @Resource
-  private ScoreDAO scoreDAO;
-  @Resource
-  private TypeDAO typeDAO;
+  private final PaperDAO paperDAO;
+  private final PaperFormDAO paperFormDAO;
+  private final QuestionService questionService;
+  private final StuAnswerRecordDAO stuAnswerRecordDAO;
+  private final ScoreDAO scoreDAO;
+  private final TypeDAO typeDAO;
 
   @Override
   public void randomNewPaper(Paper paper, String diff) {
@@ -210,7 +206,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       paper.setBeginTime(null);
       paper.setEndTime(null);
     }
-    return super.updateById(paper);
+    baseMapper.updateById(paper);
+    return true;
   }
 
   @Override
@@ -329,6 +326,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void saveWithImportPaper(Paper paper, ImportPaperRandomQuestionDto entity) {
     // 获取试卷模板信息
     Integer paperFormId = paper.getPaperFormId();
@@ -336,15 +334,20 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 判断是否存在已存在提醒仍进行随机抽题的情况
     if (Integer.parseInt(form.getQChoiceNum()) > 0 && entity.getA() == 1) {
       throw new ServiceException("试卷中已存在 [ 单项选择题 ]，请取消随机抽题后重试！");
-    } else if (Integer.parseInt(form.getQMulChoiceNum()) > 0 && entity.getB() == 1) {
+    }
+    if (Integer.parseInt(form.getQMulChoiceNum()) > 0 && entity.getB() == 1) {
       throw new ServiceException("试卷中已存在 [ 多项选择题 ]，请取消随机抽题后重试！");
-    } else if (Integer.parseInt(form.getQTofNum()) > 0 && entity.getC() == 1) {
+    }
+    if (Integer.parseInt(form.getQTofNum()) > 0 && entity.getC() == 1) {
       throw new ServiceException("试卷中已存在 [ 判断题 ]，请取消随机抽题后重试！");
-    } else if (Integer.parseInt(form.getQFillNum()) > 0 && entity.getD() == 1) {
+    }
+    if (Integer.parseInt(form.getQFillNum()) > 0 && entity.getD() == 1) {
       throw new ServiceException("试卷中已存在 [ 填空题 ]，请取消随机抽题后重试！");
-    } else if (Integer.parseInt(form.getQSaqNum()) > 0 && entity.getE() == 1) {
+    }
+    if (Integer.parseInt(form.getQSaqNum()) > 0 && entity.getE() == 1) {
       throw new ServiceException("试卷中已存在 [ 主观题 ]，请取消随机抽题后重试！");
-    } else if (Integer.parseInt(form.getQProgramNum()) > 0 && entity.getF() == 1) {
+    }
+    if (Integer.parseInt(form.getQProgramNum()) > 0 && entity.getF() == 1) {
       throw new ServiceException("试卷中已存在 [ 编程题 ]，请取消随机抽题后重试！");
     }
 
@@ -499,10 +502,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       qw.eq(Paper::getTeacherId, entity.getTeacherId());
     }
     // 获取当前时间
-    String now = DateUtil.getFormatLocalDateTimeStr();
     qw.eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
     // 开始时间大于当前时间
-    qw.gt(Paper::getBeginTime, now);
+    qw.gt(Paper::getBeginTime, new Date());
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }
@@ -524,7 +526,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       // 封装时常
       entity.setAllowTime(allowTime);
     }
-    return super.save(entity);
+    baseMapper.insert(entity);
+    return true;
   }
 
   /**
@@ -621,11 +624,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
     // 計算试卷起止时间
     final String pattern = "yyyy-MM-dd HH:mm";
-    DateTime d1 = DateUtil.getDateTime(beginTime, pattern);
-    DateTime d2 = DateUtil.getDateTime(endTime, pattern);
+    LocalDateTime d1 = LocalDateTime.parse(beginTime, DateTimeFormatter.ofPattern(pattern));
+    LocalDateTime d2 = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern(pattern));
 
     // 判断起止时间是否符合要求
-    if (d1.isBeforeNow()) {
+    if (d1.isBefore(LocalDateTime.now())) {
       throw new ServiceException("请设置一个未来的时间");
     } else if (d1.isAfter(d2)) {
       throw new ServiceException("开始时间不能晚于结束时间！");
@@ -637,7 +640,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     }
 
     // 封装时间
-    StringBuilder build = new StringBuilder();
-    return build.append(d2.getMinuteOfDay() - d1.getMinuteOfDay()).append("分钟").toString();
+    return ((d2.getHour() - d1.getHour()) * 60 + (d2.getMinute() - d1.getMinute())) + "分钟";
   }
 }

@@ -1,6 +1,5 @@
 package com.chachae.exam.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,7 +18,7 @@ import com.chachae.exam.service.StuAnswerRecordService;
 import com.chachae.exam.service.StudentService;
 import java.io.Serializable;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020/1/25
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> implements StudentService {
 
-  @Resource
-  private StudentDAO studentDAO;
-  @Resource
-  private StuAnswerRecordService stuAnswerRecordService;
-  @Resource
-  private ScoreService scoreService;
+  private final StudentDAO studentDAO;
+  private final StuAnswerRecordService stuAnswerRecordService;
+  private final ScoreService scoreService;
 
   @Override
   public StudentVo login(String stuNumber, String password) {
@@ -65,7 +62,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   public void updatePassword(ChangePassDto dto) {
     // 通过 ID 查询学生信息
     Student student = studentDAO.selectById(dto.getId());
-    if (ObjectUtil.isEmpty(student)) {
+    if (student == null) {
       throw new ServiceException("用户身份异常");
     }
 
@@ -107,7 +104,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
   public boolean save(Student entity) {
     // 检测学号是否存在
     Student student = this.selectByStuNumber(entity.getStuNumber());
@@ -118,18 +114,17 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
       entity.setRoleId(SysConsts.Role.STUDENT);
       // 密码加密之后再存入数据库
       entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
-      // 调用父级 save 接口
-      return super.save(entity);
+      baseMapper.insert(entity);
+      return true;
     }
   }
 
   @Override
-  @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 移除分数和答题记录
     this.scoreService.deleteByStuId((int) id);
     this.stuAnswerRecordService.deleteByStuId((int) id);
-    // 调用父级 remove 接口
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 }

@@ -1,12 +1,13 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-
-import java.io.Serializable;
+import com.chachae.exam.common.base.BaseEntity;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 管理员实体类
@@ -19,9 +20,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Data
-public class Admin extends Model<Admin> {
+public class Admin extends BaseEntity {
 
-  @TableId(type = IdType.AUTO)
+  @TableId
   private Integer id;
   // 姓名
   private String name;
@@ -34,13 +35,4 @@ public class Admin extends Model<Admin> {
   // 最后登录时间
   private Date lastLoginTime;
 
-  /**
-   * 获取主键值
-   *
-   * @return 主键值
-   */
-  @Override
-  protected Serializable pkVal() {
-    return this.id;
-  }
 }

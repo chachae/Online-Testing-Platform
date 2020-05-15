@@ -1,6 +1,5 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Permission {
+
   // 权限 ID
-  @TableId(type = IdType.AUTO)
+  @TableId
   private Integer id;
   // 权限名称
   private String name;

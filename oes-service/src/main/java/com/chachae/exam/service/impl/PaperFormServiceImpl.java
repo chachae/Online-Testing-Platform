@@ -10,7 +10,7 @@ import com.chachae.exam.service.PaperService;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-02-14 17:51:18
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
     implements PaperFormService {
 
-  @Resource
   private PaperService paperService;
-  @Resource
   private PaperFormDAO paperFormDAO;
 
   @Override
@@ -47,7 +46,8 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
       throw new ServiceException("试卷模版正在使用，不能删除该模版！");
     }
     // 至此可以安全删除，调用父级 removeById 方法删除
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 
   @Override

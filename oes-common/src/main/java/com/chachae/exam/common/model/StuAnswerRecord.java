@@ -1,8 +1,6 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,21 +18,30 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Data
-public class StuAnswerRecord extends Model<StuAnswerRecord> {
-  @TableId(type = IdType.AUTO)
+public class StuAnswerRecord {
+
+  @TableId
   private Integer id;
 
-  /** 试卷id */
+  /**
+   * 试卷id
+   */
   private Integer paperId;
 
   private Integer stuId;
 
-  /** 题目id */
+  /**
+   * 题目id
+   */
   private Integer questionId;
 
-  /** 题目答案 */
+  /**
+   * 题目答案
+   */
   private String answer;
 
-  /** 题目得分 */
+  /**
+   * 题目得分
+   */
   private Integer score;
 }

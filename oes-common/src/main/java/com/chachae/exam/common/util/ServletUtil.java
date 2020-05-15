@@ -1,8 +1,8 @@
 package com.chachae.exam.common.util;
 
 import cn.hutool.core.util.StrUtil;
-import com.google.common.base.Charsets;
 import com.google.common.net.HttpHeaders;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,9 +21,9 @@ public class ServletUtil extends cn.hutool.extra.servlet.ServletUtil {
   public static boolean isAjax() {
     HttpServletRequest req = HttpUtil.getHttpServletRequest();
     return StrUtil.isNotBlank(
-        ServletUtil.getHeader(req, HttpHeaders.X_REQUESTED_WITH, Charsets.UTF_8.name()))
+        ServletUtil.getHeader(req, HttpHeaders.X_REQUESTED_WITH, StandardCharsets.UTF_8))
         && StrUtil.equalsIgnoreCase(
-        ServletUtil.getHeader(req, HttpHeaders.X_REQUESTED_WITH, Charsets.UTF_8.name()),
+        ServletUtil.getHeader(req, HttpHeaders.X_REQUESTED_WITH, StandardCharsets.UTF_8),
         "XMLHttpRequest");
   }
 }

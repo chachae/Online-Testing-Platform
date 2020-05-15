@@ -1,6 +1,5 @@
 package com.chachae.exam.common.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.chachae.exam.common.base.BaseEntity;
 import com.chachae.exam.common.model.Academy;
@@ -22,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class StudentVo extends BaseEntity {
-  @TableId(type = IdType.AUTO)
+  @TableId
   private Integer id;
 
   /** 学生姓名 */

@@ -12,7 +12,7 @@ import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.AcademyService;
 import java.io.Serializable;
 import java.util.Map;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-02-09 12:09:59
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> implements AcademyService {
 
-  @Resource
-  private MajorDAO majorDAO;
-  @Resource
-  private AcademyDAO academyDAO;
+  private final MajorDAO majorDAO;
+  private final AcademyDAO academyDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -45,7 +44,8 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
       throw new ServiceException("存在专业关联，不允许删除！");
     }
     // 不存在关联，允许删除
-    return super.removeById(id);
+    baseMapper.deleteById(id);
+    return true;
   }
 
   @Override
@@ -55,7 +55,8 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
     if (this.selectByName(entity.getName()) != null) {
       throw new ServiceException("学院名称已存在");
     }
-    return super.updateById(entity);
+    baseMapper.updateById(entity);
+    return true;
   }
 
   @Override
@@ -65,7 +66,8 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDAO, Academy> impleme
     if (this.selectByName(entity.getName()) != null) {
       throw new ServiceException("学院名称已存在");
     }
-    return super.save(entity);
+    baseMapper.insert(entity);
+    return true;
   }
 
   @Override
