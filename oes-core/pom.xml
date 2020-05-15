@@ -6,75 +6,79 @@
         <artifactId>oes</artifactId>
         <groupId>com.chachae.exam</groupId>
         <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>oes-core</artifactId>
+    <name>${project.artifactId}</name>
+    <version>1.0</version>
 
     <dependencies>
-
         <!-- 业务接口模块 -->
         <dependency>
             <groupId>com.chachae.exam</groupId>
             <artifactId>oes-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <!-- websocket -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
         <!-- aop -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-
         <!-- spring-session -->
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
-
         <!-- beetl -->
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetl</artifactId>
         </dependency>
-
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <!-- AdminLTE -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>AdminLTE</artifactId>
         </dependency>
-
         <!-- bootstrap -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
         </dependency>
-
         <!-- bootstrap-table -->
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>bootstrap-table</artifactId>
         </dependency>
-
         <!-- font-awesome -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
         </dependency>
-
+        <!-- actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- spring-admin-client -->
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring-admin.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

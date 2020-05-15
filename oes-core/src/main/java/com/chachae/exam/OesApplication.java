@@ -1,11 +1,11 @@
 package com.chachae.exam;
 
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class OesApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(OesApplication.class, args);
+    new SpringApplicationBuilder(OesApplication.class)
+        .web(WebApplicationType.SERVLET)
+        .run(args);
   }
 }

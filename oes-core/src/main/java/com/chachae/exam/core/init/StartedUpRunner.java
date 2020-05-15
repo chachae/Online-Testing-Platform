@@ -2,16 +2,18 @@ package com.chachae.exam.core.init;
 
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.Log;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.service.PaperService;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,27 +22,17 @@ import org.springframework.stereotype.Component;
  * @author chachae
  * @since 2020/2/7 15:41
  */
+@Slf4j
 @Component
-public class ProgramInitialization implements ApplicationRunner {
+@RequiredArgsConstructor
+public class StartedUpRunner implements ApplicationRunner {
 
-  /**
-   * 获取日志系统
-   */
-  private Log log = Log.get();
-
-  @Resource
-  private PaperService paperService;
-  @Resource
-  private ConfigurableApplicationContext context;
-
-  @Value("${server.port:8080}")
-  private String port;
+  private final PaperService paperService;
+  private final ConfigurableApplicationContext context;
+  private final Environment environment;
 
   @Value("${server.servlet.context-path:/}")
   private String contextPath;
-
-  @Value("${spring.profiles.active}")
-  private String active;
 
   @Override
   public void run(ApplicationArguments args) {
@@ -63,14 +55,17 @@ public class ProgramInitialization implements ApplicationRunner {
     // 项目启动设置
     if (context.isActive()) {
       // 格式化地址字符串
-      String url = String.format("http://%s:%s", NetUtil.getLocalhostStr(), port);
+      String url = String.format("http://%s:%s", NetUtil.getLocalhostStr(),
+          environment.getProperty("server.port"));
       if (StrUtil.isNotBlank(contextPath)) {
         url += contextPath;
       }
-      // 信息提示
-      log.info("成功加载 [{}] 级别的项目配置文件", active);
-      log.info("[基于 spring-boot 2.X 的在线考试系统] 完成启动");
-      log.info("访问地址：{}", url);
+      String banner = "-----------------------------------------\n" +
+          "服务启动成功，当前时间：" + LocalDateTime.now() + "\n" +
+          "服务名称：" + environment.getProperty("spring.application.name") + "\n" +
+          "服务访问地址：" + url + "\n" +
+          "-----------------------------------------";
+      System.out.println(banner);
     }
   }
 }

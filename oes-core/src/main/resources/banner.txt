@@ -1,0 +1,8 @@
+  ____     ______   _____
+  / __ \   / ____/  / ___/
+ / / / /  / __/     \__ \
+/ /_/ /  / /___    ___/ /
+\____/  /_____/   /____/    在线考试系统 [考试服务与信息维护子系统]
+
+Application Name: ${spring.application.name}
+Spring-Boot: ${spring-boot.version}

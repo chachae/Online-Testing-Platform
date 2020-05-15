@@ -4,10 +4,10 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.core.properties.Props;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -20,17 +20,19 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @since 2020/3/1 23:52
  */
 @Component
+@RequiredArgsConstructor
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-  @Resource
-  private Props props;
+  private final Props props;
 
   /**
    * 路径匹配器
    */
   private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-  // 页面路径匹配
+  /**
+   * 页面路径匹配
+   */
   private static final String ADMIN_PATTERN = "/admin/**";
   private static final String TEACHER_PATTERN = "/teacher/**";
   private static final String STU_PATTERN = "/student/**";
@@ -45,7 +47,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     String curPath = request.getRequestURI();
 
     // 白名单匹配
-    String[] anon = StrUtil.splitToArray(props.getSys().getAnonUrl(), StrUtil.C_COMMA);
+    String[] anon = StrUtil.splitToArray(props.getSys().getAnonUrl(), ',');
     for (String e : anon) {
       // 成功匹配表名单则放行
       if (pathMatcher.match(e, curPath)) {

@@ -6,19 +6,18 @@
     <artifactId>oes</artifactId>
     <groupId>com.chachae.exam</groupId>
     <version>1.0</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>oes-service</artifactId>
+  <artifactId>oes-apm</artifactId>
   <name>${project.artifactId}</name>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
-  <dependencies>
-    <!-- 通用模块 -->
-    <dependency>
-      <groupId>com.chachae.exam</groupId>
-      <artifactId>oes-util</artifactId>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>oes-apm-spring-admin</module>
+  </modules>
 
 </project>

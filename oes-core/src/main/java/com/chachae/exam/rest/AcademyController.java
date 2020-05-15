@@ -21,7 +21,8 @@ import java.util.Map;
 @RequestMapping("/api/academy")
 public class AcademyController {
 
-  @Resource private AcademyService academyService;
+  @Resource
+  private AcademyService academyService;
 
   /**
    * Rest 获取学院集合

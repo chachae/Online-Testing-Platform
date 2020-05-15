@@ -4,6 +4,7 @@ import com.chachae.exam.common.model.Question;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,10 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @since 2020/2/25 21:16
  */
 @Component
+@RequiredArgsConstructor
 public class QuestionSortService {
 
-  @Resource
-  private QuestionService questionService;
+  private final QuestionService questionService;
 
   /**
    * 设置题目的 model 对象信息

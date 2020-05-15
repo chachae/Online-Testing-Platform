@@ -1,11 +1,15 @@
-# 生产环境配置
+# Server
 server:
   port: 8080
-  max-http-header-size: 5MB
 
 spring:
+  application:
+    name: OES-SERVER
+
+  # DataSource
   datasource:
-    url: jdbc:mysql:///exam-system-test?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://${mysql.url}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
     hikari:
@@ -18,6 +22,7 @@ spring:
       minimum-idle: 10
       read-only: off
 
+  # Task
   task:
     execution:
       pool:
@@ -31,8 +36,9 @@ spring:
       pool:
         size: 2
 
+  #Lettuce-Redis
   redis:
-    host: localhost
+    host: ${redis.url}
     port: 6379
     password:
     timeout: 2000ms
@@ -44,26 +50,50 @@ spring:
         max-idle: 8
         min-idle: 0
 
+  # Resource
   resources:
     static-locations: classpath:/static/
+
+  #SpringMvc
   mvc:
     static-path-pattern: /static/**
 
-  # 分布式 session 配置
+  # redis-session
   session:
     store-type: redis
     redis:
       namespace: oes:session
-    # 过期时间 2小时
     timeout: PT2H
 
+  # Jackson2
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
-# MyBatisPlus 配置
+  # Spring-Admin
+  boot:
+    admin:
+      client:
+        url: http://${spring-admin.url}:8400
+        username: oes
+        password: 123456
+        instance:
+          prefer-ip: true
+
+#MyBatisPlus
 mybatis-plus:
   global-config:
     banner: off
   type-aliases-package: com.chachae.exam.common.model
   configuration:
     map-underscore-to-camel-case: on
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
