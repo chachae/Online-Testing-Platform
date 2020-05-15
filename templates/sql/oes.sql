@@ -3,15 +3,15 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80019
+ Source Server Version : 80020
  Source Host           : localhost:3306
- Source Schema         : exam-system-test
+ Source Schema         : oes
 
  Target Server Type    : MySQL
- Target Server Version : 80019
+ Target Server Version : 80020
  File Encoding         : 65001
 
- Date: 23/03/2020 11:00:17
+ Date: 15/05/2020 17:58:40
 */
 
 SET NAMES utf8mb4;
@@ -21,15 +21,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for academy
 -- ----------------------------
 DROP TABLE IF EXISTS `academy`;
-CREATE TABLE `academy`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '学院id',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '学院名称',
+CREATE TABLE `academy` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '学院id',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '学院名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of academy
 -- ----------------------------
+BEGIN;
 INSERT INTO `academy` VALUES (1, '计算机科学与工程学院');
 INSERT INTO `academy` VALUES (2, '中兴通讯信息工程学院');
 INSERT INTO `academy` VALUES (3, '外国语学院');
@@ -40,85 +41,88 @@ INSERT INTO `academy` VALUES (7, '建筑工程学院');
 INSERT INTO `academy` VALUES (8, '电气与电子工程学院');
 INSERT INTO `academy` VALUES (9, '通识教育学院');
 INSERT INTO `academy` VALUES (12, '财经学院');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for admin
 -- ----------------------------
 DROP TABLE IF EXISTS `admin`;
-CREATE TABLE `admin`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '管理员id',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '姓名',
-  `number` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '工号',
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
-  `role_id` int(0) NULL DEFAULT NULL COMMENT '角色id',
-  `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
+CREATE TABLE `admin` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员id',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '姓名',
+  `number` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '工号',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
+  `role_id` int DEFAULT NULL COMMENT '角色id',
+  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES (3, '徐熙', 'xu', '$2a$10$IGgnwZbQWeZqgkTDNL1wi.gSuHtHiZcsQA69qk.7FXLMOM9lchZmK', 1, '2020-02-16 17:42:44');
-INSERT INTO `admin` VALUES (4, '周伯通', 'admin', '$2a$10$afdtShcXh24EREhZkcTURevLEdOMxlN.jthlfPO/jC5CKpzZbaaHy', 1, '2020-03-15 22:58:12');
-INSERT INTO `admin` VALUES (6, '宋轶', 'songe', '$2a$10$Nsfm0uVkiCQYUQ3eKeUAC.RUplAt7rDwAkBZSthyivasiXmVm38a6', 1, '2020-02-28 11:11:30');
+BEGIN;
+INSERT INTO `admin` VALUES (4, '初始化管理员', 'admin', '$2a$10$afdtShcXh24EREhZkcTURevLEdOMxlN.jthlfPO/jC5CKpzZbaaHy', 1, '2020-05-15 17:45:11');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for announce
 -- ----------------------------
 DROP TABLE IF EXISTS `announce`;
-CREATE TABLE `announce`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '公告id',
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '公告标题',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '公告内容',
-  `author_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '作者id',
-  `role_id` int(0) NULL DEFAULT NULL COMMENT '作者身份id：管理员-1 学生-2 教师-3',
-  `author_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '作者名',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '公告创建时间',
+CREATE TABLE `announce` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '公告id',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公告标题',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '公告内容',
+  `author_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作者id',
+  `role_id` int DEFAULT NULL COMMENT '作者身份id：管理员-1 学生-2 教师-3',
+  `author_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '作者名',
+  `create_time` datetime DEFAULT NULL COMMENT '公告创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 43 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of announce
 -- ----------------------------
-INSERT INTO `announce` VALUES (9, '基于 spring-boot 的在线考试系统 v2.3  版本上线', '基于 spring-boot  的在线考试系统 v2.3 版本上线，增加大量功能性业务，欢迎体验！\r\n1. 优化大量代码\r\n2. 封装复用代码\r\n3. 优化试卷和习题业务核心\r\n4. 提高稳定性。<br>\r\n5. 增加异步调用', '4', 1, '周伯通', '2020-02-15 11:38:28');
-INSERT INTO `announce` VALUES (12, '上线测试', '　1、中国人的性情是总喜欢调和折中的，譬如你说，这屋子太暗，须在这里开一个窗，大家一定不允许的。但如果你主张拆掉屋顶他们就来调和，愿意开窗了。——《无声的中国》一九二七年 2、穷人的孩子，蓬头垢面在街上转，阔人的孩子，妖形妖势，娇声娇气的在家里转，长大了，都昏天黑地的在社会转，同他们的父亲一样，或者还不如。——《随感录二十五》一九一八年 3、中国大约太老了，社会上事无大小，都恶劣不堪，像一只黑色的染缸，无论加进甚么新东西去，都变成漆黑。可是除了再想法子来改革之外，也再没有别的路。我看一切理想家，不是怀念『过去』，就『是希望将来』，而对于『现在』这一个题目，都缴了白卷，因为谁也开不出药方。所有最好的药方即所谓『希望将来』的就是。——《两地书》一九二五年 4、我先前总以为人是有罪，所以枪毙或坐监的。现在才知道其中的许多，是先因为被人认为『可恶』，这才终于犯了罪。——《可恶罪》一九二七年 5、无论从那里来的，只要是食物，壮健者大抵就无需思索，承认是吃的东西。惟有衰病的，却总常想到害胃，伤身，特有许多禁例，许多避忌；还有一大套比较利害而终于不得要领的理由，例如吃固无妨，而不吃尤稳，食之或当有益，然究以不吃为宜云云之类。但这一类人物总要日见其衰弱的，自己先已失了活气了。——《看镜有感》一九二五年 6、中国人的不敢正视各方面，用瞒和骗，造出奇妙的逃路来，而自以为正路。在这路上，就证明着国民性的怯弱，懒惰而又巧滑。一天一天的满足，即一天一天的堕落，但却又觉得日见其光荣。在事实上，亡国一次，即添加几个殉难的忠臣，后来每不想光复旧物，而只去赞美那几个忠臣；遭劫一次，即造成一群不辱的烈女，事过之后，也每每不思惩凶，自卫，却只顾歌咏那一群烈女。——《论睁了眼看》一九二五年', '4', 1, '周伯通', '2020-02-16 18:00:19');
-INSERT INTO `announce` VALUES (13, '鲁迅文段', '　1、中国人的性情是总喜欢调和折中的，譬如你说，这屋子太暗，须在这里开一个窗，大家一定不允许的。但如果你主张拆掉屋顶他们就来调和，愿意开窗了。——《无声的中国》一九二七年 2、穷人的孩子，蓬头垢面在街上转，阔人的孩子，妖形妖势，娇声娇气的在家里转，长大了，都昏天黑地的在社会转，同他们的父亲一样，或者还不如。——《随感录二十五》一九一八年 3、中国大约太老了，社会上事无大小，都恶劣不堪，像一只黑色的染缸，无论加进甚么新东西去，都变成漆黑。可是除了再想法子来改革之外，也再没有别的路。我看一切理想家，不是怀念『过去』，就『是希望将来』，而对于『现在』这一个题目，都缴了白卷，因为谁也开不出药方。所有最好的药方即所谓『希望将来』的就是。——《两地书》一九二五年 4、我先前总以为人是有罪，所以枪毙或坐监的。现在才知道其中的许多，是先因为被人认为『可恶』，这才终于犯了罪。——《可恶罪》一九二七年 5、无论从那里来的，只要是食物，壮健者大抵就无需思索，承认是吃的东西。惟有衰病的，却总常想到害胃，伤身，特有许多禁例，许多避忌；还有一大套比较利害而终于不得要领的理由，例如吃固无妨，而不吃尤稳，食之或当有益，然究以不吃为宜云云之类。但这一类人物总要日见其衰弱的，自己先已失了活气了。——《看镜有感》一九二五年 6、中国人的不敢正视各方面，用瞒和骗，造出奇妙的逃路来，而自以为正路。在这路上，就证明着国民性的怯弱，懒惰而又巧滑。一天一天的满足，即一天一天的堕落，但却又觉得日见其光荣。在事实上，亡国一次，即添加几个殉难的忠臣，后来每不想光复旧物，而只去赞美那几个忠臣；遭劫一次，即造成一群不辱的烈女，事过之后，也每每不思惩凶，自卫，却只顾歌咏那一群烈女。——《论睁了眼看》一九二五年', '4', 1, '鲁迅', '2020-02-19 16:15:22');
-INSERT INTO `announce` VALUES (42, '增加异步刷新', '增加异步刷新1', '4', 1, '周伯通', '2020-03-09 15:46:33');
+BEGIN;
+INSERT INTO `announce` VALUES (9, 'OES在线考试软件 v1.0', '基于 spring-boot  的在线考试系统 v2.3 版本上线，增加大量功能性业务，欢迎体验！\r\n1. 优化大量代码\r\n2. 封装复用代码\r\n3. 优化试卷和习题业务核心\r\n4. 提高稳定性。\r\n5. 增加异步调用', '4', 1, '周伯通', '2020-02-15 11:38:28');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for course
 -- ----------------------------
 DROP TABLE IF EXISTS `course`;
-CREATE TABLE `course`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '课程id',
-  `course_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '课程名称',
-  `teacher_id` int(0) NULL DEFAULT NULL COMMENT '该门课的出题老师(默认一门课一个老师出题)',
+CREATE TABLE `course` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '课程id',
+  `course_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '课程名称',
+  `teacher_id` int DEFAULT NULL COMMENT '该门课的出题老师(默认一门课一个老师出题)',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of course
 -- ----------------------------
+BEGIN;
 INSERT INTO `course` VALUES (1, 'Java课程设计', 1);
 INSERT INTO `course` VALUES (2, '大学物理', 2);
 INSERT INTO `course` VALUES (4, 'JavaEE企业级开发编程技术', 1);
 INSERT INTO `course` VALUES (5, '模拟电路', 1);
 INSERT INTO `course` VALUES (7, 'C语言程序设计', 3);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for major
 -- ----------------------------
 DROP TABLE IF EXISTS `major`;
-CREATE TABLE `major`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '专业ID',
-  `major` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '专业班级',
-  `academy_id` int(0) NULL DEFAULT NULL COMMENT '学院ID',
+CREATE TABLE `major` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '专业ID',
+  `major` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '专业班级',
+  `academy_id` int DEFAULT NULL COMMENT '学院ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of major
 -- ----------------------------
+BEGIN;
 INSERT INTO `major` VALUES (1, '计算机科学与技术', 1);
 INSERT INTO `major` VALUES (2, '数字媒体技术', 1);
 INSERT INTO `major` VALUES (3, '软件工程', 1);
@@ -136,67 +140,67 @@ INSERT INTO `major` VALUES (17, '机械设计', 4);
 INSERT INTO `major` VALUES (18, '数字媒体艺术', 5);
 INSERT INTO `major` VALUES (19, '国际贸易', 6);
 INSERT INTO `major` VALUES (21, '金融工程', 6);
+INSERT INTO `major` VALUES (27, '机械制造', 7);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for paper
 -- ----------------------------
 DROP TABLE IF EXISTS `paper`;
-CREATE TABLE `paper`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '试卷id',
-  `paper_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷名称',
-  `course_id` int(0) NULL DEFAULT NULL COMMENT '课程id',
-  `question_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '问题id组合',
-  `begin_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷开始时间',
-  `end_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷结束时间',
-  `allow_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '考试时长',
-  `score` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷总分',
-  `paper_state` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '考试状态：未开始，进行中，已结束',
-  `paper_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷类型：正式，模拟',
-  `major_id` int(0) NULL DEFAULT NULL COMMENT '专业班级id',
-  `paper_form_id` int(0) NULL DEFAULT NULL COMMENT '试卷组成id',
-  `teacher_id` int(0) NULL DEFAULT NULL COMMENT '出卷老师id',
+CREATE TABLE `paper` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '试卷id',
+  `paper_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷名称',
+  `course_id` int DEFAULT NULL COMMENT '课程id',
+  `question_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '问题id组合',
+  `begin_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷开始时间',
+  `end_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷结束时间',
+  `allow_time` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '考试时长',
+  `score` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷总分',
+  `paper_state` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '考试状态：未开始，进行中，已结束',
+  `paper_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷类型：正式，模拟',
+  `major_id` int DEFAULT NULL COMMENT '专业班级id',
+  `paper_form_id` int DEFAULT NULL COMMENT '试卷组成id',
+  `teacher_id` int DEFAULT NULL COMMENT '出卷老师id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 39 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of paper
 -- ----------------------------
-INSERT INTO `paper` VALUES (15, '四道主观题', 1, '6,25,37,9', '2020-02-23 11:20', '2020-02-27 11:40', '20分钟', '100', '已结束', '正式', 1, 27, 1);
-INSERT INTO `paper` VALUES (16, '测试题目随机', 1, '19,28,2,48,36,4,18,31,42,7,40,37', '2020-02-23 16:40', '2020-03-24 16:40', '0分钟', '100', '已结束', '正式', 1, 1, 1);
-INSERT INTO `paper` VALUES (18, 'Java SE (只有选择+多选+判断)', 1, '2,3,4,8,11,13,15,16,17,38,5,12,31,44,44,10,20,21,33,47,7,54,22,24,42,6,56', '2020-03-25 08:20', '2020-03-25 10:00', '100分钟', '100', '已结束', '正式', 1, 35, 1);
-INSERT INTO `paper` VALUES (32, '测试分数', 1, '6,25,40,9', '2020-03-04 14:00', '2020-03-04 20:00', '360分钟', '100', '已结束', '正式', 1, 51, 1);
-INSERT INTO `paper` VALUES (38, '测试组卷', 1, '30,36,48,19,52,38,31,43,24,23,40,25', NULL, NULL, NULL, '100', '未开始', '模拟', 3, 1, 1);
-INSERT INTO `paper` VALUES (39, '测试考试', 1, '11,52,13,28,19,36,44,31,22,23,6,37', '2020-03-14 17:59', '2020-03-14 18:00', '1分钟', '100', '已结束', '正式', 1, 1, 1);
+BEGIN;
+INSERT INTO `paper` VALUES (47, 'Java SE (只有选择+多选+判断)', 1, '2,3,4,8,11,13,15,16,17,38,378,12,31,44,44,10,20,21,33,47,7,24,54,23,22,25,9,5', '2020-05-16 08:00', '2020-05-16 10:00', '120分钟', '100', '未开始', '正式', 3, 62, 1);
+INSERT INTO `paper` VALUES (51, '呃呃呃呃呃呃', 1, '2,3,4,8,11,13,15,16,17,38,378,12,31,44,44,10,20,21,33,47,54,23,24,42,7,37,6,40', NULL, NULL, NULL, '100', '未开始', '模拟', 1, 63, 1);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for paper_form
 -- ----------------------------
 DROP TABLE IF EXISTS `paper_form`;
-CREATE TABLE `paper_form`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '题目id',
-  `q_choice_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单选题数目',
-  `q_choice_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单选题分数',
-  `q_mul_choice_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '多选题数目',
-  `q_mul_choice_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '多选题分数',
-  `q_tof_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '判断题数目',
-  `q_tof_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '判断题分数',
-  `q_fill_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '填空题数目',
-  `q_fill_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '填空题分数',
-  `q_SAQ_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简答题数目',
-  `q_SAQ_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简答题分数',
-  `q_program_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编程题数目',
-  `q_program_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编程题分数',
-  `type` int(0) NULL DEFAULT NULL COMMENT '模板类型（1：导入试卷新增模板，0：模板页面增加的模板）',
+CREATE TABLE `paper_form` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '题目id',
+  `q_choice_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '单选题数目',
+  `q_choice_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '单选题分数',
+  `q_mul_choice_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '多选题数目',
+  `q_mul_choice_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '多选题分数',
+  `q_tof_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '判断题数目',
+  `q_tof_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '判断题分数',
+  `q_fill_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '填空题数目',
+  `q_fill_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '填空题分数',
+  `q_SAQ_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '简答题数目',
+  `q_SAQ_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '简答题分数',
+  `q_program_num` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '编程题数目',
+  `q_program_score` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '编程题分数',
+  `type` int DEFAULT NULL COMMENT '模板类型（1：导入试卷新增模板，0：模板页面增加的模板）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 54 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of paper_form
 -- ----------------------------
+BEGIN;
 INSERT INTO `paper_form` VALUES (1, '6', '5', '2', '10', '', '', '2', '5', '2', '20', NULL, NULL, 0);
 INSERT INTO `paper_form` VALUES (25, '0', '0', '0', '0', '0', '0', '0', '0', '5', '20', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (26, '1', '100', '', '', '', '', '', '', '', '', '', '', 1);
-INSERT INTO `paper_form` VALUES (27, '0', '0', '0', '0', '0', '0', '0', '0', '4', '25', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (38, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (39, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (40, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
@@ -204,23 +208,27 @@ INSERT INTO `paper_form` VALUES (41, '10', '2', '5', '4', '5', '4', '0', '0', '0
 INSERT INTO `paper_form` VALUES (42, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (43, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
 INSERT INTO `paper_form` VALUES (46, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
-INSERT INTO `paper_form` VALUES (51, '', '', '', '', '', '', '', '', '4', '25', '', '', 0);
 INSERT INTO `paper_form` VALUES (52, '10', '2', '5', '4', '5', '4', '0', '0', '0', '0', '0', '0', 1);
+INSERT INTO `paper_form` VALUES (55, '0', '0', '0', '0', '0', '0', '0', '0', '4', '25', '0', '0', 1);
+INSERT INTO `paper_form` VALUES (62, '10', '2', '5', '4', '5', '4', '5', '2', '3', '10', '0', '0', 1);
+INSERT INTO `paper_form` VALUES (63, '10', '2', '5', '4', '5', '4', '5', '2', '3', '10', '0', '0', 1);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for permission
 -- ----------------------------
 DROP TABLE IF EXISTS `permission`;
-CREATE TABLE `permission`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '权限 ID',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '权限名称',
-  `expression` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '权限表达式',
+CREATE TABLE `permission` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '权限 ID',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限名称',
+  `expression` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限表达式',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of permission
 -- ----------------------------
+BEGIN;
 INSERT INTO `permission` VALUES (1, '', 'student:update:password');
 INSERT INTO `permission` VALUES (2, '', 'student:update');
 INSERT INTO `permission` VALUES (3, '', 'student:delete');
@@ -268,33 +276,35 @@ INSERT INTO `permission` VALUES (44, NULL, 'course:save');
 INSERT INTO `permission` VALUES (45, NULL, 'type:list');
 INSERT INTO `permission` VALUES (46, NULL, 'score:list');
 INSERT INTO `permission` VALUES (47, NULL, 'admin:list');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for question
 -- ----------------------------
 DROP TABLE IF EXISTS `question`;
-CREATE TABLE `question`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '问题id',
-  `question_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '题目名称',
-  `option_a` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '选项a',
-  `option_b` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '选项b',
-  `option_c` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '选项c',
-  `option_d` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '选项d',
-  `type_id` int(0) NULL DEFAULT NULL COMMENT '题目类型id',
-  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '题目答案',
-  `course_id` int(0) NULL DEFAULT NULL COMMENT '课程id',
-  `difficulty` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '题目难度：1-容易，2-中等，3-较难',
-  `remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '题目解析',
+CREATE TABLE `question` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '问题id',
+  `question_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '题目名称',
+  `option_a` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '选项a',
+  `option_b` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '选项b',
+  `option_c` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '选项c',
+  `option_d` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '选项d',
+  `type_id` int DEFAULT NULL COMMENT '题目类型id',
+  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '题目答案',
+  `course_id` int DEFAULT NULL COMMENT '课程id',
+  `difficulty` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '题目难度：1-容易，2-中等，3-较难',
+  `remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '题目解析',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 382 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=384 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of question
 -- ----------------------------
+BEGIN;
 INSERT INTO `question` VALUES (2, '下面论述正确的是（）？', '如果两个对象的 hashcode 相同，那么它们作为同一个HashMap的key时，必然返回同样的值', '如果a,b的hashcode相同，那么a.equals(b)必须返回true', '对于一个类，其所有对象的hashcode必须不同', '如果a.equals(b)返回true，那么a,b两个对象的hashcode必须相同', 1, 'A', 1, '2', '映射关系分析.');
 INSERT INTO `question` VALUES (3, '以下的变量定义语句中，合法的是（）', 'byte=128', 'boolean=null', 'long a=123L', 'double=0.9239d', 1, 'C', 1, '1', NULL);
 INSERT INTO `question` VALUES (4, '关于匿名内部类叙述正确的是？ ( )', '匿名内部类可以继承一个基类，不可以实现一个接口', '匿名内部类不可以定义构造器', '匿名内部类不能用于形参', '以上说法都不正确', 1, 'B', 1, '2', NULL);
-INSERT INTO `question` VALUES (5, '下面选项中,哪些是interface中合法方法定义?()', 'public void main(String [] args);', 'private int getSum();', 'boolean setFlag(Boolean [] test);', 'public float get(int x);', 5, 'A,C,D', 1, '3', 'xxxxx');
+INSERT INTO `question` VALUES (5, '下面选项中,哪些是interface中合法方法定义?()', 'public void main(String [] args);', 'private int getSum();', 'boolean setFlag(Boolean [] test);', 'public float get(int x);', 5, 'A,C,D', 1, '2', 'xxxxx');
 INSERT INTO `question` VALUES (6, '请简述Java命名规范有哪些？', NULL, NULL, NULL, NULL, 5, '1.不能以数字开头2.不能包含特殊字符，除了$和_3.类名和文件名相同4.区分大小写5.不能使用关键字和保留字6.代码行以;结束', 1, '1', 'JavaSE基础');
 INSERT INTO `question` VALUES (7, '启动自定义线程的方法是________', NULL, NULL, NULL, NULL, 4, 'start()', 1, '2', '重写run()方法，调用start()启动线程');
 INSERT INTO `question` VALUES (8, '关于中间件特点的描述.不正确的是（）', '中间件运行于客户机/服务器的操作系统内核中，提高内核运行效率', '中间件应支持标准的协议和接口', '中间件可运行于多种硬件和操作系统平台上', '跨越网络,硬件，操作系统平台的应用或服务可通过中间件透明交互', 1, 'A', 1, '3', '中间件位于操作系统之上，应用软件之下，而不是操作系统内核中');
@@ -350,36 +360,41 @@ INSERT INTO `question` VALUES (378, '下面选项中,哪些是interface中合法
 INSERT INTO `question` VALUES (379, 'BufferedReader的父类是_____________', NULL, NULL, NULL, NULL, 4, 'Reader', 1, '1', 'java.io.Reader是一个读取字符流的抽象类，通过继承Reader类，可以很方便的读取字符流');
 INSERT INTO `question` VALUES (380, '模电题目1', '1111', '22222', '333333', '444444444', 1, 'A', 5, '3', '34562457y45y45uy657yu5677u');
 INSERT INTO `question` VALUES (381, '测试', 'A', 'B', 'C', 'D', 2, 'A,B,C,D', 4, '2', 'nb');
+INSERT INTO `question` VALUES (382, '2', NULL, NULL, NULL, NULL, 1, '1', 1, '1', NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for role
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
-CREATE TABLE `role`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '角色id:管理员_1，学生_2，老师_3',
-  `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色姓名',
+CREATE TABLE `role` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '角色id:管理员_1，学生_2，老师_3',
+  `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色姓名',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
+BEGIN;
 INSERT INTO `role` VALUES (1, '系统管理员');
 INSERT INTO `role` VALUES (2, '学生');
 INSERT INTO `role` VALUES (3, '教师');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `role_permission`;
-CREATE TABLE `role_permission`  (
-  `role_id` int(0) NOT NULL,
-  `permission_id` int(0) NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+CREATE TABLE `role_permission` (
+  `role_id` int NOT NULL,
+  `permission_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of role_permission
 -- ----------------------------
+BEGIN;
 INSERT INTO `role_permission` VALUES (1, 31);
 INSERT INTO `role_permission` VALUES (1, 32);
 INSERT INTO `role_permission` VALUES (1, 33);
@@ -432,88 +447,58 @@ INSERT INTO `role_permission` VALUES (2, 12);
 INSERT INTO `role_permission` VALUES (2, 46);
 INSERT INTO `role_permission` VALUES (3, 46);
 INSERT INTO `role_permission` VALUES (1, 47);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for score
 -- ----------------------------
 DROP TABLE IF EXISTS `score`;
-CREATE TABLE `score`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '分数id',
-  `stu_id` int(0) NULL DEFAULT NULL COMMENT '考生id',
-  `paper_id` int(0) NULL DEFAULT NULL COMMENT '试卷id',
-  `paper_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷名称',
-  `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '试卷分数',
-  `wrong_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '错题id集合',
+CREATE TABLE `score` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '分数id',
+  `stu_id` int DEFAULT NULL COMMENT '考生id',
+  `paper_id` int DEFAULT NULL COMMENT '试卷id',
+  `paper_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷名称',
+  `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '试卷分数',
+  `wrong_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '错题id集合',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of score
--- ----------------------------
-INSERT INTO `score` VALUES (33, 5, 15, '四道主观题', '96', '25,9,40,26');
-INSERT INTO `score` VALUES (34, 1, 16, '测试题目随机', '85', '40,37');
-INSERT INTO `score` VALUES (35, 5, 16, '测试题目随机', '43', '36,4,19,2,48,31,18,37,40');
-INSERT INTO `score` VALUES (46, 1, 15, '四道主观题', '93', '40,9,25,26');
-INSERT INTO `score` VALUES (49, 1, 32, '测试分数', '75', '25,9,40,6');
-INSERT INTO `score` VALUES (50, 1, 39, '测试考试', '25', '13,11,19,31,23,22,6,37');
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for stu_answer_record
 -- ----------------------------
 DROP TABLE IF EXISTS `stu_answer_record`;
-CREATE TABLE `stu_answer_record`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '学生答题记录id',
-  `paper_id` int(0) NULL DEFAULT NULL COMMENT '试卷id',
-  `stu_id` int(0) NULL DEFAULT NULL COMMENT '学生id',
-  `question_id` int(0) NULL DEFAULT NULL COMMENT '题目id',
-  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '题目答案',
-  `score` int(0) NULL DEFAULT NULL COMMENT '题目得分',
+CREATE TABLE `stu_answer_record` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '学生答题记录id',
+  `paper_id` int DEFAULT NULL COMMENT '试卷id',
+  `stu_id` int DEFAULT NULL COMMENT '学生id',
+  `question_id` int DEFAULT NULL COMMENT '题目id',
+  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '题目答案',
+  `score` int DEFAULT NULL COMMENT '题目得分',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 84 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of stu_answer_record
--- ----------------------------
-INSERT INTO `stu_answer_record` VALUES (35, 15, 5, 25, '接口Collection 常用子接口:Set List Set接口常用实现类:HashSet,TreeSet,LinkedHashSet (都是线程非安全的类) List接口常用实现类:线程非安全:ArrayList,LindedList;线程安全:Stack,Vector', 24);
-INSERT INTO `stu_answer_record` VALUES (36, 15, 5, 9, '接口使用interface修饰;接口不能包含普通方法,只能存在抽象方法。接口中的方法默认使用 public abstract修饰。', 25);
-INSERT INTO `stu_answer_record` VALUES (37, 15, 5, 40, '一.final 如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在new一个对象时初始化（即只能在声明变量或构造器或代码块内初始化），而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能覆盖(重写)。 二.finally 在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。注意：finalize不一定被jvm调用，只有当垃圾回收器要清除垃圾时才被调用。', 23);
-INSERT INTO `stu_answer_record` VALUES (38, 15, 5, 26, 'List<String> list = Collections.synchronizedList(new ArrayList<String>())', 24);
-INSERT INTO `stu_answer_record` VALUES (39, 16, 1, 40, '一.final 如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在new一个对象时初始化（即只能在声明变量或构造器或代码块内初始化），而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能覆盖(重写)。 二.finally 在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。', 18);
-INSERT INTO `stu_answer_record` VALUES (40, 16, 1, 37, 'volatile是java中的一个类型修饰符。它是被设计用来修饰被不同线程访问和修改的变量。如果不加入volatile，基本上会导致这样的结果：要么无法编写多线程程序，要么编译器 失去大量优化的机会。', 6);
-INSERT INTO `stu_answer_record` VALUES (41, 16, 5, 37, 'volatile是java中的一个类型修饰符。它是被设计用来修饰被不同线程访问和修改的变量。如果不加入volatile，基本上会导致这样的结果：要么无法编写多线程程序，要么编译器 失去大量优化的机会。', 10);
-INSERT INTO `stu_answer_record` VALUES (42, 16, 5, 40, '一.final 如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在new一个对象时初始化（即只能在声明变量或构造器或代码块内初始化），而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能覆盖(重写)。 二.finally 在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。', 17);
-INSERT INTO `stu_answer_record` VALUES (67, 15, 1, 40, '一.final 如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在new一个对象时初始化（即只能在声明变量或构造器或代码块内初始化），而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能覆盖(重写)。 二.finally 在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。', 23);
-INSERT INTO `stu_answer_record` VALUES (68, 15, 1, 9, '接口使用interface修饰;接口不能包含普通方法,只能存在抽象方法。接口中的方法默认使用 public abstract修饰。', 24);
-INSERT INTO `stu_answer_record` VALUES (69, 15, 1, 25, '接口Collection 常用子接口:Set List Set接口常用实现类:HashSet,TreeSet,LinkedHashSet (都是线程非安全的类) List接口常用实现类:线程非安全:ArrayList,LindedList;线程安全:Stack,Vector', 23);
-INSERT INTO `stu_answer_record` VALUES (70, 15, 1, 26, 'List<String> list = Collections.synchronizedList(new ArrayList<String>())', 23);
-INSERT INTO `stu_answer_record` VALUES (79, 32, 1, 25, '123', 25);
-INSERT INTO `stu_answer_record` VALUES (80, 32, 1, 9, '123', 25);
-INSERT INTO `stu_answer_record` VALUES (81, 32, 1, 40, '一.final 如果一个类被声明为fin控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 fi() 方法是象之前对这个对象调用的。', 25);
-INSERT INTO `stu_answer_record` VALUES (82, 32, 1, 6, '1、不能以数字开头 2、不能包含特殊字符，除了$和_ 3、类名和文件名相同 4、区分大小写', 0);
-INSERT INTO `stu_answer_record` VALUES (83, 39, 1, 6, '123', 0);
-INSERT INTO `stu_answer_record` VALUES (84, 39, 1, 37, '123', 0);
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for student
 -- ----------------------------
 DROP TABLE IF EXISTS `student`;
-CREATE TABLE `student`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '学生id',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '学生姓名',
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '学生登录密码',
-  `stu_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '学号',
-  `role_id` int(0) NULL DEFAULT NULL COMMENT '角色id',
-  `sex` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '性别',
-  `major_id` int(0) NULL DEFAULT NULL COMMENT '专业id',
-  `level` int(0) NULL DEFAULT NULL COMMENT '年级',
+CREATE TABLE `student` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '学生id',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '学生姓名',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '学生登录密码',
+  `stu_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '学号',
+  `role_id` int DEFAULT NULL COMMENT '角色id',
+  `sex` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '性别',
+  `major_id` int DEFAULT NULL COMMENT '专业id',
+  `level` int DEFAULT NULL COMMENT '年级',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of student
 -- ----------------------------
+BEGIN;
 INSERT INTO `student` VALUES (1, '郑润茂', '$2a$10$iNGn0d5tZ3LOkGkPxg.qVutbLlKth3qmG9WDOPfQmbIook5PegJpW', '201601', 2, '男', 1, 17);
-INSERT INTO `student` VALUES (2, '李四', '$2a$10$OtG.WBf.MAhvPurnnFSbo.5ISp7xOi5ASBsyUmvPg2GSoAsK7W8RK', '201602', 2, '女', 9, 16);
+INSERT INTO `student` VALUES (2, '李华', '$2a$10$OtG.WBf.MAhvPurnnFSbo.5ISp7xOi5ASBsyUmvPg2GSoAsK7W8RK', '201602', 2, '男', 5, 16);
 INSERT INTO `student` VALUES (4, '江峰', '$2a$10$L3/D20R0gnBxp9Hd3J9XBuVcqbKFj26cTr6VNMdMmK4yknqyoqTmO', '201701', 2, '男', 6, 17);
 INSERT INTO `student` VALUES (5, '刘珂', '$2a$10$LH3WATc0n0T5Qz7WU/1CW.KbUCHgd8WxkgOFBmq/9.XlNFGuL1S4G', '201702', 2, '男', 1, 17);
 INSERT INTO `student` VALUES (6, '刘凡', '$2a$10$VRFfcRso0g0rZMmTTRNRd.bRQZlCFzahmHaoIVataYPGIeRAHfhvy', '201704', 2, '男', 5, 17);
@@ -521,31 +506,33 @@ INSERT INTO `student` VALUES (7, '王宇东', '$2a$10$jc/q36OnusELzvBeNu7w3eP4z6
 INSERT INTO `student` VALUES (8, '郑润', '$2a$10$HGSVKIL0uVSZji.Lhl0RPOp1zr5fR9nUYe5YfvpTgXQSUx28sUuha', '201708', 2, '男', 12, 17);
 INSERT INTO `student` VALUES (10, '叶璇', '$2a$10$kz7s3ZbnFKPvcfwWll1ur.26bI9tnI.KiSlCIBtoi1u/B19o4bFF2', '201608', 2, '女', 10, 16);
 INSERT INTO `student` VALUES (11, '邹雪', '$2a$10$Fy7WktRs54MT5Lna8V70a.Dra5yno5knMs0XJ7Bn1tJ0pBsKUF7k2', '201612', 2, '女', 8, 18);
-INSERT INTO `student` VALUES (12, '华林', '$2a$10$XWc0vgg2UaGQjRcihSi2IezJk0SJsPrA6wzVIzqALZU75mJJJc/7G', '201810', 2, '男', 13, 18);
 INSERT INTO `student` VALUES (22, '宋浩', '$2a$10$4OqQuB0/TKMQSYHpfyH1nudHCe0bGEQErZCkwazDEgKKcuMhxmMAC', '2017006', 2, '男', 2, 17);
 INSERT INTO `student` VALUES (24, '温婷', '$2a$10$4LwEg8Ngz8ER6yrVK3tDs.LD4eoV.qPaXj4gT8rlo/mVEKNB2Eptm', '201833', 2, '女', 19, 18);
 INSERT INTO `student` VALUES (25, '冼毅峰', '$2a$10$vAZqB7292Ur11TFPDyz0VewzsLxk5NiG18E97lcQzp34/2Du86kb2', '20190404430128', 2, '男', 10, 19);
 INSERT INTO `student` VALUES (27, '黄华', '$2a$10$LMl9l/hej04nZSKXET5N/ejtEKhGXJP3hb4DCa6L88mZROuq836Hq', '2018081', 2, '男', 21, 18);
+INSERT INTO `student` VALUES (28, '123', '$2a$10$XdwHw1xPAHvgkgUu.oEaxOHWrt3gPjzgT3ZNcCBq/aUFiL3e0Mx2q', '67577', 2, '男', 8, 17);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for teacher
 -- ----------------------------
 DROP TABLE IF EXISTS `teacher`;
-CREATE TABLE `teacher`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '教师id',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '姓名',
-  `work_number` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '工号',
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
-  `role_id` int(0) NULL DEFAULT NULL COMMENT '角色id',
-  `job` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '职位',
-  `sex` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '性别',
+CREATE TABLE `teacher` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '教师id',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '姓名',
+  `work_number` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '工号',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
+  `role_id` int DEFAULT NULL COMMENT '角色id',
+  `job` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '职位',
+  `sex` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '性别',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of teacher
 -- ----------------------------
-INSERT INTO `teacher` VALUES (1, '洪七公', '123', '$2a$10$ZR16hF1CGwyPgaqXXHtVT.EK/dO6vlfRBkbsSmMKEGP267B3Q9nJC', 3, '讲师', '男');
+BEGIN;
+INSERT INTO `teacher` VALUES (1, '张三', '123', '$2a$10$ZR16hF1CGwyPgaqXXHtVT.EK/dO6vlfRBkbsSmMKEGP267B3Q9nJC', 3, '讲师', '男');
 INSERT INTO `teacher` VALUES (2, '郭靖', '789', '$2a$10$3W1c19JKAxjII6350s.k3OMcBZqJSGYCzpWQQifWAk3v6SW5M3ile', 3, '副教授', '女');
 INSERT INTO `teacher` VALUES (3, '柯镇恶', '346', '$2a$10$eHVO.6kkZTexorW.MDmfl./hOYbK9M5p1Ajc2opVBerwjrJoYeW/i', 3, '高级讲师', '男');
 INSERT INTO `teacher` VALUES (4, '湖东', '996', '$2a$10$jLgMGKWCkogw0WhGduTpTejIf0OIbtAi1uKj3mQiI5DL0pVziw4.G', 3, '教授', '男');
@@ -553,27 +540,30 @@ INSERT INTO `teacher` VALUES (5, '黄蓉', '129', '$2a$10$.l5bdCMl5s1VNX5PRlYfLe
 INSERT INTO `teacher` VALUES (7, '穆念慈', '780', '$2a$10$3vGDmUpHYh6GGeaBKnc4xu5QFypEQZyTsaNOAiYOimZgFpyykCCum', 3, '教授', '女');
 INSERT INTO `teacher` VALUES (9, '李宁', '998', '$2a$10$Edoew.gecDb3y.LhF9thnuAKYDaaufEuBCs3dFRNaXIbM3hmilloO', 3, '教授', '男');
 INSERT INTO `teacher` VALUES (17, '苏宇星', '6690', '$2a$10$xs1dYrmLshEZWJPokLfRF.awPZMG/Sawa7iniyaKI4YpHCLRZunRG', 3, '教授', '男');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for type
 -- ----------------------------
 DROP TABLE IF EXISTS `type`;
-CREATE TABLE `type`  (
-  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '题目类型id',
-  `type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '题目类型',
-  `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '各个类型题目的分数',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '该类型题目说明',
+CREATE TABLE `type` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '题目类型id',
+  `type_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '题目类型',
+  `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '各个类型题目的分数',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '该类型题目说明',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of type
 -- ----------------------------
+BEGIN;
 INSERT INTO `type` VALUES (1, '单选题', '5', NULL);
 INSERT INTO `type` VALUES (2, '多选题', '10', NULL);
 INSERT INTO `type` VALUES (3, '判断题', '5', NULL);
 INSERT INTO `type` VALUES (4, '填空题', '5', NULL);
 INSERT INTO `type` VALUES (5, '简答题', '20', NULL);
 INSERT INTO `type` VALUES (6, '编程题', '20', NULL);
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
