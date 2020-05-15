@@ -1,6 +1,7 @@
 package apm.admin.config;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +21,7 @@ public class SpringAdminSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   private final String adminCtx;
 
+  @Autowired
   public SpringAdminSecurityConfig(AdminServerProperties adminServerProperties) {
     this.adminCtx = adminServerProperties.getContextPath();
   }

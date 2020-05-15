@@ -31,6 +31,12 @@
     </filter>
   </appender>
 
+  <!--输出到 logstash的 appender-->
+  <!--    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+  <!--        <destination>${logstash.url}:4560</destination>-->
+  <!--        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>-->
+  <!--    </appender>-->
+
   <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <fileNamePattern>${log.path}/error/error.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -52,5 +58,6 @@
   <root level="info">
     <appender-ref ref="file_info"/>
     <appender-ref ref="file_error"/>
+    <appender-ref ref="logstash"/>
   </root>
 </configuration>
