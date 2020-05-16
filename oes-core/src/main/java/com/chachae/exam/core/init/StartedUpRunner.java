@@ -47,6 +47,8 @@ public class StartedUpRunner implements ApplicationRunner {
       boolean state = paper.getPaperState().equals(SysConsts.Paper.PAPER_STATE_START);
       if (type && state && paper.isEnd()) {
         paper.setPaperState(SysConsts.Paper.PAPER_STATE_END);
+        paper.setBeginTime(null);
+        paper.setEndTime(null);
         paperService.updateById(paper);
         log.info("试卷:{} 状态被修改:{}", paper.getPaperName(), paper.getPaperState());
       }

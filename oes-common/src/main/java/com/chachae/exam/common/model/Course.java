@@ -31,9 +31,8 @@ public class Course {
   private String courseName;
 
   /**
-   * 该门课的出题老师(默认一门课一个老师出题)
+   * 该门课的出题老师
    */
-  @NotNull(message = "教师 ID 不能为空")
   private Integer teacherId;
 
   @TableField(exist = false)

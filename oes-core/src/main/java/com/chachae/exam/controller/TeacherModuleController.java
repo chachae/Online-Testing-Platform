@@ -5,17 +5,21 @@ import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
+import com.chachae.exam.service.CourseService;
+import com.chachae.exam.service.MajorService;
+import com.chachae.exam.service.PaperFormService;
+import com.chachae.exam.service.PaperService;
+import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.QuestionSortService;
-import com.chachae.exam.service.*;
+import com.chachae.exam.service.StuAnswerRecordService;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * 教师模块控制层
@@ -162,26 +166,6 @@ public class TeacherModuleController {
   @GetMapping("/help")
   public String help() {
     return ServletUtil.isAjax() ? "/teacher/self/help#helpTable" : "/teacher/self/help";
-  }
-
-  /**
-   * 学生分页查询
-   *
-   * @return 分页结果集
-   */
-  @GetMapping("/student")
-  public String listStudent() {
-    return ServletUtil.isAjax() ? "/teacher/student/list#studentTable" : "/teacher/student/list";
-  }
-
-  /**
-   * 专业管理页面
-   *
-   * @return 专业管理页面
-   */
-  @GetMapping("/major")
-  public String listMajor() {
-    return ServletUtil.isAjax() ? "/teacher/major/list#majorTable" : "/teacher/major/list";
   }
 
   /**

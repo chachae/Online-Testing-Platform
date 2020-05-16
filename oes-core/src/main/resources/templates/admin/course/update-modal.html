@@ -1,0 +1,41 @@
+<!-- 修改专业信息模态框 -->
+<div class="modal fade" id="update-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">修改课程指派对象</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="update-form">
+          <div class="table">
+            <label for="id">ID</label>
+            <input type="text" name="id" class="form-control id"
+                   id="id" readonly="readonly">
+          </div>
+          <div class="table">
+            <label for="courseName">课程名称</label>
+            <input type="text" name="courseName" class="form-control courseName"
+                   id="courseName" readonly="readonly">
+          </div>
+          <div class="table">
+            <label for="name">教师名称</label>
+            <input type="text" name="name" class="form-control name"
+                   id="name">
+          </div>
+          <div class="table">
+            <label for="workNumber">教师工号</label>
+            <input type="text" name="workNumber" class="form-control workNumber"
+                   id="workNumber">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="updateCourse()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>

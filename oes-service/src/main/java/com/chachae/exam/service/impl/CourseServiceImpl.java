@@ -10,10 +10,13 @@ import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
 import com.google.common.collect.Lists;
+import com.google.errorprone.annotations.Var;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   private final QuestionDAO questionDAO;
   private final CourseDAO courseDAO;
   private final TeacherDAO teacherDAO;
+
 
   @Override
   public List<Integer> listIdByTeacherId(Integer teacherId) {
@@ -73,6 +77,41 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     }
     Page<Course> pageInfo = this.courseDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public boolean save(Course course, Teacher teacher) {
+    if (teacher == null) {
+      throw new ServiceException("教师信息不能为空");
+    }
+    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
+    qw.eq(Teacher::getWorkNumber, teacher.getWorkNumber()).eq(Teacher::getName, teacher.getName());
+    Teacher result = teacherDAO.selectOne(qw);
+    if (result == null) {
+      throw new ServiceException("教师信息有误，请确认后再试");
+    } else {
+      course.setTeacherId(result.getId());
+      baseMapper.insert(course);
+      return true;
+    }
+  }
+
+  @Override
+  public boolean update(Course course, Teacher teacher) {
+    if (teacher == null) {
+      throw new ServiceException("教师信息不能为空");
+    }
+    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
+    qw.eq(Teacher::getWorkNumber, teacher.getWorkNumber()).eq(Teacher::getName, teacher.getName());
+    Teacher result = teacherDAO.selectOne(qw);
+    if (result == null) {
+      throw new ServiceException("教师信息有误，请确认后再试");
+    } else {
+      course.setTeacherId(result.getId());
+      baseMapper.updateById(course);
+      return true;
+    }
   }
 
   @Override

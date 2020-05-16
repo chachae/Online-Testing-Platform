@@ -124,14 +124,6 @@
                 <dl>
                   <%for(choice in qChoiceList){%>
                   <dt style="font-size: 17px">${choiceLP.index}. ${choice.questionName}</dt>
-                  <div class="box-tools pull-right">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${choice.id}','${choice.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm" onclick="goUpdateQuestion('${choice.id}')">
-                      修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     A. <span>${choice.optionA} </span>
@@ -171,14 +163,6 @@
                 <dl>
                   <%for(qMulChoice in qMulChoiceList){%>
                   <dt style="font-size: 17px">${qMulChoiceLP.index}. ${qMulChoice.questionName}</dt>
-                  <div class="box-tools pull-right" rel="${qMulChoice.id}">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${qMulChoice.id}','${qMulChoice.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateQuestion('${qMulChoice.id}')">修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     A. <span>${qMulChoice.optionA} </span>
@@ -219,14 +203,6 @@
                 <dl>
                   <%for(question in qTofList){%>
                   <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                  <div class="box-tools pull-right" rel="${question.id}">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateQuestion('${question.id}')">修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     <input type="radio" name="${question.id}" required value="对">
@@ -262,14 +238,6 @@
                 <dl>
                   <%for(question in qFillList){%>
                   <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                  <div class="box-tools pull-right" rel="${question.id}">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateQuestion('${question.id}')">修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     <div><strong style="color: limegreen">正确答案：${question.answer}</strong></div>
@@ -297,14 +265,6 @@
                 <dl>
                   <%for(question in qSaqList){%>
                   <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                  <div class="box-tools pull-right" rel="${question.id}">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateQuestion('${question.id}')">修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     <label><strong style="color: limegreen">正确答案：</strong></label>
@@ -333,14 +293,6 @@
                 <dl>
                   <%for(question in qProgramList){%>
                   <dt style="font-size: 17px">${questionLP.index}. ${question.questionName}</dt>
-                  <div class="box-tools pull-right" rel="${question.id}">
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateAnswer('${question.id}','${question.answer}')">修改答案
-                    </button>
-                    <button class="btn bg-olive btn-sm"
-                            onclick="goUpdateQuestion('${question.id}')">修改题目
-                    </button>
-                  </div>
                   <dd></dd>
                   <dd>
                     <label><strong style="color: limegreen">正确答案：</strong></label>

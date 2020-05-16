@@ -101,7 +101,7 @@
       $('#stuNumber').val(data.stuNumber);
       $('#level').val(data.level).select2({theme: 'bootstrap4'});
       $('#sex').val(data.sex).select2({theme: 'bootstrap4'});
-      $('#academy').val(data.academy.id).select2({theme: 'bootstrap4'});
+      $('#academyId').val(data.academy.id).select2({theme: 'bootstrap4'});
       getMajor(data.academy.id, data.major.id);
       // 启动修改模态框
       $("#update-modal").modal({

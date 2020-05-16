@@ -50,6 +50,36 @@ public class AdminModuleController {
   }
 
   /**
+   * 展示所教课程
+   *
+   * @return 课程信息
+   */
+  @GetMapping("/course")
+  public String courseList() {
+    return ServletUtil.isAjax() ? "/admin/course/list#courseTable" : "/admin/course/list";
+  }
+
+  /**
+   * 专业管理页面
+   *
+   * @return 专业管理页面
+   */
+  @GetMapping("/major")
+  public String listMajor() {
+    return ServletUtil.isAjax() ? "/admin/major/list#majorTable" : "/admin/major/list";
+  }
+
+  /**
+   * 学生分页查询
+   *
+   * @return 分页结果集
+   */
+  @GetMapping("/student")
+  public String listStudent() {
+    return ServletUtil.isAjax() ? "/admin/student/list#studentTable" : "/admin/student/list";
+  }
+
+  /**
    * 获取全部公告
    *
    * @return 公告信息

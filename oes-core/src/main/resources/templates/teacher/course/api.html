@@ -1,9 +1,9 @@
 <script>
 
-  function operateFormatter(value, row, index) {
-    return [' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(' + row.id
-    + ')">&nbsp;删除</button>'].join('');
-  }
+  // function operateFormatter(value, row, index) {
+  //   return [' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse(' + row.id
+  //   + ')">&nbsp;删除</button>'].join('');
+  // }
 
   // 初始化表单
   OesUtil.initNormalTable('#courseInfo', "/api/course/list?teacherId=" + '${session.teacherId}',
@@ -22,10 +22,6 @@
         title: '课程名称',
         field: 'courseName',
         sortable: false
-      }, {
-        field: 'operate',
-        title: '操作',
-        formatter: operateFormatter//html
       }]);
 
   // 删除课程

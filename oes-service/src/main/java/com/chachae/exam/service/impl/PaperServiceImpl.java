@@ -201,7 +201,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   public boolean updateById(Paper paper) {
     // 通过起止时间计算考试时长
     if (paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)) {
-      paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
+      if (paper.getBeginTime() != null && paper.getEndTime() != null) {
+        paper.setAllowTime(calAllowTime(paper.getBeginTime(), paper.getEndTime()));
+      }
     } else {
       paper.setBeginTime(null);
       paper.setEndTime(null);

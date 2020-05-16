@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>OES | 课程列表</title>
+  <title>OES | 管理员端</title>
   <!-- 引入全局 css 文件 -->
   <%include("../../include/css.html"){} %>
 </head>
@@ -12,25 +12,24 @@
   <!-- 引入头部 -->
   <% include("../include/header.html"){} %>
   <!-- 左侧菜单栏 -->
-  <% layout("../include/sider.html",{name:"course"}){} %>
+  <% layout("../include/sider.html",{name:"student"}){} %>
   <!-- 引入全局 js 脚本文件 -->
   <% include("../../include/js.html"){} %>
   <!-- 右侧内容部分 -->
-  <!-- 右侧内容部分 -->
   <div class="content-wrapper">
     <%
-    #ajax courseTable:{
+    #ajax studentTable:{
     %>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>课程管理</h1>
+            <h1>学生管理</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/teacher/course">课程管理</a></li>
+              <li class="breadcrumb-item"><a href="/teacher/student">学生管理</a></li>
             </ol>
           </div>
         </div>
@@ -44,20 +43,40 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">课程内容</h3>
+                <h3 class="card-title">学生信息</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
+                    <button onclick="goSave()" class="btn btn-default btn-sm float-right">新增学生
+                    </button>&nbsp;
                     <button class="btn btn-default btn-sm"
-                            onclick="OesUtil.refreshTable('#courseInfo');">刷新数据
+                            onclick="OesUtil.refreshTable('#studentInfo');">刷新数据
                     </button>
                   </div>
                 </div>
               </div>
+
+              <!-- 条件查询框 -->
+              <div class="card-header">
+                <div class="card-tools">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <select class="form-control academySelect"
+                              name="findAcademy" id="findAcademy"></select>
+                    </div>
+                    <div class="col-sm-6">
+                      <input id="findKey" class="form-control "
+                             style="width: 200px" placeholder="姓名或学号">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="courseInfo"
+                <table id="studentInfo"
                        class="table table-bordered table-striped text-nowrap"></table>
               </div>
+
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -65,8 +84,10 @@
         </div><!-- /.row -->
       </div>
     </section>
-    <!-- 新增课程模态框 -->
-    <% include("save-modal.html"){} %>
+    <!-- 增加模态框 -->
+    <%include("save-modal.html"){}%>
+    <!-- 更新模态框 -->
+    <%include("update-modal.html"){}%>
     <!-- 接口 -->
     <% include("api.html"){} %>
     <%}%>
@@ -81,3 +102,5 @@
 </div>
 </body>
 </html>
+
+

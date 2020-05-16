@@ -38,10 +38,10 @@
             </div>
             <div class="form-group">
               <input class="form-control" id="courseName" readonly="readonly" placeholder="所属课程"
-                     autocomplete="off"/>
+                     autocomplete="off" aria-readonly="true"/>
             </div>
-            <div class="form-group">
-              <select class="form-control typeSelect" name="typeId" id="typeId"></select>
+            <div class="form-group" aria-readonly="true">
+              <select class="form-control typeSelect" name="typeId" id="typeId" disabled="disabled"></select>
               <!-- 动态获取数据 -->
             </div>
             <div class="form-group">
