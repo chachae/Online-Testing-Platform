@@ -6,18 +6,23 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
+import com.chachae.exam.common.model.dto.QueryTeacherDto;
 import com.chachae.exam.common.util.HttpUtil;
+import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.TeacherService;
 import com.chachae.exam.util.model.Captcha;
 import com.chachae.exam.util.service.CaptchaService;
-import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chachae
@@ -27,8 +32,10 @@ import java.util.Map;
 @RequestMapping("/api/teacher")
 public class TeacherController {
 
-  @Resource private TeacherService teacherService;
-  @Resource private CaptchaService captchaService;
+  @Resource
+  private TeacherService teacherService;
+  @Resource
+  private CaptchaService captchaService;
 
   /**
    * 教师登录
@@ -86,7 +93,7 @@ public class TeacherController {
    */
   @PostMapping("/update")
   @Permissions("teacher:update")
-  public R updateTeacher(Teacher teacher) {
+  public R updateTeacher(@Valid Teacher teacher) {
     // 通过ID关系教师信息
     this.teacherService.updateById(teacher);
     return R.success();
@@ -100,7 +107,7 @@ public class TeacherController {
    */
   @PostMapping("/save")
   @Permissions("teacher:save")
-  public R saveTeacher(Teacher teacher) {
+  public R saveTeacher(@Valid Teacher teacher) {
     // 调用教师信息新增接口
     this.teacherService.save(teacher);
     return R.success();
@@ -120,6 +127,19 @@ public class TeacherController {
   }
 
   /**
+   * 重置密码
+   *
+   * @return 分页结果集
+   */
+  @PostMapping("/restPassword/{id}")
+  public R restPassword(@PathVariable Integer id) {
+    String hash = RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD);
+    Teacher build = Teacher.builder().id(id).password(hash).build();
+    this.teacherService.updateById(build);
+    return R.success();
+  }
+
+  /**
    * 分页获取教师信息
    *
    * @param page 分页结果集
@@ -127,7 +147,8 @@ public class TeacherController {
    */
   @GetMapping("/list")
   @Permissions("teacher:list")
-  public Map<String, Object> page(Page<Teacher> page) {
-    return this.teacherService.listPage(page);
+  @Limit(key = "teacherList", period = 5, count = 15, name = "教师查询接口", prefix = "limit")
+  public Map<String, Object> page(Page<Teacher> page, QueryTeacherDto entity) {
+    return this.teacherService.listPage(page, entity);
   }
 }

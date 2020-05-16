@@ -111,7 +111,6 @@ public class QuestionController {
   @PostMapping("/update/answer")
   @Permissions("question:update")
   public R updateAnswer(Question question) {
-    System.out.println(question);
     this.questionService.updateById(question);
     return R.success();
   }

@@ -20,9 +20,16 @@
           </div>
           <div class="form-group form_datetime">
             <label>密码</label>
-            <input type="password" name="pass" class="form-control">
+            <input type="password" name="password" class="form-control">
           </div>
-          <div class="form-group form_datetime">
+          <div class="form-group">
+            <label>所属学院</label>
+            <select name="academyId" style="width: 100%" class="academySelect">
+              <option>请选择</option>
+              <!-- 数据填充 -->
+            </select>
+          </div>
+          <div class="form-group">
             <label>职位</label>
             <select name="job" class="form-control job-select" style="width: 100%">
               <option value="教授">教授</option>
@@ -31,7 +38,7 @@
               <option value="高级讲师">高级讲师</option>
             </select>
           </div>
-          <div class="form-group form_datetime">
+          <div class="form-group">
             <label>性别</label>
             <select name="sex" class="form-control sex-select" style="width: 100%">
               <option value="男">男</option>

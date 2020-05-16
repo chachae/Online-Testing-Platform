@@ -3,7 +3,6 @@ package com.chachae.exam.rest;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Course;
-import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.CourseService;
 import java.util.List;
@@ -46,8 +45,8 @@ public class CourseController {
    */
   @PostMapping("/save")
   @Permissions("course:save")
-  public R newCourse(@Valid Course course, Teacher teacher) {
-    this.courseService.save(course, teacher);
+  public R newCourse(@Valid Course course) {
+    this.courseService.save(course);
     return R.success();
   }
 
@@ -57,8 +56,8 @@ public class CourseController {
    * @return 成功信息
    */
   @PostMapping("/update")
-  public R updateCourse(@Valid Course course, Teacher teacher) {
-    this.courseService.update(course, teacher);
+  public R updateCourse(@Valid Course course) {
+    this.courseService.update(course);
     return R.success();
   }
 

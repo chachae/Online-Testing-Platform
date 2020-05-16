@@ -1,16 +1,19 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.dao.AcademyDAO;
 import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.QueryTeacherDto;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.service.CourseService;
@@ -38,6 +41,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   private final TeacherDAO teacherDAO;
   private final CourseService courseService;
   private final PaperService paperService;
+  private final AcademyDAO academyDAO;
 
   @Override
   public Teacher login(String teaNumber, String password) {
@@ -76,6 +80,13 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   }
 
   @Override
+  public Teacher getById(Serializable id) {
+    Teacher teacher = baseMapper.selectById(id);
+    teacher.setAcademy(academyDAO.selectById(teacher.getAcademyId()));
+    return teacher;
+  }
+
+  @Override
   public Teacher selectByWorkNumber(String workNumber) {
     // 查询改用户名的教师信息
     LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
@@ -84,8 +95,15 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   }
 
   @Override
-  public Map<String, Object> listPage(Page<Teacher> page) {
-    Page<Teacher> pageInfo = this.teacherDAO.selectPage(page, null);
+  public Map<String, Object> listPage(Page<Teacher> page, QueryTeacherDto entity) {
+    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
+    if (StrUtil.isNotBlank(entity.getKey())) {
+      qw.like(Teacher::getName, entity.getKey()).or().like(Teacher::getWorkNumber, entity.getKey());
+    }
+    if (entity.getAcademyId() != null) {
+      qw.eq(Teacher::getAcademyId, entity.getAcademyId());
+    }
+    Page<Teacher> pageInfo = this.teacherDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }
 

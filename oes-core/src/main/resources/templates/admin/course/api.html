@@ -2,7 +2,7 @@
 
   function operateFormatter(value, row, index) {
     return [' <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
-    + ')">重写指派 </button> ' + ' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse('
+    + ')">指派教师 </button> ' + ' <button class="rowDel btn btn-danger btn-sm" onclick="deleteCourse('
     + row.id
     + ')">&nbsp;删除</button>'].join('');
   }
@@ -70,8 +70,8 @@
     $.get("/api/course/" + id, function (data) {
       $('.id').val(data.id);
       $('.courseName').val(data.courseName);
-      $('.name').val(data.teacher.name);
-      $('.workNumber').val(data.teacher.workNumber);
+      $('.names').val(data.names);
+      $('.workNumbers').val(data.workNumbers);
       $("#update-modal").modal({
         show: true,
         backdrop: 'static'

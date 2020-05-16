@@ -1,5 +1,6 @@
 package com.chachae.exam.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,6 +9,7 @@ import com.chachae.exam.common.dao.AdminDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
+import com.chachae.exam.common.model.dto.QueryAdminDto;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.RsaCipherUtil;
@@ -83,8 +85,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   }
 
   @Override
-  public Map<String, Object> listPage(Page<Admin> page) {
-    Page<Admin> pageInfo = this.adminDAO.selectPage(page, null);
+  public Map<String, Object> listPage(Page<Admin> page, QueryAdminDto entity) {
+    LambdaQueryWrapper<Admin> qw = new LambdaQueryWrapper<>();
+    // academyId = 0 说明是系统管理员
+    if (entity.getAcademyId() != null) {
+      qw.eq(Admin::getAcademyId, entity.getAcademyId());
+    }
+    if (StrUtil.isNotBlank(entity.getKey())) {
+      qw.like(Admin::getNumber, entity.getKey()).or().like(Admin::getName, entity.getKey());
+    }
+    Page<Admin> pageInfo = this.adminDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }
 
@@ -109,6 +119,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
     Admin admin = this.selectByNumber(entity.getNumber());
     if (admin != null) {
       throw new ServiceException("用户名已存在");
+    }
+    // 系统管理员不需要设置academyId
+    if (entity.getAcademyId() == 0) {
+      entity.setAcademyId(null);
     }
     // 封装管理员默认角色ID，同时加密密码
     entity.setRoleId(SysConsts.Role.ADMIN);

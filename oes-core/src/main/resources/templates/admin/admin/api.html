@@ -1,18 +1,46 @@
 <script>
   function operateFormatter(value, row, index) {
-    return ['<button class="btn btn-sm btn-danger" onclick="deleteAdmin(' + row.id
+    return ['<button class="btn btn-sm btn-warning" onclick="restPassword(' + row.id
+    + ') ">重置密码</button>\n' + '<button class="btn btn-sm btn-danger" onclick="deleteAdmin(' + row.id
     + ') ">删除</button>\n'].join('');
   }
 
-  OesUtil.initNormalTable('#adminInfo', "/api/admin/list", "get", [{
-    title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
-      return index + 1;
-    }
-  }, {title: '姓名', field: 'name', sortable: false},
-    {title: '用户名', field: 'number', sortable: false},
-    {title: '上次登陆时间', field: 'lastLoginTime', sortable: false},
-    {field: 'operate', title: '操作', formatter: operateFormatter}]);
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      key: $("#findKey").val()
+    };
+  }
 
+  // 用户会话
+
+  OesUtil.initQueryTable('#adminInfo', "/api/admin/list?academyId=" + "${session.admin.academyId}",
+      "get", [{
+        title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
+          return index + 1;
+        }
+      }, {title: '姓名', field: 'name', sortable: false},
+        {title: '用户名', field: 'number', sortable: false},
+        {title: '上次登陆时间', field: 'lastLoginTime', sortable: false},
+        {field: 'operate', title: '操作', formatter: operateFormatter}], params);
+
+  // 重置管理员密码
+  function restPassword(id) {
+    OesUtil.confirm("确定重置「" + id + " 」管理员的密码吗?", function () {
+      $.post("/api/admin/restPassword/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#adminInfo");
+          toastr.success("重置成功，新密码：123456");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    });
+  }
+
+  // 删除管理员
   function deleteAdmin(id) {
     OesUtil.confirm("确定删除管理员吗?", function () {
       $.post("/api/admin/delete/" + id).done(function (data) {
@@ -25,10 +53,12 @@
     });
   }
 
+  // 打开保存模态框
   function goSave() {
     $("#saveModal").modal({show: true, backdrop: 'static'});
   }
 
+  // 保存管理员
   function saveAdmin() {
     OesUtil.confirm("确定新增管理员吗?", function () {
       let data = $('#save-form').serialize();
@@ -43,4 +73,15 @@
       })
     })
   }
+
+  // 填充学院信息
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('.academySelect').empty();
+    options += "<option value='0'>系统管理员</option>";
+    $.each(data, function (index, e) {
+      options += "<option value=" + e.id + ">" + e.name + "</option>";
+    });
+    $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
+  });
 </script>

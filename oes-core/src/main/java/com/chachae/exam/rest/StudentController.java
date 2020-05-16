@@ -3,23 +3,29 @@ package com.chachae.exam.rest;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.constant.SysConsts.Session;
+import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
 import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
 import com.chachae.exam.common.util.HttpUtil;
+import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.StudentService;
 import com.chachae.exam.util.model.Captcha;
 import com.chachae.exam.util.service.CaptchaService;
-import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chachae
@@ -29,8 +35,10 @@ import java.util.Map;
 @RequestMapping("/api/student")
 public class StudentController {
 
-  @Resource private StudentService studentService;
-  @Resource private CaptchaService captchaService;
+  @Resource
+  private StudentService studentService;
+  @Resource
+  private CaptchaService captchaService;
 
   /**
    * 学生登录 验证学号和密码
@@ -58,6 +66,10 @@ public class StudentController {
   @Permissions("student:list")
   @Limit(key = "majorList", period = 5, count = 15, name = "学生查询接口", prefix = "limit")
   public Map<String, Object> listPage(Page<Student> page, QueryStudentDto entity) {
+    Admin admin = (Admin) HttpUtil.getAttribute(Session.ADMIN);
+    if (admin.getAcademyId() != null) {
+      entity.setAcademyId(admin.getAcademyId());
+    }
     return this.studentService.listPage(page, entity);
   }
 
@@ -118,6 +130,19 @@ public class StudentController {
   public R saveStudent(Student student) {
     // 调用增加接口，并捕捉学号存在的异常
     this.studentService.save(student);
+    return R.success();
+  }
+
+  /**
+   * 重置密码
+   *
+   * @return 分页结果集
+   */
+  @PostMapping("/restPassword/{id}")
+  public R restPassword(@PathVariable Integer id) {
+    String hash = RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD);
+    Student build = Student.builder().id(id).password(hash).build();
+    this.studentService.updateById(build);
     return R.success();
   }
 

@@ -2,6 +2,7 @@ package com.chachae.exam.common.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.chachae.exam.common.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class Student extends BaseEntity {
   /**
    * 学生登录密码
    */
+  @JsonIgnore
   private String password;
 
   /**

@@ -31,10 +31,19 @@ public class Course {
   private String courseName;
 
   /**
-   * 该门课的出题老师
+   * 该门课的出题老师(默认一门课一个老师出题)
    */
-  private Integer teacherId;
+  private String teacherIds;
 
+  /**
+   * 教师工号列表
+   */
   @TableField(exist = false)
-  private Teacher teacher;
+  private String workNumbers;
+
+  /**
+   * 教师姓名列表
+   */
+  @TableField(exist = false)
+  private String names;
 }

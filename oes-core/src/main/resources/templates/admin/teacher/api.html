@@ -1,18 +1,35 @@
 <script>
+  // 操作栏
   function operateFormatter(value, row, index) {
-    return ['  <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
+    return ['<button class="btn btn-sm btn-warning" onclick="restPassword(' + row.id
+    + ') ">重置密码</button>\n' + '  <button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
     + ')">编辑 </button>\n' + '  <button class="btn btn-sm btn-danger" onclick="deleteTeacher('
     + row.id + ') ">删除</button>\n'].join('');
   }
 
-  OesUtil.initNormalTable('#teacherInfo', "/api/teacher/list", "get", [{
-    title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
-      return index + 1;
-    }
-  }, {title: '姓名', field: 'name', sortable: false},
-    {title: '工号', field: 'workNumber', sortable: false},
-    {title: '职级', field: 'job', sortable: false}, {title: '性别', field: 'sex', sortable: false},
-    {field: 'operate', title: '操作', formatter: operateFormatter}]);
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      key: $("#findKey").val(),
+    };
+  }
+
+  // 初始化表格
+  OesUtil.initQueryTable('#teacherInfo',
+      "/api/teacher/list?academyId=" + "${session.admin.academyId}", "get", [{
+        title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
+          return index + 1;
+        }
+      }, {title: '姓名', field: 'name', sortable: false},
+        {title: '工号', field: 'workNumber', sortable: false},
+        {title: '职级', field: 'job', sortable: false}, {title: '性别', field: 'sex', sortable: false},
+        {field: 'operate', title: '操作', formatter: operateFormatter}], params);
+
+  OesUtil.bindRequest('#findKey', '#teacherInfo', 200);
+
+  // 职位、性别选择框
   $('.job-select').select2({width: "100%", theme: "bootstrap4"});
   $('.sex-select').select2({width: "100%", theme: "bootstrap4"});
 
@@ -42,6 +59,7 @@
       $('#name').val(data.name);
       $('#workNumber').val(data.workNumber);
       $('#job').val(data.job).select2({width: "100%", theme: "bootstrap4"});
+      $('#academyId').val(data.academyId).select2({theme: 'bootstrap4'});
       $('#sex').val(data.sex).select2({width: "100%", theme: "bootstrap4"});
       $("#sex option").each(function () {
         if ($(this).val() === data.sex) {
@@ -81,4 +99,32 @@
       })
     })
   }
+
+  // 重置密码
+  function restPassword(id) {
+    OesUtil.confirm("确定重置「" + id + " 」教师的密码吗?", function () {
+      $.post("/api/teacher/restPassword/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#teacherInfo");
+          toastr.success("重置成功，新密码：123456");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    });
+  }
+
+  // 填充学院信息
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('.academySelect').empty();
+    $.each(data, function (index, e) {
+      if ("${session.admin.academyId}".length === 0) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      } else if (parseInt("${session.admin.academyId}") === e.id) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      }
+    });
+    $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
+  });
 </script>

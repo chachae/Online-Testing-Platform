@@ -3,8 +3,6 @@ package com.chachae.exam.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Course;
-
-import com.chachae.exam.common.model.Teacher;
 import java.util.List;
 import java.util.Map;
 
@@ -50,20 +48,10 @@ public interface CourseService extends IService<Course> {
   Map<String, Object> listPage(Page<Course> page, Integer teacherId);
 
   /**
-   * 增加课程
-   *
-   * @param course  课程信息
-   * @param teacher 教师信息
-   * @return boolean
-   */
-  boolean save(Course course, Teacher teacher);
-
-  /**
    * 更新课程
    *
-   * @param course  课程信息
-   * @param teacher 教师信息
+   * @param course 课程信息
    * @return boolean
    */
-  boolean update(Course course, Teacher teacher);
+  boolean update(Course course);
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 
+import com.chachae.exam.common.model.dto.QueryTeacherDto;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public interface TeacherService extends IService<Teacher> {
   /**
    * 教师登录
    *
-   * @param teacherId 教师ID
+   * @param teacherId       教师ID
    * @param teacherPassword 教师密码
    * @return 教师信息
    */
@@ -42,8 +43,9 @@ public interface TeacherService extends IService<Teacher> {
   /**
    * 分页查询教师信息
    *
-   * @param page 分页信息
+   * @param page   分页信息
+   * @param entity 查询实体
    * @return 分页结果集
    */
-  Map<String, Object> listPage(Page<Teacher> page);
+  Map<String, Object> listPage(Page<Teacher> page, QueryTeacherDto entity);
 }

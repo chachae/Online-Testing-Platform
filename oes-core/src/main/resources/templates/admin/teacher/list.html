@@ -39,10 +39,26 @@
                 <h3 class="card-title">教师信息</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
-                    <button class="btn btn-primary btn-sm" onclick="goSave()">新增教师</button>
+                    <button class="btn btn-primary btn-sm" onclick="goSave()">新增教师</button>&nbsp;
+                    <button class="btn btn-default btn-sm"
+                            onclick="OesUtil.refreshTable('#teacherInfo');">刷新数据
+                    </button>
                   </div>
                 </div>
               </div>
+
+              <!-- 条件查询框 -->
+              <div class="card-header">
+                <div class="card-tools">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <input id="findKey" class="form-control "
+                             style="width: 200px" placeholder="姓名或工号">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- /.card-header -->
               <div class="card-body table-responsive">
                 <!-- bootstrap table 渲染 -->

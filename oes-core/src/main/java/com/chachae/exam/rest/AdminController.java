@@ -6,18 +6,23 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.LoginDto;
+import com.chachae.exam.common.model.dto.QueryAdminDto;
 import com.chachae.exam.common.util.HttpUtil;
+import com.chachae.exam.common.util.RsaCipherUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AdminService;
 import com.chachae.exam.util.model.Captcha;
 import com.chachae.exam.util.service.CaptchaService;
-import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chachae
@@ -27,8 +32,10 @@ import java.util.Map;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-  @Resource private AdminService adminService;
-  @Resource private CaptchaService captchaService;
+  @Resource
+  private AdminService adminService;
+  @Resource
+  private CaptchaService captchaService;
 
   /**
    * 管理员登录<a href="http://localhost:8080/login>管理员登录接口</a>
@@ -73,7 +80,7 @@ public class AdminController {
    */
   @PostMapping("/save")
   @Permissions("admin:save")
-  public R saveAdmin(Admin admin) {
+  public R saveAdmin(@Valid Admin admin) {
     // 对于管理员增加接口
     this.adminService.save(admin);
     return R.success();
@@ -100,6 +107,19 @@ public class AdminController {
   }
 
   /**
+   * 重置密码
+   *
+   * @return 分页结果集
+   */
+  @PostMapping("/restPassword/{id}")
+  public R restPassword(@PathVariable Integer id) {
+    String hash = RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD);
+    Admin build = Admin.builder().id(id).password(hash).build();
+    this.adminService.updateById(build);
+    return R.success();
+  }
+
+  /**
    * 分页获取管理员信息
    *
    * @param page 分页信息
@@ -107,7 +127,7 @@ public class AdminController {
    */
   @GetMapping("/list")
   @Permissions("admin:list")
-  public Map<String, Object> page(Page<Admin> page) {
-    return this.adminService.listPage(page);
+  public Map<String, Object> page(Page<Admin> page, QueryAdminDto entity) {
+    return this.adminService.listPage(page, entity);
   }
 }

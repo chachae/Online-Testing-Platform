@@ -2,16 +2,23 @@ package com.chachae.exam.rest;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
+import com.chachae.exam.common.constant.SysConsts.Session;
+import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.Major;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.MajorService;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chachae
@@ -21,7 +28,8 @@ import java.util.Map;
 @RequestMapping("/api/major")
 public class MajorController {
 
-  @Resource private MajorService majorService;
+  @Resource
+  private MajorService majorService;
 
   @GetMapping
   @Permissions("major:list")
@@ -30,8 +38,7 @@ public class MajorController {
   }
 
   /**
-   * 根据学院 ID 分页所属的专业集合信息<br>
-   * 接口限流，5秒内允许请求20次
+   * 根据学院 ID 分页所属的专业集合信息<br> 接口限流，5秒内允许请求20次
    *
    * @param major 模糊查询条件
    * @return 专业集合信息
@@ -40,6 +47,10 @@ public class MajorController {
   @Permissions("major:list")
   @Limit(key = "majorList", period = 5, count = 20, name = "专业查询接口", prefix = "limit")
   public Map<String, Object> pageList(Page<Major> page, Major major) {
+    Admin admin = (Admin) HttpUtil.getAttribute(Session.ADMIN);
+    if (admin.getAcademyId() != null) {
+      major.setAcademyId(admin.getAcademyId());
+    }
     return this.majorService.listPage(page, major);
   }
 

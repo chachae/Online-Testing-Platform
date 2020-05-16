@@ -1,9 +1,9 @@
 <script>
 
-
   // 操作按钮行为
   function operateFormatter(value, row, index) {
-    return ['<button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
+    return ['<button class="btn btn-sm btn-warning" onclick="restPassword(' + row.id
+    + ') ">重置密码</button>\n' + '<button class="btn btn-success btn-sm" onclick="goUpdate(' + row.id
     + ')">编辑</button>&nbsp;' +
     '<button class="btn btn-danger btn-sm" onclick="deleteStudent(' + row.id + ')">删除</button>' +
     '']
@@ -168,4 +168,18 @@
       })
     })
   });
+
+  // 重置密码
+  function restPassword(id) {
+    OesUtil.confirm("确定重置「" + id + " 」学生的密码吗?", function () {
+      $.post("/api/student/restPassword/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#studentInfo");
+          toastr.success("重置成功，新密码：123456");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    });
+  }
 </script>

@@ -35,23 +35,25 @@
 
         <!-- 系统公告 -->
         <li class="nav-item">
-          <a href="javascript:;" id="announce" class="nav-link ${name == 'announce'?'active':''}">
+          <a href="javascript:" id="announce" class="nav-link ${name == 'announce'?'active':''}">
             <i class="nav-icon fas fa-paper-plane"></i>
             <p>公告管理</p>
           </a>
         </li>
 
         <!-- 学院管理 -->
+        <% if(isEmpty(session.admin.academyId)){ %>
         <li class="nav-item">
           <a href="javascript:" id="academy" class="nav-link ${name == 'academy'?'active':''}">
             <i class="nav-icon fas fa-landmark"></i>
             <p>学院管理</p>
           </a>
         </li>
+        <% } %>
 
         <!-- 教师管理 -->
         <li class="nav-item">
-          <a href="javascript:;" id="teacher" class="nav-link ${name == 'teacher'?'active':''}">
+          <a href="javascript:" id="teacher" class="nav-link ${name == 'teacher'?'active':''}">
             <i class="nav-icon fas fa-id-badge"></i>
             <p>教师管理</p>
           </a>
@@ -67,7 +69,7 @@
 
         <!-- 课程管理 -->
         <li class="nav-item">
-          <a href="javascript:;" id="course" class="nav-link  ${name == 'course'?'active':''}">
+          <a href="javascript:" id="course" class="nav-link  ${name == 'course'?'active':''}">
             <i class="nav-icon fas fa-cube"></i>
             <p>课程管理</p>
           </a>
@@ -82,12 +84,14 @@
         </li>
 
         <!-- 管理员管理 -->
+        <% if(isEmpty(session.admin.academyId)){ %>
         <li class="nav-item">
           <a href="javascript:;" id="admin" class="nav-link  ${name == 'admin'?'active':''}">
             <i class="nav-icon fas fa-flag"></i>
             <p>管理员管理</p>
           </a>
         </li>
+        <% } %>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

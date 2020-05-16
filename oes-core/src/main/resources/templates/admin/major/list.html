@@ -58,10 +58,12 @@
               <div class="card-header">
                 <div class="card-tools">
                   <div class="row">
+                    <% if(isEmpty(session.admin.academyId)){ %>
                     <div class="col-sm-6">
                       <select class="form-control academySelect"
                               name="findAcademy" id="findAcademy"></select>
                     </div>
+                    <% } %>
                     <div class="col-sm-6">
                       <input id="findMajor" class="form-control "
                              style="width: 200px" placeholder="专业名称">

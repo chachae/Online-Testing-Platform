@@ -1,6 +1,6 @@
 package com.chachae.exam.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,9 +14,7 @@ import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
 import com.google.common.collect.Lists;
-import com.google.errorprone.annotations.Var;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -42,22 +40,34 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
 
   @Override
   public List<Integer> listIdByTeacherId(Integer teacherId) {
-    LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
-    qw.eq(Course::getTeacherId, teacherId).select(Course::getId);
-    List<Course> courses = this.courseDAO.selectList(qw);
+    List<Course> courses = this.courseDAO.listByTeacherId(teacherId);
     // 将课程集合转为 ID 集合
     return Lists.transform(courses, Course::getId);
   }
 
   @Override
   public List<Course> listByTeacherId(Integer teacherId) {
-    // 构造查询条件
-    LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
-    qw.eq(Course::getTeacherId, teacherId);
-    List<Course> courses = this.courseDAO.selectList(qw);
+    List<Course> courses = this.courseDAO.listByTeacherId(teacherId);
     // 为每一门课程设置教师信息
     for (Course course : courses) {
-      course.setTeacher(this.teacherDAO.selectById(course.getTeacherId()));
+      // 切割教师id列表
+      String tIds = course.getTeacherIds();
+      String[] strIds = StrUtil.splitToArray(tIds, ',');
+      StringBuilder names = new StringBuilder();
+      StringBuilder workNumbers = new StringBuilder();
+      for (String id : strIds) {
+        Teacher res = this.teacherDAO.selectById(id);
+        names.append(res.getName()).append(',');
+        workNumbers.append(res.getWorkNumber()).append(',');
+      }
+      String b = names.toString();
+      String c = workNumbers.toString();
+      if (workNumbers.length() > 0) {
+        b = b.substring(0, b.length() - 1);
+        c = c.substring(0, b.length() - 1);
+      }
+      course.setNames(b);
+      course.setWorkNumbers(c);
     }
     return courses;
   }
@@ -71,47 +81,28 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
 
   @Override
   public Map<String, Object> listPage(Page<Course> page, Integer teacherId) {
-    LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
     if (teacherId != null) {
-      qw.eq(Course::getTeacherId, teacherId);
-    }
-    Page<Course> pageInfo = this.courseDAO.selectPage(page, qw);
-    return PageUtil.toPage(pageInfo);
-  }
-
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public boolean save(Course course, Teacher teacher) {
-    if (teacher == null) {
-      throw new ServiceException("教师信息不能为空");
-    }
-    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
-    qw.eq(Teacher::getWorkNumber, teacher.getWorkNumber()).eq(Teacher::getName, teacher.getName());
-    Teacher result = teacherDAO.selectOne(qw);
-    if (result == null) {
-      throw new ServiceException("教师信息有误，请确认后再试");
+      List<Course> courses = this.courseDAO.listByTeacherId(teacherId);
+      int total = courses.size();
+      courses = PageUtil.toPage(page.getCurrent(), page.getSize(), courses);
+      return PageUtil.toPage(courses, total);
     } else {
-      course.setTeacherId(result.getId());
-      baseMapper.insert(course);
-      return true;
+      LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
+      Page<Course> pageInfo = this.courseDAO.selectPage(page, qw);
+      return PageUtil.toPage(pageInfo);
     }
   }
 
   @Override
-  public boolean update(Course course, Teacher teacher) {
-    if (teacher == null) {
-      throw new ServiceException("教师信息不能为空");
-    }
-    LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
-    qw.eq(Teacher::getWorkNumber, teacher.getWorkNumber()).eq(Teacher::getName, teacher.getName());
-    Teacher result = teacherDAO.selectOne(qw);
-    if (result == null) {
-      throw new ServiceException("教师信息有误，请确认后再试");
-    } else {
-      course.setTeacherId(result.getId());
-      baseMapper.updateById(course);
-      return true;
-    }
+  public boolean save(Course course) {
+    baseMapper.insert(toSaveOrUpdate(course));
+    return true;
+  }
+
+  @Override
+  public boolean update(Course course) {
+    baseMapper.updateById(toSaveOrUpdate(course));
+    return true;
   }
 
   @Override
@@ -131,21 +122,47 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
 
   @Override
   public Course getById(Serializable id) {
-    Course course = super.getById(id);
+    Course course = baseMapper.selectById(id);
     // 为课程设置教师信息
-    course.setTeacher(this.teacherDAO.selectById(course.getTeacherId()));
+    String teacherIds = course.getTeacherIds();
+    String[] strIds = StrUtil.splitToArray(teacherIds, ',');
+    StringBuilder workNumberSb = new StringBuilder();
+    StringBuilder nameSb = new StringBuilder();
+    for (String strId : strIds) {
+      Teacher teacher = this.teacherDAO.selectById(strId);
+      workNumberSb.append(teacher.getWorkNumber()).append(',');
+      nameSb.append(teacher.getName()).append(',');
+    }
+    String res1 = workNumberSb.toString();
+    res1 = res1.substring(0, res1.length() - 1);
+    String res2 = nameSb.toString();
+    res2 = res2.substring(0, res2.length() - 1);
+    course.setWorkNumbers(res1);
+    course.setNames(res2);
     return course;
   }
 
-  @Override
-  public boolean save(Course entity) {
-    // 查询是否有同名课程
-    List<Course> courses = this.selectByCourseName(entity.getCourseName());
-    if (CollUtil.isEmpty(courses)) {
-      baseMapper.insert(entity);
-      return true;
-    } else {
-      throw new ServiceException("存在同名课程，请重新输入");
+  private Course toSaveOrUpdate(Course course) {
+    if (course.getNames() == null || course.getWorkNumbers() == null) {
+      throw new ServiceException("教师信息不能为空");
     }
+
+    String[] workNumbers = StrUtil.splitToArray(course.getWorkNumbers(), ',');
+    String[] names = StrUtil.splitToArray(course.getNames(), ',');
+    StringBuilder ids = new StringBuilder();
+    for (int i = 0; i < workNumbers.length; i++) {
+      LambdaQueryWrapper<Teacher> qw = new LambdaQueryWrapper<>();
+      qw.eq(Teacher::getWorkNumber, workNumbers[i]).eq(Teacher::getName, names[i]);
+      Teacher result = teacherDAO.selectOne(qw);
+      if (result == null) {
+        throw new ServiceException("教师信息有误，请确认后再试");
+      } else {
+        ids.append(result.getId()).append(',');
+      }
+    }
+    String resIds = ids.toString();
+    resIds = resIds.substring(0, resIds.length() - 1);
+    course.setTeacherIds(resIds);
+    return course;
   }
 }

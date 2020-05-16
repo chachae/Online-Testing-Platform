@@ -24,6 +24,13 @@
             <input type="text" name="workNumber" class="form-control"
                    id="workNumber" readonly="readonly">
           </div>
+          <div class="form-group">
+            <label>所属学院</label>
+            <select name="academyId" id="academyId" style="width: 100%" class="academySelect">
+              <option>请选择</option>
+              <!-- 数据填充 -->
+            </select>
+          </div>
           <div class="form-group form_datetime">
             <label for="job">职位</label>
             <select id="job" name="job">
@@ -35,7 +42,7 @@
           </div>
           <div class="form-group form_datetime">
             <label for="sex">性别</label>
-            <select id="sex" class="form-control" style="width: 100%">
+            <select id="sex" name="sex" class="form-control" style="width: 100%">
               <option value="男">男</option>
               <option value="女">女</option>
             </select>
