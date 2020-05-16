@@ -46,6 +46,8 @@
                 <h3 class="card-title">学生信息</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
+                    <button class="btn btn-default btn-sm" id="importBtn">导入学生</button>
+                    &nbsp;
                     <button onclick="goSave()" class="btn btn-default btn-sm float-right">新增学生
                     </button>&nbsp;
                     <button class="btn btn-default btn-sm"
@@ -90,6 +92,8 @@
     <%include("save-modal.html"){}%>
     <!-- 更新模态框 -->
     <%include("update-modal.html"){}%>
+    <!-- 导入学生 -->
+    <%include("import-modal.html"){}%>
     <!-- 接口 -->
     <% include("api.html"){} %>
     <%}%>

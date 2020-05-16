@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author chachae
@@ -156,5 +158,18 @@ public class StudentController {
   @Permissions("student:list")
   public StudentVo getOne(@PathVariable Integer id) {
     return this.studentService.selectVoById(id);
+  }
+
+  /**
+   * 导入学生
+   *
+   * @param multipartFile MultipartFile 对象
+   * @return 导入学生结果
+   */
+  @PostMapping("/import")
+  public R importQuestion(@RequestParam("file") MultipartFile multipartFile) {
+    // 调用试题导入接口
+    this.studentService.importStudentsExcel(multipartFile);
+    return R.success();
   }
 }

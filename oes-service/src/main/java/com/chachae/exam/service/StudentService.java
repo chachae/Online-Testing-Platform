@@ -6,8 +6,8 @@ import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.QueryStudentDto;
 import com.chachae.exam.common.model.vo.StudentVo;
-
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 学生业务接口
@@ -20,7 +20,7 @@ public interface StudentService extends IService<Student> {
   /**
    * 学生登录
    *
-   * @param stuNumber 学生学号
+   * @param stuNumber   学生学号
    * @param stuPassword 学生密码
    * @return 学生信息
    */
@@ -44,7 +44,7 @@ public interface StudentService extends IService<Student> {
   /**
    * 分页查询学生
    *
-   * @param page 分页信息
+   * @param page   分页信息
    * @param entity 模糊条件
    * @return 学生分页结果集
    */
@@ -65,4 +65,9 @@ public interface StudentService extends IService<Student> {
    * @return 学生数量
    */
   Integer selectCountByMajorId(Integer majorId);
+
+  /**
+   * 导入学生数据
+   */
+  void importStudentsExcel(MultipartFile multipartFile);
 }

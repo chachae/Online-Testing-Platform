@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 学生实体类
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
  * @date 2020/2/5
  */
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

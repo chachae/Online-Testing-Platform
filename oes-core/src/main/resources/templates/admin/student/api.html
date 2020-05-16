@@ -182,4 +182,39 @@
       })
     });
   }
+
+  // 启动导入试题模态框
+  $("#importBtn").click(function () {
+    $("#importModal").modal({
+      show: true,
+      backdrop: 'static'
+    });
+  });
+
+  // 自动上传
+  $('body').on('change', '#upload', function () {
+    let formData = new FormData();
+    let files = $($(this))[0].files[0];
+    formData.append("file", files);
+    toastr.info('正在提交，请稍后查看');
+    $.ajax({
+      url: '/api/student/import',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        if (res.state === "success") {
+          toastr.success('学生数据解析成功，完成导入');
+          $(this).delay(800).queue(function () {
+            OesUtil.closeModal("#importModal");
+            $('#importPaper')[0].reset();
+            OesUtil.refreshTable("#studentInfo");
+          })
+        } else {
+          toastr.error(res.message);
+        }
+      }
+    });
+  });
 </script>
