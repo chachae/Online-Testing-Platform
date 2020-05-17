@@ -19,6 +19,7 @@ import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,7 +111,7 @@ public class PaperController {
    */
   @PostMapping("/save/random")
   @Permissions("paper:save")
-  public R add(Paper paper, Integer paperFormId, String difficulty) {
+  public R add(@Valid Paper paper, Integer paperFormId, String difficulty) {
     // 设置试卷模板 ID
     paper.setPaperFormId(paperFormId);
     // 获取教师 ID
@@ -129,7 +130,7 @@ public class PaperController {
    */
   @PostMapping("/update/score")
   @Permissions("paper:update")
-  public R editScore(AnswerEditDto dto) {
+  public R editScore(@Valid AnswerEditDto dto) {
     // 修改该题得分
     StuAnswerRecord record = new StuAnswerRecord();
     record.setId(dto.getId()).setScore(dto.getNewScore());

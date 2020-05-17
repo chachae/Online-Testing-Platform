@@ -70,4 +70,9 @@ public class Question {
    * 题目解析
    */
   private String remark;
+
+  /**
+   * 教师id
+   */
+  private Integer teacherId;
 }

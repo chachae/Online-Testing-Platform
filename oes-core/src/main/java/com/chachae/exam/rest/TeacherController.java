@@ -93,7 +93,7 @@ public class TeacherController {
    */
   @PostMapping("/update")
   @Permissions("teacher:update")
-  public R updateTeacher(@Valid Teacher teacher) {
+  public R updateTeacher(Teacher teacher) {
     // 通过ID关系教师信息
     this.teacherService.updateById(teacher);
     return R.success();

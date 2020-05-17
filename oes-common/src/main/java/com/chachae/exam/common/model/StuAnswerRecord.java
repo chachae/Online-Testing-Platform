@@ -28,6 +28,9 @@ public class StuAnswerRecord {
    */
   private Integer paperId;
 
+  /**
+   * 学生id
+   */
   private Integer stuId;
 
   /**

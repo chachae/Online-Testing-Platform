@@ -1,6 +1,7 @@
 package com.chachae.exam.common.model.dto;
 
 import com.chachae.exam.common.base.BaseEntity;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,14 +15,25 @@ import lombok.EqualsAndHashCode;
 @Data
 public class AnswerEditDto extends BaseEntity {
 
-  // 答题记录编号 id
+  /**
+   * 答题记录编号 id
+   */
   private Integer id;
-  // 旧的成绩
+  /**
+   * 旧的成绩
+   */
   private Integer oldScore;
-  // 新的成绩
+  /**
+   * 新的成绩
+   */
+  @NotNull(message = "新的成绩{required}")
   private Integer newScore;
-  // 试卷id
+  /**
+   * 试卷id
+   */
   private Integer paperId;
-  // 学生id
+  /**
+   * 学生id
+   */
   private Integer stuId;
 }

@@ -3,12 +3,14 @@ package com.chachae.exam.rest;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.PaperForm;
-import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.PaperFormService;
-import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chachae
@@ -18,7 +20,8 @@ import javax.annotation.Resource;
 @RequestMapping("/api/paperForm")
 public class PaperFormController {
 
-  @Resource private PaperFormService paperFormService;
+  @Resource
+  private PaperFormService paperFormService;
 
   /**
    * 删除模版不跳转页面
@@ -29,13 +32,9 @@ public class PaperFormController {
   @GetMapping("/delete/{id}")
   @Permissions("paperForm:delete")
   public R delPaperForm(@PathVariable Integer id) {
-    try {
-      // 调用试卷模板已出接口（通过ID删除）
-      this.paperFormService.removeById(id);
-      return R.success();
-    } catch (ServiceException e) {
-      return R.error(e.getMessage());
-    }
+    // 调用试卷模板已出接口（通过ID删除）
+    this.paperFormService.removeById(id);
+    return R.success();
   }
 
   /**

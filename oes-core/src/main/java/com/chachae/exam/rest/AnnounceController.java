@@ -1,15 +1,18 @@
 package com.chachae.exam.rest;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Announce;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AnnounceService;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 公告控制层
@@ -21,7 +24,8 @@ import java.util.Map;
 @RequestMapping("/api/announce")
 public class AnnounceController {
 
-  @Resource private AnnounceService announceService;
+  @Resource
+  private AnnounceService announceService;
 
   /**
    * 分页查询公告
@@ -42,7 +46,7 @@ public class AnnounceController {
    */
   @PostMapping("/save")
   @Permissions("announce:save")
-  public R save(Announce announce) {
+  public R save(@Valid Announce announce) {
     // 调用新增公告接口
     this.announceService.save(announce);
     return R.success();
@@ -70,7 +74,7 @@ public class AnnounceController {
    */
   @PostMapping("/update")
   @Permissions("announce:update")
-  public R update(Announce announce) {
+  public R update(@Valid Announce announce) {
     // 调用公告删除接口
     this.announceService.updateById(announce);
     return R.success();

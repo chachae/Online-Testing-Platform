@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.chachae.exam.common.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
  * @author chachae
  * @date 2020/1/18
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -30,20 +31,20 @@ public class Teacher extends BaseEntity {
   /**
    * 姓名
    */
-  @NotNull(message = "姓名不能为空")
+  @NotBlank(message = "姓名{required}")
   private String name;
 
   /**
    * 工号
    */
-  @NotNull(message = "工号不能为空")
+  @NotBlank(message = "工号{required}")
   private String workNumber;
 
   /**
    * 密码
    */
   @JsonIgnore
-  @NotNull(message = "密码不能为空")
+  @NotBlank(message = "密码{required}")
   private String password;
 
   /**
@@ -54,19 +55,18 @@ public class Teacher extends BaseEntity {
   /**
    * 职位
    */
-  @NotNull(message = "职位不能为空")
+  @NotBlank(message = "职位{required}")
   private String job;
 
   /**
    * 性别
    */
-  @NotNull(message = "性别不能为空")
   private String sex;
 
   /**
    * 所属学院
    */
-  @NotNull(message = "学院不能为空")
+  @NotNull(message = "学院{required}")
   private Integer academyId;
 
   /**

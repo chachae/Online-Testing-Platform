@@ -26,8 +26,8 @@ public class Course {
   @TableId
   private Integer id;
 
-  @NotBlank(message = "课程名称不能为空")
-  @Size(max = 20, message = "课程名称不能超过20个字")
+  @NotBlank(message = "课程名称{required}")
+  @Size(max = 20, message = "课程名称{noMoreThan}")
   private String courseName;
 
   /**
@@ -36,14 +36,28 @@ public class Course {
   private String teacherIds;
 
   /**
+   * 课程所属学院
+   */
+  @NotNull(message = "所属学院{required}")
+  private Integer academyId;
+
+  /**
    * 教师工号列表
    */
   @TableField(exist = false)
+  @NotBlank(message = "教师工号{required}")
   private String workNumbers;
 
   /**
    * 教师姓名列表
    */
   @TableField(exist = false)
+  @NotBlank(message = "教师姓名{required}")
   private String names;
+
+  /**
+   * 教师工号列表
+   */
+  @TableField(exist = false)
+  private Academy academy;
 }

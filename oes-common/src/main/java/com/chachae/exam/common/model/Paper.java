@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.chachae.exam.common.constant.SysConsts;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class Paper {
 
   @TableId
@@ -30,11 +31,13 @@ public class Paper {
   /**
    * 试卷名称
    */
+  @NotBlank(message = "试卷名称{required}")
   private String paperName;
 
   /**
    * 课程id
    */
+  @NotNull(message = "课程{required}")
   private Integer courseId;
 
   /**
@@ -60,6 +63,7 @@ public class Paper {
   /**
    * 试卷总分
    */
+  @NotBlank(message = "试卷总分{required}")
   private String score;
 
   /**
@@ -75,6 +79,7 @@ public class Paper {
   /**
    * 专业班级id
    */
+  @NotNull(message = "专业{required}")
   private Integer majorId;
 
   /**

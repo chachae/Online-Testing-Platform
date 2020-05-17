@@ -2,6 +2,7 @@ package com.chachae.exam.common.model.vo;
 
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.Type;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,4 +18,6 @@ public class QuestionVo extends Question {
   private Course course;
 
   private Type type;
+
+  private Teacher teacher;
 }

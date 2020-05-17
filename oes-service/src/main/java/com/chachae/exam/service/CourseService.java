@@ -3,6 +3,7 @@ package com.chachae.exam.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.dto.QueryCourseDto;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +42,11 @@ public interface CourseService extends IService<Course> {
   /**
    * 分页查询课程信息
    *
-   * @param page      分页数据
-   * @param teacherId 教师ID
+   * @param page   分页数据
+   * @param entity 查询数据
    * @return 分页结果集
    */
-  Map<String, Object> listPage(Page<Course> page, Integer teacherId);
+  Map<String, Object> listPage(Page<Course> page, QueryCourseDto entity);
 
   /**
    * 更新课程

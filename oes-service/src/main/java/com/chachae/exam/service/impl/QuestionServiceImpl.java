@@ -2,7 +2,6 @@ package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -13,10 +12,12 @@ import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.dao.PaperDAO;
 import com.chachae.exam.common.dao.PaperFormDAO;
 import com.chachae.exam.common.dao.QuestionDAO;
+import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.model.Question;
+import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ImportPaperDto;
 import com.chachae.exam.common.model.dto.QueryQuestionDto;
 import com.chachae.exam.common.model.dto.QuestionDto;
@@ -39,7 +40,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,12 +59,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     implements QuestionService {
 
-  private final RedisTemplate<String, Object> redisService;
   private final TypeService typeService;
   private final QuestionDAO questionDAO;
   private final PaperDAO paperDAO;
   private final PaperFormDAO paperFormDAO;
   private final CourseService courseService;
+  private final TeacherDAO teacherDAO;
 
   @Value("${oes.cache.paper_prefix}")
   private String prefix;
@@ -76,7 +77,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
 
     // 没有课程，直接返回一个空的数据集合
     if (CollUtil.isEmpty(courseIds)) {
-      return PageUtil.toPage(Lists.newArrayList(), 0);
+      return null;
     }
 
     LambdaQueryWrapper<Question> qw = new LambdaQueryWrapper<>();
@@ -100,7 +101,22 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
 
   @Override
   public List<Question> selectByPaperIdAndType(Integer paperId, Integer typeId) {
-    return this.paperCacheManager(paperId, typeId);
+    // 通过 ID 查询试卷信息
+    Paper paper = this.paperDAO.selectById(paperId);
+    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
+    String qIds = paper.getQuestionId();
+    // 分割题目序号
+    String[] ids = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
+    List<Question> questions = Lists.newArrayList();
+    // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
+    for (String id : ids) {
+      // 通过题目 ID 获取问题的信息
+      Question question = questionDAO.selectById(id);
+      if (typeId.equals(question.getTypeId())) {
+        questions.add(question);
+      }
+    }
+    return questions;
   }
 
   @Override
@@ -162,6 +178,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     QuestionVo result = BeanUtil.copyObject(question, QuestionVo.class);
     result.setCourse(this.courseService.getById(question.getCourseId()));
     result.setType(this.typeService.getById(question.getTypeId()));
+    // 获取题目的教师信息
+    int teacherId = question.getTeacherId();
+    Teacher teacher = this.teacherDAO.selectById(teacherId);
+    result.setTeacher(teacher);
     return result;
   }
 
@@ -280,6 +300,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   }
 
   @Override
+  @Async
   @Transactional(rollbackFor = Exception.class)
   public void importQuestion(MultipartFile multipartFile) {
     try {
@@ -308,19 +329,25 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
         if (isTypeIdNull || isCourseIdNull || isAnsIdNull || isDefIdNull) {
           throw new ServiceException("检测到试题信息异常");
         }
-        // 过滤同名、同课程、同类型题目
-        // 题目名称
-        String questionName = question.getQuestionName();
-        // 题目课程 id
-        Integer cid = question.getCourseId();
-        // 题目类型 id
-        Integer tid = question.getTypeId();
-        List<Question> result = this.listByQuestionNameAndCourseIdAndTypeId(questionName, cid, tid);
-        if (CollUtil.isEmpty(result)) {
-          // 如果教师包含该课程，则允许插入
-          if (ids.contains(cid)) {
-            // 插入题目数据
-            this.questionDAO.insert(question);
+        // 同步导入
+        synchronized (this) {
+          // 过滤同名、同课程、同类型题目
+          // 题目名称
+          String questionName = question.getQuestionName();
+          // 题目课程 id
+          Integer cid = question.getCourseId();
+          // 题目类型 id
+          Integer tid = question.getTypeId();
+          List<Question> result = this
+              .listByQuestionNameAndCourseIdAndTypeId(questionName, cid, tid);
+          if (CollUtil.isEmpty(result)) {
+            // 如果教师包含该课程，则允许插入
+            if (ids.contains(cid)) {
+              // 设置题目的教师ID，谁导入的插入谁
+              question.setTeacherId(teacherId);
+              // 插入题目数据
+              this.questionDAO.insert(question);
+            }
           }
         }
       }
@@ -331,43 +358,5 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       log.error(ExceptionUtil.stacktraceToString(e));
       throw new ServiceException("题目解析失败，请检查 Excel 内容后重试！");
     }
-  }
-
-  /**
-   * 试题缓存管理器
-   *
-   * @param paperId 试卷 ID
-   * @param typeId  题目类型 ID
-   * @return 试题集合
-   */
-  @SuppressWarnings("unchecked")
-  private List<Question> paperCacheManager(int paperId, int typeId) {
-
-    // 从缓存中获取试题信息
-    String key = prefix + paperId + StrUtil.DOT + typeId;
-    Object obj = this.redisService.opsForValue().get(key);
-    if (ObjectUtil.isNotEmpty(obj)) {
-      return (List<Question>) obj;
-    }
-
-    // 通过 ID 查询试卷信息
-    Paper paper = this.paperDAO.selectById(paperId);
-    // 获取试卷的题目序号集合，Example:（1,2,3,4,5,6,7）
-    String qIds = paper.getQuestionId();
-    // 分割题目序号
-    String[] ids = StrUtil.splitToArray(qIds, StrUtil.C_COMMA);
-    List<Question> questions = Lists.newArrayList();
-    // 遍历试题 ID，找出对应类型 ID 的问题并加入 Set 集合当中
-    for (String id : ids) {
-      // 通过题目 ID 获取问题的信息
-      Question question = questionDAO.selectById(id);
-      if (typeId == question.getTypeId()) {
-        questions.add(question);
-      }
-    }
-
-    // FIXME 写入缓存更新后数据为旧数据
-    // this.redisService.set(key, questions, 3 * 3600L);
-    return questions;
   }
 }

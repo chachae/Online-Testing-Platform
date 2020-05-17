@@ -2,6 +2,8 @@ package com.chachae.exam.common.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,11 +26,13 @@ public class Announce {
   /**
    * 公告标题
    */
+  @NotBlank(message = "公告标题{required}")
   private String title;
 
   /**
    * 公告内容
    */
+  @NotBlank(message = "公告内容{required}")
   private String content;
 
   /**

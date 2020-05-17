@@ -7,8 +7,17 @@
     + ')">&nbsp;删除</button>'].join('');
   }
 
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      key: $('#findKey').val()
+    };
+  }
+
   // 初始化表单
-  OesUtil.initNormalTable('#courseInfo', "/api/course/list",
+  OesUtil.initQueryTable('#courseInfo', "/api/course/list",
       "get", [{
         title: '序号',
         field: 'id',
@@ -28,7 +37,10 @@
         field: 'operate',
         title: '操作',
         formatter: operateFormatter//html
-      }]);
+      }],params);
+
+  // 课程名称模糊搜索
+  OesUtil.bindRequest('#findKey', '#courseInfo', 200);
 
   // 删除课程
   function deleteCourse(id) {
@@ -72,6 +84,7 @@
       $('.courseName').val(data.courseName);
       $('.names').val(data.names);
       $('.workNumbers').val(data.workNumbers);
+      $('.academyName').val(data.academy.name);
       $("#update-modal").modal({
         show: true,
         backdrop: 'static'
@@ -94,4 +107,18 @@
       })
     })
   }
+
+  // 填充学院信息
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('.academySelect').empty();
+    $.each(data, function (index, e) {
+      if ("${session.admin.academyId}".length === 0) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      } else if (parseInt("${session.admin.academyId}") === e.id) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      }
+    });
+    $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
+  });
 </script>

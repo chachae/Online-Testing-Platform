@@ -1,6 +1,6 @@
 # Server
 server:
-  port: 8080
+  port: ${oes.port}
 
 spring:
   application:
@@ -80,6 +80,10 @@ spring:
         password: 123456
         instance:
           prefer-ip: true
+
+  # 排除 BeetlSQL 自动的配置
+  autoconfigure:
+    exclude: com.ibeetl.starter.BeetlSqlSingleConfig
 
 #MyBatisPlus
 mybatis-plus:

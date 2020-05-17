@@ -2,7 +2,12 @@ package com.chachae.exam.rest;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
+import com.chachae.exam.common.constant.SysConsts.Session;
+import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.Course;
+import com.chachae.exam.common.model.dto.QueryCourseDto;
+import com.chachae.exam.common.util.HttpUtil;
+import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.CourseService;
 import java.util.List;
@@ -34,8 +39,16 @@ public class CourseController {
 
   @GetMapping("/list")
   @Permissions("course:list")
-  public Map<String, Object> pageCourse(Page<Course> page, Integer teacherId) {
-    return this.courseService.listPage(page, teacherId);
+  @Limit(key = "courseList", period = 5, count = 18, name = "课程搜索接口", prefix = "limit")
+  public Map<String, Object> pageCourse(Page<Course> page, QueryCourseDto entity) {
+    // 管理员才进行管理员端的判断
+    Admin admin = (Admin) HttpUtil.getAttribute(Session.ADMIN);
+    if (admin != null) {
+      if (admin.getAcademyId() != null) {
+        entity.setAcademyId(admin.getAcademyId());
+      }
+    }
+    return this.courseService.listPage(page, entity);
   }
 
   /**

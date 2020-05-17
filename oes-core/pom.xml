@@ -56,7 +56,7 @@
     <!-- beetl -->
     <dependency>
       <groupId>com.ibeetl</groupId>
-      <artifactId>beetl</artifactId>
+      <artifactId>beetl-framework-starter</artifactId>
     </dependency>
     <!-- webjars START -->
     <!-- AdminLTE -->

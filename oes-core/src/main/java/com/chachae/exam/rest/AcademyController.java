@@ -5,11 +5,16 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.model.Academy;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.AcademyService;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 学院控制层
@@ -67,7 +72,7 @@ public class AcademyController {
   @ResponseBody
   @PostMapping("/update")
   @Permissions("academy:update")
-  public R updateAcademy(Academy academy) {
+  public R updateAcademy(@Valid Academy academy) {
     // 调用学院更新接口
     this.academyService.updateById(academy);
     return R.success();
@@ -81,7 +86,7 @@ public class AcademyController {
    */
   @PostMapping("/save")
   @Permissions("academy:save")
-  public R saveAcademy(Academy academy) {
+  public R saveAcademy(@Valid Academy academy) {
     // 调用学院新增接口
     this.academyService.save(academy);
     return R.success();

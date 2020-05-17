@@ -1,10 +1,8 @@
 package com.chachae.exam.common.model.dto;
 
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 /**
  * @author chachae
@@ -14,10 +12,9 @@ import javax.validation.constraints.Size;
 @Data
 public class LoginDto {
 
-  @NotBlank(message = "用户不能为空")
+  @NotBlank(message = "用户名{required}")
   private String username;
 
-  @NotBlank(message = "密码不能为空")
-  @Size(min = 3, message = "密码错误")
+  @NotBlank(message = "密码{required}")
   private String password;
 }

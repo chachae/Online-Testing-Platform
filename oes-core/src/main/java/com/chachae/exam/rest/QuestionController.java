@@ -2,17 +2,23 @@ package com.chachae.exam.rest;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chachae.exam.common.base.R;
+import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.dto.QueryQuestionDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
+import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.core.annotation.Limit;
 import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.QuestionService;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * The type Question controller.
@@ -24,8 +30,11 @@ import java.util.Map;
 @RequestMapping("/api/question")
 public class QuestionController {
 
-  /** The Question service. */
-  @Resource private QuestionService questionService;
+  /**
+   * The Question service.
+   */
+  @Resource
+  private QuestionService questionService;
 
   @GetMapping("/list")
   @Permissions("course:list")
@@ -50,11 +59,14 @@ public class QuestionController {
    * 添加试题
    *
    * @param question 问题信息
-   * @return 当前的试题页面 r
+   * @return 当前的试题页面 R
    */
   @PostMapping("/save")
   @Permissions("question:save")
   public R add(Question question) {
+    // 获取教师本人的课程 ID 集合
+    int teacherId = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
+    question.setTeacherId(teacherId);
     // 调用试题新增接口
     this.questionService.save(question);
     return R.success();
@@ -64,7 +76,7 @@ public class QuestionController {
    * 提交试题信息
    *
    * @param question 问题信息
-   * @return 试题页面 r
+   * @return 试题页面 R
    */
   @PostMapping("/update")
   @Permissions("question:update")

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chachae.exam.common.dao.AcademyDAO;
 import com.chachae.exam.common.dao.CourseDAO;
 import com.chachae.exam.common.dao.QuestionDAO;
 import com.chachae.exam.common.dao.TeacherDAO;
@@ -11,12 +12,14 @@ import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Question;
 import com.chachae.exam.common.model.Teacher;
+import com.chachae.exam.common.model.dto.QueryCourseDto;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.CourseService;
 import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,6 +39,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   private final QuestionDAO questionDAO;
   private final CourseDAO courseDAO;
   private final TeacherDAO teacherDAO;
+  private final AcademyDAO academyDAO;
 
 
   @Override
@@ -80,14 +84,36 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   }
 
   @Override
-  public Map<String, Object> listPage(Page<Course> page, Integer teacherId) {
-    if (teacherId != null) {
-      List<Course> courses = this.courseDAO.listByTeacherId(teacherId);
+  public Map<String, Object> listPage(Page<Course> page, QueryCourseDto entity) {
+    if (entity.getTeacherId() != null) {
+      List<Course> courses = this.courseDAO.listByTeacherId(entity.getTeacherId());
+      // 过滤所属学院信息
+      if (entity.getAcademyId() != null) {
+        courses = courses.stream()
+            .filter(course -> course.getAcademyId().equals(entity.getAcademyId())).collect(
+                Collectors.toList());
+      }
+      // 课程名称模糊搜索
+      if (StrUtil.isNotBlank(entity.getKey())) {
+        courses = courses.stream()
+            .filter(course -> course.getCourseName().contains(entity.getKey()))
+            .collect(
+                Collectors.toList());
+      }
+      // 统计集合总数
       int total = courses.size();
+      // List 分页
       courses = PageUtil.toPage(page.getCurrent(), page.getSize(), courses);
       return PageUtil.toPage(courses, total);
     } else {
+      // 模糊搜索条件
       LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
+      if (entity.getAcademyId() != null) {
+        qw.eq(Course::getAcademyId, entity.getAcademyId());
+      }
+      if (StrUtil.isNotBlank(entity.getKey())) {
+        qw.like(Course::getCourseName, entity.getKey());
+      }
       Page<Course> pageInfo = this.courseDAO.selectPage(page, qw);
       return PageUtil.toPage(pageInfo);
     }
@@ -139,6 +165,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
     res2 = res2.substring(0, res2.length() - 1);
     course.setWorkNumbers(res1);
     course.setNames(res2);
+    // 设置学院信息
+    course.setAcademy(this.academyDAO.selectById(course.getAcademyId()));
     return course;
   }
 

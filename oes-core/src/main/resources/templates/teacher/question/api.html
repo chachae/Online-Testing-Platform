@@ -2,14 +2,25 @@
 
   // 操作按钮行为
   function operateFormatter(value, row, index) {
+    // 判断题目是否为本老师出的题目，对按钮进行显隐，后端AOP权限校验，强开无法编辑删除
+    const editBtn = row.teacherId === parseInt("${session.teacherId}")
+        ? '<button onclick="goUpdate(' + row.id
+        + ')" class="btn btn-warning btn-sm"> 编辑 </button>&nbsp;' : '';
+
+    const delBtn = row.teacherId === parseInt("${session.teacherId}")
+        ? '<button onclick="deleteQuestion('
+        + row.id
+        + ')" class="btn btn-danger btn-sm">删除</button>' : '';
+
     return [' <button onclick="goView(' + row.id
     + ')" class="btn btn-primary btn-sm">查看 </button>&nbsp;' +
-    '<button onclick="goUpdate(' + row.id + ')" class="btn btn-warning btn-sm"> 编辑 </button>&nbsp;'
+    editBtn
     +
-    '<button onclick="deleteQuestion(' + row.id + ')" class="btn btn-danger btn-sm">删除</button>']
+    delBtn]
     .join('');
   }
 
+  // 题目类型编号转换
   function typeFormatter(value, row, index) {
     switch (row.typeId) {
       case (1) :
@@ -87,7 +98,7 @@
       $(".questionName").val(data.questionName);
       $(".answer").val(data.answer);
       $(".course").val(data.course.courseName);
-      $(".teacherName").val(data.course.teacher.name);
+      $(".teacherName").val(data.teacher.name);
       $(".remark").val(data.remark);
     })
   }
@@ -133,7 +144,7 @@
     let options = "";
     //回填的二级类别值
     $('.courseSelect').empty();
-    options += "<option value=''>选择课程</option>";
+    options += "<option value=''>全部课程</option>";
     $.each(data, function (index, e) {
       options += "<option value=" + e.id + ">" + e.courseName + "</option>";
     });

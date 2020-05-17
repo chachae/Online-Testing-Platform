@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
  * @author chachae
  * @since 2020/2/8 21:18
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class StudentVo extends BaseEntity {
+
   @TableId
   private Integer id;
 

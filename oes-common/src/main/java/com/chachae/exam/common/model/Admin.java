@@ -1,11 +1,12 @@
 package com.chachae.exam.common.model;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.chachae.exam.common.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,26 +28,34 @@ public class Admin extends BaseEntity {
 
   @TableId
   private Integer id;
+
   /**
    * 姓名
    */
-  @NotNull(message = "姓名不能为空")
+  @NotBlank(message = "姓名{required}")
+  @Size(max = 20, message = "{noMoreThan}")
   private String name;
+
   /**
-   * 工号
+   * 用户名
    */
-  @NotNull(message = "工号不能为空")
+  @NotBlank(message = "用户名{required}")
+  @Size(max = 20, message = "用户名{noMoreThan}")
   private String number;
+
   /**
    * 密码
    */
   @JsonIgnore
-  @NotNull(message = "密码不能为空")
+  @NotBlank(message = "密码{required}")
+  @Size(max = 20, message = "{noMoreThan}")
   private String password;
+
   /**
    * 角色id
    */
   private Integer roleId;
+
   /**
    * 最后登录时间
    */
@@ -55,7 +64,7 @@ public class Admin extends BaseEntity {
   /**
    * 学院id
    */
-  @NotNull(message = "请选择管理员类型")
+  @NotNull(message = "管理员类型{required}")
   private Integer academyId;
 
 }

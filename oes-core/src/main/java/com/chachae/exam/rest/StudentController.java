@@ -18,9 +18,9 @@ import com.chachae.exam.service.StudentService;
 import com.chachae.exam.util.model.Captcha;
 import com.chachae.exam.util.service.CaptchaService;
 import java.util.Map;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,13 +34,12 @@ import org.springframework.web.multipart.MultipartFile;
  * @since 2020/2/28 22:31
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/student")
 public class StudentController {
 
-  @Resource
-  private StudentService studentService;
-  @Resource
-  private CaptchaService captchaService;
+  private final StudentService studentService;
+  private final CaptchaService captchaService;
 
   /**
    * 学生登录 验证学号和密码
@@ -103,7 +102,7 @@ public class StudentController {
    */
   @PostMapping("/update")
   @Permissions("student:update")
-  public R updateStudent(Student student) {
+  public R updateStudent(@Valid Student student) {
     this.studentService.updateById(student);
     return R.success();
   }
@@ -129,7 +128,7 @@ public class StudentController {
    */
   @PostMapping("/save")
   @Permissions("student:save")
-  public R saveStudent(Student student) {
+  public R saveStudent(@Valid Student student) {
     // 调用增加接口，并捕捉学号存在的异常
     this.studentService.save(student);
     return R.success();

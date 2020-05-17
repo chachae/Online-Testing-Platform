@@ -79,7 +79,7 @@
     let options = "";
     //回填的二级类别值
     $('.courseSelect').empty();
-    options += "<option value=''>选择课程</option>";
+    options += "<option value=''>全部课程</option>";
     $.each(data, function (index, e) {
       options += "<option value=" + e.id + ">" + e.courseName + "</option>";
     });

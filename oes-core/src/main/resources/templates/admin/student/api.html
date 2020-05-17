@@ -81,13 +81,17 @@
     })
   }
 
-  // 获取学院集合
+  // 填充学院信息
   $.get("/api/academy").done(function (data) {
     let options = "";
     $('.academySelect').empty();
-    options += "<option value=''>全部</option>";
+    options+="<option value=''>" + "全部" + "</option>";
     $.each(data, function (index, e) {
-      options += "<option value=" + e.id + ">" + e.name + "</option>";
+      if ("${session.admin.academyId}".length === 0) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      } else if (parseInt("${session.admin.academyId}") === e.id) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      }
     });
     $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
   });
