@@ -208,7 +208,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       // 读取 Excel 中的数据
       ExcelReader reader = ExcelUtil.getReader(file);
       // 读取问题的信息
-      List<QuestionDto> questions = reader.readAll(QuestionDto.class);
+      List<QuestionDto> questions = reader.read(8,9,QuestionDto.class);
       // 手动删除临时文件
       if (!multipartFile.isEmpty()) {
         file.deleteOnExit();

@@ -11,7 +11,7 @@
  Target Server Version : 80020
  File Encoding         : 65001
 
- Date: 15/05/2020 17:58:40
+ Date: 17/05/2020 16:19:03
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +27,7 @@ CREATE TABLE `academy`
     `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '学院名称',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 33
+  AUTO_INCREMENT = 34
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -70,9 +70,10 @@ CREATE TABLE `admin`
     `password`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
     `role_id`         int                                                           DEFAULT NULL COMMENT '角色id',
     `last_login_time` datetime                                                      DEFAULT NULL COMMENT '最后登录时间',
+    `academy_id`      int                                                           DEFAULT NULL COMMENT '归属学院，0为系统管理员',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 11
+  AUTO_INCREMENT = 17
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -82,8 +83,15 @@ CREATE TABLE `admin`
 -- ----------------------------
 BEGIN;
 INSERT INTO `admin`
-VALUES (4, '初始化管理员', 'admin', '$2a$10$afdtShcXh24EREhZkcTURevLEdOMxlN.jthlfPO/jC5CKpzZbaaHy', 1,
-        '2020-05-15 17:45:11');
+VALUES (4, '初始化管理员', 'system', '$2a$10$HCuvGrT1KYi8G1PJ6GzMMOUaO0npoJ2za4EZ27KzZfd9o6E0YLfGy', 1,
+        '2020-05-17 15:54:12', NULL);
+INSERT INTO `admin`
+VALUES (12, '1212', 'admin-cs', '$2a$10$tVyyrxO3lL8H/5rOjyo3t.svaV0SISeHdnXyGB2Tq8M3inYg6fYUi', 1,
+        '2020-05-17 15:35:07', 1);
+INSERT INTO `admin`
+VALUES (16, 'English-Amdin', 'admin-en',
+        '$2a$10$ZagYg6clwTJkZNgShbE.ieZSqH8d7Uj.TN6E8Jk8FfhqUy2xiCfrS', 1, '2020-05-17 14:50:32',
+        3);
 COMMIT;
 
 -- ----------------------------
@@ -101,7 +109,7 @@ CREATE TABLE `announce`
     `create_time` datetime                                                      DEFAULT NULL COMMENT '公告创建时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 44
+  AUTO_INCREMENT = 45
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -111,9 +119,7 @@ CREATE TABLE `announce`
 -- ----------------------------
 BEGIN;
 INSERT INTO `announce`
-VALUES (9, 'OES在线考试软件 v1.0',
-        '基于 spring-boot  的在线考试系统 v2.3 版本上线，增加大量功能性业务，欢迎体验！\r\n1. 优化大量代码\r\n2. 封装复用代码\r\n3. 优化试卷和习题业务核心\r\n4. 提高稳定性。\r\n5. 增加异步调用',
-        '4', 1, '周伯通', '2020-02-15 11:38:28');
+VALUES (9, 'OES在线考试软件 v1.0', '大家好', '4', 1, '周伯通', '2020-02-15 11:38:28');
 COMMIT;
 
 -- ----------------------------
@@ -124,10 +130,11 @@ CREATE TABLE `course`
 (
     `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '课程id',
     `course_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '课程名称',
-    `teacher_id`  int                                                           DEFAULT NULL COMMENT '该门课的出题老师(默认一门课一个老师出题)',
+    `teacher_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '该门课的出题老师(默认一门课一个老师出题)',
+    `academy_id`  int                                                           DEFAULT NULL COMMENT '所属学院',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 29
+  AUTO_INCREMENT = 31
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -137,15 +144,17 @@ CREATE TABLE `course`
 -- ----------------------------
 BEGIN;
 INSERT INTO `course`
-VALUES (1, 'Java课程设计', 1);
+VALUES (1, 'Java课程设计', '4,1', 1);
 INSERT INTO `course`
-VALUES (2, '大学物理', 2);
+VALUES (2, '大学物理', '2', 1);
 INSERT INTO `course`
-VALUES (4, 'JavaEE企业级开发编程技术', 1);
+VALUES (4, 'JavaEE企业级开发编程技术', '4', 1);
 INSERT INTO `course`
-VALUES (5, '模拟电路', 1);
+VALUES (5, '模拟电路', '1', 8);
 INSERT INTO `course`
-VALUES (7, 'C语言程序设计', 3);
+VALUES (7, 'C语言程序设计', '4', 1);
+INSERT INTO `course`
+VALUES (30, '数据结构与算法', '7', 1);
 COMMIT;
 
 -- ----------------------------
@@ -159,7 +168,7 @@ CREATE TABLE `major`
     `academy_id` int                                                           DEFAULT NULL COMMENT '学院ID',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 28
+  AUTO_INCREMENT = 29
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -227,7 +236,7 @@ CREATE TABLE `paper`
     `teacher_id`    int                                                           DEFAULT NULL COMMENT '出卷老师id',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 52
+  AUTO_INCREMENT = 53
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -239,7 +248,7 @@ BEGIN;
 INSERT INTO `paper`
 VALUES (47, 'Java SE (只有选择+多选+判断)', 1,
         '2,3,4,8,11,13,15,16,17,38,378,12,31,44,44,10,20,21,33,47,7,24,54,23,22,25,9,5',
-        '2020-05-16 08:00', '2020-05-16 10:00', '120分钟', '100', '未开始', '正式', 3, 62, 1);
+        '2020-05-16 08:00', '2020-05-16 10:00', '120分钟', '100', '已结束', '正式', 3, 62, 1);
 INSERT INTO `paper`
 VALUES (51, '呃呃呃呃呃呃', 1,
         '2,3,4,8,11,13,15,16,17,38,378,12,31,44,44,10,20,21,33,47,54,23,24,42,7,37,6,40', NULL,
@@ -440,9 +449,10 @@ CREATE TABLE `question`
     `course_id`     int                                                           DEFAULT NULL COMMENT '课程id',
     `difficulty`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '题目难度：1-容易，2-中等，3-较难',
     `remark`        text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '题目解析',
+    `teacher_id`    int                                                           DEFAULT NULL COMMENT '教师id',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 384
+  AUTO_INCREMENT = 390
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -454,215 +464,223 @@ BEGIN;
 INSERT INTO `question`
 VALUES (2, '下面论述正确的是（）？', '如果两个对象的 hashcode 相同，那么它们作为同一个HashMap的key时，必然返回同样的值',
         '如果a,b的hashcode相同，那么a.equals(b)必须返回true', '对于一个类，其所有对象的hashcode必须不同',
-        '如果a.equals(b)返回true，那么a,b两个对象的hashcode必须相同', 1, 'A', 1, '2', '映射关系分析.');
+        '如果a.equals(b)返回true，那么a,b两个对象的hashcode必须相同', 1, 'A', 1, '2', '映射关系分析.', 4);
 INSERT INTO `question`
 VALUES (3, '以下的变量定义语句中，合法的是（）', 'byte=128', 'boolean=null', 'long a=123L', 'double=0.9239d', 1, 'C',
-        1, '1', NULL);
+        1, '1', NULL, 1);
 INSERT INTO `question`
 VALUES (4, '关于匿名内部类叙述正确的是？ ( )', '匿名内部类可以继承一个基类，不可以实现一个接口', '匿名内部类不可以定义构造器', '匿名内部类不能用于形参',
-        '以上说法都不正确', 1, 'B', 1, '2', NULL);
+        '以上说法都不正确', 1, 'B', 1, '2', NULL, 1);
 INSERT INTO `question`
 VALUES (5, '下面选项中,哪些是interface中合法方法定义?()', 'public void main(String [] args);',
         'private int getSum();', 'boolean setFlag(Boolean [] test);', 'public float get(int x);', 5,
-        'A,C,D', 1, '2', 'xxxxx');
+        'A,C,D', 1, '2', 'xxxxx', 4);
 INSERT INTO `question`
 VALUES (6, '请简述Java命名规范有哪些？', NULL, NULL, NULL, NULL, 5,
-        '1.不能以数字开头2.不能包含特殊字符，除了$和_3.类名和文件名相同4.区分大小写5.不能使用关键字和保留字6.代码行以;结束', 1, '1', 'JavaSE基础');
+        '1.不能以数字开头2.不能包含特殊字符，除了$和_3.类名和文件名相同4.区分大小写5.不能使用关键字和保留字6.代码行以;结束', 1, '1', 'JavaSE基础', 1);
 INSERT INTO `question`
 VALUES (7, '启动自定义线程的方法是________', NULL, NULL, NULL, NULL, 4, 'start()', 1, '2',
-        '重写run()方法，调用start()启动线程');
+        '重写run()方法，调用start()启动线程', 1);
 INSERT INTO `question`
 VALUES (8, '关于中间件特点的描述.不正确的是（）', '中间件运行于客户机/服务器的操作系统内核中，提高内核运行效率', '中间件应支持标准的协议和接口',
         '中间件可运行于多种硬件和操作系统平台上', '跨越网络,硬件，操作系统平台的应用或服务可通过中间件透明交互', 1, 'A', 1, '3',
-        '中间件位于操作系统之上，应用软件之下，而不是操作系统内核中');
+        '中间件位于操作系统之上，应用软件之下，而不是操作系统内核中', 4);
 INSERT INTO `question`
 VALUES (9, '请简述你对接口的认识。', '', '', '', '', 5,
-        '接口使用interface修饰;接口不能包含普通方法,只能存在抽象方法。接口中的方法默认使用 public abstract修饰', 1, '2', '');
+        '接口使用interface修饰;接口不能包含普通方法,只能存在抽象方法。接口中的方法默认使用 public abstract修饰', 1, '2', '', 1);
 INSERT INTO `question`
 VALUES (10,
         'It is an important feature of the Java language that it always provides a default constructor to a class.',
-        NULL, NULL, NULL, NULL, 3, '错', 1, '3', '只有在不显示声明构造方法时，系统才提供默认无参构造方法');
+        NULL, NULL, NULL, NULL, 3, '错', 1, '3', '只有在不显示声明构造方法时，系统才提供默认无参构造方法', 1);
 INSERT INTO `question`
 VALUES (11, '下列选项中符合Java命名规则的标识符是（）', '2japro', '&Class', 'const', '_123', 1, 'D', 1, '1',
-        '除去java中关键字，java中标识符是：字下美人数-----字母，下划线，美元符号，人民币，数字（数字不能放首位）');
+        '除去java中关键字，java中标识符是：字下美人数-----字母，下划线，美元符号，人民币，数字（数字不能放首位）', 4);
 INSERT INTO `question`
 VALUES (12, '在Java线程状态转换时，下列转换不可能发生的有（）？', '初始态->运行态', '就绪态->运行态', '阻塞态->运行态', '运行态->就绪态', 2,
-        'A, C', 1, '2', '初始态->就绪态->运行态，阻塞态->就绪态->运行态');
+        'A, C', 1, '2', '初始态->就绪态->运行态，阻塞态->就绪态->运行态', 1);
 INSERT INTO `question`
 VALUES (13, '明朝时期张居正改革的一条鞭法的主要思想是()', '面向过程', '万物皆数', '统一接口', '泛型编程', 1, 'C', 1, '3',
-        '鞭法既条例，条例既规范，规范就是接口');
+        '鞭法既条例，条例既规范，规范就是接口', 4);
 INSERT INTO `question`
 VALUES (14, 'jdk1.8中，下面有关java 抽象类和接口的区别，说法错误的是？', '抽象类可以有构造方法，接口中不能有构造方法',
         '抽象类中可以包含非抽象的普通方法，接口中的方法必须是抽象的，不能有非抽象的普通方法', '一个类可以实现多个接口，但只能继承一个抽象类',
-        '接口中可以有普通成员变量，抽象类中没有普通成员变量', 2, 'B,D', 1, '2', 'xxxxx');
+        '接口中可以有普通成员变量，抽象类中没有普通成员变量', 2, 'B,D', 1, '2', 'xxxxx', 1);
 INSERT INTO `question`
 VALUES (15, '下面有关java final的基本规则，描述错误的是？', 'final修饰的类不能被继承', 'final修饰的成员变量只允许赋值一次，且只能在类方法赋值',
         'final修饰的局部变量即为常量，只能赋值一次。', 'final修饰的方法不允许被子类覆盖', 1, 'B', 1, '2',
-        'final修饰的引用类型，不能再指向别的东西，但是可以改变其中的内容。');
+        'final修饰的引用类型，不能再指向别的东西，但是可以改变其中的内容。', 4);
 INSERT INTO `question`
 VALUES (16, '下面有关JVM内存，说法错误的是？', '程序计数器是一个比较小的内存区域，用于指示当前线程所执行的字节码执行到了第几行，是线程隔离的',
         'Java方法执行内存模型，用于存储局部变量，操作数栈，动态链接，方法出口等信息，是线程隔离的',
         '方法区用于存储JVM加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，是线程隔离的', '原则上讲，所有的对象都在堆区上分配内存，是线程之间共享的', 1, 'C', 1,
-        '2', '运行时数据区包括：虚拟机栈区，堆区，方法区，本地方法栈，程序计数器');
+        '2', '运行时数据区包括：虚拟机栈区，堆区，方法区，本地方法栈，程序计数器', 4);
 INSERT INTO `question`
 VALUES (17, 'ArrayList和Vector主要区别是什么？', 'Vector与ArrayList一样，也是通过数组实现的，不同的是Vector支持线程的同步',
         'Vector与ArrayList一样，也是通过数组实现的，不同的是ArrayList支持线程的同步', 'Vector是通过链表结构存储数据，ArrayList是通过数组存储数据',
-        '上述说法都不正确', 1, 'A', 1, '2', 'Vector支持线程的同步，也就是内部加锁的 但是效率低，因此在新版jdk中加入线程不安全的Arraylist');
+        '上述说法都不正确', 1, 'A', 1, '2', 'Vector支持线程的同步，也就是内部加锁的 但是效率低，因此在新版jdk中加入线程不安全的Arraylist', 4);
 INSERT INTO `question`
 VALUES (18, '下面的类哪些可以处理Unicode字符?', 'InputStreamReader', 'BufferedReader', 'Writer',
         'PipedInputStream', 2, 'A,B,C', 1, '2',
-        '简单地说，字符流是字节流根据字节流所要求的编码集解析获得的 可以理解为字符流=字节流+编码集所以本题中和字符流有关的类都拥有操作编码集(unicode)的能力。');
+        '简单地说，字符流是字节流根据字节流所要求的编码集解析获得的 可以理解为字符流=字节流+编码集所以本题中和字符流有关的类都拥有操作编码集(unicode)的能力。', 1);
 INSERT INTO `question`
 VALUES (19, '关于sleep()和wait()，以下描述错误的一项是（ ）', 'sleep是线程类（Thread）的方法，wait是Object类的方法；',
         'sleep不释放对象锁，wait放弃对象锁', 'sleep暂停线程、但监控状态仍然保持，结束后会自动恢复',
         'wait后进入等待锁定池，只有针对此对象发出notify方法后获得对象锁进入运行状态', 1, 'D', 1, '2',
-        'Java中的多线程是一种抢占式的机制，而不是分时机制。抢占式的机制是有多个线程处于可运行状态，但是只有一个线程在运行。 ');
+        'Java中的多线程是一种抢占式的机制，而不是分时机制。抢占式的机制是有多个线程处于可运行状态，但是只有一个线程在运行。 ', 1);
 INSERT INTO `question`
-VALUES (20, '变量可以不进行赋值就使用。', NULL, NULL, NULL, NULL, 3, '错', 1, '1', NULL);
+VALUES (20, '变量可以不进行赋值就使用。', NULL, NULL, NULL, NULL, 3, '错', 1, '1', NULL, 1);
 INSERT INTO `question`
-VALUES (21, '一个类只能继承一个父类。', NULL, NULL, NULL, NULL, 3, '对', 1, '1', 'Java中类之间单继承');
+VALUES (21, '一个类只能继承一个父类。', NULL, NULL, NULL, NULL, 3, '对', 1, '1', 'Java中类之间单继承', 1);
 INSERT INTO `question`
-VALUES (22, '抽象类用______关键字修饰？', NULL, NULL, NULL, NULL, 4, 'abstract', 1, '1', NULL);
+VALUES (22, '抽象类用______关键字修饰？', NULL, NULL, NULL, NULL, 4, 'abstract', 1, '1', NULL, 1);
 INSERT INTO `question`
-VALUES (23, '接口用______关键字修饰？', NULL, NULL, NULL, NULL, 4, 'interface', 1, '1', NULL);
+VALUES (23, '接口用______关键字修饰？', NULL, NULL, NULL, NULL, 4, 'interface', 1, '1', NULL, 1);
 INSERT INTO `question`
 VALUES (24, 'Java虚拟机(JVM)全拼是________?', NULL, NULL, NULL, NULL, 4, 'Java Virtual Machine', 1, '1',
-        NULL);
+        NULL, 1);
 INSERT INTO `question`
 VALUES (25, '请简述你对集合框架的认识。', NULL, NULL, NULL, NULL, 5,
         '接口Collection 常用子接口:Set List Set接口常用实现类:HashSet,TreeSet,LinkedHashSet (都是线程非安全的类) List接口常用实现类:线程非安全:ArrayList,LindedList;线程安全:Stack,Vector',
-        1, '3', NULL);
+        1, '3', NULL, 4);
 INSERT INTO `question`
 VALUES (26, '请写出一个线程安全的集合。', NULL, NULL, NULL, NULL, 5,
-        'List<String> list = Collections.synchronizedList(new ArrayList<String>())', 1, '2', NULL);
+        'List<String> list = Collections.synchronizedList(new ArrayList<String>())', 1, '2', NULL,
+        4);
 INSERT INTO `question`
 VALUES (27, '在J2EE中，使用Servlet过滤器，需要在web.xml中配置（）元素', '<filter>', '<filter-mapping>',
-        '<servlet-filter>', '<filter-config>', 2, 'A,B', 4, '2', NULL);
+        '<servlet-filter>', '<filter-config>', 2, 'A,B', 4, '2', NULL, 1);
 INSERT INTO `question`
 VALUES (28, '以下哪个式子有可能在某个进制下成立（）？', '13*14=204', '12*34=568', '14*14=140', '1+1=3', 1, 'A', 1, '2',
-        '先去十进制算出乘积的个位乘积，再去判断进制 13*14个位乘积为12，结果为204，则只可能为八进制，然后判断 BCD同理');
+        '先去十进制算出乘积的个位乘积，再去判断进制 13*14个位乘积为12，结果为204，则只可能为八进制，然后判断 BCD同理', 1);
 INSERT INTO `question`
 VALUES (29, '以下关于Spring的说法是正确（ ）', 'Spring 不能和Hibernate一样设置bean是否为延迟加载',
         '在Spring配置文件中，就可以设置Bean初始化函数和消亡函数', '属性注入只能是简单数据，构造方法注入可以是对象', '对象的设计应使类和构件之间的耦合最小', 2,
         'B,D', 1, '3',
-        ' A、延迟加载有2种方法：一是hibernate提供的延迟载入机制；二是Spring框架提供的DAO模式结合Hibernate延迟加载的Web方案。故A错； B、spring可以 在配置文件中 配置Bean初始化函数和消亡函数，故B对； C、spring可以注入复杂的数据类型比如对象、数组、List集合、map集合、Properties等，故C错； D、对象之间的耦合越高,维护成本越高。对象的设计应使类和构件之间的耦合最小，故D对. 综上所述，答案为B、D.');
+        ' A、延迟加载有2种方法：一是hibernate提供的延迟载入机制；二是Spring框架提供的DAO模式结合Hibernate延迟加载的Web方案。故A错； B、spring可以 在配置文件中 配置Bean初始化函数和消亡函数，故B对； C、spring可以注入复杂的数据类型比如对象、数组、List集合、map集合、Properties等，故C错； D、对象之间的耦合越高,维护成本越高。对象的设计应使类和构件之间的耦合最小，故D对. 综上所述，答案为B、D.',
+        4);
 INSERT INTO `question`
 VALUES (30, '下面有关spring依赖注入说法错误的是？', 'IOC就是由spring来负责控制对象的生命周期和对象间的关系',
         'BeanFacotry是最简单的容器，提供了基础的依赖注入支持', 'ApplicationContext建立在BeanFacotry之上，提供了系统构架服务',
         '如果Bean的某一个属性没有注入，ApplicationContext加载后，直至第一次使用调用getBean方法才会抛出异常；而BeanFacotry则在初始化自身时检验，这样有利于检查所依赖属性是否注入',
-        1, 'D', 1, '3', 'ApplicationContext初始化时会检验，而BeanFactory在第一次使用时未注入，才会抛出异常 ');
+        1, 'D', 1, '3', 'ApplicationContext初始化时会检验，而BeanFactory在第一次使用时未注入，才会抛出异常 ', 1);
 INSERT INTO `question`
 VALUES (31, '下面有关forward和redirect的描述，正确的是() ？', 'forward是服务器将控制权转交给另外一个内部服务器对象，由新的对象来全权负责响应用户的请求',
         '执行forward时，浏览器不知道服务器发送的内容是从何处来，浏览器地址栏中还是原来的地址', '执行redirect时，服务器端告诉浏览器重新去请求地址',
         'forward是内部重定向，redirect是外部重定向', 2, 'B,C,D', 1, '3',
-        '重定向，其实是两次request, 第一次，客户端request A,服务器响应，并response回来，告诉浏览器，你应该去B。这个时候IE可以看到地址变了，而且历史的回退按钮也亮了。重定向可以访问自己web应用以外的资源。在重定向的过程中，传输的信息会被丢失。');
+        '重定向，其实是两次request, 第一次，客户端request A,服务器响应，并response回来，告诉浏览器，你应该去B。这个时候IE可以看到地址变了，而且历史的回退按钮也亮了。重定向可以访问自己web应用以外的资源。在重定向的过程中，传输的信息会被丢失。',
+        4);
 INSERT INTO `question`
 VALUES (32, 'Java.Thread的方法resume()负责重新开始被以下哪个方法中断的线程的执行（）。', 'stop', 'sleep', 'wait', 'suspend', 1,
         'D', 1, '3',
-        'suspend() 和 resume() 方法：两个方法配套使用，suspend()使得线程进入阻塞状态，并且不会自动恢复，必须其对应的 resume() 被调用，才能使得线程重新进入可执行状态');
+        'suspend() 和 resume() 方法：两个方法配套使用，suspend()使得线程进入阻塞状态，并且不会自动恢复，必须其对应的 resume() 被调用，才能使得线程重新进入可执行状态',
+        4);
 INSERT INTO `question`
 VALUES (33, '判断{company：4399} 的json格式是否正确', NULL, NULL, NULL, NULL, 3, '错', 1, '1',
-        'json对象要求属性必须加双引号。');
+        'json对象要求属性必须加双引号。', 4);
 INSERT INTO `question`
 VALUES (34, '判断{\"company\":{\"name\":[4399,4399,4399]}}json格式是否正确', NULL, NULL, NULL, NULL, 3, '对',
         1, '1',
-        'JSON语法可以表示以下三种类型的值:  1.简单值：使用与JavaScript 相同的语法，可以在JSON中表示字符串，数值，布尔值和null。  2.对象：对象作为一种复杂数据类型，表示的是一组有序的键值对。而每组键值对中的值可以是简单值，也可以是复杂数据类型的值。  3.数组：数组也是一种复杂数据类型，表示一组有序的值的列表，可以通过数值索引来访问其中的值。数组的值也可以是任意类型--简单值，对象或数组。');
+        'JSON语法可以表示以下三种类型的值:  1.简单值：使用与JavaScript 相同的语法，可以在JSON中表示字符串，数值，布尔值和null。  2.对象：对象作为一种复杂数据类型，表示的是一组有序的键值对。而每组键值对中的值可以是简单值，也可以是复杂数据类型的值。  3.数组：数组也是一种复杂数据类型，表示一组有序的值的列表，可以通过数值索引来访问其中的值。数组的值也可以是任意类型--简单值，对象或数组。',
+        1);
 INSERT INTO `question`
 VALUES (35, '判断{[4399,4399,4399]}json格式是否正确', NULL, NULL, NULL, NULL, 3, '错', 1, '1',
-        '使用 {} 则为json对象。json对象必须由一组有序的键值对组成。');
+        '使用 {} 则为json对象。json对象必须由一组有序的键值对组成。', 1);
 INSERT INTO `question`
 VALUES (36, 'volatile关键字的说法错误的是', '能保证线程安全', 'volatile关键字用在多线程同步中，可保证读取的可见性',
         'JVM保证从主内存加载到线程工作内存的值是最新的', 'volatile能禁止进行指令重排序', 1, 'A', 1, '3',
-        ' 出于运行速率的考虑，java编译器会把经常经常访问的变量放到缓存（严格讲应该是工作内存）中，读取变量则从缓存中读。但是在多线程编程中,内存中的值和缓存中的值可能会出现不一致。volatile用于限定变量只能从内存中读取，保证对所有线程而言，值都是一致的。但是volatile不能保证原子性，也就不能保证线程安全。');
+        ' 出于运行速率的考虑，java编译器会把经常经常访问的变量放到缓存（严格讲应该是工作内存）中，读取变量则从缓存中读。但是在多线程编程中,内存中的值和缓存中的值可能会出现不一致。volatile用于限定变量只能从内存中读取，保证对所有线程而言，值都是一致的。但是volatile不能保证原子性，也就不能保证线程安全。',
+        4);
 INSERT INTO `question`
 VALUES (37, '简述Java中volatile关键字的功能', NULL, NULL, NULL, NULL, 5,
         'volatile是java中的一个类型修饰符。它是被设计用来修饰被不同线程访问和修改的变量。如果不加入volatile，基本上会导致这样的结果：要么无法编写多线程程序，要么编译器 失去大量优化的机会。 1，可见性     可见性指的是在一个线程中对该变量的修改会马上由工作内存（Work Memory）写回主内存（Main Memory），所以会马上反应在其它线程的读取操作中。顺便一提，工作内存和主内存可以近似理解为实际电脑中的高速缓存和主存，工作内存是线程独享的，主存是线程共享的。 2，禁止指令重排序优化     禁止指令重排序优化。大家知道我们写的代码（尤其是多线程代码），由于编译器优化，在实际执行的时候可能与我们编写的顺序不同。编译器只保证程序执行结果与源代码相同，却不保证实际指令的顺序与源代码相同。这在单线程看起来没什么问题，然而一旦引入多线程，这种乱序就可能导致严重问题。volatile关键字就可以从语义上解决这个问题。     注意，禁止指令重排优化这条语义直到jdk1.5以后才能正确工作。此前的JDK中即使将变量声明为volatile也无法完全避免重排序所导致的问题。所以，在jdk1.5版本前，双重检查锁形式的单例模式是无法保证线程安全的。因此，下面的单例模式的代码，在JDK1.5之前是不能保证线程安全的。',
-        1, '3', 'jvm运行时刻内存的分配');
+        1, '3', 'jvm运行时刻内存的分配', 1);
 INSERT INTO `question`
 VALUES (38, '关键字super的作用是？', '用来访问父类被隐藏的非私有成员变量', '用来调用父类中被重写的方法', '用来调用父类的构造函数', '以上都是', 1, 'D', 1,
-        '1', 'super代表父类对应的对象，所以用super访问在子类中无法直接使用的父类成员和方法');
+        '1', 'super代表父类对应的对象，所以用super访问在子类中无法直接使用的父类成员和方法', 1);
 INSERT INTO `question`
 VALUES (39, 'final、finally和finalize的区别中，下述说法正确的有？', 'final用于声明属性，方法和类，分别表示属性不可变，方法不可覆盖，类不可继承。',
         'finally是异常处理语句结构的一部分，表示总是执行。',
         'finalize是Object类的一个方法，在垃圾收集器执行的时候会调用被回收对象的此方法，可以覆盖此方法提供垃圾收集时的其他资源的回收，例如关闭文件等。',
         '引用变量被final修饰之后，不能再指向其他对象，它指向的对象的内容也是不可变的。', 2, 'A,B', 1, '1',
-        '使用 final 关键字修饰一个变量时，是指引用变量不能变，引用变量所指向的对象中的内容还是可以改变的。一般不要使用finalize，最主要的用途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以一般情况下内存问题不用程序员操心。但有一种JNI(Java Native Interface)调用non-Java程序（C或C++），finalize()的工作就是回收这部分的内存。');
+        '使用 final 关键字修饰一个变量时，是指引用变量不能变，引用变量所指向的对象中的内容还是可以改变的。一般不要使用finalize，最主要的用途是回收特殊渠道申请的内存。Java程序有垃圾回收器，所以一般情况下内存问题不用程序员操心。但有一种JNI(Java Native Interface)调用non-Java程序（C或C++），finalize()的工作就是回收这部分的内存。',
+        4);
 INSERT INTO `question`
 VALUES (40, '请简述你对final、finally、finalize的理解', NULL, NULL, NULL, NULL, 5,
         '一.final 如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在new一个对象时初始化（即只能在声明变量或构造器或代码块内初始化），而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能覆盖(重写)。 二.finally 在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。  三.finalize 方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。注意：finalize不一定被jvm调用，只有当垃圾回收器要清除垃圾时才被调用。',
-        1, '2', '概念题，注意区分即可');
+        1, '2', '概念题，注意区分即可', 1);
 INSERT INTO `question`
 VALUES (41, '在java中，类Cat里面有个公有方法sleep()，该方法前有static修饰，则可以直接用Cat.sleep()。', NULL, NULL, NULL, NULL,
-        3, '对', 1, '2', '在本类中可以直接使用 但如果是private并且在其他类就不能这么直接用了');
+        3, '对', 1, '2', '在本类中可以直接使用 但如果是private并且在其他类就不能这么直接用了', 4);
 INSERT INTO `question`
 VALUES (42, '有时为了避免某些未识别的异常抛给更高的上层应用，在某些接口实现中我们通常需要捕获编译运行期所有的异常， catch 哪个类的实例才能达到目的_________', '',
         '', '', '', 4, 'Exception', 1, '1',
-        '因为error是系统出错，catch是无法处理的，难以修复的，RuntimeException不需要程序员进行捕获处理，error和exception都是throwable的子类，我们只需要对exception的实例进行捕获即可');
+        '因为error是系统出错，catch是无法处理的，难以修复的，RuntimeException不需要程序员进行捕获处理，error和exception都是throwable的子类，我们只需要对exception的实例进行捕获即可',
+        4);
 INSERT INTO `question`
 VALUES (43, '以下集合对象中哪几个是线程安全的？( )', 'ArrayList', 'Vector', 'Hashtable', 'Stack', 2, 'B,C,D', 1, '1',
-        ' vector：就比arraylist多了个同步化机制（线程安全），因为效率较低，现在已经不太建议使用。在web应用中，特别是前台页面，往往效率（页面响应速度）是优先考虑的。 statck：堆栈类，先进后出 hashtable：就比hashmap多了个线程安全 enumeration：枚举，相当于迭代器 除了这些之外，其他的都是非线程安全的类和接口。');
+        ' vector：就比arraylist多了个同步化机制（线程安全），因为效率较低，现在已经不太建议使用。在web应用中，特别是前台页面，往往效率（页面响应速度）是优先考虑的。 statck：堆栈类，先进后出 hashtable：就比hashmap多了个线程安全 enumeration：枚举，相当于迭代器 除了这些之外，其他的都是非线程安全的类和接口。',
+        4);
 INSERT INTO `question`
 VALUES (44, '下列说法正确的是（）', 'JAVA程序的main方法必须写在类里面', 'JAVA程序中可以有多个名字为main方法', 'JAVA程序中类名必须与文件名一样',
-        'JAVA程序的main方法中，如果只有一条语句，可以不用{}（大括号）括起来', 2, 'A,B', 1, '2', '');
+        'JAVA程序的main方法中，如果只有一条语句，可以不用{}（大括号）括起来', 2, 'A,B', 1, '2', '', 4);
 INSERT INTO `question`
 VALUES (45, '判断：ThreadLocal存放的值是线程封闭，线程间互斥的，主要用于线程内共享一些数据，避免通过参数来传递', NULL, NULL, NULL, NULL, 3,
         '对', 1, '2',
-        'ThreadLocal模式是为了解决单线程内的跨类跨方法调用的 ThreadLocal不是用来解决对象共享访问问题的，而主要是提供了保持对象的方法和避免参数传递的方便的对象访问方式。');
+        'ThreadLocal模式是为了解决单线程内的跨类跨方法调用的 ThreadLocal不是用来解决对象共享访问问题的，而主要是提供了保持对象的方法和避免参数传递的方便的对象访问方式。',
+        4);
 INSERT INTO `question`
 VALUES (46,
         '判断：线程的角度看，每个线程都保持一个对其线程局部变量副本的隐式引用，只要线程是活动的并且 ThreadLocal 实例是可访问的；在线程消失之后，其线程局部实例的所有副本都会被垃圾回收',
         NULL, NULL, NULL, NULL, 3, '对', 1, '2',
-        '对于多线程资源共享的问题，同步机制采用了“以时间换空间”的方式，而ThreadLocal采用了“以空间换时间”的方式。前者仅提供一份变量，让不同的线程排队访问，而后者为每一个线程都提供了一份变量，因此可以同时访问而互不影响。');
+        '对于多线程资源共享的问题，同步机制采用了“以时间换空间”的方式，而ThreadLocal采用了“以空间换时间”的方式。前者仅提供一份变量，让不同的线程排队访问，而后者为每一个线程都提供了一份变量，因此可以同时访问而互不影响。',
+        1);
 INSERT INTO `question`
-VALUES (47, '判断在Thread类中有一个Map，用于存储每一个线程的变量的副本。', NULL, NULL, NULL, NULL, 3, '对', 1, '2', NULL);
-INSERT INTO `question`
-VALUES (48, 'jre 判断程序是否执行结束的标准是（）', '所有的前台线程执行完毕', '所有的后台线程执行完毕', '所有的线程执行完毕', '和以上都无关', 1, 'A', 1,
-        '2',
-        '后台线程：指为其他线程提供服务的线程，也称为守护线程。JVM的垃圾回收线程就是一个后台线程。 前台线程：是指接受后台线程服务的线程，其实前台后台线程是联系在一起，就像傀儡和幕后操纵者一样的关系。傀儡是前台线程、幕后操纵者是后台线程。由前台线程创建的线程默认也是前台线程。可以通过isDaemon()和setDaemon()方法来判断和设置一个线程是否为后台线程。');
+VALUES (47, '判断在Thread类中有一个Map，用于存储每一个线程的变量的副本。', NULL, NULL, NULL, NULL, 3, '对', 1, '2', NULL, 4);
 INSERT INTO `question`
 VALUES (49, '下列哪个选项是Java调试器？如果编译器返回程序代码的错误，可以用它对程序进行调试。', 'java.exe', 'javadoc.exe', 'jdb.exe',
         'javaprof.exe', 1, 'C', 1, '2',
-        'java.exe是java虚拟机  javadoc.exe用来制作java文档  jdb.exe是java的调试器  javaprof,exe是剖析工具');
+        'java.exe是java虚拟机  javadoc.exe用来制作java文档  jdb.exe是java的调试器  javaprof,exe是剖析工具', 4);
 INSERT INTO `question`
 VALUES (50, '一般情况下，以下哪个选项不是关系数据模型与对象模型之间匹配关系？', '表对应类', '记录对应对象', '表的字段对应类的属性',
-        '表之间的参考关系对应类之间的依赖关系', 1, 'D', 1, '1', '一般关系数据模型和对象数据模型之间有以下对应关系：表对应类，记录对应对象，表的字段对应类的属性');
+        '表之间的参考关系对应类之间的依赖关系', 1, 'D', 1, '1', '一般关系数据模型和对象数据模型之间有以下对应关系：表对应类，记录对应对象，表的字段对应类的属性', 1);
 INSERT INTO `question`
 VALUES (51, '判断：在开发中使用泛型取代非泛型的数据类型（比如用ArrayList<String>取代ArrayList），程序的运行时性能会变得更好。', NULL, NULL,
         NULL, NULL, 3, '错', 1, '1',
-        '泛型仅仅是java的语法糖，它不会影响java虚拟机生成的汇编代码，在编译阶段，虚拟机就会把泛型的类型擦除，还原成没有泛型的代码，顶多编译速度稍微慢一些，执行速度是完全没有什么区别的.');
+        '泛型仅仅是java的语法糖，它不会影响java虚拟机生成的汇编代码，在编译阶段，虚拟机就会把泛型的类型擦除，还原成没有泛型的代码，顶多编译速度稍微慢一些，执行速度是完全没有什么区别的.',
+        4);
 INSERT INTO `question`
 VALUES (52, '下列在Java语言中关于数据类型和包装类的说法，正确的是（）', '基本（简单）数据类型是包装类的简写形式，可以用包装类替代基本（简单）数据类型',
         'long和double都占了64位（64bit）的存储空间。', '默认的整数数据类型是int，默认的浮点数据类型是float。',
         '和包装类一样，基本（简单）数据类型声明的变量中也具有静态方法，用来完成进制转化等。', 1, 'B', 1, '2',
-        '1、整数类型byte（1个字节）short（2个字节）int（4个字节）long（8个字节） 2、字符类型char（2个字节） 3、浮点类型float（4个字节）double（8个字节）');
+        '1、整数类型byte（1个字节）short（2个字节）int（4个字节）long（8个字节） 2、字符类型char（2个字节） 3、浮点类型float（4个字节）double（8个字节）',
+        1);
 INSERT INTO `question`
 VALUES (53, '下列关于容器集合类的说法正确的是？', 'LinkedList继承自List', 'AbstractSet继承自Set', 'HashSet继承自AbstractSet',
         'WeakMap继承自HashMap', 1, 'C', 1, '2',
-        'a选项linkedlist类是实现了List接口，而不是继承 b选项AbstractSet类实现Set接口 c选项HashSet继承 AbstractSet类，同时也实现set d.WeakMap不存在于java集合框架的。只有一个叫做WeakHashMap（继承自AbstractMap）。 ');
+        'a选项linkedlist类是实现了List接口，而不是继承 b选项AbstractSet类实现Set接口 c选项HashSet继承 AbstractSet类，同时也实现set d.WeakMap不存在于java集合框架的。只有一个叫做WeakHashMap（继承自AbstractMap）。 ',
+        4);
 INSERT INTO `question`
 VALUES (54, '请填写Math.floor(-8.5)=________________ 答案，注明数据类型', NULL, NULL, NULL, NULL, 4,
-        '(double)-9.0', 1, '2', ' Math.floor(x) 返回小于等于x的最接近整数，类型为double');
+        '(double)-9.0', 1, '2', ' Math.floor(x) 返回小于等于x的最接近整数，类型为double', 1);
 INSERT INTO `question`
 VALUES (56, '简述你知道的JAVA中Object类的方法', NULL, NULL, NULL, NULL, 5, 'wait() notify() notifyAll()', 1,
         '1',
-        'A    synchronized     Java语言的关键字，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码。E   sleep 是Thread类中的方法');
+        'A    synchronized     Java语言的关键字，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码。E   sleep 是Thread类中的方法',
+        1);
 INSERT INTO `question`
 VALUES (377, '我们在程序中经常使用“System.out.println()”来输出信息，语句中的System是包名，out是类名，println是方法名。', NULL, NULL,
-        NULL, NULL, 3, '错', 1, '1', '错');
+        NULL, NULL, 3, '错', 1, '1', '错', 4);
 INSERT INTO `question`
 VALUES (378, '下面选项中,哪些是interface中合法方法定义?()', 'public void main(String [] args);',
         'private int getSum();', 'boolean setFlag(Boolean [] test);', 'public float get(int x);', 2,
-        'A,C,D', 1, '3', NULL);
+        'A,C,D', 1, '3', NULL, 4);
 INSERT INTO `question`
 VALUES (379, 'BufferedReader的父类是_____________', NULL, NULL, NULL, NULL, 4, 'Reader', 1, '1',
-        'java.io.Reader是一个读取字符流的抽象类，通过继承Reader类，可以很方便的读取字符流');
+        'java.io.Reader是一个读取字符流的抽象类，通过继承Reader类，可以很方便的读取字符流', 1);
 INSERT INTO `question`
-VALUES (380, '模电题目1', '1111', '22222', '333333', '444444444', 1, 'A', 5, '3',
-        '34562457y45y45uy657yu5677u');
+VALUES (380, '模电题目1', '1111', '22222', '333333', '444444444', 1, 'A', 5, '3', '123', 1);
 INSERT INTO `question`
-VALUES (381, '测试', 'A', 'B', 'C', 'D', 2, 'A,B,C,D', 4, '2', 'nb');
-INSERT INTO `question`
-VALUES (382, '2', NULL, NULL, NULL, NULL, 1, '1', 1, '1', NULL);
+VALUES (381, '测试', 'A', 'B', 'C', 'D', 2, 'A,B,C,D', 4, '2', 'nb', 4);
 COMMIT;
 
 -- ----------------------------
@@ -813,6 +831,14 @@ INSERT INTO `role_permission`
 VALUES (3, 46);
 INSERT INTO `role_permission`
 VALUES (1, 47);
+INSERT INTO `role_permission`
+VALUES (1, 2);
+INSERT INTO `role_permission`
+VALUES (1, 3);
+INSERT INTO `role_permission`
+VALUES (1, 4);
+INSERT INTO `role_permission`
+VALUES (1, 5);
 COMMIT;
 
 -- ----------------------------
@@ -829,10 +855,19 @@ CREATE TABLE `score`
     `wrong_ids`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '错题id集合',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 51
+  AUTO_INCREMENT = 52
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of score
+-- ----------------------------
+BEGIN;
+INSERT INTO `score`
+VALUES (51, 1, 51, '呃呃呃呃呃呃', '15',
+        '3,4,11,13,15,16,38,378,12,31,44,44,10,20,33,54,23,24,42,7,37,6,40');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for stu_answer_record
@@ -848,10 +883,22 @@ CREATE TABLE `stu_answer_record`
     `score`       int DEFAULT NULL COMMENT '题目得分',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 85
+  AUTO_INCREMENT = 88
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of stu_answer_record
+-- ----------------------------
+BEGIN;
+INSERT INTO `stu_answer_record`
+VALUES (85, 51, 1, 37, '12', 0);
+INSERT INTO `stu_answer_record`
+VALUES (86, 51, 1, 6, '12', 0);
+INSERT INTO `stu_answer_record`
+VALUES (87, 51, 1, 40, '12', 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for student
@@ -869,7 +916,7 @@ CREATE TABLE `student`
     `level`      int                                                           DEFAULT NULL COMMENT '年级',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 29
+  AUTO_INCREMENT = 137
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -879,23 +926,23 @@ CREATE TABLE `student`
 -- ----------------------------
 BEGIN;
 INSERT INTO `student`
-VALUES (1, '郑润茂', '$2a$10$iNGn0d5tZ3LOkGkPxg.qVutbLlKth3qmG9WDOPfQmbIook5PegJpW', '201601', 2, '男',
+VALUES (1, '郑一', '$2a$10$QmNlp.VgQtNLr4Kw2sM7jONvjTcbxKw0wT0I6TlOVMNYIvH7o3mxO', '201601', 2, '男',
         1, 17);
 INSERT INTO `student`
 VALUES (2, '李华', '$2a$10$OtG.WBf.MAhvPurnnFSbo.5ISp7xOi5ASBsyUmvPg2GSoAsK7W8RK', '201602', 2, '男',
-        5, 16);
+        13, 16);
 INSERT INTO `student`
 VALUES (4, '江峰', '$2a$10$L3/D20R0gnBxp9Hd3J9XBuVcqbKFj26cTr6VNMdMmK4yknqyoqTmO', '201701', 2, '男',
-        6, 17);
+        8, 17);
 INSERT INTO `student`
-VALUES (5, '刘珂', '$2a$10$LH3WATc0n0T5Qz7WU/1CW.KbUCHgd8WxkgOFBmq/9.XlNFGuL1S4G', '201702', 2, '男',
-        1, 17);
+VALUES (5, '刘珂', '$2a$10$XAOJKQ9QfrhhRx/RHRV90OuoYVTkA0eGxJFDYzzuuWUJOjqp6NirO', '201702', 2, '男',
+        1, 16);
 INSERT INTO `student`
 VALUES (6, '刘凡', '$2a$10$VRFfcRso0g0rZMmTTRNRd.bRQZlCFzahmHaoIVataYPGIeRAHfhvy', '201704', 2, '男',
-        5, 17);
+        18, 17);
 INSERT INTO `student`
 VALUES (7, '王宇东', '$2a$10$jc/q36OnusELzvBeNu7w3eP4z6mQ1vsUScA4MMLL2aJ8o0aqFi4Gy', '201706', 2, '男',
-        5, 17);
+        12, 17);
 INSERT INTO `student`
 VALUES (8, '郑润', '$2a$10$HGSVKIL0uVSZji.Lhl0RPOp1zr5fR9nUYe5YfvpTgXQSUx28sUuha', '201708', 2, '男',
         12, 17);
@@ -918,8 +965,86 @@ INSERT INTO `student`
 VALUES (27, '黄华', '$2a$10$LMl9l/hej04nZSKXET5N/ejtEKhGXJP3hb4DCa6L88mZROuq836Hq', '2018081', 2, '男',
         21, 18);
 INSERT INTO `student`
-VALUES (28, '123', '$2a$10$XdwHw1xPAHvgkgUu.oEaxOHWrt3gPjzgT3ZNcCBq/aUFiL3e0Mx2q', '67577', 2, '男',
-        8, 17);
+VALUES (110, '芜湖', '$2a$10$o.dlHk86mxCbIfO6ASHIi.u8nQf7Itbs5pWYRWmhAOZQu894uRNHO', '20160334', 2,
+        '男', 1, 16);
+INSERT INTO `student`
+VALUES (111, '李飞', '$2a$10$ZuZmvsFqteLtL4y6PpRYR.URk2wjlYPFpbKl7C1yYy.OmzZ6nGmUe', '20164343', 2,
+        '男', 1, 16);
+INSERT INTO `student`
+VALUES (112, '张松', '$2a$10$gZ2eesaLtbyZiXWUBJNWq.OFbu5oml2g1r9ltDACzn3FhnAmB4OV.', '20166607', 2,
+        '男', 1, 16);
+INSERT INTO `student`
+VALUES (113, '林安', '$2a$10$k0DG/3Ux5J6zi1Crzf2hUe3BBwxqr3qWxCIoUpbqyQALtiuN1/G5a', '20169796', 2,
+        '男', 1, 16);
+INSERT INTO `student`
+VALUES (114, '李楠', '$2a$10$MxpIQ5RIoTR4ddqz986u9ejScqwg/HUVFRNcfEajMxKeSkmAFw3Me', '20176695', 2,
+        '男', 1, 17);
+INSERT INTO `student`
+VALUES (115, '吴航', '$2a$10$M2DtsrOTtb6Nb6HU80D.euARIFOXtb4NvgQjrhn4XVHmbCXbvfsxK', '20182291', 2,
+        '男', 1, 18);
+INSERT INTO `student`
+VALUES (116, '赵松', '$2a$10$RWBaqGatI8bfA17uIcIJfeHc.tpuOnjU01Bbz3jMmLxcLv4bk9Apq', '20190549', 2,
+        '男', 1, 19);
+INSERT INTO `student`
+VALUES (117, '张之洞', '$2a$10$/t66P74vwzCfAr0KamwCQOpPNZyBPFmkAhyxUpS3hAz0P7ZXnfPVm', '20179123', 2,
+        '男', 1, 17);
+INSERT INTO `student`
+VALUES (118, '韩航', '$2a$10$yXYx9c8MaDgyU8zCCSEg8ugPtUEUssRnWaTnEI/fmpEDU3rnfYCa6', '20176950', 2,
+        '男', 1, 17);
+INSERT INTO `student`
+VALUES (119, '徐峰', '$2a$10$lS6co/ie6n0m9OtOju1Ch.Mzsqlr2uTGj7uACKY0OlsFLwfUS/Wzu', '20165594', 2,
+        '男', 1, 16);
+INSERT INTO `student`
+VALUES (120, '陈云', '$2a$10$HnnuyUmmDqIUZGizdeARgeNDVUOaFCrSz7NCM660b3Brwpu4ngcB.', '20187796', 2,
+        '女', 1, 18);
+INSERT INTO `student`
+VALUES (121, '陈悦', '$2a$10$G0IE5oPw6QYwDUlVCDePZOTgqOfrIO0GF1.MIuXeRm8QMOBlfS4V2', '20165591', 2,
+        '女', 1, 16);
+INSERT INTO `student`
+VALUES (122, '李安然', '$2a$10$4TMPMdOu31GQ7Lh3b.S3XOMXWlu66ktIotamF0DNrjGFCkGl3so92', '20175903', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (123, '骆丹', '$2a$10$ZQdc96EjVe3.soBb1EvkfO8w8PwvWmIdwYgtejf5iejh17FhNTp3C', '20193001', 2,
+        '女', 1, 19);
+INSERT INTO `student`
+VALUES (124, '苏楷红', '$2a$10$xzQAu/K0oyCI/7uNi5sdSef3iysFJBgpUBX9SHRbY9RaQX6wmggx.', '20176320', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (125, '李沐风', '$2a$10$Us7plQSA9Jy87hi770la0.V.C6UXPL0aWJy.P2O2ILb.rJIgbmqjm', '20177782', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (126, '赵雷', '$2a$10$OssPxZMBy4B9DcyUs.Vk1.nqcYGjlqPIb2Jh5syg2bE3EeyVQsAYy', '20189032', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (127, '赵磊', '$2a$10$s3yV2cYWyMuD2rClZ7mVp.J1FrTBQZUC1WOQJWMJmWoEfKmfKumFW', '20184309', 2,
+        '女', 1, 18);
+INSERT INTO `student`
+VALUES (128, '赵蕾', '$2a$10$8rF/jQ5/4PlMOVY9WkwVau3Wqr7rr13nTIovGiOdImSh5F5mAyRUO', '20179343', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (129, '李斯', '$2a$10$3FbGDUDfswsCF/qUZBJsgenPxmdU4/6NaAVDhYL8lFopqKM5w4zWG', '20170404', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (130, '李偲', '$2a$10$hN7d95MvzRSAOh9L8SY6XeUY8Ox5yaMZE.wi.He0VFPljTatex1vK', '20173020', 2,
+        '女', 1, 17);
+INSERT INTO `student`
+VALUES (131, '梁宇', '$2a$10$/qpB6QS8TUpB3LwHkaRtp.9.XvHGZuCY8Hk4efOXWuhgc7KBJRlXe', '20172082', 2,
+        '女', 1, 18);
+INSERT INTO `student`
+VALUES (132, '梁玉', '$2a$10$zJHcEajBrisiU0OxLQEkNO6eEMKAi.oWNqsXE5fc8v4CPZJ0V6IKy', '20180392', 2,
+        '男', 1, 19);
+INSERT INTO `student`
+VALUES (133, '梁钰', '$2a$10$0GaN.DDiACVO2aet1McfXecISPuTYTWbsKnBAw6hEGbDnCNpG1mty', '20192203', 2,
+        '男', 1, 19);
+INSERT INTO `student`
+VALUES (134, '郑悦', '$2a$10$C7eZabNddCXAG02c3nTBp.KRaPAVFp9fvBl1UidFeNYIj6JEthlmm', '20193301', 2,
+        '女', 1, 19);
+INSERT INTO `student`
+VALUES (135, '郑越', '$2a$10$rwPYju/YoyXr1nzxKCWqieHw21uViRPNNdDMfrczgWO10Bd/A/kD2', '20193485', 2,
+        '男', 1, 19);
+INSERT INTO `student`
+VALUES (136, '郑玥', '$2a$10$eOIgllLpTqI45PDciIULoeliR/FTdgIEaJNwim2gJ8YnE/.PlfAne', '20187702', 2,
+        '男', 1, 18);
 COMMIT;
 
 -- ----------------------------
@@ -935,9 +1060,10 @@ CREATE TABLE `teacher`
     `role_id`     int                                                           DEFAULT NULL COMMENT '角色id',
     `job`         varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '职位',
     `sex`         varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '性别',
+    `academy_id`  int                                                           DEFAULT NULL COMMENT '所属学院',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 19
+  AUTO_INCREMENT = 20
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
   ROW_FORMAT = DYNAMIC;
@@ -947,29 +1073,29 @@ CREATE TABLE `teacher`
 -- ----------------------------
 BEGIN;
 INSERT INTO `teacher`
-VALUES (1, '张三', '123', '$2a$10$ZR16hF1CGwyPgaqXXHtVT.EK/dO6vlfRBkbsSmMKEGP267B3Q9nJC', 3, '讲师',
-        '男');
+VALUES (1, '张三', '123', '$2a$10$GynEomeO5RNnvPziPL6Yuubm1btLSGf7dE0J9KENRgefmNddAYFF2', 3, '教授',
+        '男', 1);
 INSERT INTO `teacher`
 VALUES (2, '郭靖', '789', '$2a$10$3W1c19JKAxjII6350s.k3OMcBZqJSGYCzpWQQifWAk3v6SW5M3ile', 3, '副教授',
-        '女');
+        '女', 1);
 INSERT INTO `teacher`
-VALUES (3, '柯镇恶', '346', '$2a$10$eHVO.6kkZTexorW.MDmfl./hOYbK9M5p1Ajc2opVBerwjrJoYeW/i', 3, '高级讲师',
-        '男');
+VALUES (3, '柯镇恶', '346', '$2a$10$68Z5YwlAUmpKhNZjlcmCeObvypnfNGNP7wdn3izO5qzMEftRvHIAW', 3, '教授',
+        '女', 2);
 INSERT INTO `teacher`
 VALUES (4, '湖东', '996', '$2a$10$jLgMGKWCkogw0WhGduTpTejIf0OIbtAi1uKj3mQiI5DL0pVziw4.G', 3, '教授',
-        '男');
+        '男', 1);
 INSERT INTO `teacher`
-VALUES (5, '黄蓉', '129', '$2a$10$.l5bdCMl5s1VNX5PRlYfLeLp8AmlHscGtWG.PCEEL7jDtn.p0WhjS', 3, '高级讲师',
-        '女');
+VALUES (5, '黄蓉', '129', '$2a$10$AQsRyyHIwmr0mkVb9XoeNuVw46k.FCMvvNDNnFWn2/JyN6ISJvxqy', 3, '高级讲师',
+        '女', 1);
 INSERT INTO `teacher`
-VALUES (7, '穆念慈', '780', '$2a$10$3vGDmUpHYh6GGeaBKnc4xu5QFypEQZyTsaNOAiYOimZgFpyykCCum', 3, '教授',
-        '女');
+VALUES (7, '穆念慈', '780', '$2a$10$O4oQ3H8qoWwHKJR.awR9PO/nETitRBmx95RAx3vuJJ/ggQ/uKuBs2', 3, '教授',
+        '女', 1);
 INSERT INTO `teacher`
-VALUES (9, '李宁', '998', '$2a$10$Edoew.gecDb3y.LhF9thnuAKYDaaufEuBCs3dFRNaXIbM3hmilloO', 3, '教授',
-        '男');
+VALUES (9, '李宁', '998', '$2a$10$PulRKmP5yCQCpOKODr6DUuHmFtJPTyaproilrSUdg/o1tdXBQx68q', 3, '教授',
+        '男', 8);
 INSERT INTO `teacher`
-VALUES (17, '苏宇星', '6690', '$2a$10$xs1dYrmLshEZWJPokLfRF.awPZMG/Sawa7iniyaKI4YpHCLRZunRG', 3, '教授',
-        '男');
+VALUES (17, '苏宇星', '6690', '$2a$10$UyooT29CPaVdZjbB2EMSTuDFTvpWwgmjcs8Ufu5ybYFF28mkGsfum', 3, '教授',
+        '男', 2);
 COMMIT;
 
 -- ----------------------------

@@ -19,17 +19,27 @@ import java.text.DecimalFormat;
 @Slf4j
 public class FileUtil extends cn.hutool.core.io.FileUtil {
 
-  /** 定义GB的计算常量 */
+  /**
+   * 定义GB的计算常量
+   */
   private static final int GB = 1024 * 1024 * 1024;
-  /** 定义MB的计算常量 */
+  /**
+   * 定义MB的计算常量
+   */
   private static final int MB = 1024 * 1024;
-  /** 定义KB的计算常量 */
+  /**
+   * 定义KB的计算常量
+   */
   private static final int KB = 1024;
 
-  /** 格式化小数 */
+  /**
+   * 格式化小数
+   */
   private static final DecimalFormat DF = new DecimalFormat("0.00");
 
-  /** MultipartFile转File */
+  /**
+   * MultipartFile转File
+   */
   public static File toFile(MultipartFile multipartFile) {
     // 获取文件名
     String fileName = multipartFile.getOriginalFilename();
@@ -47,7 +57,9 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     return file;
   }
 
-  /** 获取文件扩展名，不带 . */
+  /**
+   * 获取文件扩展名，不带 .
+   */
   public static String getExtensionName(String filename) {
     if ((filename != null) && (filename.length() > 0)) {
       int dot = filename.lastIndexOf(StrUtil.C_DOT);
@@ -58,7 +70,9 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     return filename;
   }
 
-  /** Java文件操作 获取不带扩展名的文件名 */
+  /**
+   * Java文件操作 获取不带扩展名的文件名
+   */
   public static String getFileNameNoEx(String filename) {
     if ((filename != null) && (filename.length() > 0)) {
       int dot = filename.lastIndexOf(StrUtil.C_DOT);
@@ -69,7 +83,9 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     return filename;
   }
 
-  /** 文件大小转换 */
+  /**
+   * 文件大小转换
+   */
   public static String getSize(long size) {
     String resultSize;
     if (size / GB >= 1) {
