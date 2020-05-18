@@ -1,4 +1,4 @@
-package apm.admin.config;
+package com.chachae.exam.admin.config;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import org.springframework.beans.factory.annotation.Autowired;

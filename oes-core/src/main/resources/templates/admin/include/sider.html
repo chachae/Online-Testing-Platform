@@ -41,7 +41,7 @@
           </a>
         </li>
 
-        <!-- 学院管理 -->
+        <!-- 学院管理 （学院管理员不显示）-->
         <% if(isEmpty(session.admin.academyId)){ %>
         <li class="nav-item">
           <a href="javascript:" id="academy" class="nav-link ${name == 'academy'?'active':''}">
@@ -67,13 +67,15 @@
           </a>
         </li>
 
-        <!-- 课程管理 -->
+        <!-- 课程管理（系统管理员不显示）-->
+        <% if(isNotEmpty(session.admin.academyId)){ %>
         <li class="nav-item">
           <a href="javascript:" id="course" class="nav-link  ${name == 'course'?'active':''}">
             <i class="nav-icon fas fa-cube"></i>
             <p>课程管理</p>
           </a>
         </li>
+        <% } %>
 
         <!-- 专业管理 -->
         <li class="nav-item">

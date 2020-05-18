@@ -102,7 +102,7 @@ public class StudentController {
    */
   @PostMapping("/update")
   @Permissions("student:update")
-  public R updateStudent(@Valid Student student) {
+  public R updateStudent(Student student) {
     this.studentService.updateById(student);
     return R.success();
   }

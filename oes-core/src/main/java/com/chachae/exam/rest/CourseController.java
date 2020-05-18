@@ -69,7 +69,7 @@ public class CourseController {
    * @return 成功信息
    */
   @PostMapping("/update")
-  public R updateCourse(@Valid Course course) {
+  public R updateCourse(Course course) {
     this.courseService.update(course);
     return R.success();
   }

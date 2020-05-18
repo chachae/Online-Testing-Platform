@@ -1,4 +1,4 @@
-package apm.admin.init;
+package com.chachae.exam.admin.init;
 
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;

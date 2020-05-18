@@ -1,6 +1,6 @@
 # Server
 server:
-  port: ${oes.port}
+  port: 8080
 
 spring:
   application:
@@ -8,7 +8,7 @@ spring:
 
   # DataSource
   datasource:
-    url: jdbc:mysql://${mysql.url}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://${mysql.url}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
@@ -75,7 +75,7 @@ spring:
   boot:
     admin:
       client:
-        url: http://${spring-admin.url}:8400
+        url: http://127.0.0.1:8400
         username: oes
         password: 123456
         instance:

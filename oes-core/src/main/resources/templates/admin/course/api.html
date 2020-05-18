@@ -47,7 +47,7 @@
     OesUtil.confirm("确定删除该课程吗？", function () {
       $.post("/api/course/delete/" + id).done(function (data) {
         if (data.state === "success") {
-          window.location.reload();
+          OesUtil.refreshTable("#courseInfo");
         } else {
           toastr.error(data.message);
         }
@@ -69,7 +69,9 @@
       let data = $('#save-form').serialize();
       $.post("/api/course/save", data).done(function (data) {
         if (data.state === "success") {
-          window.location.reload();
+          OesUtil.closeModal("#save-modal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#courseInfo");
         } else {
           toastr.error(data.message);
         }
