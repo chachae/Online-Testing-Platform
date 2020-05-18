@@ -1,0 +1,52 @@
+<!-- 修改专业信息模态框 -->
+<div class="modal fade" id="update-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">修改课程指派对象</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="update-form">
+          <div class="table">
+            <label>ID</label>
+            <input type="text" name="id" class="form-control id" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>试卷名称</label>
+            <input type="text" name="paperName" class="form-control paperName" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>试卷专业</label>
+            <input type="text" name="majorName" class="form-control majorName" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>试卷年级</label>
+            <div class="form-group form_datetime" >
+              <select name="level" class="form-control level" style="width: 100%">
+                <option value="">请选择</option>
+                <option value="16">16级</option>
+                <option value="17">17级</option>
+                <option value="18">18级</option>
+                <option value="19">19级</option>
+                <option value="20">20级</option>
+                <option value="21">21级</option>
+              </select>
+            </div>
+          </div>
+          <div class="table">
+            <label>试卷班级（多个班级请用逗号隔开，系统会自动识别班级是否存在）</label>
+            <input type="text" name="gradeIds" class="form-control gradeIds">
+            <input type="hidden" name="majorId" class="form-control majorId">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="updatePaper()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>

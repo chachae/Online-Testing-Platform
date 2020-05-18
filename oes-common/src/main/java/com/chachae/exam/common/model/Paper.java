@@ -93,6 +93,21 @@ public class Paper {
   private Integer teacherId;
 
   /**
+   * 试卷所属学院
+   */
+  private Integer academyId;
+
+  /**
+   * 试卷所属班级集合
+   */
+  private String gradeIds;
+
+  /**
+   * 试卷年级
+   */
+  private Integer level;
+
+  /**
    * 判断开始时间是否在当前时间之后
    *
    * @return true 是的 试卷已经开始 false 否 试卷未开始

@@ -208,7 +208,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       // 读取 Excel 中的数据
       ExcelReader reader = ExcelUtil.getReader(file);
       // 读取问题的信息
-      List<QuestionDto> questions = reader.read(8,9,QuestionDto.class);
+      List<QuestionDto> questions = reader.read(8, 9, QuestionDto.class);
       // 手动删除临时文件
       if (!multipartFile.isEmpty()) {
         file.deleteOnExit();
@@ -300,7 +300,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   }
 
   @Override
-  @Async
   @Transactional(rollbackFor = Exception.class)
   public void importQuestion(MultipartFile multipartFile) {
     try {
@@ -310,7 +309,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       ExcelReader reader = ExcelUtil.getReader(file);
 
       // 输出到 Question 的 List 集合中
-      List<Question> questions = reader.readAll(Question.class);
+      List<Question> questions = reader.read(8, 9, Question.class);
       // 手动删除临时文件
       if (!multipartFile.isEmpty()) {
         file.deleteOnExit();

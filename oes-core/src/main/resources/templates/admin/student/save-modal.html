@@ -33,7 +33,8 @@
           </div>
           <div class="form-group form_datetime">
             <label>年级</label>
-            <select name="level" class="form-control save-level" style="width: 100%">
+            <select name="level" class="form-control save-level" style="width: 100%"
+                    onchange="getGrade(this.value)">
               <option value="">请选择</option>
               <option value="16">16级</option>
               <option value="17">17级</option>
@@ -41,6 +42,13 @@
               <option value="19">19级</option>
               <option value="20">20级</option>
               <option value="21">21级</option>
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label for="gradeId">班级</label>
+            <select id="gradeId" class="form-control gradeSelect" name="gradeId" style="width: 100%"
+                    aria-selected="">
+              <!-- 填入数据 -->
             </select>
           </div>
           <div class="form-group form_datetime">

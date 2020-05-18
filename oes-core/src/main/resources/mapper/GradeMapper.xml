@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chachae.exam.common.dao.GradeDAO">
+
+  <resultMap id="voResultMap" type="GradeVo">
+    <id column="id" property="id"/>
+    <result column="level" property="level"/>
+    <result column="major_id" property="majorId"/>
+    <result column="grade_number" property="gradeNumber"/>
+    <result column="majorName" property="majorName"/>
+    <result column="gradeName" property="gradeName"/>
+  </resultMap>
+
+  <select id="pageVo" resultMap="voResultMap">
+    SELECT G.*, m.major AS majorName,concat(G.level,m.major,G.grade_number,'班') as gradeName
+    FROM grade G
+    LEFT JOIN major m on G.major_id = m.id
+    <where>
+      <if test="entity.academyId != null">
+        m.academy_id = #{entity.academyId,jdbcType=INTEGER}
+      </if>
+      <if test="entity.key != null and entity.key != ''">
+        and m.major like concat('%',#{entity.key,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="entity.level != null">
+        and G.level = #{entity.level,jdbcType=INTEGER}
+      </if>
+      <if test="entity.majorId != null">
+        and G.major_id = #{entity.majorId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+
+</mapper>

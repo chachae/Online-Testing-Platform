@@ -13,6 +13,7 @@ import com.chachae.exam.common.dao.ScoreDAO;
 import com.chachae.exam.common.dao.StuAnswerRecordDAO;
 import com.chachae.exam.common.dao.TypeDAO;
 import com.chachae.exam.common.exception.ServiceException;
+import com.chachae.exam.common.model.Grade;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.PaperForm;
 import com.chachae.exam.common.model.Question;
@@ -25,6 +26,7 @@ import com.chachae.exam.common.model.dto.QueryPaperDto;
 import com.chachae.exam.common.util.NumberUtil;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.common.util.PaperMarkUtil;
+import com.chachae.exam.service.GradeService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.google.common.collect.Lists;
@@ -58,6 +60,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   private final StuAnswerRecordDAO stuAnswerRecordDAO;
   private final ScoreDAO scoreDAO;
   private final TypeDAO typeDAO;
+  private final GradeService gradeService;
 
   @Override
   public void randomNewPaper(Paper paper, String diff) {
@@ -477,6 +480,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       qw.eq(Paper::getMajorId, entity.getMajorId());
     }
 
+    // 所属学院
+    if (entity.getAcademyId() != null) {
+      qw.eq(Paper::getAcademyId, entity.getAcademyId());
+    }
+
     // 出卷老师
     if (entity.getTeacherId() != null) {
       qw.eq(Paper::getTeacherId, entity.getTeacherId());
@@ -492,7 +500,25 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       qw.like(Paper::getPaperName, entity.getPaperName());
     }
 
+    // 试卷年级
+    if (entity.getLevel() != null) {
+      qw.eq(Paper::getLevel, entity.getLevel());
+    }
+
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
+    // 班级
+    if (entity.getGradeId() != null) {
+      if (pageInfo.getTotal() != 0L) {
+        List<Paper> records = pageInfo.getRecords();
+        for (int i = 0; i < records.size(); i++) {
+          List<String> gids = StrUtil.split(records.get(i).getGradeIds(), ',');
+          if (!gids.contains(String.valueOf(entity.getGradeId()))) {
+            records.remove(i);
+            pageInfo.setTotal(pageInfo.getTotal() - 1L);
+          }
+        }
+      }
+    }
     return PageUtil.toPage(pageInfo);
   }
 
@@ -509,6 +535,27 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     qw.gt(Paper::getBeginTime, new Date());
     Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
+  }
+
+  @Override
+  public void updateGradeIds(Paper paper) {
+    if (paper.getLevel() == null || StrUtil.isBlank(paper.getGradeIds())) {
+      throw new ServiceException("请填写年级和班级信息");
+    }
+    List<Grade> grades = this.gradeService.listByMajorId(paper.getMajorId());
+    if (CollUtil.isEmpty(grades)) {
+      throw new ServiceException("专业不存在班级，请添加班级");
+    }
+    List<Integer> numbers = grades.stream().map(Grade::getGradeNumber)
+        .collect(Collectors.toList());
+    // 获取班级id
+    String[] gIds = StrUtil.splitToArray(paper.getGradeIds(), ',');
+    for (String gId : gIds) {
+      if (!numbers.contains(Integer.parseInt(gId))) {
+        throw new ServiceException("班级" + gId + "不存在");
+      }
+    }
+    this.paperDAO.updateById(paper);
   }
 
   @Override

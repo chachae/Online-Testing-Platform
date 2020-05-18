@@ -12,6 +12,7 @@
     <result column="sex" property="sex"/>
     <result column="major_id" property="majorId"/>
     <result column="level" property="level"/>
+    <result column="grade_id" property="gradeId"/>
     <association javaType="Major" property="major" columnPrefix="m_">
       <id property="id" column="id"/>
       <result property="major" column="major"/>
@@ -28,7 +29,7 @@
   </resultMap>
 
   <sql id="baseSql">
-    SELECT s.id,s.name,s.password,s.stu_number,s.role_id,s.sex,s.major_id,s.level,r.id AS r_id,
+    SELECT s.id,s.name,s.password,s.stu_number,s.role_id,s.sex,s.major_id,s.level,s.grade_id,r.id AS r_id,
            r.role_name AS r_role_name,m.id AS m_id,m.academy_id AS m_academy_id,m.major AS m_major,
            a.id AS a_id,a.name AS a_name FROM student s
     LEFT JOIN role r ON r.id = s.role_id

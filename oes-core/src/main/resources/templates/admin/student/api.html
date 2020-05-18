@@ -103,7 +103,7 @@
       $('#id').val(data.id);
       $('#name').val(data.name);
       $('#stuNumber').val(data.stuNumber);
-      $('#level').val(data.level).select2({theme: 'bootstrap4'});
+      $('#level').val(data.level);
       $('#sex').val(data.sex).select2({theme: 'bootstrap4'});
       $('#academyId').val(data.academy.id).select2({theme: 'bootstrap4'});
       getMajor(data.academy.id, data.major.id);
@@ -127,6 +127,19 @@
         options += "<option value=" + e.id + ">" + e.major + "</option>";
       });
       $(".majorSelect").append(options).val(majorId).select2({theme: 'bootstrap4'});
+    });
+  }
+
+  // 班级择框框回填
+  function getGrade(level) {
+    $.get("/api/grade/list?level=" + level+"&majorId="+$(".majorSelect").val()).done(function (data) {
+      let options = "";
+      $(".gradeSelect").empty();
+      options += "<option value=''>请选择</option>";
+      $.each(data.list, function (index, e) {
+        options += "<option value=" + e.id + ">" + e.gradeName + "</option>";
+      });
+      $(".gradeSelect").append(options).select2({theme: 'bootstrap4'});
     });
   }
 

@@ -67,6 +67,24 @@
           </a>
         </li>
 
+        <!-- 班级管理 -->
+        <li class="nav-item">
+          <a href="javascript:" id="grade" class="nav-link ${name == 'grade'?'active':''}">
+            <i class="nav-icon fas fa-paper-plane"></i>
+            <p>班级管理</p>
+          </a>
+        </li>
+
+        <!-- 试卷管理 （系统管理员不显示）-->
+        <% if(isNotEmpty(session.admin.academyId)){ %>
+        <li class="nav-item">
+          <a href="javascript:" id="paper" class="nav-link ${name == 'paper'?'active':''}">
+            <i class="nav-icon fas fa-paper-plane"></i>
+            <p>试卷管理</p>
+          </a>
+        </li>
+        <% } %>
+
         <!-- 课程管理（系统管理员不显示）-->
         <% if(isNotEmpty(session.admin.academyId)){ %>
         <li class="nav-item">

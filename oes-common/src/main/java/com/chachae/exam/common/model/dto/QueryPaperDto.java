@@ -24,5 +24,10 @@ public class QueryPaperDto {
 
     private String paperName;
 
+    private Integer academyId;
+
+    private Integer level;
+
+    private Integer gradeId;
 
 }

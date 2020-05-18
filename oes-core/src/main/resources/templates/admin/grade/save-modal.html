@@ -1,0 +1,50 @@
+<!-- 增加学院信息模态框 -->
+<div class="modal fade" id="saveModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">增加学院</h4>
+        <button type="button" class="close" data-dismiss="modal"><span
+            aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="save-form">
+          <div class="form-group form_datetime">
+            <label>学院</label>
+            <select class="form-control academySelect" name="academy" style="width: 100%"
+                    onchange="getMajor(this.value,null)">
+              <!-- 填入数据 -->
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>专业</label>
+            <select name="majorId" class="form-control majorSelect" style="width: 100%">
+              <!-- 填入数据 -->
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>年级</label>
+            <select name="level" class="form-control save-level" style="width: 100%">
+              <option value="">请选择</option>
+              <option value="16">16级</option>
+              <option value="17">17级</option>
+              <option value="18">18级</option>
+              <option value="19">19级</option>
+              <option value="20">20级</option>
+              <option value="21">21级</option>
+            </select>
+          </div>
+          <div class="form-group form_datetime">
+            <label>班级（多个班级请用逗号隔开：1,2,3,4）</label>
+            <input type="text" name="gradeNumbers" class="form-control">
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="saveBtn">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

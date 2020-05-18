@@ -3,11 +3,10 @@ package com.chachae.exam.controller;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * 管理员模块控制层
@@ -117,6 +116,26 @@ public class AdminModuleController {
   @GetMapping
   public String listAdmin() {
     return ServletUtil.isAjax() ? "/admin/admin/list#adminTable" : "/admin/admin/list";
+  }
+
+  /**
+   * 班级主界面
+   *
+   * @return 管班级页面
+   */
+  @GetMapping("/grade")
+  public String grade() {
+    return ServletUtil.isAjax() ? "/admin/grade/list#gradeTable" : "/admin/grade/list";
+  }
+
+  /**
+   * 试卷主界面
+   *
+   * @return 试卷页面
+   */
+  @GetMapping("/paper")
+  public String paper() {
+    return ServletUtil.isAjax() ? "/admin/paper/list#paperTable" : "/admin/paper/list";
   }
 
   /**

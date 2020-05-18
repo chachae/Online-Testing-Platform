@@ -71,4 +71,10 @@ public class Student extends BaseEntity {
    */
   @NotNull(message = "年级{required}")
   private Integer level;
+
+  /**
+   * 班级id
+   */
+  @NotNull(message = "班级{required}")
+  private Integer gradeId;
 }

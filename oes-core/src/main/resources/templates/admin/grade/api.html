@@ -1,0 +1,69 @@
+<script>
+
+  // 模糊搜索参数
+  function params(params) {
+    return {
+      current: params.pageNumber,
+      size: params.pageSize,
+      key: $('#findKey').val(),
+    };
+  }
+
+  OesUtil.initQueryTable('#gradeInfo', "/api/grade/list", "get", [{
+    title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
+      return index + 1;
+    }
+  }, {title: '年级', field: 'level', sortable: false},
+    {title: '班级名称', field: 'gradeName', sortable: false}], params);
+
+  $("#saveBtn").click(function () {
+    OesUtil.confirm("确定增加班级吗?", function () {
+      let data = $("#save-form").serialize();
+      $.post("/api/grade/save", data).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.closeModal("#saveModal");
+          $('#save-form')[0].reset();
+          OesUtil.refreshTable("#gradeInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
+    })
+  });
+
+  // 填充信息
+  $.get("/api/academy").done(function (data) {
+    let options = "";
+    $('.academySelect').empty();
+    options+="<option value=''>" + "全部" + "</option>";
+    $.each(data, function (index, e) {
+      if ("${session.admin.academyId}".length === 0) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      } else if (parseInt("${session.admin.academyId}") === e.id) {
+        options += "<option value=" + e.id + ">" + e.name + "</option>";
+      }
+    });
+    $(".academySelect").append(options).val('').select2({theme: 'bootstrap4'});
+  });
+
+  // 专选择框框回填
+  function getMajor(id, majorId) {
+    // 获取学院集合
+    $.get("/api/major/academy/" + id).done(function (data) {
+      let options = "";
+      //回填的二级类别值
+      $(".majorSelect").empty();
+      options += "<option value=''>请选择</option>";
+      $.each(data, function (index, e) {
+        options += "<option value=" + e.id + ">" + e.major + "</option>";
+      });
+      $(".majorSelect").append(options).val('').select2({theme: 'bootstrap4'});
+    });
+  }
+
+  function goSave() {
+    $(".save-level").select2({theme: 'bootstrap4'});
+    $("#saveModal").modal({show: true, backdrop: 'static'});
+  }
+
+</script>

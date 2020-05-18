@@ -105,4 +105,11 @@ public interface PaperService extends IService<Paper> {
    * @return 试卷信息
    */
   Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity);
+
+  /**
+   * 更新试卷指派班级
+   *
+   * @param paper 试卷信息
+   */
+  void updateGradeIds(Paper paper);
 }
