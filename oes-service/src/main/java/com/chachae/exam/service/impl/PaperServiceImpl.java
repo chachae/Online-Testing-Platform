@@ -32,7 +32,6 @@ import com.chachae.exam.service.QuestionService;
 import com.google.common.collect.Lists;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -519,21 +518,6 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
         }
       }
     }
-    return PageUtil.toPage(pageInfo);
-  }
-
-  @Override
-  public Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity) {
-    LambdaQueryWrapper<Paper> qw = new LambdaQueryWrapper<>();
-    // 教师 ID
-    if (entity.getTeacherId() != null) {
-      qw.eq(Paper::getTeacherId, entity.getTeacherId());
-    }
-    // 获取当前时间
-    qw.eq(Paper::getPaperType, SysConsts.Paper.PAPER_TYPE_FORMAL);
-    // 开始时间大于当前时间
-    qw.gt(Paper::getBeginTime, new Date());
-    Page<Paper> pageInfo = this.paperDAO.selectPage(page, qw);
     return PageUtil.toPage(pageInfo);
   }
 

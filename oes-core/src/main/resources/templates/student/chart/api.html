@@ -82,7 +82,7 @@
     // 基于准备好的dom，初始化 Echarts 实例
     const chart = echarts.init(document.getElementById('chart'));
     chart.setOption({
-      title: {text: '本学期成绩分数段统计', subtext: '成绩源于数据库', x: 'center'},
+      title: {text: '成绩分数段统计', subtext: '成绩源于数据库', x: 'center'},
       tooltip: {trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)"},
       legend: {
         orient: 'vertical',

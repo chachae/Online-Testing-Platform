@@ -82,7 +82,7 @@ public class PaperMarkUtil {
           // 去除最后一位的逗号
           result = result.substring(0, result.length() - 1);
           // 计算得分
-          if (result.equals(q.getAnswer())) {
+          if (result.equalsIgnoreCase(q.getAnswer())) {
             sum += score;
           } else {
             // 错误则加入错题集

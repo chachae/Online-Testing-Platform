@@ -99,14 +99,6 @@ public interface PaperService extends IService<Paper> {
   Map<String, Object> pagePaper(Page<Paper> page, QueryPaperDto entity);
 
   /**
-   * 根据教师id查找未开始考试的试卷
-   *
-   * @param page 分页信息
-   * @return 试卷信息
-   */
-  Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity);
-
-  /**
    * 更新试卷指派班级
    *
    * @param paper 试卷信息

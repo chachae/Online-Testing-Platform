@@ -48,8 +48,14 @@
                 <h3 class="card-title">试卷列表</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
+                    <% if(isEmpty(paper.gradeIds)){ %>
                     <button class="btn btn-danger btn-sm" onclick="deletePaper(${paper.id})">删除试卷
                     </button>
+                    <% }else{ %>
+                    <button class="btn btn-danger btn-sm" onclick="deletePaper(${paper.id})"
+                            disabled>删除试卷
+                    </button>
+                    <% } %>
                   </div>
                 </div>
               </div>

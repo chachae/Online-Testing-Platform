@@ -69,13 +69,6 @@ public class PaperController {
     return this.paperService.pagePaper(page, entity);
   }
 
-  @GetMapping("/undo/list")
-  @Permissions("paper:list")
-  @Limit(key = "examList", period = 5, count = 15, name = "考试管理查询接口", prefix = "limit")
-  public Map<String, Object> pageUndoPaper(Page<Paper> page, QueryPaperDto entity) {
-    return this.paperService.pageUndoPaper(page, entity);
-  }
-
   @PostMapping("/import/excel")
   @Permissions("paper:import")
   public R excel(@RequestParam("file") MultipartFile multipartFile) {

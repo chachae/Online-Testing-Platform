@@ -40,7 +40,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -216,6 +215,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
 
       // 插入问题表并组装ID
       List<Integer> idList = Lists.newArrayList();
+      // 只查询本人的试题，获取教师本人的课程id，并构造条件
+      int teacherId = (int) HttpUtil.getAttribute(SysConsts.Session.TEACHER_ID);
       for (QuestionDto question : questions) {
         // 判断是否存在同名、同课程、同类型题目
         String qName = question.getQuestionName();
@@ -231,6 +232,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
         } else {
           // 复制 QuestionDto 的数据到 Question 中
           Question res = BeanUtil.copyObject(question, Question.class);
+          // 设置题目出题人
+          res.setTeacherId(teacherId);
           // 向数据库插入数据
           this.questionDAO.insert(res);
           // 获取数据的id并组装到 idList 中

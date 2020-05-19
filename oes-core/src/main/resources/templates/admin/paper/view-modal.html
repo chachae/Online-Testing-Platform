@@ -1,0 +1,44 @@
+<!-- 修改专业信息模态框 -->
+<div class="modal fade" id="view-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">出卷信息</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="delete-form">
+          <div class="table">
+            <label>ID</label>
+            <input type="text" name="id" class="form-control id" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>试卷名称</label>
+            <input type="text" class="form-control paperName" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>出卷教师工号</label>
+            <input type="text" class="form-control teacherWorkNumber" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>出卷教师</label>
+            <input type="text" class="form-control teacherName" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>开始时间</label>
+            <input type="text" class="form-control startTime" readonly="readonly">
+          </div>
+          <div class="table">
+            <label>结束时间</label>
+            <input type="text" class="form-control endTime" readonly="readonly">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>

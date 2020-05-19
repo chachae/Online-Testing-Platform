@@ -2,9 +2,12 @@
 
   // 操作按钮行为
   function operateFormatter(value, row, index) {
-    return ['<button class="btn btn-info btn-sm updateBtn" onclick="goUpdate(' + row.id
-    + ')">指派班级</button>']
-    .join('');
+    let btn = ['<button class="btn btn-info btn-sm updateBtn" onclick="goUpdate(' + row.id
+    + ')">指派班级</button>'];
+    let detail = ['<button class="btn btn-info btn-sm detailBtn" onclick="goView(' + row.id
+    + ')">出卷信息</button>&nbsp;'];
+    let btnLock = ['<button class="btn btn-warning btn-sm" disabled>指派班级</button>'];
+    return row.end ? detail+btnLock.join('') : detail+btn.join('');
   }
 
   // 试卷状态
@@ -92,12 +95,31 @@
         $('.level').val(data.level).select2({theme: 'bootstrap4'});
         $('.gradeIds').val(data.gradeIds);
         $('.majorId').val(data.majorId);
-        if (data.gradeIds != null) {
+        // 考试已经开始 禁止修改指派
+        if (data.start) {
           $('.level').attr("disabled", "disabled")
           $('.gradeIds').attr("readonly", "readonly");
         }
       })
       $("#update-modal").modal({
+        show: true,
+        backdrop: 'static'
+      });
+    })
+  }
+
+  // 出卷信息
+  function goView(id) {
+    $.get("/api/paper/" + id, function (data) {
+      $.get("/api/teacher/" + data.teacherId, function (teacherData) {
+        $('.id').val(data.id);
+        $('.teacherWorkNumber').val(teacherData.workNumber);
+        $('.teacherName').val(teacherData.name);
+        $('.paperName').val(data.paperName);
+        $('.startTime').val(data.beginTime);
+        $('.endTime').val(data.endTime);
+      })
+      $("#view-modal").modal({
         show: true,
         backdrop: 'static'
       });

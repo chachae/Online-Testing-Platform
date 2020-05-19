@@ -7,7 +7,7 @@
       $(this).html(event.strftime('%H小时 %M分钟 %S秒'));
     }).on("finish.countdown", function () {
       $("#submitBtn").text("考试结束").attr("disabled", "disabled");
-      layer.msg('试卷将在2s后自动提交', {icon: 4});
+      toastr.warning('试卷将在2s后自动提交');
       $(this).delay(2000).queue(function () {
         $("#paper").submit();
       });
