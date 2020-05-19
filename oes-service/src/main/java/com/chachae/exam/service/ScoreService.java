@@ -1,12 +1,13 @@
 package com.chachae.exam.service;
 
+import cn.hutool.http.server.HttpServerResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
-
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 分数业务接口
@@ -58,7 +59,7 @@ public interface ScoreService extends IService<Score> {
   /**
    * 通过学生ID和试卷ID查询成绩详情
    *
-   * @param stuId 学生ID
+   * @param stuId   学生ID
    * @param paperId 试卷ID
    * @return 成绩详情
    */
@@ -70,4 +71,26 @@ public interface ScoreService extends IService<Score> {
    * @param stuId 学生ID
    */
   void deleteByStuId(Integer stuId);
+
+  /**
+   * 通过试卷id 查询成绩集合
+   *
+   * @param paperId 试卷id
+   * @return 成绩集合
+   */
+  List<Score> selectByPaperId(Integer paperId);
+
+  /**
+   * 统计该班级某门考试的平均分
+   *
+   * @param gradeId 班级ID
+   */
+  Map<String, Object> averageGradeScore(Integer paperId, Integer gradeId);
+
+  /**
+   * 导出试卷分析表
+   *
+   * @param gradeId 班级ID
+   */
+  void outputPaperChartExcel(Integer paperId, Integer gradeId, HttpServletResponse response);
 }

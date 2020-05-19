@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Grade;
 import com.chachae.exam.common.model.dto.ImportGradeDto;
 import com.chachae.exam.common.model.dto.QueryGradeDto;
+import com.chachae.exam.common.model.vo.GradeVo;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,14 @@ public interface GradeService extends IService<Grade> {
    * @param entity 班级信息
    */
   void save(ImportGradeDto entity);
+
+  /**
+   * 获取 vo 对象
+   *
+   * @param id 班级id
+   * @return 班级vo
+   */
+  GradeVo selectVoById(Integer id);
 
 
 }

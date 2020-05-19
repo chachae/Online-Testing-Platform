@@ -60,4 +60,9 @@ public class GradeServiceImpl extends ServiceImpl<GradeDAO, Grade> implements Gr
       }
     }
   }
+
+  @Override
+  public GradeVo selectVoById(Integer id) {
+    return this.gradeDAO.getVoById(id);
+  }
 }

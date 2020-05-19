@@ -1,0 +1,71 @@
+<script>
+
+  $.post("/api/score/grade/chart/" + "${paper.id}" + "/" + "${gradeId}").done(function (json) {
+    // 基于准备好的dom，初始化echarts实例
+    const myChart = echarts.init(document.getElementById('main'), 'wonderland');
+    if (json.state === 'success') {
+      // 指定图表的配置项和数据
+      const option = {
+        title: {
+          text: json.data.title,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (data) {
+            return data.name + '<br/>' + data.seriesName + '：' + data.value; //将小数转化为百分数显示
+          }
+        },
+        toolbox: {
+          feature: {
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        legend: {
+          data: ['人数'],
+          left: 'left'
+        },
+        xAxis: {
+          data: ["60分以下", "60-70分 ", "70-80分 ", "80-90分 ", "90分以上"]
+        },
+        yAxis: {},
+        series: [{
+          name: '人数',
+          type: 'bar',
+          data: [1, 3, 6, 10, 16],
+          itemStyle: {
+            normal: {
+              label: {
+                show: true,
+                position: 'top',
+                textStyle: {
+                  color: '#615a5a'
+                },
+                formatter: function (params) {
+                  if (params.value === 0) {
+                    return '';
+                  } else {
+                    return params.value;
+                  }
+                }
+              }
+            }
+          },
+        }]
+      };
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    } else {
+      toastr.error(json.message);
+    }
+  }).fail(function () {
+    toastr.error("服务器异常");
+  });
+
+  function getOutput() {
+    window.location.href = "/api/paper/chart/analysis?paperId=${paper.id}&gradeId=${grade.id}";
+  }
+</script>

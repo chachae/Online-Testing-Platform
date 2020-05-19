@@ -19,6 +19,7 @@ import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.ScoreService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -170,5 +171,10 @@ public class PaperController {
   public R updateQuestionId(PaperQuestionUpdateDto dto) {
     this.paperService.updateQuestionId(dto);
     return R.success();
+  }
+
+  @GetMapping("/chart/analysis")
+  public void outputAnalysis(Integer paperId, Integer gradeId, HttpServletResponse response) {
+    this.scoreService.outputPaperChartExcel(paperId, gradeId, response);
   }
 }

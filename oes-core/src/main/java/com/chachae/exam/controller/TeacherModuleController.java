@@ -1,11 +1,15 @@
 package com.chachae.exam.controller;
 
 import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.constant.SysConsts.Session;
 import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.Teacher;
+import com.chachae.exam.common.model.dto.PaperChartDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
 import com.chachae.exam.service.CourseService;
+import com.chachae.exam.service.GradeService;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperFormService;
 import com.chachae.exam.service.PaperService;
@@ -13,8 +17,8 @@ import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,16 +32,18 @@ import org.springframework.web.servlet.ModelAndView;
  * @date 2020/2/5
  */
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/teacher")
 public class TeacherModuleController {
 
-  @Resource private PaperService paperService;
-  @Resource private MajorService majorService;
-  @Resource private QuestionSortService questionSortService;
-  @Resource private CourseService courseService;
-  @Resource private QuestionService questionService;
-  @Resource private PaperFormService paperFormService;
-  @Resource private StuAnswerRecordService stuAnswerRecordService;
+  private final PaperService paperService;
+  private final MajorService majorService;
+  private final QuestionSortService questionSortService;
+  private final CourseService courseService;
+  private final QuestionService questionService;
+  private final PaperFormService paperFormService;
+  private final StuAnswerRecordService stuAnswerRecordService;
+  private final GradeService gradeService;
 
   /**
    * 教师账号退出
@@ -63,6 +69,27 @@ public class TeacherModuleController {
   public String courseList() {
     return ServletUtil.isAjax() ? "/teacher/course/list#courseTable" : "/teacher/course/list";
   }
+
+  /**
+   * 展示该教师所教课程
+   *
+   * @return 课程信息
+   */
+  @GetMapping("/chart")
+  public ModelAndView chartPaper(ModelAndView mv) {
+    // 获取教师id
+    Teacher teacher = (Teacher) HttpUtil.getAttribute(Session.TEACHER);
+    // 返回 Model 对象
+    mv.addObject("paperList", paperService.listDoneByTeacherId(teacher.getId()));
+    mv.addObject("majorList", majorService.listByAcademyId(teacher.getAcademyId()));
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/chart/list#chartTable");
+    } else {
+      mv.setViewName("/teacher/chart/list");
+    }
+    return mv;
+  }
+
 
   /**
    * 教师修改密码页面
@@ -140,7 +167,7 @@ public class TeacherModuleController {
    * 复查某场考试的试卷
    *
    * @param paperId 试卷ID
-   * @param mv ModelAndView 对象
+   * @param mv      ModelAndView 对象
    * @return 待复查试卷信息
    */
   @GetMapping("/reviewRes")
@@ -154,6 +181,25 @@ public class TeacherModuleController {
       mv.setViewName("/teacher/review/record-list#reviewListTable");
     } else {
       mv.setViewName("/teacher/review/record-list");
+    }
+    return mv;
+  }
+
+  /**
+   * 某场考试的班级分析
+   */
+  @GetMapping("/chartRes")
+  public ModelAndView chartPaper(PaperChartDto entity, ModelAndView mv) {
+    // 检查试卷时候符合
+    this.paperService
+        .checkTestedByGradeId(entity.getPaperId(), entity.getLevel(), entity.getGradeId());
+    mv.addObject("paper", this.paperService.getById(entity.getPaperId()));
+    mv.addObject("gradeId", entity.getGradeId());
+    mv.addObject("grade", gradeService.selectVoById(entity.getGradeId()));
+    if (ServletUtil.isAjax()) {
+      mv.setViewName("/teacher/chart/chart-list#chartListTable");
+    } else {
+      mv.setViewName("/teacher/chart/chart-list");
     }
     return mv;
   }

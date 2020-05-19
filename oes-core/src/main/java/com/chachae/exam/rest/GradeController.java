@@ -5,6 +5,7 @@ import com.chachae.exam.common.base.R;
 import com.chachae.exam.common.constant.SysConsts.Session;
 import com.chachae.exam.common.model.Admin;
 import com.chachae.exam.common.model.Grade;
+import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.ImportGradeDto;
 import com.chachae.exam.common.model.dto.QueryGradeDto;
 import com.chachae.exam.common.util.HttpUtil;
@@ -32,8 +33,10 @@ public class GradeController {
   @GetMapping("/list")
   public Map<String, Object> pageList(Page<Grade> page, QueryGradeDto entity) {
     Admin admin = (Admin) HttpUtil.getAttribute(Session.ADMIN);
-    if (admin.getAcademyId() != null) {
-      entity.setAcademyId(admin.getAcademyId());
+    if (admin != null) {
+      if (admin.getAcademyId() != null) {
+        entity.setAcademyId(admin.getAcademyId());
+      }
     }
     return this.gradeService.listPage(page, entity);
   }

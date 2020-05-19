@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"chart-list"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax chartListTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>成绩分析</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/teacher/chart">成绩分析</a></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">分析信息</h3>
+                <div class="card-tools">
+                  <div class="input-group input-group-sm">
+                    <button onclick="getOutput()" class="btn btn-default btn-sm">导出试卷分析表</button>&nbsp;
+                    <button class="btn btn-default btn-sm"
+                            onclick="OesUtil.refreshTable('#paperInfo');">刷新数据
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body table-responsive p-0">
+                <table class="table table-condensed">
+                  <tr>
+                    <td>
+                      试卷编号：No. ${paper.id}<br>
+                      考试名称：${paper.paperName}<br>
+                      考试时间：${paper.beginTime}<br>
+                      结束时间：${paper.endTime}
+                    </td>
+                    <td>
+                      试卷分值：${paper.score} 分<br>
+                      考试类型：${paper.paperType}考试<br>
+                      班级： ${grade.gradeName}<br>
+                      年级：${grade.level}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="paperInfo"
+                       class="table table-bordered table-striped text-nowrap">
+                  <tr id="main" style="height: 500px;width: 100%"></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+      </div><!-- /.row -->
+    </section>
+
+    <!-- 接口 -->
+    <%include("api/chart-list-api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
+</div>
+</body>
+</html>
+

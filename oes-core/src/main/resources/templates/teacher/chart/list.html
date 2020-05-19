@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>OES | 教师端</title>
+  <!-- 引入全局 css 文件 -->
+  <%include("../../include/css.html"){} %>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+  <!-- 引入头部 -->
+  <% include("../include/header.html"){} %>
+  <!-- 左侧菜单栏 -->
+  <% layout("../include/sider.html",{name:"chart"}){} %>
+  <!-- 引入全局 js 脚本文件 -->
+  <% include("../../include/js.html"){} %>
+  <!-- 右侧内容部分 -->
+  <div class="content-wrapper">
+    <%
+    #ajax chartTable:{
+    %>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>成绩分析</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- table 部分 -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">请选择</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="review-form" class="form-horizontal">
+                <div class="card-body">
+                  <div class="form-group">
+
+                    <!-- 专业 -->
+                    <label for="majorId" class="col-sm-2 control-label">专业</label>
+                    <select class="form-control majorSelect" id="majorId" name="majorId">
+                      <option value="">请选择</option>
+                      <% for( major in majorList ){ %>
+                      <option value="${major.id}">${major.major}</option>
+                      <% } %>
+                    </select><br>
+
+                    <!-- 年级 -->
+                    <label for="level" class="col-sm-2 control-label">年级</label>
+                    <select class="form-control " id="level" name="level"  onchange="getGrade(this.value)">
+                      <option value="">请选择</option>
+                      <option value="16">16级</option>
+                      <option value="17">17级</option>
+                      <option value="18">18级</option>
+                      <option value="19">19级</option>
+                      <option value="20">20级</option>
+                      <option value="21">21级</option>
+                    </select><br>
+
+                    <!-- 专业班级 -->
+                    <label for="gradeId" class="col-sm-2 control-label">专业班级</label>
+                    <select class="form-control gradeSelect" id="gradeId" name="gradeId">
+                      <option value="">请选择</option>
+                    </select><br>
+
+                    <!-- 试卷 -->
+                    <label for="paperId" class="col-sm-2 control-label">场次</label>
+                    <select class="form-control " id="paperId" name="paperId">
+                      <option value="">请选择</option>
+                      <% for( paper in paperList ){ %>
+                      <option value="${paper.id}">${paper.paperName}</option>
+                      <% } %>
+                    </select>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button onclick="goSearch()" type="button" class="form-control btn btn-success">
+                    查找
+                  </button>
+                </div>
+                <!-- /.card-footer -->
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div><!-- /.row -->
+      </div>
+    </section>
+    <%include("api/list-api.html"){}%>
+    <%}%>
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- 引入footer -->
+  <% include("../../include/footer.html"){}%>
+  <%include("../main/api.html"){}%>
+  <!-- Control Sidebar -->
+</div>
+</body>
+</html>

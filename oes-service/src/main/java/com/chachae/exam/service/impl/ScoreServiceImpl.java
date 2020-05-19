@@ -6,19 +6,30 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chachae.exam.common.dao.AcademyDAO;
 import com.chachae.exam.common.dao.CourseDAO;
+import com.chachae.exam.common.dao.GradeDAO;
+import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.common.dao.PaperDAO;
 import com.chachae.exam.common.dao.ScoreDAO;
+import com.chachae.exam.common.dao.StudentDAO;
+import com.chachae.exam.common.dao.TeacherDAO;
 import com.chachae.exam.common.model.Course;
 import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
+import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
 import com.chachae.exam.common.util.PageUtil;
 import com.chachae.exam.service.ScoreService;
+import com.chachae.exam.util.model.PaperAnalysis;
+import com.chachae.exam.util.service.ExcelTemplateService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,6 +49,12 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   private final ScoreDAO scoreDAO;
   private final PaperDAO paperDAO;
   private final CourseDAO courseDAO;
+  private final GradeDAO gradeDAO;
+  private final StudentDAO studentDAO;
+  private final MajorDAO majorDAO;
+  private final TeacherDAO teacherDAO;
+  private final AcademyDAO academyDAO;
+  private final ExcelTemplateService excelTemplateService;
 
   @Override
   public List<Score> selectByStuId(Integer id) {
@@ -208,6 +225,96 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
     LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
     qw.eq(Score::getStuId, stuId);
     this.scoreDAO.delete(qw);
+  }
+
+  @Override
+  public List<Score> selectByPaperId(Integer paperId) {
+    // 构造学生id和试卷id查询的查询条件
+    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
+    qw.eq(Score::getPaperId, paperId);
+    // 返回查询到的数据
+    return this.scoreDAO.selectList(qw);
+  }
+
+  @Override
+  public Map<String, Object> averageGradeScore(Integer paperId, Integer gradeId) {
+    String scoreKey = "score";
+    Map<String, Object> resultMap = new HashMap<>();
+    // 设置考试名称
+    resultMap.put("title", this.paperDAO.selectById(paperId).getPaperName());
+    // "60分以下","60-70分 ","70-80分 ","80-90分 ","90分以上"
+    resultMap.put(scoreKey, new int[5]);
+    List<Score> scores = selectByPaperId(paperId);
+    if (CollUtil.isEmpty(scores)) {
+      return resultMap;
+    } else {
+      // 过滤分数
+      // 过滤出该班级的成绩集合
+      scores = scores.stream().filter(
+          score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+          .collect(Collectors.toList());
+      if (CollUtil.isEmpty(scores)) {
+        return resultMap;
+      } else {
+        int[] avgs = new int[5];
+        // 开始计算
+        for (Score score : scores) {
+          // 取除数
+          int mdn = Integer.parseInt(score.getScore()) / 10;
+          switch (mdn) {
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+            case 0:
+              avgs[0]++;
+              break;
+            case 6:
+              avgs[1]++;
+              break;
+            case 7:
+              avgs[2]++;
+              break;
+            case 8:
+              avgs[3]++;
+              break;
+            default:
+              avgs[4]++;
+              break;
+          }
+        }
+        resultMap.put(scoreKey, avgs);
+      }
+    }
+    return resultMap;
+  }
+
+  @Override
+  public void outputPaperChartExcel(Integer paperId, Integer gradeId,
+      HttpServletResponse response) {
+    Paper paper = this.paperDAO.selectById(paperId);
+    List<Score> scores = selectByPaperId(paperId);
+    // 过滤出该班级的成绩集合
+    scores = scores.stream().filter(
+        score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+        .collect(Collectors.toList());
+
+    // 获取教师信息
+    Teacher teacher = this.teacherDAO.selectById(paper.getTeacherId());
+
+    PaperAnalysis paperAnalysis = new PaperAnalysis();
+    paperAnalysis.setPaperName(paper.getPaperName());
+    paperAnalysis.setTeacherName(teacher.getName());
+    paperAnalysis.setLevel(paper.getLevel());
+    paperAnalysis.setGradeName(this.gradeDAO.getVoById(gradeId).getGradeName());
+    paperAnalysis.setMajor(this.majorDAO.selectById(paper.getMajorId()).getMajor());
+    paperAnalysis.setAcademyName(this.academyDAO.selectById(paper.getAcademyId()).getName());
+    Course course = this.courseDAO.selectById(paper.getCourseId());
+    paperAnalysis.setCourseName(course.getCourseName());
+    paperAnalysis.setStudentCount(scores.size());
+    paperAnalysis.setCourseAcademyName(this.academyDAO.selectById(course.getAcademyId()).getName());
+    this.excelTemplateService.packingPaperAnalysis(paperAnalysis, response);
   }
 
   /**

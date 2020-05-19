@@ -1,0 +1,28 @@
+<script>
+  // select2
+  $('#level').select2({width: "100%", theme: "bootstrap4"});
+  $('#gradeId').select2({width: "100%", theme: "bootstrap4"});
+  $('#paperId').select2({width: "100%", theme: "bootstrap4"});
+  $('#majorId').select2({width: "100%", theme: "bootstrap4"});
+
+  // 班级择框框回填
+  function getGrade(level) {
+    $.get("/api/grade/list?level=" + level + "&majorId=" + $(".majorSelect").val()
+        + "&academyId=${session.teacher.academyId}").done(function (data) {
+      let options = "";
+      $(".gradeSelect").empty();
+      options += "<option value=''>请选择</option>";
+      $.each(data.list, function (index, e) {
+        options += "<option value=" + e.id + ">" + e.gradeName + "</option>";
+      });
+      $(".gradeSelect").append(options).select2({theme: 'bootstrap4'});
+    });
+  }
+
+  function goSearch() {
+    OesUtil.ajaxPage("#chart",
+        "/teacher/chartRes?paperId=" + $("#paperId").val() + "&level=" + $("#level").val()
+        + "&gradeId=" + $("#gradeId").val()
+        + "&majorId=" + $("#majorId").val());
+  }
+</script>

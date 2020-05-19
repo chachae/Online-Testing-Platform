@@ -105,6 +105,16 @@
         <artifactId>poi-ooxml</artifactId>
         <version>${poi-ooxml.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>${poi-ooxml.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml-schemas</artifactId>
+        <version>${poi-ooxml.version}</version>
+      </dependency>
       <!-- commons-text -->
       <dependency>
         <groupId>org.apache.commons</groupId>

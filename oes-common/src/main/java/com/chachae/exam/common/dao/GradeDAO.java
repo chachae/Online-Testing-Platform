@@ -25,4 +25,9 @@ public interface GradeDAO extends BaseMapper<Grade> {
    * @return 班级 List 集合
    */
   IPage<GradeVo> pageVo(Page<Grade> page, @Param("entity") QueryGradeDto entity);
+
+  /**
+   * 通过条件查询班级
+   */
+  GradeVo getVoById(Integer id);
 }

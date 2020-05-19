@@ -543,6 +543,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   }
 
   @Override
+  public void checkTestedByGradeId(Integer paperId, Integer level, Integer gradeId) {
+    Paper paper = getById(paperId);
+    List<String> idList = StrUtil.split(paper.getGradeIds(), ',');
+    Grade grade = gradeService.getById(gradeId);
+    if (!paper.getLevel().equals(level) || !idList
+        .contains(String.valueOf(grade.getGradeNumber()))) {
+      throw new ServiceException("该考试不属于该班级");
+    }
+  }
+
+  @Override
   @Transactional(rollbackFor = Exception.class)
   public boolean save(Paper entity) {
 

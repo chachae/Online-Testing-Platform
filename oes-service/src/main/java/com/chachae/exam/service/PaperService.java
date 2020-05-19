@@ -104,4 +104,13 @@ public interface PaperService extends IService<Paper> {
    * @param paper 试卷信息
    */
   void updateGradeIds(Paper paper);
+
+  /**
+   * 检测是否有被改版机考过
+   *
+   * @param paperId 试卷id
+   * @param gradeId 班级表编号
+   * @param level   年级
+   */
+  void checkTestedByGradeId(Integer paperId, Integer level, Integer gradeId);
 }

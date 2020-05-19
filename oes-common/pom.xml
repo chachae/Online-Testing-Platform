@@ -52,11 +52,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
-    <!-- poi-ooxml -->
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-    </dependency>
     <!-- commons-text -->
     <dependency>
       <groupId>org.apache.commons</groupId>
