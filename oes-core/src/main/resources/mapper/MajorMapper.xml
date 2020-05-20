@@ -30,4 +30,9 @@
       </if>
     </where>
   </select>
+
+  <select id="selectVoById" parameterType="integer" resultMap="voResultMap">
+    <include refid="baseSql"/>
+    where m.id = #{majorId,jdbcType=INTEGER}
+  </select>
 </mapper>

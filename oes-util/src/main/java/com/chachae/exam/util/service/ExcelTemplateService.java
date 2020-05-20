@@ -1,6 +1,6 @@
 package com.chachae.exam.util.service;
 
-import com.chachae.exam.util.model.PaperAnalysis;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 public interface ExcelTemplateService {
 
   /**
-   * 填充班级考情分析表 Excel
+   * 填充班级考情分析表 Excel 导出接口
    *
-   * @param entity 表数据
+   * @param sheetMap 表数据
+   * @param response 响应对象
    */
-  void packingPaperAnalysis(PaperAnalysis entity, HttpServletResponse response);
+  void packingPaperAnalysis(Map<String, Object> sheetMap, HttpServletResponse response);
 
 }

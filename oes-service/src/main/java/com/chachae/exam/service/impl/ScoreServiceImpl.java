@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.dao.AcademyDAO;
 import com.chachae.exam.common.dao.CourseDAO;
 import com.chachae.exam.common.dao.GradeDAO;
 import com.chachae.exam.common.dao.MajorDAO;
@@ -19,12 +18,15 @@ import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.AnswerEditDto;
+import com.chachae.exam.common.model.vo.GradeVo;
+import com.chachae.exam.common.model.vo.MajorVo;
 import com.chachae.exam.common.util.PageUtil;
+import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.ScoreService;
-import com.chachae.exam.util.model.PaperAnalysis;
 import com.chachae.exam.util.service.ExcelTemplateService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   private final StudentDAO studentDAO;
   private final MajorDAO majorDAO;
   private final TeacherDAO teacherDAO;
-  private final AcademyDAO academyDAO;
+  private final CourseService courseService;
   private final ExcelTemplateService excelTemplateService;
 
   @Override
@@ -293,28 +295,62 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   @Override
   public void outputPaperChartExcel(Integer paperId, Integer gradeId,
       HttpServletResponse response) {
+    // 获取本场考试信息
     Paper paper = this.paperDAO.selectById(paperId);
-    List<Score> scores = selectByPaperId(paperId);
+    // 获取本场考试的的某个班级的分数信息
+    List<Score> scores = this.selectByPaperIdAndGradeId(paperId, gradeId);
+    // 获取教师信息
+    Teacher teacher = this.teacherDAO.selectById(paper.getTeacherId());
+    // 获取考试专业信息
+    MajorVo major = this.majorDAO.selectVoById(paper.getMajorId());
+    // 获取考试班级信息
+    GradeVo grade = this.gradeDAO.getVoById(gradeId);
+    // 获取考试课程信息
+    Course course = this.courseService.getById(paper.getCourseId());
+    // 封装参数
+    Map<String, Object> sheetMap = new HashMap<>(24);
+    // 试卷基础信息
+    sheetMap.put("paperName", paper.getPaperName());
+    sheetMap.put("academyName", major.getAcademy().getName());
+    sheetMap.put("major", major.getMajor());
+    sheetMap.put("level", paper.getLevel());
+    sheetMap.put("gradeName", grade.getGradeName());
+    sheetMap.put("studentCount", scores.size());
+    sheetMap.put("courseName", course.getCourseName());
+    sheetMap.put("courseAcademyName", course.getAcademy().getName());
+    sheetMap.put("courseTeacherName", course.getNames());
+    sheetMap.put("teacherName", teacher.getName());
+
+    // 试卷考试分析信息
+    //提取分数
+    List<String> scoreList = scores.stream().map(Score::getScore).collect(Collectors.toList());
+    // 分数总和
+    int sum = scoreList.stream().mapToInt(Integer::parseInt).sum();
+    // 成绩统计信息（最高分、最低分、平均分）
+    sheetMap.put("max", Collections.max(scoreList));
+    sheetMap.put("min", Collections.min(scoreList));
+    sheetMap.put("avg", sum / scores.size());
+    Map<String, Object> map = averageGradeScore(paperId, gradeId);
+    int[] scoresMap = (int[]) map.get("score");
+    String[] mapKey = {"e", "d", "c", "b", "a"};
+    for (int i = 0; i < scoresMap.length; i++) {
+      sheetMap.put(mapKey[i] + "Num", scoresMap[i]);
+      sheetMap.put(mapKey[i] + "Scale", (scoresMap[i] / (double) scores.size()) * 100);
+    }
+    // 及格率
+    sheetMap.put("passScale", ((scores.size() - scoresMap[0]) / (double) scores.size()) * 100);
+    //调用填充接口
+    this.excelTemplateService.packingPaperAnalysis(sheetMap, response);
+  }
+
+  @Override
+  public List<Score> selectByPaperIdAndGradeId(Integer paperId, Integer gradeId) {
+    List<Score> scores = this.selectByPaperId(paperId);
     // 过滤出该班级的成绩集合
     scores = scores.stream().filter(
         score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
         .collect(Collectors.toList());
-
-    // 获取教师信息
-    Teacher teacher = this.teacherDAO.selectById(paper.getTeacherId());
-
-    PaperAnalysis paperAnalysis = new PaperAnalysis();
-    paperAnalysis.setPaperName(paper.getPaperName());
-    paperAnalysis.setTeacherName(teacher.getName());
-    paperAnalysis.setLevel(paper.getLevel());
-    paperAnalysis.setGradeName(this.gradeDAO.getVoById(gradeId).getGradeName());
-    paperAnalysis.setMajor(this.majorDAO.selectById(paper.getMajorId()).getMajor());
-    paperAnalysis.setAcademyName(this.academyDAO.selectById(paper.getAcademyId()).getName());
-    Course course = this.courseDAO.selectById(paper.getCourseId());
-    paperAnalysis.setCourseName(course.getCourseName());
-    paperAnalysis.setStudentCount(scores.size());
-    paperAnalysis.setCourseAcademyName(this.academyDAO.selectById(course.getAcademyId()).getName());
-    this.excelTemplateService.packingPaperAnalysis(paperAnalysis, response);
+    return scores;
   }
 
   /**

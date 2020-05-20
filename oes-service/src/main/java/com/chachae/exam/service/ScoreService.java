@@ -1,6 +1,5 @@
 package com.chachae.exam.service;
 
-import cn.hutool.http.server.HttpServerResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Score;
@@ -28,7 +27,8 @@ public interface ScoreService extends IService<Score> {
   /**
    * 通过学号查询分数分页集合
    *
-   * @param page 分页信息
+   * @param page  分页信息
+   * @param stuId 学生id
    * @return 分页信息
    */
   Map<String, Object> pageByStuId(Page<Score> page, Integer stuId);
@@ -52,16 +52,16 @@ public interface ScoreService extends IService<Score> {
   /**
    * 根据学生ID和试卷ID修改成绩
    *
-   * @param dto 修改的信息
+   * @param entity 修改的信息
    */
-  void updateScoreByStuIdAndPaperId(AnswerEditDto dto);
+  void updateScoreByStuIdAndPaperId(AnswerEditDto entity);
 
   /**
    * 通过学生ID和试卷ID查询成绩详情
    *
    * @param stuId   学生ID
    * @param paperId 试卷ID
-   * @return 成绩详情
+   * @return Score：成绩详情
    */
   Score selectByStuIdAndPaperId(Integer stuId, Integer paperId);
 
@@ -84,13 +84,26 @@ public interface ScoreService extends IService<Score> {
    * 统计该班级某门考试的平均分
    *
    * @param gradeId 班级ID
+   * @param paperId 试卷ID
+   * @return Map<String, Object>
    */
   Map<String, Object> averageGradeScore(Integer paperId, Integer gradeId);
 
   /**
    * 导出试卷分析表
    *
-   * @param gradeId 班级ID
+   * @param gradeId  班级ID
+   * @param paperId  试卷ID
+   * @param response 响应对象
    */
   void outputPaperChartExcel(Integer paperId, Integer gradeId, HttpServletResponse response);
+
+  /**
+   * 获取某场考试的的某个班级的分数信息
+   *
+   * @param paperId 试卷id
+   * @param gradeId 班级id
+   * @return 分数集合
+   */
+  List<Score> selectByPaperIdAndGradeId(Integer paperId, Integer gradeId);
 }

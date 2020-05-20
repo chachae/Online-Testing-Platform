@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chachae.exam.common.constant.SysConsts;
 import com.chachae.exam.common.dao.PaperDAO;
 import com.chachae.exam.common.dao.PaperFormDAO;
-import com.chachae.exam.common.dao.ScoreDAO;
 import com.chachae.exam.common.dao.StuAnswerRecordDAO;
 import com.chachae.exam.common.dao.TypeDAO;
 import com.chachae.exam.common.exception.ServiceException;
@@ -29,6 +28,7 @@ import com.chachae.exam.common.util.PaperMarkUtil;
 import com.chachae.exam.service.GradeService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
+import com.chachae.exam.service.ScoreService;
 import com.google.common.collect.Lists;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +57,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   private final PaperFormDAO paperFormDAO;
   private final QuestionService questionService;
   private final StuAnswerRecordDAO stuAnswerRecordDAO;
-  private final ScoreDAO scoreDAO;
+  private final ScoreService scoreService;
   private final TypeDAO typeDAO;
   private final GradeService gradeService;
 
@@ -187,7 +187,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 封装分数参数，并将分数信息插入到分数表中
     Score scoreResult = new Score(stuId, paperId, paperName, String.valueOf(score), wstr);
     // 此处调用插入接口
-    this.scoreDAO.insert(scoreResult);
+    this.scoreService.save(scoreResult);
   }
 
   @Override
@@ -232,9 +232,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       // 删除score表中paperId为传入参数的对象
       LambdaQueryWrapper<Score> scoreQw = new LambdaQueryWrapper<>();
       scoreQw.eq(Score::getPaperId, id);
-      List<Score> scores = this.scoreDAO.selectList(scoreQw);
+      List<Score> scores = this.scoreService.list(scoreQw);
       // 遍历成绩集合，并逐一删除对应试卷的成绩数据
-      scores.forEach(score -> scoreDAO.deleteById(score.getId()));
+      scores.forEach(score -> scoreService.removeById(score.getId()));
 
       // 删除学生与该试卷关联的答题记录
       LambdaQueryWrapper<StuAnswerRecord> ansQw = new LambdaQueryWrapper<>();
@@ -551,6 +551,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
         .contains(String.valueOf(grade.getGradeNumber()))) {
       throw new ServiceException("该考试不属于该班级");
     }
+
+    List<Score> scores = this.scoreService.selectByPaperIdAndGradeId(paperId, gradeId);
+    if (CollUtil.isEmpty(scores)) {
+      throw new ServiceException("该班级没有考试记录");
+    }
+
   }
 
   @Override

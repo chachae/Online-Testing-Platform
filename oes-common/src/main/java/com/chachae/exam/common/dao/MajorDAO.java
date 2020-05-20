@@ -22,4 +22,12 @@ public interface MajorDAO extends BaseMapper<Major> {
    * @return 专业 List 集合
    */
   IPage<MajorVo> pageVo(Page<Major> page, @Param("major") Major major);
+
+  /**
+   * 查询专业 vo 对象
+   *
+   * @param majorId 专业ID
+   * @return 专业 vo 对象
+   */
+  MajorVo selectVoById(Integer majorId);
 }
