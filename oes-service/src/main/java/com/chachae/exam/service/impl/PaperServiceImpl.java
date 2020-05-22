@@ -220,29 +220,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 查询试卷是否存在
     Paper paper = this.paperDAO.selectById(id);
     if (paper != null) {
-      // 检查试卷是否在考试时间范围内，是的话不允许被删除（结束的话可以被删除/模拟考可以直接删除）
+      // 检查试卷是否在考试时间范围内，是的话不允许被删除（模拟考可以直接删除）
       if (paper.getPaperType().equals(SysConsts.Paper.PAPER_TYPE_FORMAL)
           // 已经开始
-          && paper.isStart()
-          // 还未结束
-          && !paper.isEnd()) {
-        throw new ServiceException("考试已开始，无法删除！");
+          && paper.isStart()) {
+        throw new ServiceException("考试已开始或已结束，无法删除！");
       }
-
-      // 删除score表中paperId为传入参数的对象
-      LambdaQueryWrapper<Score> scoreQw = new LambdaQueryWrapper<>();
-      scoreQw.eq(Score::getPaperId, id);
-      List<Score> scores = this.scoreService.list(scoreQw);
-      // 遍历成绩集合，并逐一删除对应试卷的成绩数据
-      scores.forEach(score -> scoreService.removeById(score.getId()));
-
-      // 删除学生与该试卷关联的答题记录
-      LambdaQueryWrapper<StuAnswerRecord> ansQw = new LambdaQueryWrapper<>();
-      // 构造查询条件
-      ansQw.eq(StuAnswerRecord::getPaperId, id);
-      List<StuAnswerRecord> ans = this.stuAnswerRecordDAO.selectList(ansQw);
-      // 遍历删除答题记录
-      ans.forEach(an -> stuAnswerRecordDAO.deleteById(an.getId()));
 
       // 获取试卷模板，如果只有他使用，则进行删除
       int paperFormId = paper.getPaperFormId();
@@ -544,7 +527,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
   @Override
   public void checkTestedByGradeId(Integer paperId, Integer level, Integer gradeId) {
+
     Paper paper = getById(paperId);
+    if (StrUtil.isBlank(paper.getGradeIds())) {
+      throw new ServiceException("试卷未指派班级");
+    }
     List<String> idList = StrUtil.split(paper.getGradeIds(), ',');
     Grade grade = gradeService.getById(gradeId);
     if (!paper.getLevel().equals(level) || !idList

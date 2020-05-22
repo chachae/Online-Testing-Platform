@@ -3,7 +3,6 @@ package com.chachae.exam.service;
 import com.chachae.exam.common.model.Question;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,7 +29,7 @@ public class QuestionSortService {
   public void setQuestionModel(ModelAndView mv, Integer paperId, boolean isRandom) {
     String[] names = {"qChoiceList", "qMulChoiceList", "qTofList", "qFillList", "qSaqList",
         "qProgramList"};
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < names.length; i++) {
       List<Question> questions = questionService.selectByPaperIdAndType(paperId, i + 1);
       if (isRandom) {
         Collections.shuffle(questions);

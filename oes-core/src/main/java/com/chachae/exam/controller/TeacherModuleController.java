@@ -6,6 +6,7 @@ import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Teacher;
 import com.chachae.exam.common.model.dto.PaperChartDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
+import com.chachae.exam.common.model.vo.GradeVo;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
 import com.chachae.exam.service.CourseService;
@@ -18,6 +19,7 @@ import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.StuAnswerRecordService;
 import java.util.List;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -172,10 +174,16 @@ public class TeacherModuleController {
    */
   @GetMapping("/reviewRes")
   public ModelAndView reviewPaper(Integer paperId, ModelAndView mv) {
+    // 检测复查试卷是否存在
+    mv.setViewName("redirect:/teacher/reviewPaper");
+    Paper paper = this.paperService.getById(paperId);
+    if (paper == null) {
+      return mv;
+    }
     // 答题记录传输对象 List 集合
     List<StuAnswerRecordDto> records = this.stuAnswerRecordService.listStuAnswerRecordDto(paperId);
     mv.addObject("stuAnswer", records);
-    mv.addObject("paper", this.paperService.getById(paperId));
+    mv.addObject("paper", paper);
     mv.addObject("questionList", this.questionService.listByStuAnswerRecordDto(records.get(0)));
     if (ServletUtil.isAjax()) {
       mv.setViewName("/teacher/review/record-list#reviewListTable");
@@ -189,13 +197,20 @@ public class TeacherModuleController {
    * 某场考试的班级分析
    */
   @GetMapping("/chartRes")
-  public ModelAndView chartPaper(PaperChartDto entity, ModelAndView mv) {
+  public ModelAndView chartPaper(@Valid PaperChartDto entity, ModelAndView mv) {
+    mv.setViewName("redirect:/teacher/reviewRes");
     // 检查试卷时候符合
     this.paperService
         .checkTestedByGradeId(entity.getPaperId(), entity.getLevel(), entity.getGradeId());
-    mv.addObject("paper", this.paperService.getById(entity.getPaperId()));
-    mv.addObject("gradeId", entity.getGradeId());
-    mv.addObject("grade", gradeService.selectVoById(entity.getGradeId()));
+    Paper paper = this.paperService.getById(entity.getPaperId());
+    Integer gradeId = entity.getGradeId();
+    GradeVo gradeVo = gradeService.selectVoById(entity.getGradeId());
+    if (paper == null || gradeId == null || gradeVo == null) {
+      return mv;
+    }
+    mv.addObject("paper", paper);
+    mv.addObject("gradeId", gradeId);
+    mv.addObject("grade", gradeVo);
     if (ServletUtil.isAjax()) {
       mv.setViewName("/teacher/chart/chart-list#chartListTable");
     } else {
@@ -233,8 +248,12 @@ public class TeacherModuleController {
    */
   @GetMapping("/paper/show/{id}")
   public ModelAndView show(@PathVariable Integer id, ModelAndView mv) {
+    mv.setViewName("/redirect:/teacher/paper");
     // 根据 ID 获取试卷的详细信息
     Paper paper = paperService.getById(id);
+    if (paper == null) {
+      return mv;
+    }
     // 设置基础 model 信息
     mv.addObject("paper", paper);
     mv.addObject("course", courseService.getById(paper.getCourseId()));

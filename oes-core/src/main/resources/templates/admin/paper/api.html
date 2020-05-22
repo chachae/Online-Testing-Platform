@@ -2,12 +2,19 @@
 
   // 操作按钮行为
   function operateFormatter(value, row, index) {
-    let btn = ['<button class="btn btn-info btn-sm updateBtn" onclick="goUpdate(' + row.id
-    + ')">指派班级</button>'];
+    let btn = ['<button class="btn btn-warning btn-sm updateBtn" onclick="goUpdate(' + row.id
+    + ')">指派班级</button>&nbsp;'];
     let detail = ['<button class="btn btn-info btn-sm detailBtn" onclick="goView(' + row.id
     + ')">出卷信息</button>&nbsp;'];
-    let btnLock = ['<button class="btn btn-warning btn-sm" disabled>指派班级</button>'];
-    return row.end ? detail+btnLock.join('') : detail+btn.join('');
+    let delBtn = ['<button class="btn btn-danger btn-sm detailBtn" onclick="goDelete(' + row.id
+    + ')">删除试卷</button>&nbsp;'];
+    let delBtnLock = ['<button class="btn btn-danger btn-sm detailBtn" disabled onclick="goDelete('
+    + row.id
+    + ')">删除试卷</button>&nbsp;'];
+    let btnLock = ['<button class="btn btn-warning btn-sm" disabled>指派班级</button>&nbsp;'];
+    return (row.start || row.end) ? detail + btnLock + delBtnLock.join('') : detail + btn
+        + delBtn.join(
+            '');
   }
 
   // 试卷状态
@@ -123,6 +130,19 @@
         show: true,
         backdrop: 'static'
       });
+    })
+  }
+
+  // 删除
+  function goDelete(id) {
+    OesUtil.confirm("确定删除试卷『" + id + "』吗?", function () {
+      $.post("/api/paper/delete/" + id).done(function (data) {
+        if (data.state === "success") {
+          OesUtil.refreshTable("#paperInfo");
+        } else {
+          toastr.error(data.message);
+        }
+      })
     })
   }
 

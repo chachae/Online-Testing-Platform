@@ -119,7 +119,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   @Override
   @Async
   @Transactional(rollbackFor = Exception.class)
-  public void importStudentsExcel(MultipartFile multipartFile) {
+  public synchronized void importStudentsExcel(MultipartFile multipartFile) {
     File file = FileUtil.toFile(multipartFile);
     // 读取 Excel 中的数据
     ExcelReader reader = ExcelUtil.getReader(file);
@@ -131,31 +131,29 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
       if (StrUtil.isNotBlank(entity.getName()) && StrUtil.isNotBlank(entity.getStuNumber())
           && entity.getMajorId() != null && entity.getLevel() != null) {
         // 同步写入
-        synchronized (this) {
-          // 查询学号是否已存在，不存在则导入
-          Student studentResult = this.selectByStuNumber(entity.getStuNumber());
-          // 查询专业统一代号是否存在
-          Major majorResult = this.majorDAO.selectById(entity.getMajorId());
-          if (studentResult == null && majorResult != null) {
-            // 性别判断
-            String sex;
-            if (entity.getSex() == null) {
-              sex = null;
-            } else {
-              sex = entity.getSex() == 1 ? "男" : "女";
-            }
-            // 参数封装
-            result
-                .setId(null)
-                .setStuNumber(entity.getStuNumber())
-                .setMajorId(entity.getMajorId())
-                .setSex(sex)
-                .setRoleId(Role.STUDENT)
-                .setPassword(RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD))
-                .setName(entity.getName())
-                .setLevel(entity.getLevel());
-            this.save(result);
+        // 查询学号是否已存在，不存在则导入
+        Student studentResult = this.selectByStuNumber(entity.getStuNumber());
+        // 查询专业统一代号是否存在
+        Major majorResult = this.majorDAO.selectById(entity.getMajorId());
+        if (studentResult == null && majorResult != null) {
+          // 性别判断
+          String sex;
+          if (entity.getSex() == null) {
+            sex = null;
+          } else {
+            sex = entity.getSex() == 1 ? "男" : "女";
           }
+          // 参数封装
+          result
+              .setId(null)
+              .setStuNumber(entity.getStuNumber())
+              .setMajorId(entity.getMajorId())
+              .setSex(sex)
+              .setRoleId(Role.STUDENT)
+              .setPassword(RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD))
+              .setName(entity.getName())
+              .setLevel(entity.getLevel());
+          this.save(result);
         }
       }
     }

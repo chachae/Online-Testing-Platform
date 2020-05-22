@@ -7,21 +7,20 @@ import com.chachae.exam.common.model.Paper;
 import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.util.HttpUtil;
 import com.chachae.exam.common.util.ServletUtil;
-import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.CourseService;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
+import com.chachae.exam.service.QuestionSortService;
 import com.chachae.exam.service.ScoreService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * 學生控制层
@@ -31,13 +30,14 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/student")
+@RequiredArgsConstructor
 public class StudentModuleController {
 
-  @Resource private QuestionSortService questionSortService;
-  @Resource private MajorService majorService;
-  @Resource private PaperService paperService;
-  @Resource private ScoreService scoreService;
-  @Resource private CourseService courseService;
+  private final QuestionSortService questionSortService;
+  private final MajorService majorService;
+  private final PaperService paperService;
+  private final ScoreService scoreService;
+  private final CourseService courseService;
 
   /**
    * 学生登录后来到home页
@@ -145,8 +145,14 @@ public class StudentModuleController {
    */
   @GetMapping("/paper/{paperId}")
   public ModelAndView doPaper(@PathVariable Integer paperId, ModelAndView mv) {
+    mv.setViewName("redirect:/student/exam");
+    // 若试卷不存在，转发到"我的考试"界面
+    Paper paper = paperService.getById(paperId);
+    if (paper == null) {
+      return mv;
+    }
     // 设置试卷信息的 model 对象信息
-    mv.addObject("paper", paperService.getById(paperId));
+    mv.addObject("paper", paper);
     // 各类题型的 model 对象信息
     questionSortService.setQuestionModel(mv, paperId, true);
     // 返回试卷
@@ -176,7 +182,8 @@ public class StudentModuleController {
       // 批改试卷
       this.paperService.markPaper(stuId, paperId, request);
     }
-    return "redirect:/student/index";
+    // 批改完成，重定向到成绩列表页面
+    return "redirect:/student/score";
   }
 
   /**
@@ -188,8 +195,12 @@ public class StudentModuleController {
    */
   @GetMapping("/score/detail/{id}")
   public ModelAndView scoreDetail(@PathVariable Integer id, ModelAndView mv) {
+    mv.setViewName("redirect:/student/score");
     // id = score表对应id，设置 model 对象信息
     Score score = this.scoreService.getById(id);
+    if (score == null) {
+      return mv;
+    }
     // 设置试卷信息
     Integer paperId = score.getPaperId();
 
