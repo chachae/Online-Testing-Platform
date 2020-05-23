@@ -10,6 +10,7 @@ import com.chachae.exam.core.annotation.Permissions;
 import com.chachae.exam.service.ScoreService;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,5 +74,15 @@ public class ScoreController {
     // 获取学生的 ID
     StudentVo student = (StudentVo) HttpUtil.getAttribute(SysConsts.Session.STUDENT);
     return this.scoreService.pageByStuId(page, student.getId());
+  }
+
+  /**
+   * 成绩分析
+   *
+   * @param studentId 学生id
+   */
+  @GetMapping("/chart/analysis")
+  public void outputAnalysis(Integer studentId, HttpServletResponse response) {
+    this.scoreService.outputScoreChartExcel(studentId, response);
   }
 }

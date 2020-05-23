@@ -33,33 +33,37 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-6">
+          <div class="col-12">
             <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">分析信息</h3>
+                <div class="card-tools">
+                  <div class="input-group input-group-sm">
+                    <button onclick="getOutput()" class="btn btn-default btn-sm">导出试卷分析表</button>&nbsp;
+                    <button class="btn btn-default btn-sm"
+                            onclick="OesUtil.refreshTable('#paperInfo');">刷新数据
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
-                  <div id="main" style="height: 500px;width: 100%"></div>
+              <div class="card-body">
+                <table id="paperInfo"
+                       class="table table-bordered table-striped text-nowrap">
+                  <tr>
+                    <td id="main" class="col-6" style="height: 500px;width: 50%"></td>
+                    <td id="chart" class="col-6" style="height: 500px;width: 50%"></td>
+                  </tr>
                 </table>
               </div>
             </div>
-            <!-- /.card -->
           </div>
-
-          <div class="col-6">
-            <div class="card">
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
-                  <div id="chart" style="height: 500px;width: 100%"></div>
-                </table>
-              </div>
-            </div>
-            <!-- /.card -->
-          </div>
-
-        </div><!-- /.row -->
-      </div>
+          <!-- /.card -->
+        </div>
+      </div><!-- /.row -->
     </section>
+
     <%include("api.html"){}%>
     <%}%>
   </div>

@@ -99,6 +99,14 @@ public interface ScoreService extends IService<Score> {
   void outputPaperChartExcel(Integer paperId, Integer gradeId, HttpServletResponse response);
 
   /**
+   * 导出学生成绩分析表
+   *
+   * @param studentId 学生ID
+   */
+  void outputScoreChartExcel(Integer studentId, HttpServletResponse response);
+
+
+  /**
    * 获取某场考试的的某个班级的分数信息
    *
    * @param paperId 试卷id

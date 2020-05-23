@@ -150,11 +150,31 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
       // 取除数
       int mdn = Integer.parseInt(s.getScore()) / 10;
       switch (mdn) {
-        case 5:case 4:case 3:case 2:case 1:case 0:eNum++;sbe.append(startBracket).append(s.getPaperName()).append(endBracket);break;
-        case 6:bNum++;sbd.append(startBracket).append(s.getPaperName()).append(endBracket);break;
-        case 7:cNum++;sbc.append(startBracket).append(s.getPaperName()).append(endBracket);break;
-        case 8:bNum++;sbb.append(startBracket).append(s.getPaperName()).append(endBracket);break;
-        default:aNum++;sba.append(startBracket).append(s.getPaperName()).append(endBracket);break;
+        case 5:
+        case 4:
+        case 3:
+        case 2:
+        case 1:
+        case 0:
+          eNum++;
+          sbe.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 6:
+          bNum++;
+          sbd.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 7:
+          cNum++;
+          sbc.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        case 8:
+          bNum++;
+          sbb.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
+        default:
+          aNum++;
+          sba.append(startBracket).append(s.getPaperName()).append(endBracket);
+          break;
       }
     }
 
@@ -213,7 +233,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
 
   @Override
   public List<Score> selectByPaperId(Integer paperId) {
-    // 构造学生id和试卷id查询的查询条件
+    // 构造试卷id查询的查询条件
     LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
     qw.eq(Score::getPaperId, paperId);
     // 返回查询到的数据
@@ -234,7 +254,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
     } else {
       // 过滤分数
       // 过滤出该班级的成绩集合
-      scores = scores.stream().filter(score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+      scores = scores.stream().filter(
+          score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
           .collect(Collectors.toList());
       if (CollUtil.isEmpty(scores)) {
         return resultMap;
@@ -245,11 +266,26 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
           // 取除数
           int mdn = Integer.parseInt(score.getScore()) / 10;
           switch (mdn) {
-            case 5:case 4:case 3:case 2:case 1:case 0:avgs[0]++;break;
-            case 6:avgs[1]++;break;
-            case 7:avgs[2]++;break;
-            case 8:avgs[3]++;break;
-            default:avgs[4]++;break;
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+            case 0:
+              avgs[0]++;
+              break;
+            case 6:
+              avgs[1]++;
+              break;
+            case 7:
+              avgs[2]++;
+              break;
+            case 8:
+              avgs[3]++;
+              break;
+            default:
+              avgs[4]++;
+              break;
           }
         }
         resultMap.put(scoreKey, avgs);
@@ -310,10 +346,34 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   }
 
   @Override
+  public void outputScoreChartExcel(Integer studentId, HttpServletResponse response) {
+    List<Score> scores = this.selectByStuId(studentId);
+    for (Score score : scores) {
+      // 设置试卷信息
+      score.setPaper(this.paperDAO.selectById(score.getPaperId()));
+      // 设置平均分
+      List<Score> curPaperScores = this.selectByPaperId(score.getPaperId());
+      int avg = curPaperScores.stream().mapToInt(sc -> Integer.parseInt(sc.getScore())).sum()
+          / curPaperScores.size();
+      score.setPaperAvgScore(avg);
+      // 排名
+      for (int i = 0; i < curPaperScores.size(); i++) {
+        if (curPaperScores.get(i).getId().equals(score.getId())) {
+          score.setSort(i + 1);
+          break;
+        }
+      }
+    }
+    //调用填充接口
+    this.excelTemplateService.packingStudentScoreAnalysis(scores, response);
+  }
+
+  @Override
   public List<Score> selectByPaperIdAndGradeId(Integer paperId, Integer gradeId) {
     List<Score> scores = this.selectByPaperId(paperId);
     // 过滤出该班级的成绩集合
-    scores = scores.stream().filter(score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+    scores = scores.stream()
+        .filter(score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
         .collect(Collectors.toList());
     return scores;
   }

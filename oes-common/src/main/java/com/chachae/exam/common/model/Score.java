@@ -1,6 +1,8 @@
 package com.chachae.exam.common.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,6 +47,18 @@ public class Score {
    * 错题id集合
    */
   private String wrongIds;
+
+  @JsonIgnore
+  @TableField(exist = false)
+  private Paper paper;
+
+  @JsonIgnore
+  @TableField(exist = false)
+  private Integer paperAvgScore;
+
+  @JsonIgnore
+  @TableField(exist = false)
+  private Integer sort;
 
   public Score(Integer stuId, Integer paperId, String paperName, String score, String wrongIds) {
     this.stuId = stuId;

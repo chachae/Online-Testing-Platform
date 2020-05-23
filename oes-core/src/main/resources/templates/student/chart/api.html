@@ -3,7 +3,7 @@
   $(function () {
     const myChart = echarts.init(document.getElementById('main'),'wonderland');
     const option = {
-      title: {text: '成绩雷达图', x: 'center'},
+      title: {text: '成绩雷达图', x: 'right'},
       tooltip: {},
       legend: {
         data: ['平均成绩（Average Achievement）', '我的成绩（My Achievement）'],
@@ -16,7 +16,7 @@
             color: '#fff',
             backgroundColor: '#999',
             borderRadius: 5,
-            padding: [5, 10]
+            padding: [3, 10]
           }
         },
         indicator: [{}]
@@ -82,7 +82,7 @@
     // 基于准备好的dom，初始化 Echarts 实例
     const chart = echarts.init(document.getElementById('chart'),'wonderland');
     chart.setOption({
-      title: {text: '成绩分数段统计', subtext: '成绩源于数据库', x: 'center'},
+      title: {text: '成绩分数段统计', subtext: '成绩源于数据库', x: 'right'},
       tooltip: {trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)"},
       legend: {
         orient: 'vertical',
@@ -203,4 +203,8 @@
       toastr.error("服务器异常");
     });
   });
+
+  function getOutput() {
+    window.location.href = "/api/score/chart/analysis?studentId=${session.student.id}";
+  }
 </script>
