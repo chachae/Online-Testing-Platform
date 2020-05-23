@@ -3,7 +3,6 @@ package com.chachae.exam.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Major;
-
 import java.util.List;
 import java.util.Map;
 

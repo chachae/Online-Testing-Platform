@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,9 +63,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   private final PaperFormDAO paperFormDAO;
   private final CourseService courseService;
   private final TeacherDAO teacherDAO;
-
-  @Value("${oes.cache.paper_prefix}")
-  private String prefix;
 
   @Override
   public Map<String, Object> listPage(Page<Question> page, QueryQuestionDto entity) {
@@ -188,16 +184,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
   @Transactional(rollbackFor = Exception.class)
   public ImportPaperDto importPaper(MultipartFile multipartFile) {
     try {
+      // 试题类型数量
+      int questionTypeNum = 6;
       // 准备一个 Map 用来存储题目的类型和数量
       Map<Integer, Integer> typeNumMap = Maps.newHashMap();
       // 初始化题型数量数据
-      for (int i = 1; i <= 6; i++) {
+      for (int i = 1; i <= questionTypeNum; i++) {
         typeNumMap.put(i, 0);
       }
       // 准备一个 Map 用来存储题目的类型和分值
       Map<Integer, Integer> typeScoreMap = Maps.newHashMap();
       // 初始化题型分值数据
-      for (int i = 1; i <= 6; i++) {
+      for (int i = 1; i <= questionTypeNum; i++) {
         typeScoreMap.put(i, 0);
       }
 
@@ -342,14 +340,12 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
           Integer tid = question.getTypeId();
           List<Question> result = this
               .listByQuestionNameAndCourseIdAndTypeId(questionName, cid, tid);
-          if (CollUtil.isEmpty(result)) {
-            // 如果教师包含该课程，则允许插入
-            if (ids.contains(cid)) {
-              // 设置题目的教师ID，谁导入的插入谁
-              question.setTeacherId(teacherId);
-              // 插入题目数据
-              this.questionDAO.insert(question);
-            }
+          // 如果教师包含该课程，则允许插入
+          if (CollUtil.isEmpty(result) && ids.contains(cid)) {
+            // 设置题目的教师ID，谁导入的插入谁
+            question.setTeacherId(teacherId);
+            // 插入题目数据
+            this.questionDAO.insert(question);
           }
         }
       }

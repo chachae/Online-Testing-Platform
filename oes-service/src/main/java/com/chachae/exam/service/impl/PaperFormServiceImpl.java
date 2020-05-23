@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
     implements PaperFormService {
 
-  private PaperService paperService;
-  private PaperFormDAO paperFormDAO;
+  private final PaperService paperService;
+  private final PaperFormDAO paperFormDAO;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -52,7 +52,7 @@ public class PaperFormServiceImpl extends ServiceImpl<PaperFormDAO, PaperForm>
 
   @Override
   public List<PaperForm> list() {
-    List<PaperForm> list = super.list();
+    List<PaperForm> list = baseMapper.selectList(null);
     // 过滤出类型1 的数据按模板
     return list.stream()
         // steam 流过滤模板类型

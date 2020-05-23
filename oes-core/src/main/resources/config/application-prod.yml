@@ -8,10 +8,10 @@ spring:
 
   # DataSource
   datasource:
-    url: jdbc:mysql://${mysql.url}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${mysql.url:localhost}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
+    username: ${mysql.username:root}
+    password: ${mysql.password:123456}
     hikari:
       auto-commit: on
       connection-timeout: 30000
@@ -39,7 +39,7 @@ spring:
 
   #Lettuce-Redis
   redis:
-    host: ${redis.url}
+    host: ${redis.url:127.0.0.1}
     port: 6379
     password:
     timeout: 2000ms

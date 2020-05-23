@@ -69,6 +69,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean save(Major entity) {
     if (CollUtil.isEmpty(this.listByMajorName(entity.getMajor()))) {
       baseMapper.insert(entity);

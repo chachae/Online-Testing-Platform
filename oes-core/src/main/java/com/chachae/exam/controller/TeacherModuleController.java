@@ -198,16 +198,12 @@ public class TeacherModuleController {
    */
   @GetMapping("/chartRes")
   public ModelAndView chartPaper(@Valid PaperChartDto entity, ModelAndView mv) {
-    mv.setViewName("redirect:/teacher/reviewRes");
     // 检查试卷时候符合
     this.paperService
         .checkTestedByGradeId(entity.getPaperId(), entity.getLevel(), entity.getGradeId());
     Paper paper = this.paperService.getById(entity.getPaperId());
     Integer gradeId = entity.getGradeId();
     GradeVo gradeVo = gradeService.selectVoById(entity.getGradeId());
-    if (paper == null || gradeId == null || gradeVo == null) {
-      return mv;
-    }
     mv.addObject("paper", paper);
     mv.addObject("gradeId", gradeId);
     mv.addObject("grade", gradeVo);
@@ -248,7 +244,7 @@ public class TeacherModuleController {
    */
   @GetMapping("/paper/show/{id}")
   public ModelAndView show(@PathVariable Integer id, ModelAndView mv) {
-    mv.setViewName("/redirect:/teacher/paper");
+    mv.setViewName("redirect:/teacher/paper");
     // 根据 ID 获取试卷的详细信息
     Paper paper = paperService.getById(id);
     if (paper == null) {

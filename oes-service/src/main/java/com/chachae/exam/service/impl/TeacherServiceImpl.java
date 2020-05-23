@@ -108,6 +108,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDAO, Teacher> impleme
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean save(Teacher entity) {
     // 查询是否已经存在该工号
     Teacher teacher = this.selectByWorkNumber(entity.getWorkNumber());

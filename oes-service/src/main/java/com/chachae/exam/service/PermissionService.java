@@ -2,7 +2,6 @@ package com.chachae.exam.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Permission;
-
 import java.util.Set;
 
 /**
@@ -13,5 +12,11 @@ import java.util.Set;
  */
 public interface PermissionService extends IService<Permission> {
 
+  /**
+   * 获取用户权限表达式
+   *
+   * @param roleId 角色id
+   * @return 权限表达式集合：Set
+   */
   Set<String> selectExpressionByRoleId(Integer roleId);
 }

@@ -9,4 +9,6 @@ import com.chachae.exam.common.model.Type;
  * @author chachae
  * @since 2020-02-14 18:28:59
  */
-public interface TypeService extends IService<Type> {}
+public interface TypeService extends IService<Type> {
+
+}

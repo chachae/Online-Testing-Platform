@@ -3,7 +3,7 @@ package com.chachae.exam.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.constant.SysConsts.Role;
 import com.chachae.exam.common.dao.PermissionDAO;
 import com.chachae.exam.common.model.Permission;
 import com.chachae.exam.common.model.RolePermission;
@@ -60,7 +60,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionDAO, Permission
     // 组装权限信息
     Set<String> result = Sets.newHashSet();
     // 判断角色等级
-    if (roleId.equals(SysConsts.Role.ADMIN)) {
+    if (roleId.equals(Role.ADMIN)) {
       // 管理员直接拥有所有权限表达式
       List<Permission> permissions = this.permissionDAO.selectList(null);
       permissions.forEach(pm -> result.add(pm.getExpression()));

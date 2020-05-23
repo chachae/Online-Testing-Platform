@@ -77,13 +77,6 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   }
 
   @Override
-  public List<Course> selectByCourseName(String courseName) {
-    LambdaQueryWrapper<Course> qw = new LambdaQueryWrapper<>();
-    qw.eq(Course::getCourseName, courseName);
-    return this.courseDAO.selectList(qw);
-  }
-
-  @Override
   public Map<String, Object> listPage(Page<Course> page, QueryCourseDto entity) {
     if (entity.getTeacherId() != null) {
       List<Course> courses = this.courseDAO.listByTeacherId(entity.getTeacherId());
@@ -120,6 +113,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseDAO, Course> implements
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean save(Course course) {
     baseMapper.insert(toSaveOrUpdate(course));
     return true;

@@ -4,7 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.constant.SysConsts.Role;
+import com.chachae.exam.common.constant.SysConsts.Session;
 import com.chachae.exam.common.dao.AdminDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Admin;
@@ -102,7 +103,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
   @Transactional(rollbackFor = Exception.class)
   public boolean removeById(Serializable id) {
     // 获取当前的管理员ID是否和被删除的相同（一样则不能刪除）
-    Admin cur = (Admin) HttpUtil.getAttribute(SysConsts.Session.ADMIN);
+    Admin cur = (Admin) HttpUtil.getAttribute(Session.ADMIN);
     // 当前 session 的 管理员 ID 和被删除的管理员ID一直，不能被删除
     if (cur.getId().equals(id)) {
       throw new ServiceException("不可以删除自己");
@@ -125,7 +126,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminDAO, Admin> implements Ad
       entity.setAcademyId(null);
     }
     // 封装管理员默认角色ID，同时加密密码
-    entity.setRoleId(SysConsts.Role.ADMIN);
+    entity.setRoleId(Role.ADMIN);
     entity.setPassword(RsaCipherUtil.hash(entity.getPassword()));
     entity.setLastLoginTime(new Date());
     baseMapper.insert(entity);

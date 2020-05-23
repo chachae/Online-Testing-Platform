@@ -9,4 +9,6 @@ import com.chachae.exam.common.model.PaperForm;
  * @author chachae
  * @since 2020-02-14 17:51:18
  */
-public interface PaperFormService extends IService<PaperForm> {}
+public interface PaperFormService extends IService<PaperForm> {
+
+}

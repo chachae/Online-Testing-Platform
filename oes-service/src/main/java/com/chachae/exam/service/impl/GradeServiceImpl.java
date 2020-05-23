@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author chachae
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class GradeServiceImpl extends ServiceImpl<GradeDAO, Grade> implements GradeService {
 
   private final GradeDAO gradeDAO;
@@ -43,6 +46,7 @@ public class GradeServiceImpl extends ServiceImpl<GradeDAO, Grade> implements Gr
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public void save(ImportGradeDto entity) {
     List<Grade> grades = this.listByMajorId(entity.getMajorId());
     int level = entity.getLevel();

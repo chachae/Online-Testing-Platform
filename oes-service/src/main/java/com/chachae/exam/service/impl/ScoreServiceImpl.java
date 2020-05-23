@@ -58,6 +58,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   private final CourseService courseService;
   private final ExcelTemplateService excelTemplateService;
 
+  private static final String[] SCORE_MAP_KEYS = {"60分以下", "60-70分", "70-80分", "80-90分", "90分以上"};
+
   @Override
   public List<Score> selectByStuId(Integer id) {
     // QueryWrapper 条件构造器构造查询 Sql
@@ -148,45 +150,25 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
       // 取除数
       int mdn = Integer.parseInt(s.getScore()) / 10;
       switch (mdn) {
-        case 5:
-        case 4:
-        case 3:
-        case 2:
-        case 1:
-        case 0:
-          eNum++;
-          sbe.append(startBracket).append(s.getPaperName()).append(endBracket);
-          break;
-        case 6:
-          bNum++;
-          sbd.append(startBracket).append(s.getPaperName()).append(endBracket);
-          break;
-        case 7:
-          cNum++;
-          sbc.append(startBracket).append(s.getPaperName()).append(endBracket);
-          break;
-        case 8:
-          bNum++;
-          sbb.append(startBracket).append(s.getPaperName()).append(endBracket);
-          break;
-        default:
-          aNum++;
-          sba.append(startBracket).append(s.getPaperName()).append(endBracket);
-          break;
+        case 5:case 4:case 3:case 2:case 1:case 0:eNum++;sbe.append(startBracket).append(s.getPaperName()).append(endBracket);break;
+        case 6:bNum++;sbd.append(startBracket).append(s.getPaperName()).append(endBracket);break;
+        case 7:cNum++;sbc.append(startBracket).append(s.getPaperName()).append(endBracket);break;
+        case 8:bNum++;sbb.append(startBracket).append(s.getPaperName()).append(endBracket);break;
+        default:aNum++;sba.append(startBracket).append(s.getPaperName()).append(endBracket);break;
       }
     }
 
     // 存入分数分布数据
-    scoreMap.put("60分以下", eNum);
-    scoreMap.put("60-70分", dNum);
-    scoreMap.put("70-80分", cNum);
-    scoreMap.put("80-90分", bNum);
-    scoreMap.put("90分以上", aNum);
-    levelPaperMap.put("60分以下", sbe.toString());
-    levelPaperMap.put("60-70分", sbd.toString());
-    levelPaperMap.put("70-80分", sbc.toString());
-    levelPaperMap.put("80-90分", sbb.toString());
-    levelPaperMap.put("90分以上", sba.toString());
+    scoreMap.put(SCORE_MAP_KEYS[0], eNum);
+    scoreMap.put(SCORE_MAP_KEYS[1], dNum);
+    scoreMap.put(SCORE_MAP_KEYS[2], cNum);
+    scoreMap.put(SCORE_MAP_KEYS[3], bNum);
+    scoreMap.put(SCORE_MAP_KEYS[4], aNum);
+    levelPaperMap.put(SCORE_MAP_KEYS[0], sbe.toString());
+    levelPaperMap.put(SCORE_MAP_KEYS[1], sbd.toString());
+    levelPaperMap.put(SCORE_MAP_KEYS[2], sbc.toString());
+    levelPaperMap.put(SCORE_MAP_KEYS[3], sbb.toString());
+    levelPaperMap.put(SCORE_MAP_KEYS[4], sba.toString());
     resList.add(scoreMap);
     resList.add(levelPaperMap);
 
@@ -252,8 +234,7 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
     } else {
       // 过滤分数
       // 过滤出该班级的成绩集合
-      scores = scores.stream().filter(
-          score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+      scores = scores.stream().filter(score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
           .collect(Collectors.toList());
       if (CollUtil.isEmpty(scores)) {
         return resultMap;
@@ -264,26 +245,11 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
           // 取除数
           int mdn = Integer.parseInt(score.getScore()) / 10;
           switch (mdn) {
-            case 5:
-            case 4:
-            case 3:
-            case 2:
-            case 1:
-            case 0:
-              avgs[0]++;
-              break;
-            case 6:
-              avgs[1]++;
-              break;
-            case 7:
-              avgs[2]++;
-              break;
-            case 8:
-              avgs[3]++;
-              break;
-            default:
-              avgs[4]++;
-              break;
+            case 5:case 4:case 3:case 2:case 1:case 0:avgs[0]++;break;
+            case 6:avgs[1]++;break;
+            case 7:avgs[2]++;break;
+            case 8:avgs[3]++;break;
+            default:avgs[4]++;break;
           }
         }
         resultMap.put(scoreKey, avgs);
@@ -332,8 +298,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
     sheetMap.put("avg", sum / scores.size());
     Map<String, Object> map = averageGradeScore(paperId, gradeId);
     int[] scoresMap = (int[]) map.get("score");
-    String[] mapKey = {"e", "d", "c", "b", "a"};
-    for (int i = 0; i < scoresMap.length; i++) {
+    String[] mapKey = {"a", "b", "c", "d", "e"};
+    for (int i = scoresMap.length - 1; i >= 0; i--) {
       sheetMap.put(mapKey[i] + "Num", scoresMap[i]);
       sheetMap.put(mapKey[i] + "Scale", (scoresMap[i] / (double) scores.size()) * 100);
     }
@@ -347,90 +313,8 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreDAO, Score> implements Sc
   public List<Score> selectByPaperIdAndGradeId(Integer paperId, Integer gradeId) {
     List<Score> scores = this.selectByPaperId(paperId);
     // 过滤出该班级的成绩集合
-    scores = scores.stream().filter(
-        score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
+    scores = scores.stream().filter(score -> this.studentDAO.selectById(score.getStuId()).getGradeId().equals(gradeId))
         .collect(Collectors.toList());
     return scores;
-  }
-
-  /**
-   * 统计各个分数段人数
-   *
-   * @param paperList 试卷及合
-   * @param countMap  分数 Map 集合
-   * @param countList 各个分数段 List 集合
-   */
-  private void countPerScoreNum(
-      List<Paper> paperList, Map<String, Object> countMap, List<Map<String, Object>> countList) {
-
-    // 预备用于计算各科成绩等级分布数量 E,D,C,B,A
-    long eNum = 0L;
-    long dNum = 0L;
-    long cNum = 0L;
-    long bNum = 0L;
-    long aNum = 0L;
-
-    // 循环该学生的分数 List 集合并计算出各门考试成绩分数分布信息
-    if (CollUtil.isNotEmpty(paperList)) {
-      for (Paper ignored : paperList) {
-        // 不及格人数 E
-        eNum += this.countLe("60");
-        countMap.put("60分以下", eNum);
-        // 60到70 D
-        dNum += this.count("60", "70");
-        countMap.put("60-70分", dNum);
-        // 70到80 C
-        cNum += this.count("70", "80");
-        countMap.put("70-80分", cNum);
-        // 80到90 B
-        bNum += this.count("80", "90");
-        countMap.put("80-90分", bNum);
-        // 90到100 A
-        aNum += this.countGt("90");
-        countMap.put("90分以上", aNum);
-      }
-      countList.add(countMap);
-    }
-  }
-
-  /**
-   * 统计成绩大于改分数的数量
-   *
-   * @param score 成绩
-   * @return 数量
-   */
-  private int countGt(String score) {
-    // 使用 QueryWrapper 构造查询条件，下面的三个方法同理
-    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
-    // gt（GreatThan） 大于
-    qw.gt(Score::getScore, score);
-    return this.scoreDAO.selectCount(qw);
-  }
-
-  /**
-   * 统计成绩小于改分数的数量
-   *
-   * @param score 成绩
-   * @return 数量
-   */
-  private int countLe(String score) {
-    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
-    // le（lessThan）小于
-    qw.le(Score::getScore, score);
-    return this.scoreDAO.selectCount(qw);
-  }
-
-  /**
-   * 统计成绩介于两者之间的数量
-   *
-   * @param start 开始分数
-   * @param end   结束分数
-   * @return 数量
-   */
-  private int count(String start, String end) {
-    LambdaQueryWrapper<Score> qw = new LambdaQueryWrapper<>();
-    // between 介于两者之间
-    qw.between(Score::getScore, start, end);
-    return this.scoreDAO.selectCount(qw);
   }
 }

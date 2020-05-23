@@ -7,10 +7,9 @@ import com.chachae.exam.common.model.dto.ImportPaperDto;
 import com.chachae.exam.common.model.dto.QueryQuestionDto;
 import com.chachae.exam.common.model.dto.StuAnswerRecordDto;
 import com.chachae.exam.common.model.vo.QuestionVo;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 试题接口
@@ -23,7 +22,7 @@ public interface QuestionService extends IService<Question> {
   /**
    * 显示试题库并分页
    *
-   * @param page 分页信息
+   * @param page   分页信息
    * @param entity 模糊条件
    * @return 分页信息结果集
    */
@@ -33,7 +32,7 @@ public interface QuestionService extends IService<Question> {
    * 根据paperId和试题类型查找该类型题目集合
    *
    * @param paperId 试卷ID
-   * @param typeId 试卷类型
+   * @param typeId  试卷类型
    * @return 问题 List 集合
    */
   List<Question> selectByPaperIdAndType(Integer paperId, Integer typeId);
@@ -41,7 +40,7 @@ public interface QuestionService extends IService<Question> {
   /**
    * 通过题目类型 ID 和课程 ID 获取问题 List 集合
    *
-   * @param typeId 题目类型ID
+   * @param typeId   题目类型ID
    * @param courseId 课程ID
    * @return 问题集合
    */
@@ -73,8 +72,8 @@ public interface QuestionService extends IService<Question> {
    * 通过题目名称查询题目列表
    *
    * @param questionName 题目名称
-   * @param courseId 课程ID
-   * @param typeId 题目类型ID
+   * @param courseId     课程ID
+   * @param typeId       题目类型ID
    * @return 题目列表
    */
   List<Question> listByQuestionNameAndCourseIdAndTypeId(
