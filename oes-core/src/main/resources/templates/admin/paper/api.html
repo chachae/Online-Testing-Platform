@@ -2,6 +2,9 @@
 
   // 操作按钮行为
   function operateFormatter(value, row, index) {
+    let exportPaper = ['<button class="btn btn-secondary btn-sm exportBtn" onclick="exportPaper('
+    + row.id
+    + ')">导出</button>&nbsp;'];
     let btn = ['<button class="btn btn-warning btn-sm updateBtn" onclick="goUpdate(' + row.id
     + ')">指派班级</button>&nbsp;'];
     let detail = ['<button class="btn btn-info btn-sm detailBtn" onclick="goView(' + row.id
@@ -12,7 +15,8 @@
     + row.id
     + ')">删除试卷</button>&nbsp;'];
     let btnLock = ['<button class="btn btn-warning btn-sm" disabled>指派班级</button>&nbsp;'];
-    return (row.start || row.end) ? detail + btnLock + delBtnLock.join('') : detail + btn
+    return (row.start || row.end) ? exportPaper + detail + btnLock + delBtnLock.join('') : detail
+        + btn
         + delBtn.join(
             '');
   }
@@ -50,7 +54,7 @@
       }, {
         title: '试卷编号',
         field: 'id',
-        sortable: false
+        sortable: true
       }, {
         title: '名称',
         field: 'paperName',
@@ -58,7 +62,7 @@
       }, {
         title: '状态',
         field: 'major',
-        sortable: false,
+        sortable: true,
         formatter: stateFormatter
       }, {
         title: '类型',
@@ -160,6 +164,11 @@
         }
       })
     })
+  }
+
+  // 导出
+  function exportPaper(id) {
+    window.location.href = "/api/paper/export/" + id;
   }
 
 </script>

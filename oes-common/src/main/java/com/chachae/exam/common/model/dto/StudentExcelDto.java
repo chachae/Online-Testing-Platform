@@ -37,4 +37,9 @@ public class StudentExcelDto extends BaseEntity {
    * 学生年级
    */
   private Integer level;
+
+  /**
+   * 班级id
+   */
+  private Integer gradeId;
 }

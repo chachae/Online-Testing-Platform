@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 试卷题目类型信息实体
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
  * @date 2020/1/6
  */
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

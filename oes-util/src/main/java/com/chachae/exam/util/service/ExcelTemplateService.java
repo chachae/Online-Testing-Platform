@@ -1,5 +1,8 @@
 package com.chachae.exam.util.service;
 
+import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.model.Question;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,4 +20,11 @@ public interface ExcelTemplateService {
    */
   void packingPaperAnalysis(Map<String, Object> sheetMap, HttpServletResponse response);
 
+  /**
+   * 填充试卷
+   *
+   * @param questionList 问题集合
+   * @param response     响应对象
+   */
+  void packingPaper(Paper paper, List<Question> questionList, HttpServletResponse response);
 }

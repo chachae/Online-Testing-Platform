@@ -9,12 +9,16 @@
     };
   }
 
+  // 班级模糊搜索
+  OesUtil.bindRequest('#findKey', '#gradeInfo', 200);
+
   OesUtil.initQueryTable('#gradeInfo', "/api/grade/list", "get", [{
     title: '编号', field: 'id', sortable: false, formatter: function (value, row, index) {
       return index + 1;
     }
-  }, {title: '年级', field: 'level', sortable: false},
-    {title: '班级名称', field: 'gradeName', sortable: false}], params);
+  }, {title: '年级', field: 'level', sortable: true},
+    {title: '班级统一编号', field: 'id', sortable: false},
+    {title: '班级名称', field: 'gradeName', sortable: true}], params);
 
   $("#saveBtn").click(function () {
     OesUtil.confirm("确定增加班级吗?", function () {
@@ -35,7 +39,7 @@
   $.get("/api/academy").done(function (data) {
     let options = "";
     $('.academySelect').empty();
-    options+="<option value=''>" + "全部" + "</option>";
+    options += "<option value=''>" + "全部" + "</option>";
     $.each(data, function (index, e) {
       if ("${session.admin.academyId}".length === 0) {
         options += "<option value=" + e.id + ">" + e.name + "</option>";
@@ -65,5 +69,41 @@
     $(".save-level").select2({theme: 'bootstrap4'});
     $("#saveModal").modal({show: true, backdrop: 'static'});
   }
+
+  // 自动上传
+  $('body').on('change', '#upload', function () {
+    let formData = new FormData();
+    let files = $($(this))[0].files[0];
+    formData.append("file", files);
+    toastr.info('正在提交，请稍后查看');
+    $.ajax({
+      url: '/api/grade/import',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (res) {
+        if (res.state === "success") {
+          toastr.success('班级数据解析成功，完成导入');
+          $(this).delay(800).queue(function () {
+            OesUtil.closeModal("#importModal");
+            $('#importPaper')[0].reset();
+            OesUtil.refreshTable("#gradeInfo");
+          })
+        } else {
+          toastr.error(res.message);
+        }
+      }
+    });
+  });
+
+  // 启动导入班级模态框
+  $("#importBtn").click(function () {
+    $("#importModal").modal({
+      show: true,
+      backdrop: 'static'
+    });
+  });
+
 
 </script>

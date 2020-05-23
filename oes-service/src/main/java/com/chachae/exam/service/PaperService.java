@@ -9,6 +9,7 @@ import com.chachae.exam.common.model.dto.QueryPaperDto;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 试卷业务接口
@@ -113,4 +114,12 @@ public interface PaperService extends IService<Paper> {
    * @param level   年级
    */
   void checkTestedByGradeId(Integer paperId, Integer level, Integer gradeId);
+
+  /**
+   * 导出试卷
+   *
+   * @param paperId  试卷ID
+   * @param response 响应对象
+   */
+  void outputPaperExcel(Integer paperId, HttpServletResponse response);
 }

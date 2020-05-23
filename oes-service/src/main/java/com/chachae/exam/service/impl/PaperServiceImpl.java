@@ -29,14 +29,18 @@ import com.chachae.exam.service.GradeService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.QuestionService;
 import com.chachae.exam.service.ScoreService;
+import com.chachae.exam.util.service.ExcelTemplateService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -53,13 +57,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements PaperService {
 
+  private final TypeDAO typeDAO;
   private final PaperDAO paperDAO;
+  private final GradeService gradeService;
   private final PaperFormDAO paperFormDAO;
+  private final ScoreService scoreService;
   private final QuestionService questionService;
   private final StuAnswerRecordDAO stuAnswerRecordDAO;
-  private final ScoreService scoreService;
-  private final TypeDAO typeDAO;
-  private final GradeService gradeService;
+  private final ExcelTemplateService excelTemplateService;
 
   @Override
   public void randomNewPaper(Paper paper, String diff) {
@@ -98,56 +103,66 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     double programScore = NumberUtil.strToDouble(paperForm.getQProgramScore());
 
     // 错题集
-    List<String> wrongIds;
+    List<String> wrongIds = new ArrayList<>();
     // 定义默认分值
     int score = 0;
 
     /* -------------------------- 开始评分 -------------------------- */
     // 加同步锁
     synchronized (this) {
-      // 获取试卷中各个部分题型的问题信息
-      List<Question> choices = questionService.selectByPaperIdAndType(paperId, 1);
-      List<Question> mulChoices = questionService.selectByPaperIdAndType(paperId, 2);
-      List<Question> tofs = questionService.selectByPaperIdAndType(paperId, 3);
-      List<Question> fills = questionService.selectByPaperIdAndType(paperId, 4);
-      List<Question> saqs = questionService.selectByPaperIdAndType(paperId, 5);
-      List<Question> programs = questionService.selectByPaperIdAndType(paperId, 6);
+      // 获取试卷中全部部分题型的问题信息
+      List<Question> questions = questionService.selectByPaperIdAndType(paperId, null);
+      // 试题集合按照类型排序+分组
+      Collection<List<Question>> collection = questions.stream()
+          .sorted(Comparator.comparingInt(Question::getTypeId))
+          .collect(Collectors.groupingBy(Question::getTypeId)).values();
 
-      // 单选题批改
-      MarkInfoDto choiceMark = PaperMarkUtil.mark(choices, choiceScore, request);
-      score += choiceMark.getScore();
-      wrongIds = new ArrayList<>(choiceMark.getWrongIds());
-
-      // 多选题批改
-      MarkInfoDto mulChoiceMark = PaperMarkUtil.mulMark(mulChoices, mulChoiceScore, request);
-      score += mulChoiceMark.getScore();
-      wrongIds.addAll(mulChoiceMark.getWrongIds());
-
-      // 判断题批改
-      MarkInfoDto tofMark = PaperMarkUtil.mark(tofs, tofScore, request);
-      score += tofMark.getScore();
-      wrongIds.addAll(tofMark.getWrongIds());
-
-      // 填空题批改
-      MarkInfoDto fillMark = PaperMarkUtil.mark(fills, fillScore, request);
-      score += fillMark.getScore();
-      wrongIds.addAll(fillMark.getWrongIds());
-
-      // 简答题批改并将答题记录存入数据库
-      MarkInfoDto essayMark = PaperMarkUtil.essayMark(saqs, saqScore, request);
-      score += essayMark.getScore();
-      wrongIds.addAll(essayMark.getWrongIds());
-
-      // 编程题批改
-      MarkInfoDto programMark = PaperMarkUtil.essayMark(programs, programScore, request);
-      score += programMark.getScore();
-      wrongIds.addAll(programMark.getWrongIds());
-
-      // 通过循环的方式依次将主观题的错题信息插入学生答题记录表中
-      for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
-        // 封装学生、试卷、分数信息
-        record.setPaperId(paperId).setStuId(stuId);
-        stuAnswerRecordDAO.insert(record);
+      for (List<Question> questionList : collection) {
+        switch (questionList.get(0).getTypeId()) {
+          case (1):
+            // 单选题批改
+            MarkInfoDto choiceMark = PaperMarkUtil.mark(questionList, choiceScore, request);
+            score += choiceMark.getScore();
+            wrongIds.addAll(choiceMark.getWrongIds());
+            break;
+          case (2):
+            // 多选题批改
+            MarkInfoDto mulChoiceMark = PaperMarkUtil
+                .mulMark(questionList, mulChoiceScore, request);
+            score += mulChoiceMark.getScore();
+            wrongIds.addAll(mulChoiceMark.getWrongIds());
+            break;
+          case (3):
+            // 判断题批改
+            MarkInfoDto tofMark = PaperMarkUtil.mark(questionList, tofScore, request);
+            score += tofMark.getScore();
+            wrongIds.addAll(tofMark.getWrongIds());
+            break;
+          case (4):
+            // 填空题批改
+            MarkInfoDto fillMark = PaperMarkUtil.mark(questionList, fillScore, request);
+            score += fillMark.getScore();
+            wrongIds.addAll(fillMark.getWrongIds());
+            break;
+          case (5):
+            // 简答题批改并将答题记录存入数据库
+            MarkInfoDto essayMark = PaperMarkUtil.essayMark(questionList, saqScore, request);
+            score += essayMark.getScore();
+            wrongIds.addAll(essayMark.getWrongIds());
+            // 通过循环的方式依次将主观题的错题信息插入学生答题记录表中
+            for (StuAnswerRecord record : essayMark.getStuAnswerRecord()) {
+              // 封装学生、试卷、分数信息
+              record.setPaperId(paperId).setStuId(stuId);
+              stuAnswerRecordDAO.insert(record);
+            }
+            break;
+          default:
+            // 编程题批改
+            MarkInfoDto programMark = PaperMarkUtil.essayMark(questionList, programScore, request);
+            score += programMark.getScore();
+            wrongIds.addAll(programMark.getWrongIds());
+            break;
+        }
       }
     }
 
@@ -155,7 +170,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
 
     // 组装错题集合信息
     StringBuilder builder = new StringBuilder();
-    wrongIds.forEach(id -> builder.append(id).append(','));
+    for (String id : wrongIds) {
+      builder.append(id).append(',');
+    }
     // 最后一个逗号去除
     String wrong = builder.toString();
     // 预备一个空错题字符串
@@ -208,13 +225,25 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
           // 已经开始
           && paper.isStart()) {
         throw new ServiceException("考试已开始或已结束，无法删除！");
-      }
+      } else {
+        // 模拟考试可以删除
+        // 删除score表中paperId为传入参数的对象
+        List<Score> scores = this.scoreService.selectByPaperId(id);
+        // 遍历成绩集合，并逐一删除对应试卷的成绩数据
+        scores.forEach(score -> scoreService.removeById(score.getId()));
 
-      // 获取试卷模板，如果只有他使用，则进行删除
-      int paperFormId = paper.getPaperFormId();
-      // 排除默认模板，且如果数量等于 1，说明只有本考试使用，直接删除
-      if (paperFormId != 1 && this.countPaperByPaperFormId(paperFormId) == 1) {
-        this.paperFormDAO.deleteById(paperFormId);
+        // 删除学生与该试卷关联的答题记录， 构造查询条件
+        LambdaQueryWrapper<StuAnswerRecord> ansQw = new LambdaQueryWrapper<>();
+        ansQw.eq(StuAnswerRecord::getPaperId, id);
+        List<StuAnswerRecord> ans = this.stuAnswerRecordDAO.selectList(ansQw);
+        // 遍历删除答题记录
+        ans.forEach(an -> stuAnswerRecordDAO.deleteById(an.getId()));
+        // 获取试卷模板，如果只有他使用，则进行删除
+        int paperFormId = paper.getPaperFormId();
+        // 排除默认模板，且如果数量等于 1，说明只有本考试使用，直接删除
+        if (paperFormId != 1 && this.countPaperByPaperFormId(paperFormId) == 1) {
+          this.paperFormDAO.deleteById(paperFormId);
+        }
       }
 
       // 删除试卷
@@ -300,107 +329,54 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     Integer paperFormId = paper.getPaperFormId();
     PaperForm form = this.paperFormDAO.selectById(paperFormId);
     // 判断是否存在已存在提醒仍进行随机抽题的情况
-    if (Integer.parseInt(form.getQChoiceNum()) > 0 && entity.getA() == 1) {
-      throw new ServiceException("试卷中已存在 [ 单项选择题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQMulChoiceNum()) > 0 && entity.getB() == 1) {
-      throw new ServiceException("试卷中已存在 [ 多项选择题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQTofNum()) > 0 && entity.getC() == 1) {
-      throw new ServiceException("试卷中已存在 [ 判断题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQFillNum()) > 0 && entity.getD() == 1) {
-      throw new ServiceException("试卷中已存在 [ 填空题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQSaqNum()) > 0 && entity.getE() == 1) {
-      throw new ServiceException("试卷中已存在 [ 主观题 ]，请取消随机抽题后重试！");
-    }
-    if (Integer.parseInt(form.getQProgramNum()) > 0 && entity.getF() == 1) {
-      throw new ServiceException("试卷中已存在 [ 编程题 ]，请取消随机抽题后重试！");
-    }
-
+    // 模板题目数量
+    String[] formNums = {form.getQChoiceNum(), form.getQMulChoiceNum(), form.getQTofNum(),
+        form.getQFillNum(), form.getQSaqNum(), form.getQProgramNum()};
+    // 设置的具体题型随机选择情况
+    boolean[] isOpen = {entity.getA() == 1, entity.getB() == 1, entity.getC() == 1,
+        entity.getD() == 1, entity.getE() == 1, entity.getF() == 1};
+    // 判断是否有重复题型
     // 新建一个 ID 集合，后续进行拼接
     List<Integer> idList = new ArrayList<>();
     // 获取试卷所属课程ID
-    Integer courseId = paper.getCourseId();
-
-    // 至此，随机抽题请求合法，进行分布随机
-    // 单项选择
-    if (entity.getA() == 1) {
-      // 设置模板信息
-      form.setQChoiceNum(entity.getANum());
-      form.setQChoiceScore(entity.getAScore());
-      // 判断试题难度
-      if (entity.getADif().equals(SysConsts.Diff.AVG)) {
-        // 不需要过滤难度
-        this.randomQuestions(entity.getANum(), idList, 1, courseId, null);
-      } else {
-        this.randomQuestions(entity.getANum(), idList, 1, courseId, entity.getADif());
-      }
-    }
-
-    // 多项选择
-    if (entity.getB() == 1) {
-      // 设置模板信息
-      form.setQMulChoiceNum(entity.getBNum());
-      form.setQMulChoiceScore(entity.getBScore());
-      // 判断试题难度
-      if (entity.getBDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getBNum(), idList, 2, courseId, null);
-      } else {
-        this.randomQuestions(entity.getBNum(), idList, 2, courseId, entity.getBDif());
-      }
-    }
-
-    // 判断题
-    if (entity.getC() == 1) {
-      // 设置模板信息
-      form.setQTofNum(entity.getCNum());
-      form.setQTofScore(entity.getCScore());
-      // 判断试题难度
-      if (entity.getCDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getCNum(), idList, 3, courseId, null);
-      } else {
-        this.randomQuestions(entity.getCNum(), idList, 3, courseId, entity.getCDif());
-      }
-    }
-
-    // 填空题
-    if (entity.getD() == 1) {
-      // 设置模板信息
-      form.setQFillNum(entity.getDNum());
-      form.setQFillScore(entity.getDScore());
-      // 判断试题难度
-      if (entity.getDDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getDNum(), idList, 4, courseId, null);
-      } else {
-        this.randomQuestions(entity.getDNum(), idList, 4, courseId, entity.getDDif());
-      }
-    }
-
-    // 主观题
-    if (entity.getE() == 1) {
-      // 设置模板信息
-      form.setQSaqNum(entity.getENum());
-      form.setQSaqScore(entity.getEScore());
-      // 判断试题难度
-      if (entity.getEDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getENum(), idList, 5, courseId, null);
-      } else {
-        this.randomQuestions(entity.getENum(), idList, 5, courseId, entity.getEDif());
-      }
-    }
-
-    // 编程题
-    if (entity.getF() == 1) {
-      // 设置模板信息
-      form.setQProgramNum(entity.getFNum());
-      form.setQProgramScore(entity.getFScore());
-      // 判断试题难度
-      if (entity.getFDif().equals(SysConsts.Diff.AVG)) {
-        this.randomQuestions(entity.getFNum(), idList, 6, courseId, null);
-      } else {
-        this.randomQuestions(entity.getFNum(), idList, 6, courseId, entity.getFDif());
+    int courseId = paper.getCourseId();
+    for (int i = 0; i < formNums.length; i++) {
+      // 符合局部随机抽题要求
+      if (Integer.parseInt(formNums[i]) == 0 && isOpen[i]) {
+        switch (i) {
+          case (0):
+            // 单选
+            form.setQChoiceNum(entity.getANum()).setQChoiceScore(entity.getAScore());
+            this.randomQuestions(entity.getANum(), idList, i + 1, courseId, entity.getADif());
+            break;
+          case (1):
+            // 多项选择
+            form.setQMulChoiceNum(entity.getBNum()).setQMulChoiceScore(entity.getBScore());
+            this.randomQuestions(entity.getBNum(), idList, i + 1, courseId, entity.getBDif());
+            break;
+          case (2):
+            // 判断题
+            form.setQTofNum(entity.getCNum()).setQTofScore(entity.getCScore());
+            this.randomQuestions(entity.getCNum(), idList, i + 1, courseId, entity.getCDif());
+            break;
+          case (3):
+            // 填空题
+            form.setQFillNum(entity.getDNum()).setQFillScore(entity.getDScore());
+            this.randomQuestions(entity.getDNum(), idList, i + 1, courseId, entity.getDDif());
+            break;
+          case (4):
+            // 主观题
+            form.setQSaqNum(entity.getENum()).setQSaqScore(entity.getEScore());
+            this.randomQuestions(entity.getENum(), idList, i + 1, courseId, entity.getEDif());
+            break;
+          default:
+            // 编程题
+            form.setQProgramNum(entity.getFNum()).setQProgramScore(entity.getFScore());
+            this.randomQuestions(entity.getFNum(), idList, i + 1, courseId, entity.getFDif());
+            break;
+        }
+      } else if (Integer.parseInt(formNums[i]) > 0 && isOpen[i]) {
+        throw new ServiceException("请取消已经存在试卷内的题型随机抽取选项后重试！");
       }
     }
 
@@ -522,7 +498,18 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     if (CollUtil.isEmpty(scores)) {
       throw new ServiceException("该班级没有考试记录");
     }
+  }
 
+  @Override
+  public void outputPaperExcel(Integer paperId, HttpServletResponse response) {
+    Paper paper = baseMapper.selectById(paperId);
+    String[] typeNameArray = {"单项选择题", "多项选择题", "判断题", "填空题", "主观题", "编程题"};
+    List<Question> questions = this.questionService.selectByPaperIdAndType(paperId, null);
+    // 设置题目类型名称
+    for (Question question : questions) {
+      question.setTypeName(typeNameArray[question.getTypeId() - 1]);
+    }
+    excelTemplateService.packingPaper(paper, questions, response);
   }
 
   @Override
@@ -549,14 +536,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   /**
    * 指定难度的随机抽题方法
    *
-   * @param typeNum 试题数量
-   * @param qIds    试题的 ID 集合
-   * @param tid     试题类型
-   * @param cid     课程 ID
-   * @param dif     难度（传入null代表难度不限定）
+   * @param typeNum     试题数量
+   * @param questionIds 试题的 ID 集合
+   * @param typeId      试题类型
+   * @param courseId    课程 ID
+   * @param dif         难度（传入null代表难度不限定）
    */
   private void randomQuestions(
-      String typeNum, List<Integer> qIds, Integer tid, Integer cid, String dif) {
+      String typeNum, List<Integer> questionIds, Integer typeId, Integer courseId, String dif) {
     // 初始值
     int num;
     // 类型题存在才进行随机抽题
@@ -564,9 +551,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       // 转整型
       num = Integer.parseInt(typeNum);
       // 获取类型题的 ID 集合
-      List<Question> qs = questionService.listByTypeIdAndCourseId(tid, cid);
-      // 过滤难度（diff为null 说明不需要过滤难度）
-      if (StrUtil.isNotBlank(dif)) {
+      List<Question> qs = questionService.listByTypeIdAndCourseId(typeId, courseId);
+      // 过滤难度（diff为null或者0说明不需要过滤难度）
+      if (StrUtil.isNotBlank(dif) && Integer.parseInt(dif) != 0) {
         qs = qs.stream().filter(q -> q.getDifficulty().equals(dif)).collect(Collectors.toList());
       }
       List<Integer> idList = new ArrayList<>();
@@ -576,7 +563,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
       }
       // 随机抽题
       List<Integer> randomIds = getRandomIdList(idList, num);
-      qIds.addAll(randomIds);
+      questionIds.addAll(randomIds);
     }
   }
 

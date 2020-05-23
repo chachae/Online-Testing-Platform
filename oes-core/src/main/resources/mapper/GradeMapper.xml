@@ -21,7 +21,8 @@
         m.academy_id = #{entity.academyId,jdbcType=INTEGER}
       </if>
       <if test="entity.key != null and entity.key != ''">
-        and m.major like concat('%',#{entity.key,jdbcType=VARCHAR},'%')
+        and (m.major like concat('%',#{entity.key,jdbcType=VARCHAR},'%') or g.level =
+        #{entity.key,jdbcType=VARCHAR} )
       </if>
       <if test="entity.level != null">
         and G.level = #{entity.level,jdbcType=INTEGER}
@@ -33,9 +34,10 @@
   </select>
 
   <select id="getVoById" resultMap="voResultMap">
-    SELECT G.*, m.major AS majorName,concat(G.level,m.major,G.grade_number,'班') as gradeName
+    SELECT G.*, m.major AS majorName, concat(G.level, m.major, G.grade_number, '班') as gradeName
     FROM grade G
-    LEFT JOIN major m on G.major_id = m.id WHERE G.id = #{id,jdbcType=INTEGER}
+           LEFT JOIN major m on G.major_id = m.id
+    WHERE G.id = #{id,jdbcType=INTEGER}
   </select>
 
 </mapper>

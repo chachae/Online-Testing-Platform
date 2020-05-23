@@ -1,6 +1,8 @@
 package com.chachae.exam.common.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -75,4 +77,11 @@ public class Question {
    * 教师id
    */
   private Integer teacherId;
+
+  /**
+   * 题型名称
+   */
+  @JsonIgnore
+  @TableField(exist = false)
+  private String typeName;
 }

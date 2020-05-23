@@ -177,4 +177,9 @@ public class PaperController {
   public void outputAnalysis(Integer paperId, Integer gradeId, HttpServletResponse response) {
     this.scoreService.outputPaperChartExcel(paperId, gradeId, response);
   }
+
+  @GetMapping("/export/{paperId}")
+  public void outputPaper(@PathVariable Integer paperId, HttpServletResponse response) {
+    this.paperService.outputPaperExcel(paperId, response);
+  }
 }

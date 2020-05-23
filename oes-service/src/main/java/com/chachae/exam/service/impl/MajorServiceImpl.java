@@ -1,6 +1,8 @@
 package com.chachae.exam.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,17 +10,22 @@ import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Major;
 import com.chachae.exam.common.model.Paper;
+import com.chachae.exam.common.util.FileUtil;
 import com.chachae.exam.common.util.PageUtil;
+import com.chachae.exam.service.AcademyService;
 import com.chachae.exam.service.MajorService;
 import com.chachae.exam.service.PaperService;
 import com.chachae.exam.service.StudentService;
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 专业表服务实现类
@@ -33,6 +40,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
 
   private final MajorDAO majorDAO;
   private final PaperService paperService;
+  private final AcademyService academyService;
   private final StudentService studentService;
 
   @Override
@@ -52,6 +60,34 @@ public class MajorServiceImpl extends ServiceImpl<MajorDAO, Major> implements Ma
     LambdaQueryWrapper<Major> qw = new LambdaQueryWrapper<>();
     qw.eq(Major::getMajor, majorName);
     return this.majorDAO.selectList(qw);
+  }
+
+  @Async
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void importMajorsExcel(MultipartFile multipartFile) {
+    // 同步锁
+    synchronized (this) {
+      File file = FileUtil.toFile(multipartFile);
+      // 读取 Excel 中的数据
+      ExcelReader reader = ExcelUtil.getReader(file);
+      // 读取专业的信息
+      List<Major> majors = reader.read(3, 4, Major.class);
+      for (Major major : majors) {
+        // 归属学院代码以及专业名称不为空
+        if (major.getAcademyId() != null && major.getMajor() != null) {
+          // 检测学院代码是否存在，且专业名称是否重复
+          boolean isExist = this.academyService.getById(major.getAcademyId()) != null;
+          boolean isNotExist = this.academyService.selectByName(major.getMajor()) == null;
+          if (isExist && isNotExist) {
+            // 插入
+            baseMapper.insert(major);
+          }
+        } else {
+          throw new ServiceException("请检查表格数据是否有有误");
+        }
+      }
+    }
   }
 
   @Override

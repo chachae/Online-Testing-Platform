@@ -38,6 +38,10 @@
                 <h3 class="card-title">班级信息</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
+                    <!-- 系统管理员 display -->
+                    <% if(isNotEmpty(session.admin.academyId)){ %>
+                    <button class="btn btn-default btn-sm" id="importBtn">导入班级</button>&nbsp;
+                    <% } %>
                     <button class="btn btn-primary btn-sm" onclick="goSave()">新增班级</button>
                   </div>
                 </div>
@@ -70,6 +74,8 @@
     </section>
     <!-- 增加模态框 -->
     <%include("save-modal.html"){} %>
+    <!-- 导入班级 -->
+    <%include("import-modal.html"){}%>
     <!-- 接口 -->
     <% include("api.html"){} %>
     <%}%>

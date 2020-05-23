@@ -118,7 +118,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
 
   @Override
   @Async
-  @Transactional(rollbackFor = Exception.class)
   public synchronized void importStudentsExcel(MultipartFile multipartFile) {
     File file = FileUtil.toFile(multipartFile);
     // 读取 Excel 中的数据
@@ -164,6 +163,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   }
 
   @Override
+  @Transactional(rollbackFor = Exception.class)
   public boolean save(Student entity) {
     // 检测学号是否存在
     Student student = this.selectByStuNumber(entity.getStuNumber());

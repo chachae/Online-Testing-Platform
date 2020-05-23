@@ -1,8 +1,7 @@
 package com.chachae.exam.core.interceptor;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.chachae.exam.common.constant.SysConsts;
+import com.chachae.exam.common.constant.SysConsts.Session;
 import com.chachae.exam.core.properties.Props;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,14 +27,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
   /**
    * 路径匹配器
    */
-  private final AntPathMatcher pathMatcher = new AntPathMatcher();
+  private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
   /**
-   * 页面路径匹配
+   * 角色页面路径匹配
    */
-  private static final String ADMIN_PATTERN = "/admin/**";
-  private static final String TEACHER_PATTERN = "/teacher/**";
-  private static final String STU_PATTERN = "/student/**";
+  private static final String[] ROLE_PATTERNS = {"/admin/**", "/teacher/**", "/student/**"};
+
+  /**
+   * REST API 匹配
+   */
   private static final String REST_PATTERN = "/api/**";
 
   @Override
@@ -47,10 +48,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     String curPath = request.getRequestURI();
 
     // 白名单匹配
-    String[] anon = StrUtil.splitToArray(props.getSys().getAnonUrl(), ',');
-    for (String e : anon) {
+    String[] anons = StrUtil.splitToArray(props.getSys().getAnonUrl(), ',');
+    for (String anon : anons) {
       // 成功匹配表名单则放行
-      if (pathMatcher.match(e, curPath)) {
+      if (MATCHER.match(anon, curPath)) {
         return true;
       }
     }
@@ -59,37 +60,32 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     HttpSession session = request.getSession();
 
     // session 判空
-    if (ObjectUtil.isEmpty(session)) {
+    if (session == null) {
       response.sendRedirect(props.getSys().getLoginUrl());
       return false;
     }
 
     // rest 接口一律放行，由 AOP 授权器决定请求是否合法
-    if (pathMatcher.match(REST_PATTERN, curPath)) {
-      if (ObjectUtil.isNotEmpty(session)) {
-        return true;
-      }
+    if (MATCHER.match(REST_PATTERN, curPath)) {
+      return true;
     }
 
     // 管理员
-    if (pathMatcher.match(ADMIN_PATTERN, curPath)) {
-      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.ADMIN))) {
-        return true;
-      }
+    if (MATCHER.match(ROLE_PATTERNS[0], curPath)
+        && session.getAttribute(Session.ADMIN) != null) {
+      return true;
     }
 
     // 教师
-    if (pathMatcher.match(TEACHER_PATTERN, curPath)) {
-      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.TEACHER))) {
-        return true;
-      }
+    if (MATCHER.match(ROLE_PATTERNS[1], curPath)
+        && session.getAttribute(Session.TEACHER) != null) {
+      return true;
     }
 
     // 学生
-    if (pathMatcher.match(STU_PATTERN, curPath)) {
-      if (ObjectUtil.isNotEmpty(session.getAttribute(SysConsts.Session.STUDENT))) {
-        return true;
-      }
+    if (MATCHER.match(ROLE_PATTERNS[2], curPath)
+        && session.getAttribute(Session.STUDENT) != null) {
+      return true;
     }
 
     // 未知请求一律过滤

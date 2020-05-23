@@ -8,6 +8,7 @@ import com.chachae.exam.common.model.dto.QueryGradeDto;
 import com.chachae.exam.common.model.vo.GradeVo;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * (Grade)表服务接口
@@ -49,5 +50,12 @@ public interface GradeService extends IService<Grade> {
    */
   GradeVo selectVoById(Integer id);
 
+
+  /**
+   * 导入班级数据
+   *
+   * @param multipartFile /
+   */
+  void importMajorsExcel(MultipartFile multipartFile);
 
 }

@@ -46,7 +46,11 @@
                 <h3 class="card-title">专业管理</h3>
                 <div class="card-tools">
                   <div class="input-group input-group-sm">
-                    <button onclick="goSave()" class="btn btn-default btn-sm">&nbsp;新增专业</button>&nbsp;
+                    <!-- 系统管理员 display -->
+                    <% if(isEmpty(session.admin.academyId)){ %>
+                    <button class="btn btn-default btn-sm" id="importBtn">导入专业</button>&nbsp;
+                    <% } %>
+                    <button onclick="goSave()" class="btn btn-default btn-sm">新增专业</button>&nbsp;
                     <button class="btn btn-default btn-sm"
                             onclick="OesUtil.refreshTable('#majorInfo');">刷新数据
                     </button>
@@ -86,10 +90,12 @@
     </section>
     <!-- 接口 -->
     <%include("api.html"){}%>
-    <!-- 新增课程模态框 -->
+    <!-- 新增专业模态框 -->
     <% include("save-modal.html"){} %>
     <!-- 更新模态框 -->
     <% include("update-modal.html"){} %>
+    <!-- 导入专业 -->
+    <%include("import-modal.html"){}%>
     <%}%>
   </div>
   <aside class="control-sidebar control-sidebar-dark">

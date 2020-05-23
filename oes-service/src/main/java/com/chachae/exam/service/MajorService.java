@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.chachae.exam.common.model.Major;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author chachae
@@ -15,7 +16,7 @@ public interface MajorService extends IService<Major> {
   /**
    * 分页查询专业信息
    *
-   * @param page 分页信息
+   * @param page  分页信息
    * @param major 查询条件
    * @return 分页信息结果集
    */
@@ -36,4 +37,11 @@ public interface MajorService extends IService<Major> {
    * @return 集合信息
    */
   List<Major> listByMajorName(String majorName);
+
+  /**
+   * 导入学生数据
+   *
+   * @param multipartFile /
+   */
+  void importMajorsExcel(MultipartFile multipartFile);
 }

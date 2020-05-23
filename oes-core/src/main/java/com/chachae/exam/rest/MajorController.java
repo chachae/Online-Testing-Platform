@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author chachae
@@ -115,6 +117,19 @@ public class MajorController {
   @Permissions("major:delete")
   public R deleteMajor(@PathVariable Integer id) {
     this.majorService.removeById(id);
+    return R.success();
+  }
+
+  /**
+   * 导入专业
+   *
+   * @param multipartFile MultipartFile 对象
+   * @return 导入专业结果
+   */
+  @PostMapping("/import")
+  public R importMajor(@RequestParam("file") MultipartFile multipartFile) {
+    // 调用试题导入接口
+    this.majorService.importMajorsExcel(multipartFile);
     return R.success();
   }
 }

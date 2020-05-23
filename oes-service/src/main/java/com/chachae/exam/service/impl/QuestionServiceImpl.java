@@ -107,7 +107,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
     for (String id : ids) {
       // 通过题目 ID 获取问题的信息
       Question question = questionDAO.selectById(id);
-      if (typeId.equals(question.getTypeId())) {
+      // 类型id为空或者类型id与当前题目的类型一致
+      if (typeId == null || typeId.equals(question.getTypeId())) {
         questions.add(question);
       }
     }
