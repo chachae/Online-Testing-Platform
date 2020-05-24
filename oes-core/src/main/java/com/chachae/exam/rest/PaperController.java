@@ -88,17 +88,14 @@ public class PaperController {
     // 设置试卷学院
     paper.setAcademyId(teacher.getAcademyId());
     // 局部随机参数判断，没有局部随机参数则调用普通的插入接口
-    boolean a = entity.getA() == 0,
-        b = entity.getB() == 0,
-        c = entity.getC() == 0,
-        d = entity.getD() == 0,
-        e = entity.getE() == 0,
-        f = entity.getF() == 0;
-    if (a && b && c && d && e && f) {
-      this.paperService.save(paper);
-    } else {
-      this.paperService.saveWithImportPaper(paper, entity);
+    boolean[] res = {entity.getA() == 0, entity.getB() == 0, entity.getC() == 0, entity.getD() == 0,
+        entity.getE() == 0, entity.getF() == 0};
+    for (boolean e : res) {
+      if (!e) {
+        this.paperService.saveWithImportPaper(paper, entity);
+      }
     }
+    this.paperService.save(paper);
     return R.successWithData(paper.getId());
   }
 

@@ -35,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -71,17 +72,16 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 获取试卷模板信息
     PaperForm form = paperFormDAO.selectById(paper.getPaperFormId());
     // 获取试卷归属的课程 ID
-    Integer cid = paper.getCourseId();
+    int courseId = paper.getCourseId();
     // 预先准备试卷问题集合
-    List<Integer> qs = new ArrayList<>();
+    List<Integer> questionIds = new ArrayList<>();
     // 为每种题型进行随机组题
-    this.randomQuestions(form.getQChoiceNum(), qs, 1, cid, diff);
-    this.randomQuestions(form.getQMulChoiceNum(), qs, 2, cid, diff);
-    this.randomQuestions(form.getQTofNum(), qs, 3, cid, diff);
-    this.randomQuestions(form.getQFillNum(), qs, 4, cid, diff);
-    this.randomQuestions(form.getQSaqNum(), qs, 5, cid, diff);
-    this.randomQuestions(form.getQProgramNum(), qs, 6, cid, diff);
-    this.savePaper(paper, qs);
+    String[] questionNumArray = {form.getQChoiceNum(), form.getQMulChoiceNum(), form.getQTofNum(),
+        form.getQFillNum(), form.getQSaqNum(), form.getQProgramNum()};
+    for (int i = 0; i < questionNumArray.length; i++) {
+      this.randomQuestions(questionNumArray[i], questionIds, i + 1, courseId, diff);
+    }
+    this.savePaper(paper, questionIds);
   }
 
   @Override
@@ -384,7 +384,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     this.paperFormDAO.updateById(form);
     // 拼接 ID，获取试卷原本的试题集合 ID
     List<String> idStr = StrUtil.split(paper.getQuestionId(), ',');
-    idList.forEach(e -> idStr.add(String.valueOf(e)));
+    for (Integer e : idList) {
+      idStr.add(String.valueOf(e));
+    }
     // 获取新的ID
     // 建立 StringBuilder 对象，用户组装试题集合
     StringBuilder sb = new StringBuilder();
@@ -448,10 +450,13 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
     // 班级不为空，数据也不为0
     if (entity.getGradeId() != null && pageInfo.getTotal() != 0L) {
       List<Paper> records = pageInfo.getRecords();
-      for (int i = 0; i < records.size(); i++) {
-        List<String> gIds = StrUtil.split(records.get(i).getGradeIds(), ',');
+      // 迭代器内使用remove()，不要使用for循环
+      Iterator<Paper> iterator = records.iterator();
+      while (iterator.hasNext()) {
+        Paper paper = iterator.next();
+        List<String> gIds = StrUtil.split(paper.getGradeIds(), ',');
         if (!gIds.contains(String.valueOf(entity.getGradeId()))) {
-          records.remove(i);
+          iterator.remove();
           pageInfo.setTotal(pageInfo.getTotal() - 1L);
         }
       }
@@ -575,7 +580,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
    * @return 题目集合
    */
   private List<Integer> getRandomIdList(List<Integer> ids, Integer num) {
-    // 调用随机数生成工具
+    // 获取随机数生成器对象
     Random random = RandomUtil.getRandom();
     List<Integer> result = new ArrayList<>();
     int index;
@@ -614,7 +619,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDAO, Paper> implements Pa
   private void savePaper(Paper paper, List<Integer> qs) {
     StringBuilder sb = new StringBuilder();
     // 通过循环的方式组件试卷题目序号集合
-    qs.forEach(id -> sb.append(id).append(','));
+    for (Integer id : qs) {
+      sb.append(id).append(',');
+    }
     String ids = sb.toString();
     // 去除最后一个逗号并封装题序参数
     paper.setQuestionId(ids.substring(0, ids.length() - 1));

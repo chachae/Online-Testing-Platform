@@ -281,13 +281,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDAO, Question>
       dto.setQuestionIdList(ids.substring(0, ids.length() - 1));
 
       // 计算试卷卷面分
-      int score =
-          typeNumMap.get(1) * typeScoreMap.get(1)
-              + typeNumMap.get(2) * typeScoreMap.get(2)
-              + typeNumMap.get(3) * typeScoreMap.get(3)
-              + typeNumMap.get(4) * typeScoreMap.get(4)
-              + typeNumMap.get(5) * typeScoreMap.get(5)
-              + typeNumMap.get(6) * typeScoreMap.get(6);
+      int score = 0;
+      for (int i = 0; i < typeNumMap.size(); i++) {
+        score += (typeNumMap.get(i + 1) * typeScoreMap.get(i + 1));
+      }
 
       // 封装问题信息参数
       dto.setPaperName(paperName);
