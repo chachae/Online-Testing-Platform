@@ -1,5 +1,6 @@
 package com.chachae.exam.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -13,6 +14,7 @@ import com.chachae.exam.common.dao.MajorDAO;
 import com.chachae.exam.common.dao.StudentDAO;
 import com.chachae.exam.common.exception.ServiceException;
 import com.chachae.exam.common.model.Major;
+import com.chachae.exam.common.model.Score;
 import com.chachae.exam.common.model.Student;
 import com.chachae.exam.common.model.dto.ChangePassDto;
 import com.chachae.exam.common.model.dto.QueryStudentDto;
@@ -29,7 +31,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,48 +118,49 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
   }
 
   @Override
-  @Async
-  public synchronized void importStudentsExcel(MultipartFile multipartFile) {
-    File file = FileUtil.toFile(multipartFile);
-    // 读取 Excel 中的数据
-    ExcelReader reader = ExcelUtil.getReader(file);
-    // 读取学生的信息
-    List<StudentExcelDto> students = reader.read(6, 7, StudentExcelDto.class);
-    Student result = new Student();
-    for (StudentExcelDto entity : students) {
-      // 姓名、学号、专业统一代码不为空才进行导入
-      if (StrUtil.isNotBlank(entity.getName()) && StrUtil.isNotBlank(entity.getStuNumber())
-          && entity.getMajorId() != null && entity.getLevel() != null) {
-        // 同步写入
-        // 查询学号是否已存在，不存在则导入
-        Student studentResult = this.selectByStuNumber(entity.getStuNumber());
-        // 查询专业统一代号是否存在
-        Major majorResult = this.majorDAO.selectById(entity.getMajorId());
-        if (studentResult == null && majorResult != null) {
-          // 性别判断
-          String sex;
-          if (entity.getSex() == null) {
-            sex = null;
-          } else {
-            sex = entity.getSex() == 1 ? "男" : "女";
+  public void importStudentsExcel(MultipartFile multipartFile) {
+    synchronized (this) {
+      File file = FileUtil.toFile(multipartFile);
+      // 读取 Excel 中的数据
+      ExcelReader reader = ExcelUtil.getReader(file);
+      // 读取学生的信息
+      List<StudentExcelDto> students = reader.read(6, 7, StudentExcelDto.class);
+      Student result = new Student();
+      for (StudentExcelDto entity : students) {
+        // 姓名、学号、专业统一代码不为空才进行导入
+        if (StrUtil.isNotBlank(entity.getName()) && StrUtil.isNotBlank(entity.getStuNumber())
+            && entity.getMajorId() != null && entity.getLevel() != null) {
+          // 同步写入
+          // 查询学号是否已存在，不存在则导入
+          Student studentResult = this.selectByStuNumber(entity.getStuNumber());
+          // 查询专业统一代号是否存在
+          Major majorResult = this.majorDAO.selectById(entity.getMajorId());
+          if (studentResult == null && majorResult != null) {
+            // 性别判断
+            String sex;
+            if (entity.getSex() == null) {
+              sex = null;
+            } else {
+              sex = entity.getSex() == 1 ? "男" : "女";
+            }
+            // 参数封装
+            result
+                .setId(null)
+                .setStuNumber(entity.getStuNumber())
+                .setMajorId(entity.getMajorId())
+                .setSex(sex)
+                .setRoleId(Role.STUDENT)
+                .setPassword(RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD))
+                .setName(entity.getName())
+                .setLevel(entity.getLevel());
+            this.save(result);
           }
-          // 参数封装
-          result
-              .setId(null)
-              .setStuNumber(entity.getStuNumber())
-              .setMajorId(entity.getMajorId())
-              .setSex(sex)
-              .setRoleId(Role.STUDENT)
-              .setPassword(RsaCipherUtil.hash(SysConsts.DEFAULT_PASSWORD))
-              .setName(entity.getName())
-              .setLevel(entity.getLevel());
-          this.save(result);
         }
       }
-    }
-    // 手动删除临时文件
-    if (!multipartFile.isEmpty()) {
-      file.deleteOnExit();
+      // 手动删除临时文件
+      if (!multipartFile.isEmpty()) {
+        file.deleteOnExit();
+      }
     }
   }
 
@@ -181,6 +183,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentDAO, Student> impleme
 
   @Override
   public boolean removeById(Serializable id) {
+    // 查询成绩信息
+    List<Score> scores = this.scoreService.selectByStuId((int) id);
+    if (CollUtil.isNotEmpty(scores)) {
+      throw new ServiceException("学生存在考试信息，无法删除");
+    }
     // 移除分数和答题记录
     this.scoreService.deleteByStuId((int) id);
     this.stuAnswerRecordService.deleteByStuId((int) id);

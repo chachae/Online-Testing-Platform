@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-// 在 [me-system] 模块下的根路径
 @PropertySource(value = {"classpath:application.properties"})
 @ConfigurationProperties(prefix = "oes")
 public class Props {

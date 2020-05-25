@@ -13,7 +13,8 @@
   </resultMap>
 
   <select id="pageVo" resultMap="voResultMap">
-    SELECT G.*, m.major AS majorName,concat(G.level,m.major,G.grade_number,'班') as gradeName
+    SELECT G.id, G.level, G.major_id, G.grade_number, m.major AS
+    majorName,concat(G.level,m.major,G.grade_number,'班') as gradeName
     FROM grade G
     LEFT JOIN major m on G.major_id = m.id
     <where>
@@ -34,7 +35,8 @@
   </select>
 
   <select id="getVoById" resultMap="voResultMap">
-    SELECT G.*, m.major AS majorName, concat(G.level, m.major, G.grade_number, '班') as gradeName
+    SELECT G.id,G.level,G.major_id,G.grade_number,m.major AS majorName,
+           concat(G.level, m.major, G.grade_number, '班') as gradeName
     FROM grade G
            LEFT JOIN major m on G.major_id = m.id
     WHERE G.id = #{id,jdbcType=INTEGER}

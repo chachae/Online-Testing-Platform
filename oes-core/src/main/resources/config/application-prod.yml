@@ -6,9 +6,8 @@ spring:
   application:
     name: OES-SERVER
 
-  # DataSource
   datasource:
-    url: jdbc:mysql://${mysql.url:localhost}:3306/oes?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${mysql.url:localhost}:${mysql.port:3306}/${mysql.database.name:oes}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${mysql.username:root}
     password: ${mysql.password:123456}
@@ -21,7 +20,7 @@ spring:
       maximum-pool-size: 25
       minimum-idle: 10
       read-only: off
-      pool-name: OESHikariPool
+      pool-name: OES-HIKARI-POOL
 
   # Task
   task:
@@ -37,11 +36,11 @@ spring:
       pool:
         size: 2
 
-  #Lettuce-Redis
+  # Lettuce-Redis
   redis:
-    host: ${redis.url:127.0.0.1}
-    port: 6379
-    password:
+    host: ${redis.url:localhost}
+    port: ${redis.port:6379}
+    password: ${redis.password:}
     timeout: 2000ms
     database: 0
     lettuce:
@@ -55,7 +54,7 @@ spring:
   resources:
     static-locations: classpath:/static/
 
-  #SpringMvc
+  # Spring MVC
   mvc:
     static-path-pattern: /static/**
 
@@ -75,9 +74,9 @@ spring:
   boot:
     admin:
       client:
-        url: http://127.0.0.1:8400
-        username: oes
-        password: 123456
+        url: http://${spring-admin.url:localshost}:8400
+        username: ${spring-admin.username:oes}
+        password: ${spring-admin.password:123456}
         instance:
           prefer-ip: true
 
@@ -85,7 +84,7 @@ spring:
   autoconfigure:
     exclude: com.ibeetl.starter.BeetlSqlSingleConfig
 
-#MyBatisPlus
+# MyBatisPlus
 mybatis-plus:
   global-config:
     banner: off
@@ -104,7 +103,3 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
-
-#logging:
-#  level:
-#    root: debug
