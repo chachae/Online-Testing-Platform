@@ -95,7 +95,7 @@ Redis K-V 数据库
 |                           系统登录                           |                           学院管理                           |
 | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/login.png) | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/academy-manager.png) |
 |                           成绩分析                          |                           公告管理                           |
-| ![](https://github.com/chachae/OES/raw/master/templates/screenshot/analysis-1.png) | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/announce-edit.png) |
+| ![](https://github.com/chachae/OES/raw/master/templates/screenshot/analysis-1.jpg) | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/announce-edit.png) |
 |                           在线考试                           |                          主观题复查                          |
 | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/examing.png) | ![](https://github.com/chachae/OES/raw/master/templates/screenshot/review-manager.png) |
 |                           考试管理                           |                         学生考试信息                         |
