@@ -1,6 +1,6 @@
-# OES
+# Online-Testing-Platform
 
-OES，一个基于 spring boot 2.X 开发的校园在线考试系统。
+一个基于 SpringBoot 2.X 开发的校园在线考试系统。「本项目已申报计算机软件著作权，不得用于商业用途，仅做学习交流。」
 
 [![https://img.shields.io/badge/SpringBoot-2.3.0.RELEASE-brightgreen.svg?style=flat-square](https://img.shields.io/badge/SpringBoot-2.3.0.RELEASE-brightgreen.svg?style=flat-square)](https://img.shields.io/badge/SpringBoot-2.3.0.RELEASE-brightgreen.svg?style=flat-square) [![https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square)](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square) [![https://img.shields.io/badge/mybatis-plus-3.3.1-blueviolet.svg?style=flat-square](https://img.shields.io/badge/MyBatisPlus-3.3.1-blueviolet.svg?style=flat-square)](https://img.shields.io/badge/maven-3.6.0-yellow.svg?longCache=true&style=flat-square) 
 
