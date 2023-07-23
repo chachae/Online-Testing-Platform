@@ -34,7 +34,7 @@
     <hutool.version>5.3.5</hutool.version>
     <mybatis-plus.version>3.3.1</mybatis-plus.version>
     <guava.version>29.0-jre</guava.version>
-    <commons-text.version>1.8</commons-text.version>
+    <commons-text.version>1.10.0</commons-text.version>
     <webjars-admin-lte.version>3.0.2</webjars-admin-lte.version>
     <webjars-font-awesome.version>5.12.0</webjars-font-awesome.version>
     <webjars-bootstrap.version>4.4.1-1</webjars-bootstrap.version>
